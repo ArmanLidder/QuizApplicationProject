@@ -1,12 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-// import { Router } from '@angular/router'; // Import the Router module
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
-    // let router: Router; // Declare a variable for the Router
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -19,7 +17,6 @@ describe('MainPageComponent', () => {
         fixture = TestBed.createComponent(MainPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        /// router = TestBed.inject(Router); // Inject the Router
     });
 
     it('should create', () => {
