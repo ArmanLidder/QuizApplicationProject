@@ -5,12 +5,14 @@ import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-cr
 import { GameAdministrationPageComponent } from '@app/pages/game-administration-page/game-administration-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import {QuizCreationComponent} from "@app/pages/quiz-creation-page/quiz-creation.component";
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: MainPageComponent },
     { path: 'game', component: GamePageComponent },
     { path: 'game-creation', component: GameCreationPageComponent },
+    { path: 'quiz-creation-page', component: QuizCreationComponent },
     { path: 'game-admin', component: GameAdministrationPageComponent },
     { path: 'material', component: MaterialPageComponent },
     { path: '**', redirectTo: '/home' },
