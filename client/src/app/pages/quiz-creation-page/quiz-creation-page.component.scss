@@ -5,7 +5,23 @@
     margin-right: 5px;
 }
 
-.question1 {
+.question {
     padding-left: 1vw;
     border: 1px solid black;
+    margin-bottom: 2vh;
+}
+
+.questionsList {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.choicesList {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.choice {
+    padding-left: 1vw;
 }

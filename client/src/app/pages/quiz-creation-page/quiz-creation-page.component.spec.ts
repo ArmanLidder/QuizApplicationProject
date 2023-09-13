@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { QuizCreationComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
+import {QuizCreationPageComponent} from "@app/pages/quiz-creation-page/quiz-creation-page.component";
 
 describe('QuizCreationComponent', () => {
-    let component: QuizCreationComponent;
-    let fixture: ComponentFixture<QuizCreationComponent>;
+    let component: QuizCreationPageComponent;
+    let fixture: ComponentFixture<QuizCreationPageComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [QuizCreationComponent],
+            declarations: [QuizCreationPageComponent],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(QuizCreationComponent);
+        fixture = TestBed.createComponent(QuizCreationPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

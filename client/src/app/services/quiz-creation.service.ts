@@ -7,6 +7,7 @@ interface FormChoice {
 }
 
 interface FormQuestion {
+    gameType: string; // maybe not for sprint 1 because we only do QCM questions
     text: string;
     points: number;
     choices: FormChoice[];
@@ -21,10 +22,33 @@ export class QuizCreationService {
     gameTitle: string;
     gameDuration: number;
     gameDescription: string;
-    gameType: string;
 
-    gameQuestions : FormQuestion;
-
+    gameQuestions: FormQuestion[] = [
+        {
+            gameType: "QCM",
+            text: "What is the capital of France?",
+            points: 10,
+            choices: [
+                { text: "Paris", isRight: true, isValid: true },
+                { text: "Berlin", isRight: false, isValid: false },
+                { text: "London", isRight: false, isValid: false },
+            ],
+            selectedChoices: [],
+            isValid: false,
+        },
+        {
+            gameType: "QCM",
+            text: "Which planet is known as the Red Planet?",
+            points: 5,
+            choices: [
+                { text: "Mars", isRight: true, isValid: true },
+                { text: "Venus", isRight: false, isValid: false },
+                { text: "Jupiter", isRight: false, isValid: false },
+            ],
+            selectedChoices: [],
+            isValid: false,
+        },
+    ];
 
     /*
      * liste de questions

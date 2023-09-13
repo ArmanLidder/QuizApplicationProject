@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {QuizCreationService} from "@app/services/quiz-creation.service";
 
 @Component({
     selector: 'app-quiz-creation-page',
@@ -14,6 +15,8 @@ export class QuizCreationPageComponent {
     points: number;
     textchoix1: string;
     selectedChoice: string;
+
+    constructor(public quizCreationService: QuizCreationService) {}
 
     onSubmit() {
         // Here you can send the data to your backend or perform any other necessary actions.
