@@ -1,7 +1,5 @@
-<div *ngFor="let game of games">
-    {{game}}
-    <app-game-item>
-
+<div *ngFor="let quiz of quizzes">
+    <app-game-item [quiz]='quiz'>
     </app-game-item>
 </div>
 <button type='button' [routerLink]=''> Add </button>
