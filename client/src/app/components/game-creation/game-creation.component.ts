@@ -10,17 +10,15 @@ export class GameCreation {
     title: string;
     duration: number;
     description: string;
-    questions: any[] = [];
 
     constructor(public quizCreationService: QuizCreationService) {};
-
 
     onSubmit(form: any) {
         if (form.valid) {
             const now = new Date();
             const isoString = now.toString();
             const formattedString = isoString.replace(/\.(\d{3})Z$/, 'Z');
-            console.log('Form submitted!', formattedString);
+            console.log('Form submitted!', this.title, this.duration, this.description, this.quizCreationService.questions, formattedString);
         } else {
             console.log('Form is invalid!');
         }
