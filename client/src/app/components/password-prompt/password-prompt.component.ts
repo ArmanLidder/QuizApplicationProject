@@ -10,13 +10,11 @@ export class PasswordPromptComponent {
     password: string = '';
     inputBorderColor: string = '';
     textColor: string = '';
-    loginStatus : string;
-    constructor(public authenticatorService : AdminAuthenticatorService) {
-        
-    }
+    loginStatus: string;
+    constructor(public authenticatorService: AdminAuthenticatorService) {}
 
     updateLoginStatus() {
-        this.loginStatus = this.authenticatorService.isPasswordGood() ? 'Login Succesfull' : 'Invalid password'
-        if (this.loginStatus === 'Invalid password') this.authenticatorService.password ='';
+        this.loginStatus = this.authenticatorService.isPasswordGood() ? 'Login Succesfull' : 'Invalid password';
+        if (this.loginStatus === 'Invalid password') this.authenticatorService.password = '';
     }
 }
