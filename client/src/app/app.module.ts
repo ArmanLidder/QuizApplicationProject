@@ -14,6 +14,8 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
 import { GameAdministrationPageComponent } from './pages/game-administration-page/game-administration-page.component';
 import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
+import { GameItemComponent } from '@app/components/game-item/game-item.component';
+import { GamesListComponent } from '@app/components/games-list/games-list.component';
 
 /**
  * Main module that is used in main.ts.
@@ -32,6 +34,8 @@ import { PasswordPromptComponent } from '@app/components/password-prompt/passwor
         GameCreationPageComponent,
         GameAdministrationPageComponent,
         PasswordPromptComponent,
+        GameItemComponent,
+        GamesListComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

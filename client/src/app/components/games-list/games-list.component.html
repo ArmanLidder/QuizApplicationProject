@@ -1,1 +1,7 @@
-<p>games-list works!</p>
+<div *ngFor="let game of games">
+    {{game}}
+    <app-game-item>
+
+    </app-game-item>
+</div>
+<button type='button' [routerLink]=''> Add </button>

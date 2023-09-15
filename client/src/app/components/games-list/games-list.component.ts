@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./games-list.component.scss']
 })
 export class GamesListComponent {
+    games: string[] = ["jeux1", "jeux2", "jeux3"];
+    public delete() :void {
 
+    }
 }
