@@ -1,9 +1,9 @@
-<span id='game-item-container'>
-    <p> {{quiz.title}} </p>
-    <p>Last modified: {{quiz.lastModification}}</p>
-    <button (click)="deleteGame()">delete</button>
-    <button (click)="updateGame()">update</button>
-    <button (click)="exportGame()">export</button>
+<div id='game-item-container'>
+    <span> {{quiz.title}} </span>
+    <span> Last modified: {{quiz.lastModification}}</span>
+    <button (click)="exportGame()"> export </button>
+    <button (click)="updateGame()"> update </button>
+    <button (click)="deleteGame()"> delete </button>
     <label for="visibility">visibility</label>
     <input type="checkbox" checked id="visibility"/>
-</span>
+</div>
