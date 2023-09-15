@@ -1,0 +1,48 @@
+.quizzes-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Adjust the gap as needed */
+    justify-content: space-between;
+    //margin-bottom: 20px;
+    flex-direction: column;
+    ////margin: auto;
+    //position: relative;
+    text-align: center;
+    border: 1px solid #ddd;
+    background-color: #f5f5f5;
+    margin: auto;
+    width: 50%;
+    //padding: 10px;
+}
+
+.game-item {
+    //background-color: #f5f5f5;
+    //border: 1px solid #ddd;
+    //padding: 20px;
+    //border-radius: 5px;
+    //width: calc(33.33% - 20px); /* Adjust the width as needed */
+    //box-sizing: border-box;
+    //position: absolute;
+    //width: 100%;
+    //min-width: 400px;
+    //max-width: 450px;
+    //display: flex;
+    //flex-direction: row;
+    //justify-content: space-between;
+    //padding: 16px 32px;
+    //margin-bottom: 8px;
+    //border-radius: 2px;
+    //background-color: #EEEEEE;
+}
+
+///* Style the buttons inside the game item */
+.quizzes-container > button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin: auto;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 20%;
+}

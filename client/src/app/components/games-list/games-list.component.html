@@ -1,5 +1,7 @@
-<div *ngFor="let quiz of quizzes">
-    <app-game-item [quiz]='quiz'>
-    </app-game-item>
+<div class="quizzes-container">
+    <div *ngFor="let quiz of quizzes" class="game-item">
+        <app-game-item [quiz]='quiz'>
+        </app-game-item>
+    </div>
+    <button type='button' [routerLink]=''> Add </button>
 </div>
-<button type='button' [routerLink]=''> Add </button>
