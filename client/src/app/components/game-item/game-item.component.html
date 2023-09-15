@@ -1,5 +1,6 @@
 <span id='game-item-container'>
-    <p id="game-name">{{name}}</p>
+    <p> {{quiz.title}} </p>
+    <p>Last modified: {{quiz.lastModification}}</p>
     <button (click)="deleteGame()">delete</button>
     <button (click)="updateGame()">update</button>
     <button (click)="exportGame()">export</button>
