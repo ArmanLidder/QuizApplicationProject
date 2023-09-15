@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class AdminAuthenticatorService {
-  password: string;
+    password: string;
 
-  isPasswordGood() : boolean {
-    return this.password === 'admin';
-  }
+    isPasswordGood(): boolean {
+        return this.password === 'admin';
+    }
 }
