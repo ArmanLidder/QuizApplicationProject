@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {QuizCreationService} from "@app/services/quiz-creation.service";
+import { QuizCreationService } from '@app/services/quiz-creation.service';
 
 @Component({
     selector: 'app-quiz-creation-page',

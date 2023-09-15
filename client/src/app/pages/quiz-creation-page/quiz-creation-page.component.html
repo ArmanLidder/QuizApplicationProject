@@ -20,13 +20,13 @@
                 <option value="qcm">QCM</option>
                 <option value="qrl">QRL</option>
             </select><br>
-            <label for="text">Enter the question: </label>
-            <input type="text" id="text" name="text" [(ngModel)]="text"><br>
+            <label for="textQuestion">Enter the question: </label>
+            <input type="text" id="textQuestion" name="text" [(ngModel)]="text"><br>
             <label for="points">le nombre de points de la question: </label>
             <input type="number" id="points" name="points" [(ngModel)]="points"><br>
             <p>Choix: </p>
-            <label for="choix1">le choix1:</label><br>
-            <input type="text" id="text" name="text" [(ngModel)]="textchoix1"><br>
+            <label for="textChoice1">le choix1:</label><br>
+            <input type="text" id="textChoice1" name="text" [(ngModel)]="textchoix1"><br>
             <input type="radio" id="trueRadio" name="choice" [(ngModel)]="selectedChoice" value="true">
             <label for="trueRadio">True</label>
             <input type="radio" id="falseRadio" name="choice" [(ngModel)]="selectedChoice" value="false">
