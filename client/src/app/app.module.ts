@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
+import { GameCreation } from '@app/components/game-creation/game-creation.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
@@ -29,7 +29,7 @@ import { GameCreationPageComponent } from './pages/game-creation-page/game-creat
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
-        QuizCreationPageComponent,
+        GameCreation,
         GameCreationPageComponent,
         GameAdministrationPageComponent,
     ],

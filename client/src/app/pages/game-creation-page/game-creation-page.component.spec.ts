@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { GameCreation } from '@app/components/game-creation/game-creation.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { GameCreationPageComponent } from './game-creation-page.component';
 
@@ -8,7 +9,7 @@ describe('GameCreationPageComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [GameCreationPageComponent, SidebarComponent],
+            declarations: [GameCreationPageComponent, SidebarComponent, GameCreation],
         }).compileComponents();
     });
 

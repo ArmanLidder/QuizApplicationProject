@@ -22,6 +22,31 @@ export class QuizCreationService {
     gameTitle: string;
     gameDuration: number;
     gameDescription: string;
+    questions: any[] = [];
+
+    addQuestion() {
+        console.log("I am here!")
+        const newQuestion = {
+            type: 'qcm',
+            text: '',
+            points: null,
+            textchoix: '',
+            selectedChoice: '',
+            choices: []  // Add an empty choices array
+        };
+
+        this.questions.push(newQuestion);
+    }
+
+    addChoice(question: any) {
+        if (question.choices.length < 4) {
+            const newChoice = {
+                text: '',
+                selectedChoice: ''
+            };
+            question.choices.push(newChoice);
+        }
+    }
 
     gameQuestions: FormQuestion[] = [
         {
