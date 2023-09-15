@@ -11,9 +11,8 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { PasswordPromptComponent } from './components/password-prompt/password-prompt/password-prompt.component';
-import { GameItemComponent } from './components/game-item/game-item.component';
-import { GamesListComponent } from './components/games-list/games-list.component';
+import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
+import { GameAdministrationPageComponent } from './pages/game-administration-page/game-administration-page.component';
 
 /**
  * Main module that is used in main.ts.
@@ -29,9 +28,8 @@ import { GamesListComponent } from './components/games-list/games-list.component
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
-        PasswordPromptComponent,
-        GameItemComponent,
-        GamesListComponent,
+        GameCreationPageComponent,
+        GameAdministrationPageComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

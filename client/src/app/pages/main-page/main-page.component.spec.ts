@@ -1,25 +1,15 @@
-import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
-import { CommunicationService } from '@app/services/communication.service';
-import { of, throwError } from 'rxjs';
-import SpyObj = jasmine.SpyObj;
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
-    let communicationServiceSpy: SpyObj<CommunicationService>;
 
     beforeEach(async () => {
-        communicationServiceSpy = jasmine.createSpyObj('ExampleService', ['basicGet', 'basicPost']);
-        communicationServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
-        communicationServiceSpy.basicPost.and.returnValue(of(new HttpResponse<string>({ status: 201, statusText: 'Created' })));
-
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
+            imports: [RouterTestingModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: CommunicationService, useValue: communicationServiceSpy }],
         }).compileComponents();
     });
 
@@ -33,34 +23,30 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it("should have as title 'LOG2990'", () => {
-        expect(component.title).toEqual('LOG2990');
+    it("should have as title 'OnlyQuiz'", () => {
+        expect(component.title).toEqual('OnlyQuiz');
     });
 
-    it('should call basicGet when calling getMessagesFromServer', () => {
-        component.getMessagesFromServer();
-        expect(communicationServiceSpy.basicGet).toHaveBeenCalled();
+    it('should contain the game logo', () => {
+        const logo = fixture.nativeElement.querySelector('img[src="../../../assets/Logo.png"]');
+        expect(logo).toBeTruthy();
     });
 
-    it('should call basicPost when calling sendTimeToServer', () => {
-        component.sendTimeToServer();
-        expect(communicationServiceSpy.basicPost).toHaveBeenCalled();
+    it('should contain the team number in the footer', () => {
+        const teamName = fixture.nativeElement.querySelector('.team-name');
+        expect(teamName.textContent).toContain('Équipe #103');
     });
 
-    it('should handle basicPost that returns a valid HTTP response', () => {
-        component.sendTimeToServer();
-        component.message.subscribe((res) => {
-            expect(res).toContain('201 : Created');
-        });
+    it('should contain 6 names in the footer', () => {
+        const teamMembers = fixture.nativeElement.querySelectorAll('.footer-item p span');
+        const expectedTeamMembers = 6;
+        expect(teamMembers.length).toBe(expectedTeamMembers);
     });
 
-    it('should handle basicPost that returns an invalid HTTP response', () => {
-        communicationServiceSpy.basicPost.and.returnValue(throwError(() => new Error('test')));
-        component.sendTimeToServer();
-        component.message.subscribe({
-            next: (res) => {
-                expect(res).toContain('Le serveur ne répond pas');
-            },
-        });
+    it('should contain buttons with specific routerLink attributes', () => {
+        const createGameButton = fixture.nativeElement.querySelector('button[routerLink="/game-creation"]');
+        const adminGamesButton = fixture.nativeElement.querySelector('button[routerLink="/game-admin"]');
+        expect(createGameButton).toBeTruthy();
+        expect(adminGamesButton).toBeTruthy();
     });
 });
