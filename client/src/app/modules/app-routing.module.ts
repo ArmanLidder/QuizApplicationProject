@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-creation-page.component';
 import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
+import { AuthGuard } from '@app/guard/auth.guard';
+import { GameAdministrationPageComponent } from '@app/pages/game-administration-page/game-administration-page.component';
+import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-creation-page.component';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 
@@ -12,6 +14,7 @@ const routes: Routes = [
     { path: 'game', component: GamePageComponent },
     { path: 'game-creation', component: GameCreationPageComponent },
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
+    { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [AuthGuard] },
     { path: 'material', component: MaterialPageComponent },
     { path: '**', redirectTo: '/home' },
 ];

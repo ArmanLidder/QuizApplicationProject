@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
+
 @Component({
     selector: 'app-password-prompt',
     templateUrl: './password-prompt.component.html',
@@ -6,43 +8,15 @@ import { Component } from '@angular/core';
 })
 export class PasswordPromptComponent {
     password: string = '';
-    loginStatus: string = '';
     inputBorderColor: string = '';
     textColor: string = '';
-
-    isPasswordGood() {
-        return this.password === 'admin';
+    loginStatus : string;
+    constructor(public authenticatorService : AdminAuthenticatorService) {
+        
     }
 
-    // For now this method enable a preview of the component but enventually we will have to change server validation
-    validatePassword() {
-        return (this.loginStatus = this.isPasswordGood() ? 'Login successful!' : 'Wrong password : Try again!');
-    }
-
-    isLoginSuccessful() {
-        return this.loginStatus === 'Login successful!';
-    }
-
-    updateBorderColor() {
-        return (this.inputBorderColor = this.isLoginSuccessful() ? 'green-border' : 'red-border');
-    }
-
-    updateTextColor() {
-        return (this.textColor = this.isLoginSuccessful() ? 'green-text' : 'red-text');
-    }
-
-    resetInput() {
-        if (!this.isLoginSuccessful()) this.password = '';
-    }
-
-    updateStyle() {
-        this.updateBorderColor();
-        this.updateTextColor();
-        this.resetInput();
-    }
-
-    authentificateAdmin() {
-        this.validatePassword();
-        this.updateStyle();
+    updateLoginStatus() {
+        this.loginStatus = this.authenticatorService.isPasswordGood() ? 'Login Succesfull' : 'Invalid password'
+        if (this.loginStatus === 'Invalid password') this.authenticatorService.password ='';
     }
 }
