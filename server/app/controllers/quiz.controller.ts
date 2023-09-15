@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { QuizService } from '@app/services/quiz.service';
 
 @Service()
-export class ChatroomController {
+export class QuizController {
     router: Router;
 
     constructor(private readonly quizService: QuizService) {
