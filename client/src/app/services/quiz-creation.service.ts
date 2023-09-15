@@ -46,42 +46,4 @@ export class QuizCreationService {
             question.choices.push(newChoice);
         }
     }
-
-    gameQuestions: FormQuestion[] = [
-        {
-            gameType: 'QCM',
-            text: 'What is the capital of France?',
-            points: 10,
-            choices: [
-                { text: 'Paris', isRight: true, isValid: true },
-                { text: 'Berlin', isRight: false, isValid: false },
-                { text: 'London', isRight: false, isValid: false },
-            ],
-            selectedChoices: [],
-            isValid: false,
-        },
-        {
-            gameType: 'QCM',
-            text: 'Which planet is known as the Red Planet?',
-            points: 5,
-            choices: [
-                { text: 'Mars', isRight: true, isValid: true },
-                { text: 'Venus', isRight: false, isValid: false },
-                { text: 'Jupiter', isRight: false, isValid: false },
-            ],
-            selectedChoices: [],
-            isValid: false,
-        },
-    ];
-
-    /*
-     * liste de questions
-     * removeQuestion()
-     * addQuestion()
-     * modifiyQuestion()
-     * saveQuestion() verifier si valide apres ca l'ajoute
-     * saveGame() verifie si game valide apres ca l'ajoute
-     * verifiyGameName verifiyGameDesc verifiyGameResponseTime
-     * swapQuestion(index 1, index 2)
-     * */
 }
