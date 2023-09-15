@@ -1,1 +1,8 @@
-<p>game-item works!</p>
+<span id='game-item-container'>
+    <p id="game-name">{{name}}</p>
+    <button (click)="deleteGame()">delete</button>
+    <button (click)="updateGame()">update</button>
+    <button (click)="exportGame()">export</button>
+    <label for="visibility">visibility</label>
+    <input type="checkbox" checked id="visibility"/>
+</span>
