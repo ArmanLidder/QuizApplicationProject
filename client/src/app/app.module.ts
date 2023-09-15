@@ -13,6 +13,7 @@ import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { PasswordPromptComponent } from './components/password-prompt/password-prompt/password-prompt.component';
 import { GameItemComponent } from './components/game-item/game-item.component';
+import { GamesListComponent } from './components/games-list/games-list.component';
 
 /**
  * Main module that is used in main.ts.
@@ -30,6 +31,7 @@ import { GameItemComponent } from './components/game-item/game-item.component';
         SidebarComponent,
         PasswordPromptComponent,
         GameItemComponent,
+        GamesListComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
