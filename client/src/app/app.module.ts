@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GameCreation } from '@app/components/game-creation/game-creation.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
@@ -15,6 +14,8 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { QuestionButton } from './components/question/question.component';
 import { GameAdministrationPageComponent } from './pages/game-administration-page/game-administration-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
+import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
+import { QuizCreationComponent } from '@app/components/game-creation/quiz-creation.component';
 
 /**
  * Main module that is used in main.ts.
@@ -30,7 +31,8 @@ import { GameCreationPageComponent } from './pages/game-creation-page/game-creat
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
-        GameCreation,
+        QuizCreationComponent,
+        QuizCreationPageComponent,
         QuestionButton,
         GameCreationPageComponent,
         GameAdministrationPageComponent,

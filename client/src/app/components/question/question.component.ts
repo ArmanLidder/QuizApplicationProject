@@ -7,8 +7,5 @@ import { QuizCreationService } from '@app/services/quiz-creation.service';
     styleUrls: ['./question.component.scss'],
 })
 export class QuestionButton {
-
-    constructor(public quizCreationService: QuizCreationService) {};
-
-
+    constructor(public quizCreationService: QuizCreationService) {}
 }

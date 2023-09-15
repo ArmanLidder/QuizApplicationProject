@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GameCreation } from '@app/components/game-creation/game-creation.component';
+import { GameCreation } from '@app/components/game-creation/quiz-creation.component';
 
 describe('GameCreation', () => {
     let component: GameCreation;
