@@ -4,7 +4,7 @@ import * as process from 'process';
 import { Quiz } from '@app/interfaces/quiz.interface';
 
 @Service()
-export class ChatroomService {
+export class QuizService {
     constructor(private readonly dbService: DatabaseService) {}
 
     get collection() {
