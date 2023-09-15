@@ -7,14 +7,21 @@ import { AdminAuthenticatorService } from '@app/services/admin-authenticator.ser
     styleUrls: ['./password-prompt.component.scss'],
 })
 export class PasswordPromptComponent {
-    password: string = '';
+    loginStatus: string = '';
+    errorMessage: string = 'Invalid password. Please try again!';
+    successMessage: string = 'Login Succesful';
     inputBorderColor: string = '';
     textColor: string = '';
-    loginStatus: string;
     constructor(public authenticatorService: AdminAuthenticatorService) {}
 
     updateLoginStatus() {
-        this.loginStatus = this.authenticatorService.isPasswordGood() ? 'Login Succesfull' : 'Invalid password';
-        if (this.loginStatus === 'Invalid password') this.authenticatorService.password = '';
+        this.loginStatus = this.authenticatorService.isPasswordGood() ? this.successMessage : this.errorMessage;
+        if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
+    }
+
+    showErrorFeedback() {
+        this.textColor = 'red-text';
+        this.inputBorderColor = 'red-border';
+        this.authenticatorService.password = '';
     }
 }
