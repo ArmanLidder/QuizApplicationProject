@@ -12,9 +12,9 @@
             </th>
         </tr>
 
-        <tr *ngFor="let quiz of quizzes" class="game-item">
+        <tr *ngFor="let quiz of quizzes">
             <td>
-                <app-game-item [quiz]='quiz'>
+                <app-game-item [quiz]='quiz' class="game-item">
                 </app-game-item>
             </td>
             <td>
