@@ -11,11 +11,11 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
+import { QuestionComponent } from './components/question/question.component';
 import { GameAdministrationPageComponent } from './pages/game-administration-page/game-administration-page.component';
-import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
-import { GameItemComponent } from '@app/components/game-item/game-item.component';
-import { GamesListComponent } from '@app/components/games-list/games-list.component';
+import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
+import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
+import { QuizCreationComponent } from '@app/components/quiz-creation/quiz-creation.component';
 
 /**
  * Main module that is used in main.ts.
@@ -31,6 +31,9 @@ import { GamesListComponent } from '@app/components/games-list/games-list.compon
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
+        QuizCreationComponent,
+        QuizCreationPageComponent,
+        QuestionComponent,
         GameCreationPageComponent,
         GameAdministrationPageComponent,
         PasswordPromptComponent,

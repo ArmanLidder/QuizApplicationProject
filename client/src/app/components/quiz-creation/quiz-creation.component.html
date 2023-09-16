@@ -1,0 +1,20 @@
+<div class="container">
+
+    <p>Section Création du jeu!</p>
+    <form #gameForm="ngForm" (ngSubmit)="onSubmit(gameForm)">
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" [(ngModel)]="title" required><br><br>
+
+        <label for="duration">Enter the duration:</label>
+        <input type="number" id="duration" name="duration" step="1" [(ngModel)]="duration" required><br><br>
+
+        <label for="description">Enter a description:</label>
+        <input type="text" id="description" name="description" [(ngModel)]="description" required><br><br>
+
+        <app-question></app-question>
+
+        <button type="submit">Submit</button>
+
+    </form>
+</div>
