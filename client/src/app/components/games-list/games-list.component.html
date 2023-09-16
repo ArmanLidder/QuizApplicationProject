@@ -1,29 +1,37 @@
 <div class="quizzes-container">
     <table>
-        <tr>
-            <th>
-            Games
-            </th>
-            <th>
-            Visibility
-            </th>
-            <th>
-            Last Modified
-            </th>
-        </tr>
-
-        <tr *ngFor="let quiz of quizzes">
-            <td>
-                <app-game-item [quiz]='quiz' class="game-item">
-                </app-game-item>
-            </td>
-            <td>
-                <input type="checkbox" checked id="visibility"/>
-            </td>
-            <td>
-                <span>{{quiz.lastModification}}</span>
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <th>Games</th>
+                <th>Visibility</th>
+                <th>Last Modified</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let quiz of quizzes">
+                <td>
+                    <app-game-item [quiz]='quiz' class="game-item">
+                    </app-game-item>
+                </td>
+                <td>
+                    <label class="switch-btn">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </td>
+                <td>
+                    <span>{{quiz.lastModification}}</span>
+        </tbody>
+        <tfoot>
+            <div class="button-container">
+                <button routerLink="/game-creation" class="add">
+                    <i class="fas fa-plus"></i> Add Game
+                </button>
+                <button class="add">
+                    <i class="fas fa-file-import"></i> Import
+                </button>
+                <button routerLink="/home" class="cancel"> Cancel </button>
+            </div>
+        </tfoot>
     </table>
-    <button type='button' [routerLink]=''> Add </button>
 </div>
