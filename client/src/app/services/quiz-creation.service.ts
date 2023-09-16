@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 
 interface FormChoice {
     text: string;
-    isRight: boolean;
-    isValid: boolean;
+    selectedChoice: string;
 }
 
 interface FormQuestion {
-    gameType: string; // maybe not for sprint 1 because we only do QCM questions
+    type: string;
     text: string;
     points: number;
-    choices: FormChoice[];
-    selectedChoices: number[];
-    isValid: boolean;
+    textchoix: string;
+    selectedChoice: string;
+    choices: FormChoice[]; // Add an empty choices array
 }
 
 @Injectable({
@@ -22,13 +21,13 @@ export class QuizCreationService {
     gameTitle: string;
     gameDuration: number;
     gameDescription: string;
-    questions: unknown[] = [];
+    questions: FormQuestion[] = [];
 
     addQuestion() {
-        const newQuestion = {
+        const newQuestion: FormQuestion = {
             type: 'qcm',
             text: '',
-            points: null,
+            points: 0,
             textchoix: '',
             selectedChoice: '',
             choices: [], // Add an empty choices array
@@ -37,7 +36,7 @@ export class QuizCreationService {
         this.questions.push(newQuestion);
     }
 
-    addChoice(question: unknown) {
+    addChoice(question: FormQuestion) {
         if (question.choices.length < 4) {
             const newChoice = {
                 text: '',

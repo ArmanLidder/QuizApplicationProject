@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
     selector: 'app-quiz-creation',
@@ -13,7 +14,7 @@ export class QuizCreationComponent {
 
     constructor(public quizCreationService: QuizCreationService) {}
 
-    onSubmit(form: unknown) {
+    onSubmit(form: NgForm) {
         if (form.valid) {
             const now = new Date();
             const isoString = now.toString();
