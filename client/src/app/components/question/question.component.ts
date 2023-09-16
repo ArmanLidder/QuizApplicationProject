@@ -6,6 +6,6 @@ import { QuizCreationService } from '@app/services/quiz-creation.service';
     templateUrl: './question.component.html',
     styleUrls: ['./question.component.scss'],
 })
-export class QuestionButton {
+export class QuestionComponent {
     constructor(public quizCreationService: QuizCreationService) {}
 }
