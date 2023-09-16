@@ -16,6 +16,9 @@ import { GameAdministrationPageComponent } from './pages/game-administration-pag
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
 import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
 import { QuizCreationComponent } from '@app/components/quiz-creation/quiz-creation.component';
+import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
+import { GameItemComponent } from '@app/components/game-item/game-item.component';
+import { GamesListComponent } from './components/games-list/games-list.component';
 
 /**
  * Main module that is used in main.ts.
