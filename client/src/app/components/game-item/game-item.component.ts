@@ -8,8 +8,8 @@ import { Quiz } from '@app/interfaces/quiz';
 })
 export class GameItemComponent {
     @Input() quiz: Quiz;
-    updateVisibility() : void {
-        //TODO implement it with server
+    updateVisibility(): void {
+        // TODO implement it with server
     }
     deleteGame() {
         //  TODO implement it with server
