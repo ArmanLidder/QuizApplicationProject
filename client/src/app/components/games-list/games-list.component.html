@@ -1,7 +1,29 @@
 <div class="quizzes-container">
-    <div *ngFor="let quiz of quizzes" class="game-item">
-        <app-game-item [quiz]='quiz'>
-        </app-game-item>
-    </div>
+    <table>
+        <tr>
+            <th>
+            Games
+            </th>
+            <th>
+            Visibility
+            </th>
+            <th>
+            Last Modified
+            </th>
+        </tr>
+
+        <tr *ngFor="let quiz of quizzes" class="game-item">
+            <td>
+                <app-game-item [quiz]='quiz'>
+                </app-game-item>
+            </td>
+            <td>
+                <input type="checkbox" checked id="visibility"/>
+            </td>
+            <td>
+                <span>{{quiz.lastModification}}</span>
+            </td>
+        </tr>
+    </table>
     <button type='button' [routerLink]=''> Add </button>
 </div>
