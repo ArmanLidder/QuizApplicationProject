@@ -1,0 +1,1 @@
+describe('Administration authentification service', ()=>{});
