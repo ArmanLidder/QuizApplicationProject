@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Quiz } from '@app/interfaces/quiz';
+// import * as fs from 'fs';
 
 @Component({
     selector: 'app-game-item',
@@ -21,8 +22,11 @@ export class GameItemComponent {
         return;
     }
 
-    exportGame() {
+    exportGame() : void {
         // TODO implement it with server
-        return;
+        // const { visible, ...exportableQuiz } = this.quiz;
+        // const jsonQuiz = JSON.stringify(exportableQuiz);
+        // fs.writeFileSync(this.quiz.title, jsonQuiz, 'utf-8');
+        // return;
     }
 }
