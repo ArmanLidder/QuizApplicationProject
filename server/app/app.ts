@@ -46,7 +46,7 @@ export class Application {
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/quiz', this.quizController.router);
-        this.app.use('/api/auth', this.adminAuthController.router);
+        this.app.use('/api/auth/admin-password', this.adminAuthController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });

@@ -14,7 +14,7 @@ export class AdminAuthController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.post('/api/auth', (req: Request, res: Response) => {
+        this.router.post('/', (req: Request, res: Response) => {
             try {
                 const result: boolean = this.adminAuthService.authentificatePassword(req.body.password);
                 if (result) {
