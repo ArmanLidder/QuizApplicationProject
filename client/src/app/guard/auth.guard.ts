@@ -14,7 +14,9 @@ export class AuthGuard implements CanActivate {
 
     canActivate(): boolean {
         // Check if the user is authenticated (e.g., by checking the password).
-        const isAuthenticated = this.isPasswordGood(); // Implement your authentication logic here
+        const isAuthenticated = this.authenticator.authentificatePassword().subscribe((res) => {
+            return res.status === 200;
+        }); // Implement your authentication logic here
 
         if (isAuthenticated) {
             return true;
@@ -23,12 +25,5 @@ export class AuthGuard implements CanActivate {
             this.router.navigate(['/game-admin-prompt']);
             return false;
         }
-    }
-
-    isPasswordGood(): boolean {
-        // Implement your password validation logic here.
-        // For now, we are checking if the password is 'admin'.
-
-        return this.authenticator.isPasswordGood();
     }
 }
