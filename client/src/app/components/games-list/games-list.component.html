@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th>Games</th>
-                <th>Visibility</th>
+                <th *ngIf="isAdmin">Visibility</th>
                 <th>Last Modified</th>
             </tr>
         </thead>
@@ -13,7 +13,7 @@
                     <app-game-item [quiz]='quiz' class="game-item">
                     </app-game-item>
                 </td>
-                <td>
+                <td *ngIf="isAdmin">
                     <label class="switch-btn">
                         <input type="checkbox" [(ngModel)]='quiz.visible'>
                         <span class="slider round"></span>
@@ -26,13 +26,18 @@
         </tbody>
         <tfoot>
             <tr>
-                <td class="button-container">
+                <td class="button-container" *ngIf="isAdmin">
                     <button routerLink="/game-creation" class="add">
                         <i class="fas fa-plus"></i> Add Game
                     </button>
                     <button class="add">
                         <i class="fas fa-file-import"></i> Import
                     </button>
+                    <button routerLink="/home" class="cancel"> Cancel </button>
+                </td>
+                <td class="button-container" *ngIf="!isAdmin">
+                    <button routerLink="/game-page" class="add"> Play </button>
+                    <button routerLink="/game-page" class="add"> Test </button>
                     <button routerLink="/home" class="cancel"> Cancel </button>
                 </td>
             </tr>

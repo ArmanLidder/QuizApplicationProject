@@ -9,6 +9,7 @@ import { QuizService } from '@app/services/quiz.service';
 })
 export class GameItemComponent {
     @Input() quiz: Quiz;
+    @Input() isAdmin: boolean;
     constructor(private quizService: QuizService) {}
     updateVisibility(): void {
         // TODO implement it with server

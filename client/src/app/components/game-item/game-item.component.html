@@ -1,6 +1,6 @@
 <div class="quiz-row">
     <span> {{quiz.title}} </span>
-    <div class="button-container">
+    <div class="button-container" *ngIf="isAdmin">
         <button (click)="exportGame()"> Export </button>
         <button (click)="updateGame()"> Update </button>
         <button (click)="deleteGame()"> Delete </button>

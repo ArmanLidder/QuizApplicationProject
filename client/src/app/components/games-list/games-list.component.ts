@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Quiz } from '@app/interfaces/quiz';
 
 @Component({
@@ -7,6 +7,8 @@ import { Quiz } from '@app/interfaces/quiz';
     styleUrls: ['./games-list.component.scss'],
 })
 export class GamesListComponent {
+    @Input()
+    isAdmin: boolean;
     quizzes: Quiz[] = [
         {
             id: '1',
