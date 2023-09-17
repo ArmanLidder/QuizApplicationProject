@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Quiz } from '@app/interfaces/quiz';
-// import * as fs from 'fs';
 
 @Component({
     selector: 'app-game-item',
@@ -24,9 +23,14 @@ export class GameItemComponent {
 
     exportGame() : void {
         // TODO implement it with server
-        // const { visible, ...exportableQuiz } = this.quiz;
-        // const jsonQuiz = JSON.stringify(exportableQuiz);
-        // fs.writeFileSync(this.quiz.title, jsonQuiz, 'utf-8');
-        // return;
+        const { visible, ...exportableQuiz } = this.quiz;
+        const jsonQuizData = JSON.stringify(exportableQuiz);
+        const blob = new Blob([jsonQuizData], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = this.quiz.title + '.json';
+        a.click();
+        window.URL.revokeObjectURL(url);
     }
 }

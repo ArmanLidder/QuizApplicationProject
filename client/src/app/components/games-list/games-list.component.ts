@@ -126,7 +126,7 @@ export class GamesListComponent {
                     points: 10,
                 },
             ],
-            visible: true,
+            visible: false,
         },
         {
             id: '1',
@@ -166,7 +166,7 @@ export class GamesListComponent {
                     points: 10,
                 },
             ],
-            visible: true,
+            visible: false,
         },
     ];
 }
