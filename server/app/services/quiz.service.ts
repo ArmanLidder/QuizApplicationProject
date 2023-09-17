@@ -8,7 +8,7 @@ export class QuizService {
     constructor(private readonly dbService: DatabaseService) {}
 
     get collection() {
-        return this.dbService.database.collection(process.env.DATABASE_COLLECTION_GAMES);
+        return this.dbService.database.collection(process.env.DATABASE_COLLECTION_QUIZZES);
     }
 
     async getAll() {
