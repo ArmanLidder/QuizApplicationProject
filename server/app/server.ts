@@ -2,7 +2,7 @@ import { Application } from '@app/app';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-import { DatabaseService } from '@app/services/database.service';
+// import { DatabaseService } from '@app/services/database.service';
 
 @Service()
 export class Server {
@@ -12,8 +12,7 @@ export class Server {
     private server: http.Server;
 
     constructor(
-        private readonly application: Application,
-        private readonly databaseService: DatabaseService,
+        private readonly application: Application, // private readonly databaseService: DatabaseService
     ) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
@@ -28,13 +27,13 @@ export class Server {
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
-        try {
-            await this.databaseService.start();
-            console.log('Database connection successful !');
-        } catch {
-            console.error('Database connection failed !');
-            process.exit(1);
-        }
+        // try {
+        //     await this.databaseService.start();
+        //     console.log('Database connection successful !');
+        // } catch {
+        //     console.error('Database connection failed !');
+        //     process.exit(1);
+        // }
     }
 
     private onError(error: NodeJS.ErrnoException): void {

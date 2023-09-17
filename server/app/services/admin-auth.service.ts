@@ -9,10 +9,6 @@ export class AdminAuthService {
     }
 
     authentificatePassword(submittedPassword: string): boolean {
-        try {
-            return submittedPassword === this.adminPassword;
-        } catch (error) {
-            throw new Error('Error while comparing passwords');
-        }
+        return submittedPassword === this.adminPassword;
     }
 }

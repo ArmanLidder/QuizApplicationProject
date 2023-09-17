@@ -22,7 +22,7 @@ export class DatabaseService {
             throw new Error('Database connection error');
         }
 
-        if ((await this.db.collection(process.env.DATABASE_COLLECTION_QUIZZES).countDocuments()) === 0) {
+        if ((await this.db.collection(process.env.DATABASE_COLLECTION_GAMES).countDocuments()) === 0) {
             const games = [
                 {
                     id: '1',

@@ -14,11 +14,16 @@ export class AdminAuthController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.post('/admin/auth-password', (req: Request, res: Response) => {
+        this.router.post('/api/auth', (req: Request, res: Response) => {
             try {
-                res.status(StatusCodes.OK).json(this.adminAuthService.authentificatePassword(req.body.password));
+                const result: boolean = this.adminAuthService.authentificatePassword(req.body.password);
+                if (result) {
+                    res.status(StatusCodes.OK).json({ message: 'Authentication successful' });
+                } else {
+                    res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid password. Please try again!' });
+                }
             } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
             }
         });
     }
