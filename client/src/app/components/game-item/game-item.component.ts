@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Quiz } from '@app/interfaces/quiz';
+import { QuizService } from '@app/services/quiz.service';
 
 @Component({
     selector: 'app-game-item',
@@ -8,12 +9,12 @@ import { Quiz } from '@app/interfaces/quiz';
 })
 export class GameItemComponent {
     @Input() quiz: Quiz;
+    constructor(private quizService: QuizService) {}
     updateVisibility(): void {
         // TODO implement it with server
     }
     deleteGame() {
-        //  TODO implement it with server
-        return;
+        this.quizService.basicDelete(Number(this.quiz.id));
     }
 
     updateGame() {
@@ -22,7 +23,6 @@ export class GameItemComponent {
     }
 
     exportGame() : void {
-        // TODO implement it with server
         const { visible, ...exportableQuiz } = this.quiz;
         const jsonQuizData = JSON.stringify(exportableQuiz);
         const blob = new Blob([jsonQuizData], { type: 'application/json' });

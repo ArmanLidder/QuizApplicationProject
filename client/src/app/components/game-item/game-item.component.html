@@ -1,5 +1,9 @@
-<span> {{quiz.title}} </span>
-<button (click)="exportGame()"> export </button>
-<button (click)="updateGame()"> update </button>
-<button (click)="deleteGame()"> delete </button>
+<div class="quiz-row">
+    <span> {{quiz.title}} </span>
+    <div class="button-container">
+        <button (click)="exportGame()"> Export </button>
+        <button (click)="updateGame()"> Update </button>
+        <button (click)="deleteGame()"> Delete </button>
+    </div>
+</div>
 
