@@ -22,7 +22,7 @@ export class GameItemComponent {
         return;
     }
 
-    exportGame() : void {
+    exportGame(): void {
         const { visible, ...exportableQuiz } = this.quiz;
         const jsonQuizData = JSON.stringify(exportableQuiz);
         const blob = new Blob([jsonQuizData], { type: 'application/json' });

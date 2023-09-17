@@ -15,11 +15,11 @@ export class PasswordPromptComponent {
     constructor(public authenticatorService: AdminAuthenticatorService) {}
 
     updateLoginStatus() {
-        this.authenticatorService.authentificatePassword().subscribe((res) => {
-            if (res.status === 200) this.loginStatus = this.successMessage;
-            else this.loginStatus = this.errorMessage;
+        this.authenticatorService.authenticatePassword().subscribe((res) => {
+            this.authenticatorService.isValid = res;
+            this.loginStatus = this.authenticatorService.isValid ? this.successMessage : this.errorMessage;
+            if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
         });
-        if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
     }
 
     showErrorFeedback() {
