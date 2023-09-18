@@ -33,7 +33,6 @@ export class GamesListComponent implements OnInit {
         });
     }
 
-    // Something wrong with tha method (quiz.visible has the right value but request quiz have the inverse)
     updateVisibility(quiz: Quiz) {
         quiz.visible = !quiz.visible
         console.log(quiz.id);
