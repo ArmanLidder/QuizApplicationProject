@@ -29,6 +29,7 @@ export class QuizService {
     }
 
     async update(quiz: Quiz) {
+        console.log(quiz);
         await this.collection.updateOne({ id: quiz.id }, { $set: quiz }, { upsert: true });
     }
 

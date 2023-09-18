@@ -125,8 +125,10 @@ export class QuizController {
         this.router.put('/', async (req: Request, res: Response) => {
             try {
                 await this.quizService.update(req.body);
-                res.json({});
+                res.status(StatusCodes.OK).json(req.body);
+                console.log(res.status);
             } catch (e) {
+                console.log(e);
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
             }
         });
