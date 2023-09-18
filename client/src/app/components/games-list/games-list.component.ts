@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { QuizService } from '@app/services/quiz.service';
-import { Quiz } from '@app/interfaces/quiz';
+import { Quiz } from '@app/interfaces/quiz.interface';
 
 @Component({
     selector: 'app-games-list',
@@ -24,35 +24,21 @@ export class GamesListComponent implements OnInit {
     getAllQuizzes() {
         this.quizServices.basicGetAll().subscribe((res) => {
             this.quizzes = res;
-            // console.log(res);
         });
     }
 
     getAllVisibleQuizzes() {
         this.quizServices.basicGetAllVisible().subscribe((res) => {
             this.quizzes = res;
-            // console.log(res);
         });
     }
 
     // Something wrong with tha method (quiz.visible has the right value but request quiz have the inverse)
     updateVisibility(quiz: Quiz) {
-        console.log(quiz);
-        const newQuiz = {
-            id: quiz.id,
-            duration: quiz.duration,
-            lastModification: quiz.lastModification,
-            questions: quiz.questions,
-            title: quiz.title,
-            visible: !quiz.visible,
-        };
-        this.quizServices.basicPut(newQuiz).subscribe(
-            (res) => {
-                console.log('HTTP Response', res);
-            },
-            (error) => {
-                console.log('HTTP error', error);
-            },
-        );
+        quiz.visible = !quiz.visible
+        console.log(quiz.id);
+        this.quizServices.basicPatch(quiz.id, quiz.visible).subscribe((res) => {
+            console.log(res.body);
+        });
     }
 }

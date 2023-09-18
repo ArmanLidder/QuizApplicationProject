@@ -6,6 +6,7 @@ export enum QuestionType {
 export interface Quiz {
     id: string;
     title: string;
+    description : string;
     duration: number;
     lastModification: string | null;
     questions: QuizQuestion[];
