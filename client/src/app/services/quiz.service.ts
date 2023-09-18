@@ -13,12 +13,12 @@ export class QuizService {
 
     constructor(private readonly http: HttpClient) {}
 
-    basicGetAll(): Observable<Quiz> {
-        return this.http.get<Quiz>(`${this.baseUrl}/quiz`).pipe(catchError(this.handleError<Quiz>('basicGetAll')));
+    basicGetAll(): Observable<Quiz[]> {
+        return this.http.get<Quiz[]>(`${this.baseUrl}/quiz`).pipe(catchError(this.handleError<Quiz[]>('basicGetAll')));
     }
 
-    basicGetALllVisible(): Observable<Quiz> {
-        return this.http.get<Quiz>(`${this.baseUrl}/quiz/visible`).pipe(catchError(this.handleError<Quiz>('basicGetAllVisible')));
+    basicGetAllVisible(): Observable<Quiz[]> {
+        return this.http.get<Quiz[]>(`${this.baseUrl}/quiz/visible`).pipe(catchError(this.handleError<Quiz[]>('basicGetAllVisible')));
     }
 
     basicGetById(id: string): Observable<Quiz> {
