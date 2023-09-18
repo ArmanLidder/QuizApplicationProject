@@ -13,7 +13,7 @@ export class AdminAuthenticatorService {
 
     constructor(private readonly http: HttpClient) {}
 
-    authenticatePassword(): Observable<boolean> {
+    validatePassword(): Observable<boolean> {
         return this.http.post(`${this.baseUrl}/auth/admin-password`, { password: this.password }, { observe: 'response', responseType: 'text' }).pipe(
             map((res: HttpResponse<unknown>) => {
                 return res.status === 200;

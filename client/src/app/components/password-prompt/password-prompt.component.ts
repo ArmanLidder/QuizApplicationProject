@@ -15,7 +15,7 @@ export class PasswordPromptComponent {
     constructor(public authenticatorService: AdminAuthenticatorService) {}
 
     updateLoginStatus() {
-        this.authenticatorService.authenticatePassword().subscribe((res) => {
+        this.authenticatorService.validatePassword().subscribe((res) => {
             this.authenticatorService.isValid = res;
             this.loginStatus = this.authenticatorService.isValid ? this.successMessage : this.errorMessage;
             if (this.loginStatus === this.errorMessage) this.showErrorFeedback();

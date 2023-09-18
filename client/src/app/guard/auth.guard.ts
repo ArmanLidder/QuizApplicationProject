@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
     ) {}
 
     canActivate(): Observable<boolean> {
-        return this.authenticator.authenticatePassword().pipe(
+        return this.authenticator.validatePassword().pipe(
             map((authenticated: boolean) => {
                 if (authenticated) {
                     return true;
