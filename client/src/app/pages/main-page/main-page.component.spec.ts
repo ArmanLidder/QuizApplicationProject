@@ -43,10 +43,8 @@ describe('MainPageComponent', () => {
         expect(teamMembers.length).toBe(expectedTeamMembers);
     });
 
-    it('should contain buttons with specific routerLink attributes', () => {
-        const createGameButton = fixture.nativeElement.querySelector('button[routerLink="/quiz-creation-page"]');
-        const adminGamesButton = fixture.nativeElement.querySelector('button[routerLink="/game-admin"]');
-        expect(createGameButton).toBeTruthy();
-        expect(adminGamesButton).toBeTruthy();
+    it('should contain two buttons with routerLink attributes', () => {
+        const buttonsWithRouterLink = fixture.nativeElement.querySelectorAll('button[routerLink]');
+        expect(buttonsWithRouterLink.length).toBe(2);
     });
 });

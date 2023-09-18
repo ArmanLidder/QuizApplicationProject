@@ -1,4 +1,4 @@
-enum QuestionType {
+export enum QuestionType {
     QCM,
     QLR,
 }
