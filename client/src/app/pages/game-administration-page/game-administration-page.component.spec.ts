@@ -10,7 +10,7 @@ describe('GameAdministrationPageComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [GameAdministrationPageComponent, GamesListComponent],
-            imports : [HttpClientModule],
+            imports: [HttpClientModule],
         });
         fixture = TestBed.createComponent(GameAdministrationPageComponent);
         component = fixture.componentInstance;

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
 import { GameItemComponent } from './game-item.component';
 import { QuizService } from '@app/services/quiz.service';
@@ -41,14 +41,14 @@ describe('GameItemComponent', () => {
         };
         component.isAdmin = true;
         fixture.detectChanges();
-    })
+    });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
     it('clicking the delete button should call the quizService basicDelete method', () => {
-        const button =  fixture.debugElement.nativeElement.querySelector('.delete-button');
+        const button = fixture.debugElement.nativeElement.querySelector('.delete-button');
         button.click();
         expect(quizServiceSpy.basicDelete).toHaveBeenCalled();
     });
@@ -56,7 +56,7 @@ describe('GameItemComponent', () => {
     it('clicking the update button should call updateGame()', () => {
         // TODO: This test is temporary, need to make it better
         spyOn(component, 'updateGame');
-        const button =  fixture.debugElement.nativeElement.querySelector('.update-button');
+        const button = fixture.debugElement.nativeElement.querySelector('.update-button');
         button.click();
         expect(component.updateGame).toHaveBeenCalled();
     });
@@ -64,9 +64,8 @@ describe('GameItemComponent', () => {
     it('should export the game when export button is pressed', () => {
         // TODO: This test is temporary, need to make it better
         spyOn(component, 'exportGame');
-        const button =  fixture.debugElement.nativeElement.querySelector('.export-button');
+        const button = fixture.debugElement.nativeElement.querySelector('.export-button');
         button.click();
         expect(component.exportGame).toHaveBeenCalled();
     });
-    
 });

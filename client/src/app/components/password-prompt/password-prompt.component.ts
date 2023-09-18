@@ -19,8 +19,8 @@ export class PasswordPromptComponent {
         private router: Router,
     ) {}
 
-    simulateButtonClick() {
-        this.submitButton.nativeElement.click();
+    routeHome() {
+        this.router.navigate(['/home']);
     }
 
     updateStatus() {

@@ -53,7 +53,7 @@ describe('GamesListComponent', () => {
     });
 
     it('should update visibility', () => {
-        let testQuiz: Quiz = {
+        const testQuiz: Quiz = {
             id: '1',
             title: 'Filler',
             description: 'filler description',
