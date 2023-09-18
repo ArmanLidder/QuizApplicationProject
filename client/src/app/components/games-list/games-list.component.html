@@ -15,7 +15,7 @@
                 </td>
                 <td *ngIf="isAdmin">
                     <label class="switch-btn">
-                        <input type="checkbox" [(ngModel)]='quiz.visible'>
+                        <input type="checkbox" [(ngModel)]='quiz.visible' (click)="updateVisibility(quiz)">
                         <span class="slider round"></span>
                     </label>
                 </td>
