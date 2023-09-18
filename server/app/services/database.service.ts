@@ -22,11 +22,12 @@ export class DatabaseService {
             throw new Error('Database connection error');
         }
 
-        if ((await this.db.collection(process.env.DATABASE_COLLECTION_GAMES).countDocuments()) === 0) {
+        if ((await this.db.collection(process.env.DATABASE_COLLECTION_QUIZZES).countDocuments()) === 0) {
             const games = [
                 {
                     id: '1',
                     title: 'Math Quiz',
+                    description: 'its a math quiz.',
                     duration: 30,
                     lastModification: '2023-09-15',
                     questions: [
@@ -36,17 +37,13 @@ export class DatabaseService {
                             points: 5,
                             choices: [{ text: '3' }, { text: '4', isCorrect: true }, { text: '5' }],
                         },
-                        {
-                            type: 1,
-                            text: 'Solve for x: 3x - 7 = 14',
-                            points: 10,
-                        },
                     ],
                     visible: true,
                 },
                 {
                     id: '2',
                     title: 'Science Quiz',
+                    description: 'its a science quiz!',
                     duration: 45,
                     lastModification: '2023-09-15',
                     questions: [
@@ -60,6 +57,7 @@ export class DatabaseService {
                             type: QuestionType.QCM,
                             text: 'What is the boiling point of water in Celsius?',
                             points: 10,
+                            choices: [{ text: '0°C' }, { text: '100°C', isCorrect: true }, { text: '50°C' }, { text: '-10°C' }],
                         },
                     ],
                     visible: true,

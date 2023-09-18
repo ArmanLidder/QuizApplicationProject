@@ -16,6 +16,7 @@ describe('GameItemComponent', () => {
         component.quiz = {
             id: '1',
             title: 'Filler',
+            description : 'filler description',
             duration: 30,
             lastModification: '2023-09-15',
             questions: [

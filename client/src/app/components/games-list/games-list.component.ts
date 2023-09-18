@@ -44,6 +44,7 @@ export class GamesListComponent implements OnInit {
             lastModification: quiz.lastModification,
             questions: quiz.questions,
             title: quiz.title,
+            description : quiz.description,
             visible: !quiz.visible,
         };
         this.quizServices.basicPut(newQuiz).subscribe(
