@@ -11,15 +11,12 @@ export class GameItemComponent {
     @Input() quiz: Quiz;
     @Input() isAdmin: boolean;
     constructor(private quizService: QuizService) {}
-    updateVisibility(): void {
-        // TODO implement it with server
-    }
+
     deleteGame() {
         this.quizService.basicDelete(Number(this.quiz.id));
     }
 
     updateGame() {
-        //  TODO implement it with server
         return;
     }
 
