@@ -41,6 +41,14 @@ export class QuizController {
             }
         });
 
+        this.router.get('/visible', async (req: Request, res: Response) => {
+            try {
+                res.status(StatusCodes.OK).json(await this.quizService.getAllVisible());
+            } catch (e) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+            }
+        });
+
         /**
          * @swagger
          * /api/quiz/{id}:

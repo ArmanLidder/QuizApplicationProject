@@ -15,6 +15,10 @@ export class QuizService {
         return (await this.collection.find({}).toArray()) as unknown[] as Quiz[];
     }
 
+    async getAllVisible() {
+        return (await this.collection.find({ visible: true }).toArray()) as unknown[] as Quiz[];
+    }
+
     async getById(id: string) {
         const quiz = await this.collection.findOne({ id });
         return quiz as unknown as Quiz;

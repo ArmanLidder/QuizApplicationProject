@@ -17,6 +17,10 @@ export class QuizService {
         return this.http.get<Quiz>(`${this.baseUrl}/quiz`).pipe(catchError(this.handleError<Quiz>('basicGetAll')));
     }
 
+    basicGetALllVisible(): Observable<Quiz> {
+        return this.http.get<Quiz>(`${this.baseUrl}/quiz/visible`).pipe(catchError(this.handleError<Quiz>('basicGetAllVisible')));
+    }
+
     basicGetById(id: string): Observable<Quiz> {
         return this.http.get<Quiz>(`${this.baseUrl}/quiz/${id}`).pipe(catchError(this.handleError<Quiz>('basicGetById')));
     }
