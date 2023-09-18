@@ -1,7 +1,7 @@
-import { Service } from 'typedi';
+import { Quiz } from '@app/interfaces/quiz.interface';
 import { DatabaseService } from '@app/services/database.service';
 import * as process from 'process';
-import { Quiz } from '@app/interfaces/quiz.interface';
+import { Service } from 'typedi';
 
 @Service()
 export class QuizService {
@@ -28,9 +28,12 @@ export class QuizService {
         await this.collection.insertOne(quiz);
     }
 
-    async update(quiz: Quiz) {
-        console.log(quiz);
-        await this.collection.updateOne({ id: quiz.id }, { $set: quiz }, { upsert: true });
+    async update(quizId: string, quizVisibility: boolean) {
+        await this.collection.updateOne({ id: quizId }, { $set: { visible: quizVisibility } }, { upsert: true });
+    }
+
+    async replace(quiz: Quiz) {
+        await this.collection.replaceOne({ id: quiz.id }, { $set: quiz }, { upsert: true });
     }
 
     async delete(id: string) {

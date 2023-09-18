@@ -1,7 +1,7 @@
-import { Request, Response, Router } from 'express';
-import { Service } from 'typedi';
-import { StatusCodes } from 'http-status-codes';
 import { QuizService } from '@app/services/quiz.service';
+import { Request, Response, Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { Service } from 'typedi';
 
 @Service()
 export class QuizController {
@@ -124,8 +124,19 @@ export class QuizController {
          */
         this.router.put('/', async (req: Request, res: Response) => {
             try {
-                await this.quizService.update(req.body);
+                await this.quizService.replace(req.body);
                 res.status(StatusCodes.OK).json(req.body);
+                console.log(res.status);
+            } catch (e) {
+                console.log(e);
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+            }
+        });
+
+        this.router.patch('/:id', async (req: Request, res: Response) => {
+            try {
+                await this.quizService.update(req.params.id, req.body.visible);
+                res.status(StatusCodes.OK).json({ 'visible': (await this.quizService.getById(req.params.id)).visible });
                 console.log(res.status);
             } catch (e) {
                 console.log(e);

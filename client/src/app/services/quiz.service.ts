@@ -33,6 +33,10 @@ export class QuizService {
         return this.http.put(`${this.baseUrl}/quiz/`, quiz, { observe: 'response', responseType: 'text' });
     }
 
+    basicPatch(quizId: string, quizVisibility: boolean): Observable<HttpResponse<string>> {
+        return this.http.patch(`${this.baseUrl}/quiz/${quizId}`, {"visible" : quizVisibility}, { observe: 'response', responseType: 'text' });
+    }
+
     basicDelete(id: number) {
         this.http.delete(`${this.baseUrl}/quiz/${id}`);
     }
