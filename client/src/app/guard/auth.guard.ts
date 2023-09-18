@@ -6,6 +6,7 @@ import { Observable, map } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
+// eslint-disable-next-line deprecation/deprecation
 export class AuthGuard implements CanActivate {
     constructor(
         public authenticator: AdminAuthenticatorService,

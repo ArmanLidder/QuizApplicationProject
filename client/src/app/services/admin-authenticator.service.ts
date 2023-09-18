@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, map, catchError, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
+const HTTP_STATUS_OK = 200;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -16,7 +18,7 @@ export class AdminAuthenticatorService {
     validatePassword(): Observable<boolean> {
         return this.http.post(`${this.baseUrl}/auth/admin-password`, { password: this.password }, { observe: 'response', responseType: 'text' }).pipe(
             map((res: HttpResponse<unknown>) => {
-                return res.status === 200;
+                return res.status === HTTP_STATUS_OK;
             }),
             catchError(() => {
                 return of(false);

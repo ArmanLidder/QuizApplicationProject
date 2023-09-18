@@ -18,10 +18,10 @@ export class QuizCreationComponent {
         if (form.valid) {
             const now = new Date();
             const isoString = now.toString();
-            const formattedString = isoString.replace(/\.(\d{3})Z$/, 'Z');
-            console.log('Form submitted!', this.title, this.duration, this.description, this.quizCreationService.questions, formattedString);
+            isoString.replace(/\.(\d{3})Z$/, 'Z');
+            // console.log('Form submitted!', this.title, this.duration, this.description, this.quizCreationService.questions, formattedString);
         } else {
-            console.log('Form is invalid!');
+            // console.log('Form is invalid!');
         }
     }
 }

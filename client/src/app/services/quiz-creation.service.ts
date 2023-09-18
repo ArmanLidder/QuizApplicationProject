@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+const MAX_CHOICES_NUMBER = 4;
+
 interface FormChoice {
     text: string;
     selectedChoice: string;
@@ -37,7 +39,7 @@ export class QuizCreationService {
     }
 
     addChoice(question: FormQuestion) {
-        if (question.choices.length < 4) {
+        if (question.choices.length < MAX_CHOICES_NUMBER) {
             const newChoice = {
                 text: '',
                 selectedChoice: '',

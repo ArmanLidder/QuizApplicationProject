@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Quiz } from '@app/interfaces/quiz.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',

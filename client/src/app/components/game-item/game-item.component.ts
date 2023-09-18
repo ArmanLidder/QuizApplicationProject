@@ -24,8 +24,8 @@ export class GameItemComponent {
     }
 
     exportGame(): void {
-        const { visible, ...exportableQuiz } = this.quiz;
-        const jsonQuizData = JSON.stringify(exportableQuiz);
+        // const { ...exportableQuiz } = this.quiz;
+        const jsonQuizData = JSON.stringify(this.quiz);
         const blob = new Blob([jsonQuizData], { type: 'application/json' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

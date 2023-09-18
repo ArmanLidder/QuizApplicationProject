@@ -10,7 +10,7 @@
         <tbody>
             <tr *ngFor="let quiz of quizzes">
                 <td>
-                    <app-game-item [quiz]='quiz' class="game-item">
+                    <app-game-item [quiz]='quiz' class="game-item" [isAdmin]="isAdmin">
                     </app-game-item>
                 </td>
                 <td *ngIf="isAdmin">
