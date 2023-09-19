@@ -8,9 +8,7 @@ import { Observable } from 'rxjs';
 })
 // eslint-disable-next-line deprecation/deprecation
 export class AuthGuard implements CanActivate {
-    constructor(
-        public authenticator: AdminAuthenticatorService,
-    ) {}
+    constructor(public authenticator: AdminAuthenticatorService) {}
 
     canActivate(): Observable<boolean> {
         return this.authenticator.validatePassword();

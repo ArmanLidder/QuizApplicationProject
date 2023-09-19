@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuizCreationComponent } from '@app/components/quiz-creation/quiz-creation.component';
 import { FormsModule } from '@angular/forms';
-import { QuestionComponent } from '../question/question.component';
 
 describe('QuizCreation', () => {
     let component: QuizCreationComponent;
@@ -10,7 +9,7 @@ describe('QuizCreation', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [FormsModule],
-            declarations: [QuizCreationComponent, QuestionComponent],
+            declarations: [QuizCreationComponent],
         }).compileComponents();
     });
 

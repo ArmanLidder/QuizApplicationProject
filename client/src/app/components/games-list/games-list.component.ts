@@ -35,8 +35,6 @@ export class GamesListComponent implements OnInit {
 
     updateVisibility(quiz: Quiz) {
         quiz.visible = !quiz.visible;
-        this.quizServices.basicPatch(quiz.id, quiz.visible).subscribe((res) => {
-            console.log(res.body);
-        });
+        this.quizServices.basicPatch(quiz.id, quiz.visible).subscribe();
     }
 }
