@@ -10,14 +10,13 @@ const HTTP_STATUS_OK = 200;
 })
 export class AdminAuthenticatorService {
     password: string;
-    isValid: boolean;
     private readonly baseUrl: string = environment.serverUrl;
 
     constructor(private readonly http: HttpClient) {}
 
     validatePassword(): Observable<boolean> {
         return this.http.post(`${this.baseUrl}/auth/admin-password`, { password: this.password }, { observe: 'response', responseType: 'text' }).pipe(
-            map((res: HttpResponse<unknown>) => {
+            map((res: HttpResponse<string>) => {
                 return res.status === HTTP_STATUS_OK;
             }),
             catchError(() => {
