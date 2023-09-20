@@ -1,20 +1,7 @@
 import { Injectable } from '@angular/core';
+import { FormQuestion } from '@app/interfaces/form';
 
 const MAX_CHOICES_NUMBER = 4;
-
-interface FormChoice {
-    text: string;
-    selectedChoice: string;
-}
-
-interface FormQuestion {
-    type: string;
-    text: string;
-    points: number;
-    textchoix: string;
-    selectedChoice: string;
-    choices: FormChoice[]; // Add an empty choices array
-}
 
 @Injectable({
     providedIn: 'root',
