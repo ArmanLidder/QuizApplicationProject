@@ -10,7 +10,7 @@ const HTTP_STATUS_OK = 200;
 })
 export class AdminAuthenticatorService {
     password: string;
-    private readonly baseUrl: string = environment.serverUrl;
+    readonly baseUrl: string = environment.serverUrl;
 
     constructor(private readonly http: HttpClient) {}
 
