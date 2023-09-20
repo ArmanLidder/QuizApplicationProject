@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { QuizCreationService } from './quiz-creation.service';
-import { FormQuestion } from '@app/interfaces/form';
+import { FormQuestion } from '@app/interfaces/questionForm';
 
 describe('QuizCreationService', () => {
     let service: QuizCreationService;
