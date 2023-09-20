@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root',
 })
 export class QuizService {
-    private readonly baseUrl: string = environment.serverUrl;
+    readonly baseUrl: string = environment.serverUrl;
 
     constructor(private readonly http: HttpClient) {}
 
@@ -37,7 +37,7 @@ export class QuizService {
         return this.http.patch(`${this.baseUrl}/quiz/${quizId}`, { visible: quizVisibility }, { observe: 'response', responseType: 'text' });
     }
 
-    basicDelete(id: number) {
+    basicDelete(id: string) {
         this.http.delete(`${this.baseUrl}/quiz/${id}`);
     }
 

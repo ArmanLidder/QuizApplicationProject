@@ -1,16 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AdminAuthenticatorService } from './admin-authenticator.service';
-import { HttpClient, HttpStatusCode } from '@angular/common/http';
+import { HttpStatusCode } from '@angular/common/http';
 
 describe('AdminAuthenticatorService', () => {
     let service: AdminAuthenticatorService;
     let httpMock: HttpTestingController;
-    let httpClientSpy: jasmine.SpyObj<HttpClient>;
-
     beforeEach(() => {
-        httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
-        service = new AdminAuthenticatorService(httpClientSpy);
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [AdminAuthenticatorService],
