@@ -34,16 +34,18 @@ export class QuizCreationService {
 
     constructor(private fb: FormBuilder) {}
 
-    addQuestion() {
-        const newQuestion: FormQuestion = {
-            type: QuestionType.QCM,
-            text: '',
-            points: 0,
-            choices: [], // Add an empty choices array
-            beingModified: false,
-        };
-
-        this.questions.push(newQuestion);
+    addQuestion(index: number, questionsFormArray?: FormArray) {
+        const questionToAdd = this.initQuestion();
+        if (questionsFormArray?.length === 0) {
+            questionsFormArray?.push(questionToAdd);
+            this.modifiedQuestionIndex = 0;
+        } else {
+            const questionSaved = this.saveQuestion(this.modifiedQuestionIndex, questionsFormArray);
+            if (questionSaved) {
+                questionsFormArray?.insert(index + 1, questionToAdd);
+                this.modifiedQuestionIndex = index + 1;
+            }
+        }
     }
 
     saveQuestion(index: number, questionsFormArray?: FormArray): boolean {
