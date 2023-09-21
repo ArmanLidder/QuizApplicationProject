@@ -3,6 +3,8 @@ import { QuizService } from '@app/services/quiz.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { Quiz } from '@app/interfaces/quiz.interface';
 
+const CREATED = 201;
+
 @Component({
     selector: 'app-games-list',
     templateUrl: './games-list.component.html',
@@ -10,11 +12,19 @@ import { Quiz } from '@app/interfaces/quiz.interface';
 })
 export class GamesListComponent implements OnInit {
     @NgModule() importError: string | null;
+
     @Input() isAdmin: boolean;
     @Input() isImportError: boolean = false;
+
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+
+    private asyncFileRead: Promise<void>;
+    private asyncFileResolver: () => void;
+    private asyncFileRejecter: (error: any) => void;
+
     quizzes: Quiz[];
     importedQuiz: Quiz | null;
+    
     constructor(public quizServices: QuizService, public quizValidator: QuizValidationService ) {}
 
     ngOnInit() {
@@ -48,34 +58,57 @@ export class GamesListComponent implements OnInit {
     }
 
     selectFile(event: Event) {
+        this.fileInput.nativeElement.click();
         if (event.target instanceof HTMLInputElement && event.target !== undefined) {
             const selectedFile = event.target.files && event.target.files[0];
-            if (selectedFile) {
-                if (selectedFile.type === 'application/json') {
-                    const fileReader = new FileReader();
-                    fileReader.onload = (e) => {
-                        try { this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz; }
-                        catch (error) { console.log(error) }
-                    };
-                    fileReader.readAsText(selectedFile)
-                } 
-            }
+            if (selectedFile) 
+                if (selectedFile.type === 'application/json') 
+                    this.readFile(selectedFile);
         }
+    }
+
+    private readFile(selectedFile: File) {
+        if (selectedFile.type === 'application/json') {
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                try { 
+                    this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz;
+                    this.resolveasyncFileRead();
+                } catch (error) { 
+                    this.rejectasyncFileRead(error);
+                }
+            };
+            fileReader.readAsText(selectedFile)
+        } 
     }
     
     uploadFile() {
         this.fileInput.nativeElement.click();
-        if (this.importedQuiz !== null) {
-            if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
-                console.log(this.importedQuiz);
+        this.asyncFileRead = this.waitForFileRead();
+        this.asyncFileRead.then(() => {
+            if (this.importedQuiz) {
+                if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
                     this.quizServices.basicPost(this.importedQuiz).subscribe((res) => {
-                        if(res.status === 201 && this.importedQuiz !== null) {
-                            this.quizzes.push(this.importedQuiz)
-                            this.importedQuiz = null;
-                        }
+                        if(res.status === CREATED) this.populateGameList()
                     });
+                }
             }
-        }
+        });
+    }
+
+    private waitForFileRead(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.asyncFileResolver = resolve;
+            this.asyncFileRejecter = reject;
+        });
+    }
+
+    private resolveasyncFileRead(): void {
+        this.asyncFileResolver();
+    }
+      
+    private rejectasyncFileRead(error: any): void {
+      this.asyncFileRejecter(error);
     }
 }
             
