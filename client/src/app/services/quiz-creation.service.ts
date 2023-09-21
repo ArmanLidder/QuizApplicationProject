@@ -57,6 +57,19 @@ export class QuizCreationService {
         questionsFormArray?.removeAt(index);
     }
 
+    modifyQuestion(index: number, questionFormArray?: FormArray) {
+        if (index !== this.modifiedQuestionIndex) {
+            const questionSaved = this.saveQuestion(this.modifiedQuestionIndex, questionFormArray);
+            if (questionSaved) {
+                this.modifiedQuestionIndex = index;
+                questionFormArray?.at(index).patchValue({ beingModified: true });
+            }
+        } else {
+            this.modifiedQuestionIndex = index;
+            questionFormArray?.at(index).patchValue({ beingModified: true });
+        }
+    }
+
     saveQuestion(index: number, questionsFormArray?: FormArray): boolean {
         const questionToSave = questionsFormArray?.at(index);
         if (questionToSave?.valid) {
