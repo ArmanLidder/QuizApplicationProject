@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QuestionType, Quiz, QuizChoice } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const nonExistantIndex = -1;
@@ -54,6 +54,33 @@ export class QuizCreationService {
             };
             question.choices.push(newChoice);
         }
+    }
+
+    private fillQuestions(questionsFormArray: FormArray, quizQuestions?: QuizQuestion[]) {
+        quizQuestions?.forEach((question) => {
+            questionsFormArray.push(this.initQuestion(question));
+        });
+    }
+
+    private initQuestion(question?: QuizQuestion): FormGroup {
+        if (question) {
+            const questionForm = this.fb.group({
+                type: [question.type === QuestionType.QCM ? 'qcm' : 'qlr', Validators.required],
+                text: [question.text, Validators.required],
+                points: [question.points, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
+                choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
+                beingModified: false,
+            });
+            this.fillChoices(questionForm.get('choices') as FormArray, question?.choices);
+            return questionForm;
+        }
+        return this.fb.group({
+            type: [QuestionType.QCM, Validators.required],
+            text: ['', Validators.required],
+            points: [1, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
+            choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
+            beingModified: true,
+        });
     }
 
     private fillChoices(choicesFormArray: FormArray, choices?: QuizChoice[]) {
