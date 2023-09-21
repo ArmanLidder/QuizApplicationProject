@@ -12,7 +12,7 @@ export class QuizService {
     }
 
     async getAll() {
-        return (await this.collection.find({}).toArray()) as unknown[] as Quiz[];
+        return (await this.collection.find({}, { projection: { _id: 0 } }).toArray()) as unknown[] as Quiz[];
     }
 
     async getAllVisible() {

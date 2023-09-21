@@ -165,7 +165,6 @@ export class QuizController {
          */
         this.router.delete('/:id', async (req: Request, res: Response) => {
             try {
-                console.log('ok')
                 res.json(await this.quizService.delete(req.params.id));
             } catch (e) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);

@@ -61,7 +61,6 @@ export class GamesListComponent implements OnInit {
     }
 
     selectFile(event: Event) {
-        this.fileInput.nativeElement.click();
         if (event.target instanceof HTMLInputElement && event.target !== undefined) {
             const selectedFile = event.target.files && event.target.files[0];
             if (selectedFile) if (selectedFile.type === 'application/json') this.readFile(selectedFile);
