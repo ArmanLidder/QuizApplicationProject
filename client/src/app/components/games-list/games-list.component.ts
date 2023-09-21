@@ -24,7 +24,7 @@ export class GamesListComponent implements OnInit {
 
     quizzes: Quiz[];
     importedQuiz: Quiz | null;
-    lastSelectedQuiz: Quiz | null;
+    selectedQuiz: Quiz | null;
 
     constructor(
         public quizServices: QuizService,
@@ -98,6 +98,10 @@ export class GamesListComponent implements OnInit {
         });
     }
 
+    selectQuiz(quiz: Quiz) : void {
+        this.selectedQuiz = quiz;
+    }
+
     private async waitForFileRead(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.asyncFileResolver = resolve;
@@ -113,7 +117,5 @@ export class GamesListComponent implements OnInit {
         this.asyncFileRejecter(error);
     }
 
-    selectQuiz(quiz: Quiz) {
-        this.lastSelectedQuiz = quiz;
-    }
+    
 }
