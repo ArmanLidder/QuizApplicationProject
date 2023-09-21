@@ -38,7 +38,7 @@ export class QuizService {
     }
 
     basicDelete(id: number) {
-        this.http.delete(`${this.baseUrl}/quiz/${id}`);
+        return this.http.delete(`${this.baseUrl}/quiz/${id}`);
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
