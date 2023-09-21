@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormQuestion } from '@app/interfaces/questionForm';
+import { FormQuestion } from '@app/interfaces/question-form';
 
 const MAX_CHOICES_NUMBER = 4;
 

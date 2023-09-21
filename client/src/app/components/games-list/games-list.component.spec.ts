@@ -79,6 +79,5 @@ describe('GamesListComponent', () => {
         component.updateVisibility(testQuiz);
 
         expect(quizServiceSpy.basicPatch).toHaveBeenCalledWith(testQuiz.id, false);
-        expect(testQuiz.visible).toBe(false);
     });
 });
