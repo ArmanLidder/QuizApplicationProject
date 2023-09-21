@@ -79,16 +79,6 @@ export class QuizCreationService {
         return false;
     }
 
-    addChoice(question: FormQuestion) {
-        if (question.choices.length < 4) {
-            const newChoice = {
-                text: '',
-                isCorrect: false,
-            };
-            question.choices.push(newChoice);
-        }
-    }
-
     fillForm(quiz?: Quiz) {
         const quizForm: FormGroup = this.fb.group({
             title: [quiz?.title, Validators.required],
@@ -98,6 +88,24 @@ export class QuizCreationService {
         });
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
         return quizForm;
+    }
+
+    moveQuestionUp(index: number, questionsFormArray?: FormArray) {
+        this.swapQuestions(index, index - 1, questionsFormArray);
+        if (this.modifiedQuestionIndex === index) {
+            this.modifiedQuestionIndex--;
+        } else if (this.modifiedQuestionIndex === index - 1) {
+            this.modifiedQuestionIndex = index;
+        }
+    }
+
+    moveQuestionDown(index: number, questionsFormArray?: FormArray) {
+        this.swapQuestions(index, index + 1, questionsFormArray);
+        if (this.modifiedQuestionIndex === index) {
+            this.modifiedQuestionIndex++;
+        } else if (this.modifiedQuestionIndex === index + 1) {
+            this.modifiedQuestionIndex = index;
+        }
     }
 
     addChoice(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
@@ -128,7 +136,7 @@ export class QuizCreationService {
         const questionGroup = questionArrayForm?.at(index) as FormGroup;
         return questionGroup.get('choices') as FormArray;
     }
-    
+
     private swapQuestions(firstIndex: number, secondIndex: number, questionsArrayForm?: FormArray) {
         const questionA = questionsArrayForm?.at(firstIndex) as FormGroup;
         const questionB = questionsArrayForm?.at(secondIndex) as FormGroup;
