@@ -1,4 +1,5 @@
 <div class="quizzes-container">
+    <!-- <h3 *ngIF="isImportError">{{importError}}</h3> -->
     <table>
         <thead>
             <tr>
@@ -10,8 +11,7 @@
         <tbody>
             <tr *ngFor="let quiz of quizzes">
                 <td>
-                    <app-game-item [quiz]='quiz' class="game-item" [isAdmin]="isAdmin">
-                    </app-game-item>
+                    <app-game-item [quiz]='quiz' class="game-item" [isAdmin]="isAdmin"  (removeQuiz)="removeQuiz($event)"></app-game-item>
                 </td>
                 <td *ngIf="isAdmin">
                     <label class="switch-btn">
@@ -30,7 +30,8 @@
                     <button routerLink="/game-creation" class="add">
                         <i class="fas fa-plus"></i> Add Game
                     </button>
-                    <button class="add">
+                    <input type="file" #fileInput accept="/application/json" [class.hide-file-input]="true" (change)="selectFile($event)">
+                    <button class="add" (click)="this.uploadFile()">
                         <i class="fas fa-file-import"></i> Import
                     </button>
                     <button routerLink="/home" class="cancel"> Cancel </button>
