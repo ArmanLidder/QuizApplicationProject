@@ -13,7 +13,7 @@ export class GameItemComponent {
     constructor(private quizService: QuizService) {}
 
     deleteGame() {
-        this.quizService.basicDelete(Number(this.quiz.id));
+        this.quizService.basicDelete(this.quiz.id);
     }
 
     updateGame() {
