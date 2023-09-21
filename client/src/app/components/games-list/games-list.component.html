@@ -9,7 +9,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let quiz of quizzes">
+            <tr *ngFor="let quiz of quizzes" [class.selected]="!isAdmin && quiz === lastSelectedQuiz" (click)="selectQuiz(quiz)">
                 <td>
                     <app-game-item [quiz]='quiz' class="game-item" [isAdmin]="isAdmin"  (removeQuiz)="removeQuiz($event)"></app-game-item>
                 </td>
@@ -23,6 +23,7 @@
                     <span>{{quiz.lastModification}}</span>
                 </td>
             </tr>
+            
         </tbody>
         <tfoot>
             <tr>
@@ -37,10 +38,10 @@
                     <button routerLink="/home" class="cancel"> Cancel </button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
-                    <button routerLink="/game-page" class="add"> Play </button>
-                    <button routerLink="/game-page" class="add"> Test </button>
-                    <button routerLink="/home" class="cancel"> Cancel </button>
-                </td>
+                    <button class="add" [class.disabled-button]="!lastSelectedQuiz" [disabled]="!lastSelectedQuiz">Play</button>
+                    <button class="add" [class.disabled-button]="!lastSelectedQuiz" [disabled]="!lastSelectedQuiz">Test</button>
+                    <button routerLink="/home" class="cancel">Cancel</button>
+                </td>                
             </tr>
         </tfoot>
     </table>

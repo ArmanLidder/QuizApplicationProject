@@ -20,12 +20,16 @@ export class GamesListComponent implements OnInit {
 
     private asyncFileRead: Promise<void>;
     private asyncFileResolver: () => void;
-    private asyncFileRejecter: (error: any) => void;
+    private asyncFileRejecter: (error: unknown) => void;
 
     quizzes: Quiz[];
     importedQuiz: Quiz | null;
-    
-    constructor(public quizServices: QuizService, public quizValidator: QuizValidationService ) {}
+    lastSelectedQuiz: Quiz | null;
+
+    constructor(
+        public quizServices: QuizService,
+        public quizValidator: QuizValidationService,
+    ) {}
 
     ngOnInit() {
         this.populateGameList();
@@ -53,7 +57,7 @@ export class GamesListComponent implements OnInit {
     }
 
     removeQuiz(id: string) {
-        const index = this.quizzes.findIndex((quiz) => quiz.id === id)
+        const index = this.quizzes.findIndex((quiz) => quiz.id === id);
         this.quizzes.splice(index, 1);
     }
 
@@ -61,9 +65,7 @@ export class GamesListComponent implements OnInit {
         this.fileInput.nativeElement.click();
         if (event.target instanceof HTMLInputElement && event.target !== undefined) {
             const selectedFile = event.target.files && event.target.files[0];
-            if (selectedFile) 
-                if (selectedFile.type === 'application/json') 
-                    this.readFile(selectedFile);
+            if (selectedFile) if (selectedFile.type === 'application/json') this.readFile(selectedFile);
         }
     }
 
@@ -71,17 +73,17 @@ export class GamesListComponent implements OnInit {
         if (selectedFile.type === 'application/json') {
             const fileReader = new FileReader();
             fileReader.onload = (e) => {
-                try { 
+                try {
                     this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz;
                     this.resolveasyncFileRead();
-                } catch (error) { 
+                } catch (error) {
                     this.rejectasyncFileRead(error);
                 }
             };
-            fileReader.readAsText(selectedFile)
-        } 
+            fileReader.readAsText(selectedFile);
+        }
     }
-    
+
     uploadFile() {
         this.fileInput.nativeElement.click();
         this.asyncFileRead = this.waitForFileRead();
@@ -89,14 +91,14 @@ export class GamesListComponent implements OnInit {
             if (this.importedQuiz) {
                 if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
                     this.quizServices.basicPost(this.importedQuiz).subscribe((res) => {
-                        if(res.status === CREATED) this.populateGameList()
+                        if (res.status === CREATED) this.populateGameList();
                     });
                 }
             }
         });
     }
 
-    private waitForFileRead(): Promise<void> {
+    private async waitForFileRead(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.asyncFileResolver = resolve;
             this.asyncFileRejecter = reject;
@@ -106,10 +108,12 @@ export class GamesListComponent implements OnInit {
     private resolveasyncFileRead(): void {
         this.asyncFileResolver();
     }
-      
-    private rejectasyncFileRead(error: any): void {
-      this.asyncFileRejecter(error);
+
+    private rejectasyncFileRead(error: unknown): void {
+        this.asyncFileRejecter(error);
+    }
+
+    selectQuiz(quiz: Quiz) {
+        this.lastSelectedQuiz = quiz;
     }
 }
-            
-                    
