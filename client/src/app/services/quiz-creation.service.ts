@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { QuestionType } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice } from '@app/interfaces/quiz.interface';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const nonExistantIndex = -1;
 const maxPointsPerQuestion = 100;
@@ -27,10 +28,11 @@ export interface FormQuestion {
     providedIn: 'root',
 })
 export class QuizCreationService {
-    gameTitle: string;
-    gameDuration: number;
-    gameDescription: string;
     questions: FormQuestion[] = [];
+    quiz: Quiz;
+    modifiedQuestionIndex: number = nonExistantIndex;
+
+    constructor(private fb: FormBuilder) {}
 
     addQuestion() {
         const newQuestion: FormQuestion = {
@@ -52,5 +54,19 @@ export class QuizCreationService {
             };
             question.choices.push(newChoice);
         }
+    }
+
+    private fillChoices(choicesFormArray: FormArray, choices?: QuizChoice[]) {
+        choices?.forEach((choice) => {
+            choicesFormArray.push(this.initChoice(choice));
+        });
+    }
+
+    // Initialize a new choice form group
+    private initChoice(choice?: QuizChoice): FormGroup {
+        return this.fb.group({
+            text: [choice?.text, Validators.required],
+            isCorrect: [choice?.isCorrect ?? false],
+        });
     }
 }
