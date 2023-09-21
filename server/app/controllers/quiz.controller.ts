@@ -95,7 +95,7 @@ export class QuizController {
          *         description: Internal server error
          */
         this.router.post('/', async (req: Request, res: Response) => {
-            const quiz = req.body;
+            const quiz = req.body.quiz;
             try {
                 await this.quizService.add(quiz);
                 res.status(StatusCodes.CREATED).json(quiz);
@@ -124,8 +124,8 @@ export class QuizController {
          */
         this.router.put('/', async (req: Request, res: Response) => {
             try {
-                await this.quizService.replace(req.body);
-                res.status(StatusCodes.OK).json(req.body);
+                await this.quizService.replace(req.body.quiz);
+                res.status(StatusCodes.OK).json(req.body.quiz);
                 console.log(res.status);
             } catch (e) {
                 console.log(e);
@@ -165,6 +165,7 @@ export class QuizController {
          */
         this.router.delete('/:id', async (req: Request, res: Response) => {
             try {
+                console.log('ok')
                 res.json(await this.quizService.delete(req.params.id));
             } catch (e) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
