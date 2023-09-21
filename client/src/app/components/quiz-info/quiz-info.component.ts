@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { Quiz } from '@app/interfaces/quiz.interface';
 
 @Component({
-  selector: 'app-quiz-info',
-  templateUrl: './quiz-info.component.html',
-  styleUrls: ['./quiz-info.component.scss']
+    selector: 'app-quiz-info',
+    templateUrl: './quiz-info.component.html',
+    styleUrls: ['./quiz-info.component.scss'],
 })
 export class QuizInfoComponent {
-  @Input() selectedQuiz: Quiz | null;
+    @Input() selectedQuiz: Quiz | null;
 }

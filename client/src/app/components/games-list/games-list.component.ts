@@ -98,7 +98,7 @@ export class GamesListComponent implements OnInit {
         });
     }
 
-    selectQuiz(quiz: Quiz) : void {
+    selectQuiz(quiz: Quiz): void {
         this.selectedQuiz = quiz;
     }
 
@@ -116,6 +116,4 @@ export class GamesListComponent implements OnInit {
     private rejectasyncFileRead(error: unknown): void {
         this.asyncFileRejecter(error);
     }
-
-    
 }

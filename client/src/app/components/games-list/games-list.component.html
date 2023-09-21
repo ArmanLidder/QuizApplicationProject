@@ -35,7 +35,7 @@
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
                     <button class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Play</button>
-                    <button class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Test</button>
+                    <button [routerLink]="['/quiz-testing-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Test</button>
                     <button routerLink="/home" class="cancel">Cancel</button>
                 </td>
             </tr>

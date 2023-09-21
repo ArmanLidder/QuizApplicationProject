@@ -8,6 +8,7 @@ import { GameAdministrationPageComponent } from '@app/pages/game-administration-
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
+import { QuizTestingPageComponent } from '@app/pages/quiz-testing-page/quiz-testing-page.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -16,6 +17,7 @@ const routes: Routes = [
     { path: 'game-creation-page', component: GameCreationPageComponent },
     { path: 'quiz-creation', component: QuizCreationPageComponent },
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
+    { path: 'quiz-testing-page/:id', component: QuizTestingPageComponent },
     { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [AuthGuard] },
     { path: 'material', component: MaterialPageComponent },
     { path: '**', redirectTo: '/home' },
