@@ -68,20 +68,6 @@ export class GamesListComponent implements OnInit {
         }
     }
 
-    uploadFile() {
-        this.fileInput.nativeElement.click();
-        this.asyncFileRead = this.waitForFileRead();
-        this.asyncFileRead.then(() => {
-            if (this.importedQuiz) {
-                if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
-                    this.quizServices.basicPost(this.importedQuiz).subscribe((res) => {
-                        if (res.status === CREATED) this.populateGameList();
-                    });
-                }
-            }
-        });
-    }
-
     private readFile(selectedFile: File) {
         if (selectedFile.type === 'application/json') {
             const fileReader = new FileReader();

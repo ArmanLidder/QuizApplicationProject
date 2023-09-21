@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
     { path: 'quiz-testing-page/:id', component: QuizTestingPageComponent },
     { path: 'waiting-room-page/:id', component: WaitingRoomPageComponent },
-    { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [AuthGuard] },
+    { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [authGuardAuthentification] },
     { path: 'material', component: MaterialPageComponent },
     { path: '**', redirectTo: '/home' },
 ];
