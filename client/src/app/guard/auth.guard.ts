@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { inject, Injectable } from '@angular/core';
+import { CanActivateFn } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
 import { Observable } from 'rxjs';
 
@@ -7,10 +7,14 @@ import { Observable } from 'rxjs';
     providedIn: 'root',
 })
 // eslint-disable-next-line deprecation/deprecation
-export class AuthGuard implements CanActivate {
+class AuthGuard {
     constructor(public authenticator: AdminAuthenticatorService) {}
 
     canActivate(): Observable<boolean> {
         return this.authenticator.validatePassword();
     }
+}
+
+export const authGuardAuthentification : CanActivateFn = () : Observable<boolean> => {
+    return inject(AuthGuard).canActivate();
 }
