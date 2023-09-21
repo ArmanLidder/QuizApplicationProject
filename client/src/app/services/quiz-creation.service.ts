@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { QuestionType } from '@app/interfaces/quiz.interface';
 
+const nonExistantIndex = -1;
+const maxPointsPerQuestion = 100;
+const minPointsPerQuestion = 10;
+const maxQcmDuration = 60;
+const minQcmDuration = 10;
+const maxNumberOfChoicesPerQuestion = 4;
+const minNumberOfChoicesPerQuestion = 2;
+const minNumberOfQuestions = 1;
+
 export interface FormChoice {
     text: string;
     isCorrect: boolean;
