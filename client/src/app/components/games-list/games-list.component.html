@@ -5,41 +5,38 @@
             <tr>
                 <th>Games</th>
                 <th *ngIf="isAdmin">Visibility</th>
-                <th>Last Modified</th>
+                <th *ngIf="isAdmin">Last Modified</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let quiz of quizzes">
+            <tr *ngFor="let quiz of quizzes" [class.selected]="!isAdmin && quiz === selectedQuiz" (click)="selectQuiz(quiz)">
                 <td>
-                    <app-game-item [quiz]='quiz' class="game-item" [isAdmin]="isAdmin"  (removeQuiz)="removeQuiz($event)"></app-game-item>
+                    <app-game-item [quiz]="quiz" class="game-item" [isAdmin]="isAdmin" (removeQuiz)="removeQuiz($event)"></app-game-item>
+                    <app-quiz-info *ngIf="quiz === selectedQuiz && !isAdmin" [selectedQuiz]="quiz"></app-quiz-info>
                 </td>
                 <td *ngIf="isAdmin">
                     <label class="switch-btn">
-                        <input type="checkbox" [(ngModel)]='quiz.visible' (click)="updateVisibility(quiz)">
+                        <input type="checkbox" [(ngModel)]="quiz.visible" (click)="updateVisibility(quiz)" />
                         <span class="slider round"></span>
                     </label>
                 </td>
-                <td>
-                    <span>{{quiz.lastModification}}</span>
+                <td *ngIf="isAdmin">
+                    <span>{{ quiz.lastModification }}</span>
                 </td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <td class="button-container" *ngIf="isAdmin">
-                    <button routerLink="/game-creation" class="add">
-                        <i class="fas fa-plus"></i> Add Game
-                    </button>
-                    <input type="file" #fileInput accept="/application/json" [class.hide-file-input]="true" (change)="selectFile($event)">
-                    <button class="add" (click)="this.uploadFile()">
-                        <i class="fas fa-file-import"></i> Import
-                    </button>
-                    <button routerLink="/home" class="cancel"> Cancel </button>
+                    <button routerLink="/game-creation" class="add"><i class="fas fa-plus"></i> Add Game</button>
+                    <input type="file" #fileInput accept="/application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
+                    <button class="add" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Import</button>
+                    <button routerLink="/home" class="cancel">Cancel</button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
-                    <button routerLink="/game-page" class="add"> Play </button>
-                    <button routerLink="/game-page" class="add"> Test </button>
-                    <button routerLink="/home" class="cancel"> Cancel </button>
+                    <button [routerLink]="['/waiting-room-page', selectedQuiz?.id]"class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Play</button>
+                    <button [routerLink]="['/quiz-testing-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Test</button>
+                    <button routerLink="/home" class="cancel">Cancel</button>
                 </td>
             </tr>
         </tfoot>

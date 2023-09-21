@@ -18,12 +18,13 @@ export class GamesListComponent implements OnInit {
 
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
 
-    quizzes: Quiz[];
-    importedQuiz: Quiz | null;
-
     private asyncFileRead: Promise<void>;
     private asyncFileResolver: () => void;
     private asyncFileRejecter: (error: unknown) => void;
+
+    quizzes: Quiz[];
+    importedQuiz: Quiz | null;
+    selectedQuiz: Quiz | null;
 
     constructor(
         public quizServices: QuizService,
@@ -94,6 +95,24 @@ export class GamesListComponent implements OnInit {
             };
             fileReader.readAsText(selectedFile);
         }
+    }
+
+    uploadFile() {
+        this.fileInput.nativeElement.click();
+        this.asyncFileRead = this.waitForFileRead();
+        this.asyncFileRead.then(() => {
+            if (this.importedQuiz) {
+                if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
+                    this.quizServices.basicPost(this.importedQuiz).subscribe((res) => {
+                        if (res.status === CREATED) this.populateGameList();
+                    });
+                }
+            }
+        });
+    }
+
+    selectQuiz(quiz: Quiz): void {
+        this.selectedQuiz = quiz;
     }
 
     private async waitForFileRead(): Promise<void> {
