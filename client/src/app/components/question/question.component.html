@@ -27,7 +27,7 @@
                 <input type="radio" [attr.id]="'falseRadio' + i + j" name="choice{{i}}{{j}}" [(ngModel)]="choix.selectedChoice" value="false">
                 <label for="'falseRadio' + i + j">False</label><br><br>
             </div>
-        
+
             <button type="button" (click)="quizCreationService.addChoice(question)">Add Choice</button><br><br>
 
         </ng-container>
