@@ -16,7 +16,7 @@ export class GameItemComponent {
     constructor(private quizService: QuizService, private router: Router) {}
 
     deleteGame() {
-        this.quizService.basicDelete(this.quiz.id);
+        this.quizService.basicDelete(this.quiz.id).subscribe();
         this.removeQuiz.emit(this.quiz.id);
     }
 

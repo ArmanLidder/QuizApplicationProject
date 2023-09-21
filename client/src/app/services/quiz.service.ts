@@ -26,11 +26,11 @@ export class QuizService {
     }
 
     basicPost(quiz: Quiz): Observable<HttpResponse<string>> {
-        return this.http.post(`${this.baseUrl}/quiz/`, quiz, { observe: 'response', responseType: 'text' });
+        return this.http.post(`${this.baseUrl}/quiz/`, { quiz }, { observe: 'response', responseType: 'text' });
     }
 
     basicPut(quiz: Quiz): Observable<HttpResponse<string>> {
-        return this.http.put(`${this.baseUrl}/quiz/`, quiz, { observe: 'response', responseType: 'text' });
+        return this.http.put(`${this.baseUrl}/quiz/`, { quiz }, { observe: 'response', responseType: 'text' });
     }
 
     basicPatch(quizId: string, quizVisibility: boolean): Observable<HttpResponse<string>> {
@@ -38,7 +38,7 @@ export class QuizService {
     }
 
     basicDelete(id: string) {
-        this.http.delete(`${this.baseUrl}/quiz/${id}`);
+        return this.http.delete(`${this.baseUrl}/quiz/${id}`);
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
