@@ -56,6 +56,17 @@ export class QuizCreationService {
         }
     }
 
+    fillForm(quiz?: Quiz) {
+        const quizForm: FormGroup = this.fb.group({
+            title: [quiz?.title, Validators.required],
+            description: [quiz?.description, Validators.required],
+            duration: [quiz?.duration, [Validators.required, Validators.min(minQcmDuration), Validators.max(maxQcmDuration)]],
+            questions: this.fb.array([], [Validators.minLength(minNumberOfQuestions), Validators.required]),
+        });
+        this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
+        return quizForm;
+    }
+
     private fillQuestions(questionsFormArray: FormArray, quizQuestions?: QuizQuestion[]) {
         quizQuestions?.forEach((question) => {
             questionsFormArray.push(this.initQuestion(question));

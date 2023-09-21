@@ -7,6 +7,7 @@ export interface Quiz {
     id: string;
     title: string;
     duration: number;
+    description: string;
     lastModification: string | null;
     questions: QuizQuestion[];
     visible: boolean;
