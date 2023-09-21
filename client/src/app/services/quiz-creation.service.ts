@@ -46,6 +46,15 @@ export class QuizCreationService {
         this.questions.push(newQuestion);
     }
 
+    saveQuestion(index: number, questionsFormArray?: FormArray): boolean {
+        const questionToSave = questionsFormArray?.at(index);
+        if (questionToSave?.valid) {
+            questionsFormArray?.at(index).patchValue({ beingModified: false });
+            return true;
+        }
+        return false;
+    }
+
     addChoice(question: FormQuestion) {
         if (question.choices.length < 4) {
             const newChoice = {
