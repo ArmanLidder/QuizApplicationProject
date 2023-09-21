@@ -99,6 +99,13 @@ export class QuizCreationService {
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
         return quizForm;
     }
+    
+    private swapQuestions(firstIndex: number, secondIndex: number, questionsArrayForm?: FormArray) {
+        const questionA = questionsArrayForm?.at(firstIndex) as FormGroup;
+        const questionB = questionsArrayForm?.at(secondIndex) as FormGroup;
+        questionsArrayForm?.setControl(firstIndex, questionB);
+        questionsArrayForm?.setControl(secondIndex, questionA);
+    }
 
     private fillQuestions(questionsFormArray: FormArray, quizQuestions?: QuizQuestion[]) {
         quizQuestions?.forEach((question) => {
