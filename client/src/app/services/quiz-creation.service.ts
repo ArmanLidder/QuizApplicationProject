@@ -99,6 +99,35 @@ export class QuizCreationService {
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
         return quizForm;
     }
+
+    addChoice(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
+        const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
+        const choicesArrayForm = questionGroup.get('choices') as FormArray;
+        const choiceToAdd = this.initChoice();
+        if (choicesArrayForm.length < maxNumberOfChoicesPerQuestion) {
+            choicesArrayForm.insert(choiceIndex, choiceToAdd);
+        }
+    }
+
+    addChoiceFirst(questionIndex: number, questionFormArray?: FormArray) {
+        const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
+        const choicesArrayForm = questionGroup.get('choices') as FormArray;
+        const choiceToAdd = this.initChoice();
+        choicesArrayForm.insert(0, choiceToAdd);
+    }
+
+    removeChoice(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
+        const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
+        const choicesArrayForm = questionGroup.get('choices') as FormArray;
+        if (choicesArrayForm.length > minNumberOfChoicesPerQuestion) {
+            choicesArrayForm.removeAt(choiceIndex);
+        }
+    }
+
+    getChoicesArray(index: number, questionArrayForm?: FormArray) {
+        const questionGroup = questionArrayForm?.at(index) as FormGroup;
+        return questionGroup.get('choices') as FormArray;
+    }
     
     private swapQuestions(firstIndex: number, secondIndex: number, questionsArrayForm?: FormArray) {
         const questionA = questionsArrayForm?.at(firstIndex) as FormGroup;
