@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter  } from '@angular/core';
 import { Quiz } from '@app/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
+import { Router } from '@angular/router';
+
 
 @Component({
     selector: 'app-game-item',
@@ -10,14 +12,16 @@ import { QuizService } from '@app/services/quiz.service';
 export class GameItemComponent {
     @Input() quiz: Quiz;
     @Input() isAdmin: boolean;
-    constructor(private quizService: QuizService) {}
+    @Output() removeQuiz: EventEmitter<string> =  new EventEmitter<string>()
+    constructor(private quizService: QuizService, private router: Router) {}
 
     deleteGame() {
         this.quizService.basicDelete(this.quiz.id);
+        this.removeQuiz.emit(this.quiz.id);
     }
 
     updateGame() {
-        return;
+        this.router.navigate(['quiz-creation']);
     }
 
     exportGame(): void {
