@@ -13,7 +13,7 @@ const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: MainPageComponent },
     { path: 'game', component: GamePageComponent },
-    { path: 'game-creation', component: GameCreationPageComponent },
+    { path: 'game-creation-page', component: GameCreationPageComponent },
     { path: 'quiz-creation', component: QuizCreationPageComponent },
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
     { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [AuthGuard] },
