@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
+import { QuestionType } from '@app/interfaces/quiz.interface';
 
-interface FormChoice {
+export interface FormChoice {
     text: string;
-    selectedChoice: string;
+    isCorrect: boolean;
 }
 
-interface FormQuestion {
-    type: string;
+export interface FormQuestion {
+    type: QuestionType;
     text: string;
     points: number;
-    textchoix: string;
-    selectedChoice: string;
-    choices: FormChoice[]; // Add an empty choices array
+    choices: FormChoice[];
+    beingModified: boolean;
 }
 
 @Injectable({
@@ -25,12 +25,11 @@ export class QuizCreationService {
 
     addQuestion() {
         const newQuestion: FormQuestion = {
-            type: 'qcm',
+            type: QuestionType.QCM,
             text: '',
             points: 0,
-            textchoix: '',
-            selectedChoice: '',
             choices: [], // Add an empty choices array
+            beingModified: false,
         };
 
         this.questions.push(newQuestion);
@@ -40,7 +39,7 @@ export class QuizCreationService {
         if (question.choices.length < 4) {
             const newChoice = {
                 text: '',
-                selectedChoice: '',
+                isCorrect: false,
             };
             question.choices.push(newChoice);
         }
