@@ -41,6 +41,14 @@ export class QuizService {
         return this.http.delete(`${this.baseUrl}/quiz/${id}`);
     }
 
+    checkTitleUniqueness(title: string): Observable<HttpResponse<{ isUnique: boolean }>> {
+        return this.http.post<{ isUnique: boolean }>(
+            `${this.baseUrl}/quiz/checkTitleUniqueness`,
+            { title },
+            { observe: 'response', responseType: 'json' },
+        );
+    }
+
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return () => of(result as T);
     }
