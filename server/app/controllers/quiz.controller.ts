@@ -126,9 +126,7 @@ export class QuizController {
             try {
                 await this.quizService.replace(req.body.quiz);
                 res.status(StatusCodes.OK).json(req.body.quiz);
-                console.log(res.status);
             } catch (e) {
-                console.log(e);
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
             }
         });
@@ -136,10 +134,8 @@ export class QuizController {
         this.router.patch('/:id', async (req: Request, res: Response) => {
             try {
                 await this.quizService.update(req.params.id, req.body.visible);
-                res.status(StatusCodes.OK).json({ 'visible': (await this.quizService.getById(req.params.id)).visible });
-                console.log(res.status);
+                res.status(StatusCodes.OK).json({ visible: (await this.quizService.getById(req.params.id)).visible });
             } catch (e) {
-                console.log(e);
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
             }
         });

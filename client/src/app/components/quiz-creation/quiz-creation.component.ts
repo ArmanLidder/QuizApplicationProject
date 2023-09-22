@@ -93,10 +93,10 @@ export class QuizCreationComponent {
             });
 
             const createdQuiz: Quiz = {
-                id: this.quiz.id,
+                id: this.quiz?.id,
                 title: this.quizForm.value.title,
-                duration: this.quizForm.value.duration,
                 description: this.quizForm.value.description,
+                duration: this.quizForm.value.duration,
                 lastModification: now.toString(),
                 questions,
                 visible: false,
@@ -107,7 +107,7 @@ export class QuizCreationComponent {
                 createdQuiz.id = generateRandomId();
                 this.quizService.basicPost(createdQuiz).subscribe();
             }
-            this.navigateRoute.navigate(['/game-admin-page']);
+            this.navigateRoute.navigate(['/']);
         } else {
             this.showPopupIfFormConditionMet(true);
             // eslint-disable-next-line no-console

@@ -81,7 +81,10 @@ export class QuestionListComponent {
     }
 
     addQuestion(index: number) {
-        if (!this.questionsArray?.at(this.quizCreationService.modifiedQuestionIndex).get('beingModified')) {
+        if (this.questionsArray?.length === 0) {
+            this.showPopupIfConditionMet(true);
+            this.quizCreationService.addQuestion(index, this.questionsArray);
+        } else if (!this.questionsArray?.at(this.quizCreationService.modifiedQuestionIndex).get('beingModified')) {
             this.showPopupIfConditionMet(true);
             this.quizCreationService.addQuestion(index, this.questionsArray);
         } else if (index !== this.quizCreationService.modifiedQuestionIndex) {
