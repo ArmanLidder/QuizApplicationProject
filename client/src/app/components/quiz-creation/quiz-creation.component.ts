@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { QuizService } from '@app/services/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
@@ -79,7 +79,7 @@ export class QuizCreationComponent {
                     const questions: QuizQuestion[] = [];
                     this.questionsArray.controls.forEach((questionForm) => {
                         const question: QuizQuestion = {
-                            type: questionForm.get('type')?.value,
+                            type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
                             text: questionForm.get('text')?.value,
                             points: questionForm.get('points')?.value,
                             choices: [],
