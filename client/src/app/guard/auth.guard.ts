@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
-// eslint-disable-next-line deprecation/deprecation
 class AuthGuard {
     constructor(public authenticator: AdminAuthenticatorService) {}
 
@@ -15,6 +14,6 @@ class AuthGuard {
     }
 }
 
-export const authGuardAuthentification : CanActivateFn = () : Observable<boolean> => {
+export const authGuardAuthentification: CanActivateFn = (): Observable<boolean> => {
     return inject(AuthGuard).canActivate();
-}
+};

@@ -11,7 +11,7 @@ import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-cr
 import { WaitingRoomPageComponent } from '@app/pages/waiting-room-page/waiting-room-page.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    { path: '', component: MainPageComponent },
     { path: 'home', component: MainPageComponent },
     { path: 'game', component: GamePageComponent },
     { path: 'game-creation-page', component: GameCreationPageComponent },
