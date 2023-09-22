@@ -14,17 +14,17 @@ export class PasswordPromptComponent {
     inputBorderColor: string = '';
     textColor: string = '';
     constructor(public authenticatorService: AdminAuthenticatorService) {}
-    
+
+    @HostListener('document:keydown.enter')
+    handleKeyboardEvent() {
+        this.enterButton.nativeElement.click();
+    }
+
     updateStatus() {
         this.authenticatorService.validatePassword().subscribe((res) => {
             this.loginStatus = res ? this.successMessage : this.errorMessage;
             if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
         });
-    }
-
-    @HostListener('document:keydown.enter', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent) {
-        this.enterButton.nativeElement.click();
     }
 
     showErrorFeedback() {
