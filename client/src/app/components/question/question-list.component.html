@@ -1,0 +1,100 @@
+<div [formGroup]='parentGroup' >
+    <div formArrayName='questions'>
+        <p *ngIf='questionsArray?.length !== 0'>Questions : </p>
+        <ng-container *ngFor="let question of questionsArray?.controls; let i = index">
+            <div class='quiz-question' [formGroupName]="i">
+                <button *ngIf='i !== 0' type="button" (click)="moveQuestionUp(i)">
+                    <mat-icon>keyboard_arrow_up</mat-icon></button><br><br>
+                <div *ngIf="question.get('beingModified')?.value">
+                    <div class="question" [attr.id]="'question' + i">
+                        <div class="popup" [ngClass]="{ 'show': isPopupVisible }">
+                            <span class="popuptext">Veuillez remplir toutes les cases svp!</span>
+                        </div>
+                        <p>Question {{ i + 1 }}:</p>
+                        <label for="type{{i}}">Type de question:</label>
+                        <select formControlName="type" name="type{{i}}">
+                            <option value="qcm">QCM</option>
+                            <!--                            <option value="qrl">QRL</option>-->
+                        </select><br>
+                        <div *ngIf="question.get('type')?.hasError('required') && question.get('type')?.touched" class="error-message">
+                            Question type is required
+                        </div>
+                        <label for="text{{i}}">Enter the question:</label>
+                        <input type="text" [attr.id]="'text' + i" name="text{{i}}" formControlName="text"><br>
+                        <div *ngIf="question.get('text')?.hasError('required') && question.get('text')?.touched" class="error-message">
+                            Text is required
+                        </div>
+                        <div class="popup" [ngClass]="{ 'show': isPopupVisiblePoints }">
+                            <span class="popuptext">Les points devraient etre entre 10 et 100 et etre divisible par 10</span>
+                        </div>
+
+                        <label for="points{{i}}">le nombre de points de la question:</label>
+                        <input type="number" [attr.id]="'points' + i" name="points{{i}}" formControlName="points"><br>
+                        <div *ngIf="question.get('points')?.getError('required') && question.get('points')?.touched" class="error-message">
+                            Le nombre de points est requis
+                        </div>
+                        <div *ngIf="question.get('points')?.invalid && question.get('points')?.touched" class="error-message">
+                            Le nombre de points d'une QCM doit être entre 10 et 100 et doit être un multiple de 10
+                        </div>
+                        <p>Choix:</p>
+                        <button type="button" [disabled]="!isButtonNotToggled && getChoicesArray(i).controls.length !== 0"
+                                [ngClass]="{'hidden-button': !isButtonNotToggled && getChoicesArray(i).controls.length !== 0}" (click)="addChoiceFirst(i)">Add Choice</button><br>
+
+                        <div class="popup" [ngClass]="{ 'show': isPopupVisibleChoices }">
+                            <span class="popuptext" id="myPopup">Il faut au moins ajouter 2 choix avec au moins 1 bon et 1 mauvais</span>
+                        </div>
+                    </div>
+
+                    <div formArrayName='choices'>
+                        <div *ngFor="let choix of getChoicesArray(i).controls; let j = index">
+                            <div [formGroupName]="j">
+                                <label for="choix{{i}}{{j}}">le choix{{j + 1}}:</label><br>
+                                <input type="text" [attr.id]="'choix' + i + j" name="textchoix{{i}}{{j}}" formControlName="text" required><br>
+                                <div *ngIf="choix.get('text')?.hasError('required') && choix.get('text')?.touched" class="error-message">
+                                    Text is required
+                                </div>
+                                <input type="radio" [attr.id]="'trueRadio' + i + j" formControlName="isCorrect" value="true">
+                                <label for="'trueRadio' + i + j">True</label>
+                                <input type="radio" [attr.id]="'falseRadio' + i + j" formControlName="isCorrect" value="false">
+                                <label for="'falseRadio' + i + j">False</label><br><br>
+                                <button type="button" (click)="addChoice(i, j)">Add Choice</button><br><br>
+                                <button type="button" (click)="removeChoice(i, j)">Remove Choice</button><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!question.get('beingModified')?.value">
+                    <p>Question {{i + 1}}:</p>
+                    <p>Type de question: {{question.get('type')?.value}}</p>
+                    <p>Contenu de la question : {{question.get('text')?.value}}</p>
+                    <p>le nombre de points de la question: {{question.get('points')?.value}} </p>
+                    <p>Choix:</p>
+                    <div class="choicesList">
+                        <div class="choice" *ngFor="let choice of getChoicesArray(i).controls; index as j">
+                            <p>le choix {{j + 1}}: </p>
+                            <ul>
+                                <li>{{choice.get('text')?.value}}</li>
+                                <li>{{choice.get('isCorrect')?.value}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class='button-container'>
+                    <button type="button" (click)="removeQuestion(i)">
+                        <mat-icon>delete</mat-icon>
+                    </button><br><br>
+                    <button type="button" (click)="addQuestion(i)">
+                        <mat-icon>add</mat-icon>
+                    </button><br><br>
+                    <button *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)"><mat-icon style='color: green'>check</mat-icon></button><br><br>
+                    <button *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)"><mat-icon>edit</mat-icon></button><br><br>
+                </div>
+                <button *ngIf='i !== (questionsArray?.length ?? 0) - 1' type="button" (click)="moveQuestionDown(i)">
+                    <mat-icon>keyboard_arrow_down</mat-icon>
+                </button><br><br>
+            </div>
+        </ng-container>
+        <button type="button" (click)="addQuestion(questionsArray ? questionsArray.length - 1 : 0)">Add Question</button>
+    </div>
+</div>

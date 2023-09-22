@@ -1,22 +1,13 @@
-.form-group {
-    margin: 20px 0;
+.quiz-question {
+    align-content: space-between;
+    border: 1px solid black;
+    padding: 2vh
 }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.form-control {
-    margin-bottom: 15px;
-}
-
-.label {
-    font-weight: bold;
+.button-container {
+    display: flex;
+    align-content: space-between;
+    flex-direction: column;
 }
 
 .error-message {
@@ -24,21 +15,6 @@
     font-size: 14px;
     margin-top: 5px;
 }
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
 
 .popup {
     position: fixed;
@@ -96,3 +72,9 @@ button:hover {
     }
 
 }
+
+.hidden-button {
+    display: none;
+}
+
+

@@ -1,20 +1,46 @@
-<div class="container">
+<div class="form-group">
+    <div class="container">
+        <h2>{{mode === pageModel.CREATION ? 'Création' : 'Modification'}} du jeu</h2>
+        <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
+            <div class="form-control">
+                <label for="title">Title: </label>
+                <input type="text" id="title" name="title" formControlName="title">
+                <div *ngIf="quizForm.get('title')?.hasError('required') && quizForm.get('title')?.touched" class="error-message">
+                    Title is required
+                </div>
+            </div>
 
-    <p>Section Création du jeu!</p>
-    <form #gameForm="ngForm" (ngSubmit)="onSubmit(gameForm)">
+            <div class="form-control">
+                <label for="duration">Duration: </label>
+                <input type="number" id="duration" name="duration" step="1" formControlName="duration">
+                <div *ngIf="quizForm.get('duration')?.hasError('required') && quizForm.get('duration')?.touched" class="error-message">
+                    Duration is required
+                </div>
+                <div *ngIf="(quizForm.get('duration')?.hasError('min') || quizForm.get('duration')?.hasError('max')) && quizForm.get('title')?.touched" class="error-message">
+                    La durée doit être dans l'intervalle [10 à 60] secondes
+                </div>
+                <div class="popup" [ngClass]="{ 'show': isPopupVisibleDuration }">
+                    <span class="popuptext">La duration doit être dans l'intervalle [10 à 60] secondes.</span>
+                </div>
+            </div>
 
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" [(ngModel)]="title" required><br><br>
+            <div class="form-control">
+                <label for="description">Description: </label>
+                <input type="text" id="description" name="description" formControlName="description">
+                <div *ngIf="quizForm.get('description')?.hasError('required') && quizForm.get('description')?.touched" class="error-message">
+                    Description is required
+                </div>
+            </div>
 
-        <label for="duration">Enter the duration:</label>
-        <input type="number" id="duration" name="duration" step="1" [(ngModel)]="duration" required><br><br>
+            <app-question-list [questionsArray]='questionsArray' [parentGroup]='quizForm'></app-question-list>
 
-        <label for="description">Enter a description:</label>
-        <input type="text" id="description" name="description" [(ngModel)]="description" required><br><br>
+            <div class="popup" [ngClass]="{ 'show': isPopupVisibleForm }">
+                <span class="popuptext" id="myPopup">Form is invalid!</span>
+            </div>
 
-        <app-question></app-question>
-
-        <button type="submit">Submit</button>
-
-    </form>
+            <button type="submit">
+                <mat-icon>save</mat-icon> Save
+            </button>
+        </form>
+    </div>
 </div>

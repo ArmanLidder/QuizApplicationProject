@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { QuestionComponent } from '@app/components/question/question.component';
+import { QuestionComponent } from '@app/components/question/question-list.component';
 
 describe('QuestionButton', () => {
     let component: QuestionComponent;

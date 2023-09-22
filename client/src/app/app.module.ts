@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
@@ -11,7 +11,7 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { QuestionComponent } from './components/question/question.component';
+import { QuestionListComponent } from './components/question/question-list.component';
 import { GameAdministrationPageComponent } from './pages/game-administration-page/game-administration-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
 import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
@@ -39,7 +39,7 @@ import { WaitingRoomPageComponent } from './pages/waiting-room-page/waiting-room
         SidebarComponent,
         QuizCreationComponent,
         QuizCreationPageComponent,
-        QuestionComponent,
+        QuestionListComponent,
         GameCreationPageComponent,
         GameAdministrationPageComponent,
         PasswordPromptComponent,
@@ -49,7 +49,7 @@ import { WaitingRoomPageComponent } from './pages/waiting-room-page/waiting-room
         QuizTestingPageComponent,
         WaitingRoomPageComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
+    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })
