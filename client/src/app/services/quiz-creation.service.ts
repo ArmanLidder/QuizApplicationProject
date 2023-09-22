@@ -82,8 +82,8 @@ export class QuizCreationService {
     fillForm(quiz?: Quiz) {
         const quizForm: FormGroup = this.fb.group({
             title: [quiz?.title, Validators.required],
-            description: [quiz?.description, Validators.required],
             duration: [quiz?.duration, [Validators.required, Validators.min(minQcmDuration), Validators.max(maxQcmDuration)]],
+            description: [quiz?.description, Validators.required],
             questions: this.fb.array([], [Validators.minLength(minNumberOfQuestions), Validators.required]),
         });
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
@@ -153,7 +153,7 @@ export class QuizCreationService {
     private initQuestion(question?: QuizQuestion): FormGroup {
         if (question) {
             const questionForm = this.fb.group({
-                type: [question.type === QuestionType.QCM ? 'qcm' : 'qlr', Validators.required],
+                type: [question.type === QuestionType.QCM ? 'QCM' : 'QLR', Validators.required],
                 text: [question.text, Validators.required],
                 points: [question.points, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
                 choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
@@ -165,7 +165,7 @@ export class QuizCreationService {
         return this.fb.group({
             type: [QuestionType.QCM, Validators.required],
             text: ['', Validators.required],
-            points: [1, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
+            points: [0, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
             choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
             beingModified: true,
         });
@@ -177,11 +177,10 @@ export class QuizCreationService {
         });
     }
 
-    // Initialize a new choice form group
     private initChoice(choice?: QuizChoice): FormGroup {
         return this.fb.group({
             text: [choice?.text, Validators.required],
-            isCorrect: [choice?.isCorrect ?? false],
+            isCorrect: [choice?.isCorrect ? 'true' : 'false'],
         });
     }
 }

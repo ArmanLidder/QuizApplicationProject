@@ -16,11 +16,11 @@ export class QuizService {
     }
 
     async getAllVisible() {
-        return (await this.collection.find({ visible: true }).toArray()) as unknown[] as Quiz[];
+        return (await this.collection.find({ visible: true }, { projection: { _id: 0 } }).toArray()) as unknown[] as Quiz[];
     }
 
     async getById(id: string) {
-        const quiz = await this.collection.findOne({ id });
+        const quiz = await this.collection.findOne({ id }, { projection: { _id: 0 } });
         return quiz as unknown as Quiz;
     }
 
