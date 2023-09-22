@@ -17,6 +17,7 @@ const routes: Routes = [
     { path: 'game', component: GamePageComponent },
     { path: 'game-creation-page', component: GameCreationPageComponent },
     { path: 'quiz-creation', component: QuizCreationPageComponent },
+    { path: 'quiz-creation/:id', component: QuizCreationPageComponent },
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
     { path: 'quiz-testing-page/:id', component: QuizTestingPageComponent },
     { path: 'waiting-room-page/:id', component: WaitingRoomPageComponent },

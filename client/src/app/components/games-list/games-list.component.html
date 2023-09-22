@@ -28,7 +28,7 @@
         <tfoot>
             <tr>
                 <td class="button-container" *ngIf="isAdmin">
-                    <button routerLink="/game-creation" class="add"><i class="fas fa-plus"></i> Add Game</button>
+                    <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Add Game</button>
                     <input type="file" #fileInput accept="/application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
                     <button class="add" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Import</button>
                     <button routerLink="/home" class="cancel">Cancel</button>

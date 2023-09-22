@@ -8,7 +8,6 @@ export interface Quiz {
     title: string;
     description: string;
     duration: number;
-    description: string;
     lastModification: string | null;
     questions: QuizQuestion[];
     visible: boolean;

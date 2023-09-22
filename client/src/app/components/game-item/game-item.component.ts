@@ -23,7 +23,7 @@ export class GameItemComponent {
     }
 
     updateGame() {
-        this.router.navigate(['quiz-creation']);
+        this.router.navigate(['quiz-creation',this.quiz.id]);
     }
 
     exportGame(): void {
