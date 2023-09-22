@@ -1,9 +1,19 @@
-<div class="container">
-    <p>Barre latérale pour l'information!</p>
-    <p>
-        Ceci est un exemple de base pour vous aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas les critères d'acceptation du projet! <br />
-        Vous pouvez modifier le code fourni et retirer le code qui n'est pas nécessaire.<br />
-        <strong>N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!</strong>
-    </p>
+<div id="sidebar">
+    <!-- Sidebar header -->
+    <div class="sidebar-header">
+        <h3>Zone de Clavardage</h3>
+    </div>
+
+    <!-- Sidebar content (message display area) -->
+    <div class="sidebar-content">
+        <div class="message-container" *ngFor="let message of messages">
+            <div class="username-said">Username dit:</div><!-- temporary for Sprint 1 -->
+            <p>{{ message }}</p>
+        </div>
+    </div>
+
+    <!-- Message input box -->
+    <div class="message-input">
+        <input type="text" placeholder="Envoyer un message" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" />
+    </div>
 </div>

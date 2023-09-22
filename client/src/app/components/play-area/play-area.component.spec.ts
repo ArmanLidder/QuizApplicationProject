@@ -25,26 +25,4 @@ describe('PlayAreaComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
-    it('buttonDetect should modify the buttonPressed variable', () => {
-        const expectedKey = 'a';
-        const buttonEvent = {
-            key: expectedKey,
-        } as KeyboardEvent;
-        component.buttonDetect(buttonEvent);
-        expect(component.buttonPressed).toEqual(expectedKey);
-    });
-
-    it('mouseHitDetect should call startTimer with 5 seconds on left click', () => {
-        const mockEvent = { button: 0 } as MouseEvent;
-        component.mouseHitDetect(mockEvent);
-        expect(timeServiceSpy.startTimer).toHaveBeenCalled();
-        expect(timeServiceSpy.startTimer).toHaveBeenCalledWith(component['timer']);
-    });
-
-    it('mouseHitDetect should not call startTimer on right click', () => {
-        const mockEvent = { button: 2 } as MouseEvent;
-        component.mouseHitDetect(mockEvent);
-        expect(timeServiceSpy.startTimer).not.toHaveBeenCalled();
-    });
 });

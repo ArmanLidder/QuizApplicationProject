@@ -22,6 +22,7 @@ import { GamesListComponent } from './components/games-list/games-list.component
 import { QuizInfoComponent } from './components/quiz-info/quiz-info.component';
 import { QuizTestingPageComponent } from './pages/quiz-testing-page/quiz-testing-page.component';
 import { WaitingRoomPageComponent } from './pages/waiting-room-page/waiting-room-page.component';
+import { AnswerChoiceCardComponent } from './components/answer-choice-card/answer-choice-card.component';
 
 /**
  * Main module that is used in main.ts.
@@ -37,6 +38,7 @@ import { WaitingRoomPageComponent } from './pages/waiting-room-page/waiting-room
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
+        AnswerChoiceCardComponent,
         QuizCreationComponent,
         QuizCreationPageComponent,
         QuestionListComponent,
