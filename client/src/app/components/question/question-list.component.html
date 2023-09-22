@@ -75,6 +75,7 @@
                 <div *ngIf="!question.get('beingModified')?.value">
                     <p>Question {{i + 1}}:</p>
                     <p>Type de question: {{question.get('type')?.value}}</p>
+                    <p class='truncate'>Contenu de la question : {{question.get('text')?.value}}</p>
                     <p>le nombre de points de la question: {{question.get('points')?.value}} </p>
                     <p>Choix:</p>
                     <div class="choicesList">
