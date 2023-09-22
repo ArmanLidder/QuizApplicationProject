@@ -74,8 +74,14 @@ export class GamesListComponent implements OnInit {
         this.asyncFileRead.then(() => {
             if (this.importedQuiz) {
                 if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
-                    this.quizServices.basicPost(this.importedQuiz).subscribe((res) => {
-                        if (res.status === CREATED) this.populateGameList();
+                    this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((response) => {
+                        if (response.body?.isUnique) {
+                            this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((res) => {
+                                if (res.status === CREATED) this.populateGameList();
+                            });
+                        } else {
+                            window.alert('Un quiz ayant le même titre existe déjà');
+                        }
                     });
                 }
             }
