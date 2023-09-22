@@ -18,13 +18,13 @@ export class GamesListComponent implements OnInit {
 
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
 
-    private asyncFileRead: Promise<void>;
-    private asyncFileResolver: () => void;
-    private asyncFileRejecter: (error: unknown) => void;
-
     quizzes: Quiz[];
     importedQuiz: Quiz | null;
     selectedQuiz: Quiz | null;
+
+    private asyncFileRead: Promise<void>;
+    private asyncFileResolver: () => void;
+    private asyncFileRejecter: (error: unknown) => void;
 
     constructor(
         public quizServices: QuizService,
@@ -68,21 +68,6 @@ export class GamesListComponent implements OnInit {
         }
     }
 
-    private readFile(selectedFile: File) {
-        if (selectedFile.type === 'application/json') {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-                try {
-                    this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz;
-                    this.resolveasyncFileRead();
-                } catch (error) {
-                    this.rejectasyncFileRead(error);
-                }
-            };
-            fileReader.readAsText(selectedFile);
-        }
-    }
-
     uploadFile() {
         this.fileInput.nativeElement.click();
         this.asyncFileRead = this.waitForFileRead();
@@ -99,6 +84,21 @@ export class GamesListComponent implements OnInit {
 
     selectQuiz(quiz: Quiz): void {
         this.selectedQuiz = quiz;
+    }
+
+    private readFile(selectedFile: File) {
+        if (selectedFile.type === 'application/json') {
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                try {
+                    this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz;
+                    this.resolveasyncFileRead();
+                } catch (error) {
+                    this.rejectasyncFileRead(error);
+                }
+            };
+            fileReader.readAsText(selectedFile);
+        }
     }
 
     private async waitForFileRead(): Promise<void> {
