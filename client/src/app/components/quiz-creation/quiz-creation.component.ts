@@ -103,13 +103,17 @@ export class QuizCreationComponent {
                         questions,
                         visible: false,
                     };
+                    const navigateToAdminCallBack = () => {
+                        this.navigateRoute.navigate(['/game-admin-page']);
+                    };
+
                     if (this.mode === PageMode.MODIFICATION) {
-                        this.quizService.basicPut(createdQuiz).subscribe();
+                        this.quizService.basicPut(createdQuiz).subscribe(navigateToAdminCallBack);
                     } else {
                         createdQuiz.id = generateRandomId();
-                        this.quizService.basicPost(createdQuiz).subscribe();
+                        this.quizService.basicPost(createdQuiz).subscribe(navigateToAdminCallBack);
                     }
-                    this.navigateRoute.navigate(['/']);
+                    // this.navigateRoute.navigate(['game-admin-page']);
                 } else {
                     window.alert('The quiz name that you entered already exists');
                 }
