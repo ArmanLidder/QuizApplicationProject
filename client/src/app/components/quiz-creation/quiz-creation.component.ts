@@ -70,48 +70,52 @@ export class QuizCreationComponent {
         return condition;
     }
 
-    // TODO: change it so that it works with reactive forms
     onSubmit() {
         if (this.quizForm?.valid) {
-            const now = new Date();
-            const questions: QuizQuestion[] = [];
-            this.questionsArray.controls.forEach((questionForm) => {
-                const question: QuizQuestion = {
-                    type: questionForm.get('type')?.value,
-                    text: questionForm.get('text')?.value,
-                    points: questionForm.get('points')?.value,
-                    choices: [],
-                };
-                (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
-                    const choice: QuizChoice = {
-                        text: choiceForm.get('text')?.value,
-                        isCorrect: choiceForm.get('isCorrect')?.value === 'true',
-                    };
-                    question.choices?.push(choice);
-                });
-                questions.push(question);
-            });
+            const title = this.quizForm.get('title')?.value;
+            this.quizService.checkTitleUniqueness(title).subscribe((response) => {
+                if (response.body?.isUnique || this.mode === PageMode.MODIFICATION) {
+                    const now = new Date();
+                    const questions: QuizQuestion[] = [];
+                    this.questionsArray.controls.forEach((questionForm) => {
+                        const question: QuizQuestion = {
+                            type: questionForm.get('type')?.value,
+                            text: questionForm.get('text')?.value,
+                            points: questionForm.get('points')?.value,
+                            choices: [],
+                        };
+                        (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
+                            const choice: QuizChoice = {
+                                text: choiceForm.get('text')?.value,
+                                isCorrect: choiceForm.get('isCorrect')?.value === 'true',
+                            };
+                            question.choices?.push(choice);
+                        });
+                        questions.push(question);
+                    });
 
-            const createdQuiz: Quiz = {
-                id: this.quiz?.id,
-                title: this.quizForm.value.title,
-                description: this.quizForm.value.description,
-                duration: this.quizForm.value.duration,
-                lastModification: now.toString(),
-                questions,
-                visible: false,
-            };
-            if (this.mode === PageMode.MODIFICATION) {
-                this.quizService.basicPut(createdQuiz).subscribe();
-            } else {
-                createdQuiz.id = generateRandomId();
-                this.quizService.basicPost(createdQuiz).subscribe();
-            }
-            this.navigateRoute.navigate(['/']);
+                    const createdQuiz: Quiz = {
+                        id: this.quiz?.id,
+                        title: this.quizForm.value.title,
+                        description: this.quizForm.value.description,
+                        duration: this.quizForm.value.duration,
+                        lastModification: now.toString(),
+                        questions,
+                        visible: false,
+                    };
+                    if (this.mode === PageMode.MODIFICATION) {
+                        this.quizService.basicPut(createdQuiz).subscribe();
+                    } else {
+                        createdQuiz.id = generateRandomId();
+                        this.quizService.basicPost(createdQuiz).subscribe();
+                    }
+                    this.navigateRoute.navigate(['/']);
+                } else {
+                    window.alert('The quiz name that you entered already exists');
+                }
+            });
         } else {
             this.showPopupIfFormConditionMet(true);
-            // eslint-disable-next-line no-console
-            console.log('Form is invalid!');
         }
     }
 }
