@@ -137,6 +137,14 @@ export class QuestionListComponent {
         this.quizCreationService.moveQuestionDown(index, this.questionsArray);
     }
 
+    moveChoiceUp(questionIndex: number, choiceIndex: number) {
+        this.quizCreationService.moveChoiceUp(questionIndex, choiceIndex, this.questionsArray);
+    }
+
+    moveChoiceDown(questionIndex: number, choiceIndex: number) {
+        this.quizCreationService.moveChoiceDown(questionIndex, choiceIndex, this.questionsArray);
+    }
+
     addChoice(questionIndex: number, choiceIndex: number) {
         this.quizCreationService.addChoice(questionIndex, choiceIndex, this.questionsArray);
     }
