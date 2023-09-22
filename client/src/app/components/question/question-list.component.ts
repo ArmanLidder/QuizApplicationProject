@@ -11,11 +11,11 @@ const minNumberOfChoicesPerQuestion = 2;
 const NON_EXISTANT_INDEX = -1;
 
 @Component({
-    selector: 'app-question',
-    templateUrl: './question.component.html',
-    styleUrls: ['./question.component.scss'],
+    selector: 'app-question-list',
+    templateUrl: './question-list.component.html',
+    styleUrls: ['./question-list.component.scss'],
 })
-export class QuestionComponent {
+export class QuestionListComponent {
     @Input() questionsArray: FormArray | undefined;
     @Input() parentGroup: FormGroup;
 
@@ -61,8 +61,9 @@ export class QuestionComponent {
     verifyConditionChoices(indexQuestion: number) {
         let counter = 0;
         const choices = this.getQuestionChoices(indexQuestion);
-        choices.forEach((choice: any) => {
-            if (choice.isCorrect === 'true') {
+        choices.forEach((choice: FormChoice) => {
+            const condition = (choice.isCorrect as unknown as string) === 'true';
+            if (condition) {
                 ++counter;
             }
         });
@@ -104,6 +105,7 @@ export class QuestionComponent {
 
     modifyQuestion(index: number) {
         if (this.quizCreationService.modifiedQuestionIndex === NON_EXISTANT_INDEX || index === this.quizCreationService.modifiedQuestionIndex) {
+            this.quizCreationService.modifiedQuestionIndex = index;
             this.quizCreationService.modifyQuestion(index, this.questionsArray);
         } else if (
             this.quizCreationService.modifiedQuestionIndex === NON_EXISTANT_INDEX ||
