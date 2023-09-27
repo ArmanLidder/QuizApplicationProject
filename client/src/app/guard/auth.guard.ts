@@ -1,8 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
-import { Observable } from 'rxjs';
-
+import { map, Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
@@ -15,5 +14,14 @@ class AuthGuard {
 }
 
 export const authGuardAuthentification: CanActivateFn = (): Observable<boolean> => {
-    return inject(AuthGuard).canActivate();
+    const router = new Router();
+    const authGuard = inject(AuthGuard);
+    return authGuard.canActivate().pipe(
+        map((canActivate) => {
+            if (!canActivate) {
+                router.navigate(['/game-admin-prompt']);
+            }
+            return canActivate;
+        }),
+    );
 };
