@@ -72,12 +72,12 @@ describe('PasswordPromptComponent', () => {
     });
 
     it('should start password validation when user press enter key on keyboard', () => {
-        const clickSpy = spyOn(component.enterButton.nativeElement, 'click');
+        const clickEventSpy = spyOn(component.enterButton.nativeElement, 'click');
         document.dispatchEvent(
             new KeyboardEvent('keydown', {
                 key: 'Enter',
             }),
         );
-        expect(clickSpy).toHaveBeenCalled();
+        expect(clickEventSpy).toHaveBeenCalled();
     });
 });
