@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild, ElementRef, NgModule } from '@angular/core';
 import { QuizService } from '@app/services/quiz.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
+import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { Quiz } from '@app/interfaces/quiz.interface';
 
 const CREATED = 201;
@@ -19,7 +20,7 @@ export class GamesListComponent implements OnInit {
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
 
     quizzes: Quiz[];
-    importedQuiz: Quiz | null;
+    importedQuiz: Quiz;
     selectedQuiz: Quiz | null;
 
     private asyncFileRead: Promise<void>;
@@ -29,6 +30,7 @@ export class GamesListComponent implements OnInit {
     constructor(
         public quizServices: QuizService,
         public quizValidator: QuizValidationService,
+        public quizCreationServices: QuizCreationService,
     ) {}
 
     ngOnInit() {
@@ -64,7 +66,7 @@ export class GamesListComponent implements OnInit {
     selectFile(event: Event) {
         if (event.target instanceof HTMLInputElement && event.target !== undefined) {
             const selectedFile = event.target.files && event.target.files[0];
-            if (selectedFile) if (selectedFile.type === 'application/json') this.readFile(selectedFile);
+            if (selectedFile?.type === 'application/json') this.readFile(selectedFile);
         }
     }
 
@@ -72,21 +74,33 @@ export class GamesListComponent implements OnInit {
         this.fileInput.nativeElement.click();
         this.asyncFileRead = this.waitForFileRead();
         this.asyncFileRead.then(() => {
-            if (this.importedQuiz) {
-                if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
-                    this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((response) => {
-                        if (response.body?.isUnique) {
-                            this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((res) => {
-                                if (res.status === CREATED) this.populateGameList();
-                            });
-                        } else {
-                            window.alert('Un quiz ayant le même titre existe déjà');
+            if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
+                this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((res) => {
+                    if (res.body?.isUnique) {
+                        try {
+                            this.quizCreationServices.fillForm(this.importedQuiz);
+                        } catch (error) {
+                            window.alert(`Erreur lors de l'importation:\n" ${error}`);
+                            return;
                         }
-                    });
-                }
+                        this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((response) => {
+                            if (response.status === CREATED) this.populateGameList();
+                        });
+                    } else {
+                        window.alert('Un quiz ayant le même titre existe déjà');
+                    }
+                });
             }
         });
     }
+
+    // isGoodFormatAndUniqueQuiz() {
+    //     const quiz = this.importedQuiz as Quiz;
+    //     const isValidFormat = this.quizValidator.isValidQuizFormat(quiz);
+    //     this.quizServices.checkTitleUniqueness(quiz.title).subscribe();
+    //     console.log(isUnique);
+    //     return isValidFormat && isUnique;
+    // }
 
     selectQuiz(quiz: Quiz): void {
         this.selectedQuiz = quiz;
@@ -97,7 +111,9 @@ export class GamesListComponent implements OnInit {
             const fileReader = new FileReader();
             fileReader.onload = (e) => {
                 try {
+                    const currentDate = new Date();
                     this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz;
+                    this.importedQuiz.lastModification = currentDate.toDateString() + ' ' + currentDate.toTimeString();
                     this.resolveasyncFileRead();
                 } catch (error) {
                     this.rejectasyncFileRead(error);
