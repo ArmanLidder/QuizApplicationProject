@@ -21,7 +21,6 @@ export class PlayAreaComponent implements OnInit {
     timer = 0;
     currentTimerIndex = 0;
     locked = false;
-    selectedChoice = false;
     disableOption = false;
     clickedValidation = false;
     quizId = this.route.snapshot.paramMap.get('id');
@@ -34,7 +33,9 @@ export class PlayAreaComponent implements OnInit {
     pointage = 0;
     numberOfIncorrectCards = 0;
     numberOfcorrectCards = 0;
+    numberOfCorrectAnswers = 0; 
     selectedCard = [false, false, false, false];
+    
     constructor(
         private readonly timeService: TimeService,
         private quizService: QuizService,
@@ -44,8 +45,18 @@ export class PlayAreaComponent implements OnInit {
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            this.bgColor = 'green';
+            this.clickedValidation = true;
         }
+        if (this.answerChoices && this.answerChoices.length > 1 ) {
+        if(event.key <= this.answerChoices.length.toString() ){
+            if(!this.clickedValidation){
+                    this.onCardSelected(parseInt(event.key)-1);  
+            }
+        }
+        }
+            
+              
+        
     }
 
     onCardSelected(index: number) {
@@ -68,6 +79,31 @@ export class PlayAreaComponent implements OnInit {
         }
     }
 
+    resetInfos(){
+        
+        this.numberOfIncorrectCards = 0;
+        this.numberOfcorrectCards = 0;
+        this.selectedCard = [false, false, false, false];
+        this.questionIndex++;
+        this.clickedValidation = false;
+        this.timeEnd = false;
+        this.timeService.stopTimer(this.currentTimerIndex);
+        this.currentTimerIndex = this.currentTimerIndex - 1;
+        this.timeService.startTimer(this.currentTimerIndex);
+    }
+
+    setNumberOfCorrectAnswers(){
+        this.numberOfCorrectAnswers=0;
+        if (this.answerChoices !== undefined ) {
+        for(let i=0; i<this.answerChoices.length; i++){
+            if(this.answerChoices[i].isCorrect){
+                this.numberOfCorrectAnswers++;
+            }
+        }
+    }
+    }
+
+
     ngOnInit(): void {
         if (this.quizId !== null) {
             this.quizService.basicGetById(this.quizId).subscribe((quiz) => {
@@ -75,15 +111,15 @@ export class PlayAreaComponent implements OnInit {
                 this.timer = this.quiz.duration;
                 this.timeService.createTimer(this.timer);
                 this.timeService.startTimer(this.currentTimerIndex);
-
+                
                 setInterval(() => {
                     this.time = this.timeService.getTime(this.currentTimerIndex);
                     this.currentQuestion = this.quiz.questions[this.questionIndex].text;
                     this.questionPoints = this.quiz.questions[this.questionIndex].points;
                     this.answerChoices = this.quiz.questions[this.questionIndex].choices;
-
+                    this.setNumberOfCorrectAnswers();
                     if (!this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
-                        if (this.numberOfcorrectCards > 0 && this.numberOfIncorrectCards === 0) {
+                        if (this.numberOfcorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
                             this.pointage += this.questionPoints;
                         }
                         this.timeEnd = true;
@@ -97,16 +133,7 @@ export class PlayAreaComponent implements OnInit {
                         this.timeService.startTimer(this.currentTimerIndex);
                     } else if (this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
                         if (this.questionIndex < this.quiz.questions.length - 1) {
-                            this.numberOfIncorrectCards = 0;
-                            this.numberOfcorrectCards = 0;
-                            this.selectedCard = [false, false, false, false];
-                            this.questionIndex++;
-                            this.selectedChoice = false;
-                            this.clickedValidation = false;
-                            this.timeEnd = false;
-                            this.timeService.stopTimer(this.currentTimerIndex);
-                            this.currentTimerIndex = this.currentTimerIndex - 1;
-                            this.timeService.startTimer(this.currentTimerIndex);
+                            this.resetInfos();
                         }
                     }
 
@@ -117,6 +144,7 @@ export class PlayAreaComponent implements OnInit {
                         this.disableOption = false;
                         this.bgColor = 'transparent';
                     }
+                   
                 }, intervalTime);
             });
         }

@@ -16,9 +16,10 @@
     <div id="answer-field">
         <app-answer-choice-card
             *ngFor="let choice of answerChoices; let i = index"
+            
             (click)="onCardSelected(i)"
             [disabled]="disableOption"
-            [selected]="selectedChoice"
+            [selected]="selectedCard[i]"
             [cardNumber]="i + 1"
             [cardQuestion]="choice.text"
             [isCorrect]="choice.isCorrect && timeEnd"
