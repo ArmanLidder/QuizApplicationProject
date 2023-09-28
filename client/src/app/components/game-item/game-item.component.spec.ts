@@ -1,13 +1,17 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
+import { HttpClientModule } from '@angular/common/http';
 import { GameItemComponent } from './game-item.component';
 import { QuizService } from '@app/services/quiz.service';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
 
-describe('GameItemComponent', () => {
+fdescribe('GameItemComponent', () => {
     let quizServiceSpy: SpyObj<QuizService>;
     let component: GameItemComponent;
     let fixture: ComponentFixture<GameItemComponent>;
+    let removeQuizSpy: jasmine.Spy;
 
     beforeEach(() => {
         quizServiceSpy = jasmine.createSpyObj('QuizService', ['basicDelete']);
@@ -15,7 +19,7 @@ describe('GameItemComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GameItemComponent],
-            imports: [HttpClientModule],
+            imports: [HttpClientModule, RouterTestingModule],
             providers: [{ provide: QuizService, useValue: quizServiceSpy }],
         }).compileComponents();
     }));
@@ -40,6 +44,7 @@ describe('GameItemComponent', () => {
             visible: true,
         };
         component.isAdmin = true;
+        removeQuizSpy = spyOn(component.removeQuiz, 'emit');
         fixture.detectChanges();
     });
 
@@ -47,25 +52,106 @@ describe('GameItemComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('clicking the delete button should call the quizService basicDelete method', () => {
-        const button = fixture.debugElement.nativeElement.querySelector('.delete-button');
-        button.click();
-        expect(quizServiceSpy.basicDelete).toHaveBeenCalled();
+    it('should call the basicDelete and emit an event with good quiz id when delete bouton is clicked', () => {
+        const deleteBtn = fixture.debugElement.nativeElement.querySelector('.delete-button');
+        quizServiceSpy.basicDelete.and.returnValue(of({}));
+        deleteBtn.click();
+        expect(quizServiceSpy.basicDelete).toHaveBeenCalledWith(component.quiz.id);
+        expect(removeQuizSpy).toHaveBeenCalledWith(component.quiz.id);
     });
 
-    it('clicking the update button should call updateGame()', () => {
-        // TODO: This test is temporary, need to make it better
-        spyOn(component, 'updateGame');
-        const button = fixture.debugElement.nativeElement.querySelector('.update-button');
-        button.click();
-        expect(component.updateGame).toHaveBeenCalled();
+    it('should navigate /quiz-creation/:id when update bouton is clicked', () => {
+        const updateBtn = fixture.debugElement.nativeElement.querySelector('.update-button');
+        const routerNavigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+        updateBtn.click();
+        expect(routerNavigateSpy).toHaveBeenCalledWith(['quiz-creation', component.quiz.id]);
     });
 
-    it('should export the game when export button is pressed', () => {
-        // TODO: This test is temporary, need to make it better
-        spyOn(component, 'exportGame');
-        const button = fixture.debugElement.nativeElement.querySelector('.export-button');
-        button.click();
-        expect(component.exportGame).toHaveBeenCalled();
+    it('should call formatQuiz when exporting game', () => {
+        const formatQuizSpy = spyOn(component, 'formatQuiz');
+        const buildJSONFileSpy = spyOn(component, 'buildJSONFile').and.returnValue('fakeBlobUrl');
+        const startExportFileSpy = spyOn(component, 'startExportFile');
+        component.exportGame();
+        expect(formatQuizSpy).toHaveBeenCalled();
+        expect(buildJSONFileSpy).toHaveBeenCalled();
+        expect(startExportFileSpy).toHaveBeenCalledWith('fakeBlobUrl');
+    });
+
+    it('should call buildJSONFile when exporting game without the visible property', () => {
+        const formatedQuiz = {
+            id: '1',
+            title: 'Filler',
+            description: 'filler description',
+            duration: 30,
+            lastModification: '2023-09-15',
+            questions: [
+                {
+                    type: 0,
+                    text: 'What is 2 + 2?',
+                    points: 5,
+                    choices: [{ text: '3' }, { text: '4', isCorrect: true }, { text: '5' }],
+                },
+            ],
+        };
+        const buildJSONFileSpy = spyOn(component, 'buildJSONFile');
+        const startExportFileSpy = spyOn(component, 'startExportFile');
+        component.exportGame();
+        expect(buildJSONFileSpy).toHaveBeenCalledWith(formatedQuiz);
+        expect(startExportFileSpy).toHaveBeenCalled();
+    });
+
+    it('should call startExportFile when exporting game ', () => {
+        const startExportFileSpy = spyOn(component, 'startExportFile');
+        const revokeObjectURLSpy = spyOn(window.URL, 'revokeObjectURL');
+        component.exportGame();
+        expect(startExportFileSpy).toHaveBeenCalled();
+        expect(revokeObjectURLSpy).toHaveBeenCalled();
+    });
+
+    it('should correctly format the quiz', () => {
+        const formattedQuiz = component.formatQuiz();
+        expect(formattedQuiz).toEqual({
+            id: '1',
+            title: 'Filler',
+            description: 'filler description',
+            duration: 30,
+            lastModification: '2023-09-15',
+            questions: [
+                {
+                    type: 0,
+                    text: 'What is 2 + 2?',
+                    points: 5,
+                    choices: [{ text: '3' }, { text: '4', isCorrect: true }, { text: '5' }],
+                },
+            ],
+        });
+    });
+
+    it('should correctly build a JSON file URL when exporting game ', () => {
+        const formattedQuiz = {
+            id: '1',
+            title: 'Filler',
+            description: 'filler description',
+            duration: 30,
+            lastModification: '2023-09-15',
+            questions: [
+                {
+                    type: 0,
+                    text: 'What is 2 + 2?',
+                    points: 5,
+                    choices: [{ text: '3' }, { text: '4', isCorrect: true }, { text: '5' }],
+                },
+            ],
+        };
+        const jsonBlobURL = component.buildJSONFile(formattedQuiz);
+        expect(jsonBlobURL).toBeTruthy();
+    });
+
+    it('should start the export file process when exporting a game', () => {
+        const aElement: HTMLAnchorElement = component.downloadLink.nativeElement;
+        const startExportFileSpy = spyOn(component, 'startExportFile').and.callThrough();
+        component.exportGame();
+        expect(aElement.download).toBe(component.quiz.title + '.json');
+        expect(startExportFileSpy).toHaveBeenCalled();
     });
 });
