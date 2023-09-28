@@ -107,30 +107,29 @@ describe('QuizController', () => {
         quizService.update.throws(new Error('test error!'));
         quizService.isTitleUnique.throws(new Error('test error!'));
         quizService.delete.throws(new Error('test error!'));
-    
-        let res = await supertest(expressApp).get('/api/quiz');
+
+        const res = await supertest(expressApp).get('/api/quiz');
         expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-    
-        let res2 = await supertest(expressApp).get('/api/quiz/visible');
+
+        const res2 = await supertest(expressApp).get('/api/quiz/visible');
         expect(res2.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-    
-        let res3 = await supertest(expressApp).post('/api/quiz').send({ quiz: mockQuiz });
+
+        const res3 = await supertest(expressApp).post('/api/quiz').send({ quiz: mockQuiz });
         expect(res3.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-    
-        let res4 = await supertest(expressApp).put('/api/quiz').send({ quiz: mockQuiz });
+
+        const res4 = await supertest(expressApp).put('/api/quiz').send({ quiz: mockQuiz });
         expect(res4.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-    
-        let res5 = await supertest(expressApp).patch(`/api/quiz/${testId}`).send({ visible: false });
+
+        const res5 = await supertest(expressApp).patch(`/api/quiz/${testId}`).send({ visible: false });
         expect(res5.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-    
-        let res6 = await supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: 'New Quiz Title' });
+
+        const res6 = await supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: 'New Quiz Title' });
         expect(res6.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-    
-        let res7 = await supertest(expressApp).delete(`/api/quiz/${testId}`);
+
+        const res7 = await supertest(expressApp).delete(`/api/quiz/${testId}`);
         expect(res7.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
 
-        let res8 = await supertest(expressApp).get(`/api/quiz/${testId}`);
+        const res8 = await supertest(expressApp).get(`/api/quiz/${testId}`);
         expect(res8.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
     });
-    
 });
