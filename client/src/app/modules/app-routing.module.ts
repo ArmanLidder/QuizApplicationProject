@@ -11,12 +11,12 @@ import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-cr
 import { WaitingRoomPageComponent } from '@app/pages/waiting-room-page/waiting-room-page.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    { path: '', component: MainPageComponent },
     { path: 'home', component: MainPageComponent },
     { path: 'game', component: GamePageComponent },
     { path: 'game-creation-page', component: GameCreationPageComponent },
-    { path: 'quiz-creation', component: QuizCreationPageComponent },
-    { path: 'quiz-creation/:id', component: QuizCreationPageComponent },
+    { path: 'quiz-creation', component: QuizCreationPageComponent, canActivate: [authGuardAuthentification] },
+    { path: 'quiz-creation/:id', component: QuizCreationPageComponent, canActivate: [authGuardAuthentification] },
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
     { path: 'quiz-testing-page/:id', component: GamePageComponent },
     { path: 'waiting-room-page/:id', component: WaitingRoomPageComponent },

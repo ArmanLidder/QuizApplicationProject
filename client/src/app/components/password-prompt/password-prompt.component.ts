@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
-// import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-password-prompt',
@@ -8,21 +7,41 @@ import { AdminAuthenticatorService } from '@app/services/admin-authenticator.ser
     styleUrls: ['./password-prompt.component.scss'],
 })
 export class PasswordPromptComponent {
-    loginStatus: string | null = '';
+    @ViewChild('enterButton', { static: false }) enterButton: ElementRef;
+    loginStatus: string | null;
     errorMessage: string = 'Invalid password. Please try again!';
-    successMessage: string = 'Login Succesful';
     inputBorderColor: string = '';
     textColor: string = '';
+
     constructor(public authenticatorService: AdminAuthenticatorService) {}
+
+    @HostListener('document:keydown.enter')
+    handleKeyboardEvent() {
+        this.enterButton.nativeElement.click();
+    }
 
     updateStatus() {
         this.authenticatorService.validatePassword().subscribe((res) => {
-            this.loginStatus = res ? this.successMessage : this.errorMessage;
-            if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
+            this.treatResponse(res);
         });
     }
 
-    showErrorFeedback() {
+    private treatResponse(res: boolean): void {
+        if (!res) {
+            this.loginStatus = this.errorMessage;
+            this.showErrorFeedback();
+        } else {
+            this.reset();
+        }
+    }
+
+    private reset() {
+        this.loginStatus = null;
+        this.textColor = '';
+        this.inputBorderColor = '';
+    }
+
+    private showErrorFeedback() {
         this.textColor = 'red-text';
         this.inputBorderColor = 'red-border';
     }

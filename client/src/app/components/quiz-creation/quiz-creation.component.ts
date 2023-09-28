@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { QuizService } from '@app/services/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
@@ -70,48 +70,56 @@ export class QuizCreationComponent {
         return condition;
     }
 
-    // TODO: change it so that it works with reactive forms
     onSubmit() {
         if (this.quizForm?.valid) {
-            const now = new Date();
-            const questions: QuizQuestion[] = [];
-            this.questionsArray.controls.forEach((questionForm) => {
-                const question: QuizQuestion = {
-                    type: questionForm.get('type')?.value,
-                    text: questionForm.get('text')?.value,
-                    points: questionForm.get('points')?.value,
-                    choices: [],
-                };
-                (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
-                    const choice: QuizChoice = {
-                        text: choiceForm.get('text')?.value,
-                        isCorrect: choiceForm.get('isCorrect')?.value === 'true',
-                    };
-                    question.choices?.push(choice);
-                });
-                questions.push(question);
-            });
+            const title = this.quizForm.get('title')?.value;
+            this.quizService.checkTitleUniqueness(title).subscribe((response) => {
+                if (response.body?.isUnique || this.mode === PageMode.MODIFICATION) {
+                    const now = new Date();
+                    const questions: QuizQuestion[] = [];
+                    this.questionsArray.controls.forEach((questionForm) => {
+                        const question: QuizQuestion = {
+                            type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
+                            text: questionForm.get('text')?.value,
+                            points: questionForm.get('points')?.value,
+                            choices: [],
+                        };
+                        (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
+                            const choice: QuizChoice = {
+                                text: choiceForm.get('text')?.value,
+                                isCorrect: choiceForm.get('isCorrect')?.value === 'true',
+                            };
+                            question.choices?.push(choice);
+                        });
+                        questions.push(question);
+                    });
 
-            const createdQuiz: Quiz = {
-                id: this.quiz.id,
-                title: this.quizForm.value.title,
-                duration: this.quizForm.value.duration,
-                description: this.quizForm.value.description,
-                lastModification: now.toString(),
-                questions,
-                visible: false,
-            };
-            if (this.mode === PageMode.MODIFICATION) {
-                this.quizService.basicPut(createdQuiz).subscribe();
-            } else {
-                createdQuiz.id = generateRandomId();
-                this.quizService.basicPost(createdQuiz).subscribe();
-            }
-            this.navigateRoute.navigate(['/game-admin-page']);
+                    const createdQuiz: Quiz = {
+                        id: this.quiz?.id,
+                        title: this.quizForm.value.title,
+                        description: this.quizForm.value.description,
+                        duration: this.quizForm.value.duration,
+                        lastModification: now.toString(),
+                        questions,
+                        visible: false,
+                    };
+                    const navigateToAdminCallBack = () => {
+                        this.navigateRoute.navigate(['/game-admin-page']);
+                    };
+
+                    if (this.mode === PageMode.MODIFICATION) {
+                        this.quizService.basicPut(createdQuiz).subscribe(navigateToAdminCallBack);
+                    } else {
+                        createdQuiz.id = generateRandomId();
+                        this.quizService.basicPost(createdQuiz).subscribe(navigateToAdminCallBack);
+                    }
+                    // this.navigateRoute.navigate(['game-admin-page']);
+                } else {
+                    window.alert('The quiz name that you entered already exists');
+                }
+            });
         } else {
             this.showPopupIfFormConditionMet(true);
-            // eslint-disable-next-line no-console
-            console.log('Form is invalid!');
         }
     }
 }

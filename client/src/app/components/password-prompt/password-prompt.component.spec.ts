@@ -53,7 +53,9 @@ describe('PasswordPromptComponent', () => {
     it('should set loginStatus to success message on successful validation', () => {
         authServiceSpy.validatePassword.and.returnValue(of(true));
         component.updateStatus();
-        expect(component.loginStatus).toBe(component.successMessage);
+        expect(component.loginStatus).toBe(null);
+        expect(component.inputBorderColor).toEqual('');
+        expect(component.textColor).toEqual('');
     });
 
     it('should set loginStatus to error message on failed validation', () => {
@@ -63,8 +65,19 @@ describe('PasswordPromptComponent', () => {
     });
 
     it('should set different text and border colors to indicate an error', () => {
-        component.showErrorFeedback();
+        authServiceSpy.validatePassword.and.returnValue(of(false));
+        component.updateStatus();
         expect(component.textColor).toBe('red-text');
         expect(component.inputBorderColor).toBe('red-border');
+    });
+
+    it('should start password validation when user press enter key on keyboard', () => {
+        const clickEventSpy = spyOn(component.enterButton.nativeElement, 'click');
+        document.dispatchEvent(
+            new KeyboardEvent('keydown', {
+                key: 'Enter',
+            }),
+        );
+        expect(clickEventSpy).toHaveBeenCalled();
     });
 });

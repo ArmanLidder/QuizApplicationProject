@@ -34,7 +34,7 @@ export class DatabaseService {
                         {
                             type: QuestionType.QCM,
                             text: 'What is 2 + 2?',
-                            points: 5,
+                            points: 50,
                             choices: [{ text: '3' }, { text: '4', isCorrect: true }, { text: '5' }],
                         },
                     ],
@@ -50,14 +50,23 @@ export class DatabaseService {
                         {
                             type: QuestionType.QCM,
                             text: 'What is the chemical symbol for water?',
-                            points: 5,
-                            choices: [{ text: 'O2' }, { text: 'H2O', isCorrect: true }, { text: 'CO2' }],
+                            points: 50,
+                            choices: [
+                                { text: 'O2', isCorrect: false },
+                                { text: 'H2O', isCorrect: true },
+                                { text: 'CO2', isCorrect: true },
+                            ],
                         },
                         {
                             type: QuestionType.QCM,
                             text: 'What is the boiling point of water in Celsius?',
                             points: 10,
-                            choices: [{ text: '0°C' }, { text: '100°C', isCorrect: true }, { text: '50°C' }, { text: '-10°C' }],
+                            choices: [
+                                { text: '0°C', isCorrect: false },
+                                { text: '100°C', isCorrect: true },
+                                { text: '50°C', isCorrect: true },
+                                { text: '-10°C', isCorrect: false },
+                            ],
                         },
                     ],
                     visible: true,
@@ -73,8 +82,8 @@ export class DatabaseService {
 
     async populateDB(collection: string, quizzes: Quiz[]): Promise<void> {
         // console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
-        for (const course of quizzes) {
-            await this.db.collection(collection).insertOne(course);
+        for (const quiz of quizzes) {
+            await this.db.collection(collection).insertOne(quiz);
         }
     }
 }

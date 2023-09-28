@@ -16,11 +16,11 @@ export class QuizService {
     }
 
     async getAllVisible() {
-        return (await this.collection.find({ visible: true }).toArray()) as unknown[] as Quiz[];
+        return (await this.collection.find({ visible: true }, { projection: { _id: 0 } }).toArray()) as unknown[] as Quiz[];
     }
 
     async getById(id: string) {
-        const quiz = await this.collection.findOne({ id });
+        const quiz = await this.collection.findOne({ id }, { projection: { _id: 0 } });
         return quiz as unknown as Quiz;
     }
 
@@ -32,8 +32,13 @@ export class QuizService {
         await this.collection.updateOne({ id: quizId }, { $set: { visible: quizVisibility } }, { upsert: true });
     }
 
+    async isTitleUnique(title: string): Promise<boolean> {
+        const quiz = await this.collection.findOne({ title });
+        return quiz === null;
+    }
+
     async replace(quiz: Quiz) {
-        await this.collection.replaceOne({ id: quiz.id }, { $set: quiz }, { upsert: true });
+        await this.collection.replaceOne({ id: quiz.id }, quiz, { upsert: true });
     }
 
     async delete(id: string) {

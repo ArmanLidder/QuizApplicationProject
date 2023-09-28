@@ -13,7 +13,7 @@
                         <p>Question {{ i + 1 }}:</p>
                         <label for="type{{i}}">Type de question:</label>
                         <select formControlName="type" name="type{{i}}">
-                            <option value="qcm">QCM</option>
+                            <option value="QCM">QCM</option>
                             <!--                            <option value="qrl">QRL</option>-->
                         </select><br>
                         <div *ngIf="question.get('type')?.hasError('required') && question.get('type')?.touched" class="error-message">
@@ -49,7 +49,15 @@
                         <div *ngFor="let choix of getChoicesArray(i).controls; let j = index">
                             <div [formGroupName]="j">
                                 <label for="choix{{i}}{{j}}">le choix{{j + 1}}:</label><br>
-                                <input type="text" [attr.id]="'choix' + i + j" name="textchoix{{i}}{{j}}" formControlName="text" required><br>
+                                <div class='choice-input-text'>
+                                    <input type="text" [attr.id]="'choix' + i + j" name="textchoix{{i}}{{j}}" formControlName="text" required><br>
+                                    <button *ngIf='j !== 0' type="button" (click)='moveChoiceUp(i, j)'>
+                                        <mat-icon>keyboard_arrow_up</mat-icon>
+                                    </button><br><br>
+                                    <button *ngIf='j !== getChoicesArray(i).controls.length - 1' type="button" (click)='moveChoiceDown(i, j)'>
+                                        <mat-icon>keyboard_arrow_down</mat-icon>
+                                    </button><br><br>
+                                </div>
                                 <div *ngIf="choix.get('text')?.hasError('required') && choix.get('text')?.touched" class="error-message">
                                     Text is required
                                 </div>
@@ -67,7 +75,7 @@
                 <div *ngIf="!question.get('beingModified')?.value">
                     <p>Question {{i + 1}}:</p>
                     <p>Type de question: {{question.get('type')?.value}}</p>
-                    <p>Contenu de la question : {{question.get('text')?.value}}</p>
+                    <p class='truncate'>Contenu de la question : {{question.get('text')?.value}}</p>
                     <p>le nombre de points de la question: {{question.get('points')?.value}} </p>
                     <p>Choix:</p>
                     <div class="choicesList">

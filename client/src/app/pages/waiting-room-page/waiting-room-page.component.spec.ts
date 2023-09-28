@@ -3,19 +3,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WaitingRoomPageComponent } from './waiting-room-page.component';
 
 describe('WaitingRoomPageComponent', () => {
-  let component: WaitingRoomPageComponent;
-  let fixture: ComponentFixture<WaitingRoomPageComponent>;
+    let component: WaitingRoomPageComponent;
+    let fixture: ComponentFixture<WaitingRoomPageComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [WaitingRoomPageComponent]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [WaitingRoomPageComponent],
+        });
+        fixture = TestBed.createComponent(WaitingRoomPageComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     });
-    fixture = TestBed.createComponent(WaitingRoomPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

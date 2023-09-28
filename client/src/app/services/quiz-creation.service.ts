@@ -82,8 +82,8 @@ export class QuizCreationService {
     fillForm(quiz?: Quiz) {
         const quizForm: FormGroup = this.fb.group({
             title: [quiz?.title, Validators.required],
-            description: [quiz?.description, Validators.required],
             duration: [quiz?.duration, [Validators.required, Validators.min(minQcmDuration), Validators.max(maxQcmDuration)]],
+            description: [quiz?.description, Validators.required],
             questions: this.fb.array([], [Validators.minLength(minNumberOfQuestions), Validators.required]),
         });
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
@@ -91,7 +91,7 @@ export class QuizCreationService {
     }
 
     moveQuestionUp(index: number, questionsFormArray?: FormArray) {
-        this.swapQuestions(index, index - 1, questionsFormArray);
+        this.swapElements(index, index - 1, questionsFormArray);
         if (this.modifiedQuestionIndex === index) {
             this.modifiedQuestionIndex--;
         } else if (this.modifiedQuestionIndex === index - 1) {
@@ -100,7 +100,7 @@ export class QuizCreationService {
     }
 
     moveQuestionDown(index: number, questionsFormArray?: FormArray) {
-        this.swapQuestions(index, index + 1, questionsFormArray);
+        this.swapElements(index, index + 1, questionsFormArray);
         if (this.modifiedQuestionIndex === index) {
             this.modifiedQuestionIndex++;
         } else if (this.modifiedQuestionIndex === index + 1) {
@@ -117,11 +117,23 @@ export class QuizCreationService {
         }
     }
 
+    moveChoiceUp(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
+        const choicesArray = this.getChoicesArray(questionIndex, questionFormArray);
+        this.swapElements(choiceIndex, choiceIndex - 1, choicesArray);
+    }
+
+    moveChoiceDown(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
+        const choicesArray = this.getChoicesArray(questionIndex, questionFormArray);
+        this.swapElements(choiceIndex, choiceIndex + 1, choicesArray);
+    }
+
     addChoiceFirst(questionIndex: number, questionFormArray?: FormArray) {
         const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
         const choicesArrayForm = questionGroup.get('choices') as FormArray;
         const choiceToAdd = this.initChoice();
-        choicesArrayForm.insert(0, choiceToAdd);
+        if (choicesArrayForm.length < maxNumberOfChoicesPerQuestion) {
+            choicesArrayForm.insert(0, choiceToAdd); // could be changed to push
+        }
     }
 
     removeChoice(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
@@ -134,16 +146,15 @@ export class QuizCreationService {
 
     getChoicesArray(index: number, questionArrayForm?: FormArray) {
         const questionGroup = questionArrayForm?.at(index) as FormGroup;
-        return questionGroup.get('choices') as FormArray;
+        return questionGroup?.get('choices') as FormArray;
     }
 
-    private swapQuestions(firstIndex: number, secondIndex: number, questionsArrayForm?: FormArray) {
-        const questionA = questionsArrayForm?.at(firstIndex) as FormGroup;
-        const questionB = questionsArrayForm?.at(secondIndex) as FormGroup;
-        questionsArrayForm?.setControl(firstIndex, questionB);
-        questionsArrayForm?.setControl(secondIndex, questionA);
+    private swapElements(firstIndex: number, secondIndex: number, arrayForm?: FormArray) {
+        const elementA = arrayForm?.at(firstIndex) as FormGroup;
+        const elementB = arrayForm?.at(secondIndex) as FormGroup;
+        arrayForm?.setControl(firstIndex, elementB);
+        arrayForm?.setControl(secondIndex, elementA);
     }
-
     private fillQuestions(questionsFormArray: FormArray, quizQuestions?: QuizQuestion[]) {
         quizQuestions?.forEach((question) => {
             questionsFormArray.push(this.initQuestion(question));
@@ -153,7 +164,7 @@ export class QuizCreationService {
     private initQuestion(question?: QuizQuestion): FormGroup {
         if (question) {
             const questionForm = this.fb.group({
-                type: [question.type === QuestionType.QCM ? 'qcm' : 'qlr', Validators.required],
+                type: [question.type === QuestionType.QCM ? 'QCM' : 'QLR', Validators.required],
                 text: [question.text, Validators.required],
                 points: [question.points, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
                 choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
@@ -165,7 +176,7 @@ export class QuizCreationService {
         return this.fb.group({
             type: [QuestionType.QCM, Validators.required],
             text: ['', Validators.required],
-            points: [1, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
+            points: [0, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
             choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
             beingModified: true,
         });
@@ -177,11 +188,10 @@ export class QuizCreationService {
         });
     }
 
-    // Initialize a new choice form group
     private initChoice(choice?: QuizChoice): FormGroup {
         return this.fb.group({
             text: [choice?.text, Validators.required],
-            isCorrect: [choice?.isCorrect ?? false],
+            isCorrect: [choice?.isCorrect ? 'true' : 'false'],
         });
     }
 }

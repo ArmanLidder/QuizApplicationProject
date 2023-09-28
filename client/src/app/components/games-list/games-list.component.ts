@@ -18,13 +18,13 @@ export class GamesListComponent implements OnInit {
 
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
 
-    private asyncFileRead: Promise<void>;
-    private asyncFileResolver: () => void;
-    private asyncFileRejecter: (error: unknown) => void;
-
     quizzes: Quiz[];
     importedQuiz: Quiz | null;
     selectedQuiz: Quiz | null;
+
+    private asyncFileRead: Promise<void>;
+    private asyncFileResolver: () => void;
+    private asyncFileRejecter: (error: unknown) => void;
 
     constructor(
         public quizServices: QuizService,
@@ -68,6 +68,30 @@ export class GamesListComponent implements OnInit {
         }
     }
 
+    uploadFile() {
+        this.fileInput.nativeElement.click();
+        this.asyncFileRead = this.waitForFileRead();
+        this.asyncFileRead.then(() => {
+            if (this.importedQuiz) {
+                if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
+                    this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((response) => {
+                        if (response.body?.isUnique) {
+                            this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((res) => {
+                                if (res.status === CREATED) this.populateGameList();
+                            });
+                        } else {
+                            window.alert('Un quiz ayant le même titre existe déjà');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    selectQuiz(quiz: Quiz): void {
+        this.selectedQuiz = quiz;
+    }
+
     private readFile(selectedFile: File) {
         if (selectedFile.type === 'application/json') {
             const fileReader = new FileReader();
@@ -81,24 +105,6 @@ export class GamesListComponent implements OnInit {
             };
             fileReader.readAsText(selectedFile);
         }
-    }
-
-    uploadFile() {
-        this.fileInput.nativeElement.click();
-        this.asyncFileRead = this.waitForFileRead();
-        this.asyncFileRead.then(() => {
-            if (this.importedQuiz) {
-                if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
-                    this.quizServices.basicPost(this.importedQuiz).subscribe((res) => {
-                        if (res.status === CREATED) this.populateGameList();
-                    });
-                }
-            }
-        });
-    }
-
-    selectQuiz(quiz: Quiz): void {
-        this.selectedQuiz = quiz;
     }
 
     private async waitForFileRead(): Promise<void> {

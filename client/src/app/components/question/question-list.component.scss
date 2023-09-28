@@ -77,4 +77,14 @@
     display: none;
 }
 
+.truncate {
+    white-space: nowrap;       /* Prevent text from wrapping to the next line */
+    overflow: hidden;          /* Hide any content that overflows the container */
+    text-overflow: ellipsis;   /* Display ellipses (...) for hidden overflow text */
+    max-width: 50vw;
+}
+.choice-input-text {
+    display: flex;
+    flex-direction: row;
+}
 
