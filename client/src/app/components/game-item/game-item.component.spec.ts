@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
 
-fdescribe('GameItemComponent', () => {
+describe('GameItemComponent', () => {
     let quizServiceSpy: SpyObj<QuizService>;
     let component: GameItemComponent;
     let fixture: ComponentFixture<GameItemComponent>;
