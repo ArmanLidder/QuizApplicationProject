@@ -1,8 +1,10 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, NgModule } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QuizService } from '@app/services/quiz.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { Quiz } from '@app/interfaces/quiz.interface';
+import { generateRandomId } from 'src/utils/random-id-generator';
+import { getCurrentDateService } from 'src/utils/current-date-format';
 
 const CREATED = 201;
 
@@ -12,8 +14,6 @@ const CREATED = 201;
     styleUrls: ['./games-list.component.scss'],
 })
 export class GamesListComponent implements OnInit {
-    @NgModule() importError: string | null;
-
     @Input() isAdmin: boolean;
     @Input() isImportError: boolean = false;
 
@@ -22,8 +22,7 @@ export class GamesListComponent implements OnInit {
     quizzes: Quiz[];
     importedQuiz: Quiz;
     selectedQuiz: Quiz | null;
-
-    private asyncFileRead: Promise<void>;
+    asyncFileRead: Promise<void>;
     private asyncFileResolver: () => void;
     private asyncFileRejecter: (error: unknown) => void;
 
@@ -63,63 +62,39 @@ export class GamesListComponent implements OnInit {
         this.quizzes.splice(index, 1);
     }
 
-    selectFile(event: Event) {
-        if (event.target instanceof HTMLInputElement && event.target !== undefined) {
-            const selectedFile = event.target.files && event.target.files[0];
-            if (selectedFile?.type === 'application/json') this.readFile(selectedFile);
-        }
-    }
-
-    uploadFile() {
-        this.fileInput.nativeElement.click();
-        this.asyncFileRead = this.waitForFileRead();
-        this.asyncFileRead.then(() => {
-            if (this.quizValidator.isQuiz(this.importedQuiz)) {
-                this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((res) => {
-                    if (res.body?.isUnique) {
-                        try {
-                            this.quizCreationServices.fillForm(this.importedQuiz);
-                        } catch (error) {
-                            window.alert(`Erreur lors de l'importation:\n" ${error}`);
-                            return;
-                        }
-                        this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((response) => {
-                            if (response.status === CREATED) this.populateGameList();
-                        });
-                    } else {
-                        window.alert('Un quiz ayant le même titre existe déjà');
-                    }
-                });
-            }
-        });
-    }
-
-    // isGoodFormatAndUniqueQuiz() {
-    //     const quiz = this.importedQuiz as Quiz;
-    //     const isValidFormat = this.quizValidator.isValidQuizFormat(quiz);
-    //     this.quizServices.checkTitleUniqueness(quiz.title).subscribe();
-    //     console.log(isUnique);
-    //     return isValidFormat && isUnique;
-    // }
-
     selectQuiz(quiz: Quiz): void {
         this.selectedQuiz = quiz;
     }
 
+    selectFile(event: Event) {
+        if (event.target instanceof HTMLInputElement && event.target !== undefined) {
+            const selectedFile = event.target.files && event.target.files[0];
+            if (selectedFile?.type === 'application/json') this.readFile(selectedFile);
+            else window.alert('Erreur: Le format de fichier accepter est JSON');
+        }
+    }
+
+    async uploadFile() {
+        this.fileInput.nativeElement.click();
+        await this.waitForFileRead();
+        this.validateFileData();
+    }
+
     private readFile(selectedFile: File) {
-        if (selectedFile.type === 'application/json') {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-                try {
-                    const currentDate = new Date();
-                    this.importedQuiz = JSON.parse(e.target?.result as string) as Quiz;
-                    this.importedQuiz.lastModification = currentDate.toDateString() + ' ' + currentDate.toTimeString();
-                    this.resolveasyncFileRead();
-                } catch (error) {
-                    this.rejectasyncFileRead(error);
-                }
-            };
-            fileReader.readAsText(selectedFile);
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            this.extractQuizData(e);
+        };
+        fileReader.readAsText(selectedFile);
+    }
+
+    private extractQuizData(event: ProgressEvent<FileReader>) {
+        try {
+            this.importedQuiz = JSON.parse(event.target?.result as string);
+            this.importedQuiz.lastModification = getCurrentDateService();
+            this.resolveasyncFileRead();
+        } catch (error) {
+            this.rejectasyncFileRead(error);
         }
     }
 
@@ -136,5 +111,51 @@ export class GamesListComponent implements OnInit {
 
     private rejectasyncFileRead(error: unknown): void {
         this.asyncFileRejecter(error);
+    }
+
+    private validateFileData() {
+        const errors = this.quizValidator.validateQuiz(this.importedQuiz);
+        if (errors.length === 0) {
+            this.checkQuizNameUnique();
+        } else {
+            this.displayValidatorError(errors);
+        }
+    }
+
+    private displayValidatorError(errors: string[]) {
+        let index = 0;
+        const isPlural = errors.length >= 1;
+        const endSentence = isPlural ? 'les problèmes suivants' : 'le problème suivant';
+        let errorMessage = `Le fichier que vous tenter d'importer contient ${endSentence} : `;
+        errors.forEach((error) => {
+            errorMessage += `\n${(index += 1)}- ${error}`;
+        });
+        errorMessage += '\n Veuillez corrigez cela avant de réessayer.';
+        window.alert(errorMessage);
+    }
+
+    private checkQuizNameUnique() {
+        this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((res) => {
+            if (!res.body?.isUnique) {
+                this.promptQuizName();
+                this.checkQuizNameUnique();
+            } else {
+                this.importedQuiz.id = generateRandomId();
+                this.addImportedQuiz();
+            }
+        });
+    }
+
+    private promptQuizName() {
+        const nouveauNom = window.prompt(`
+        Un quiz nommé ${this.importedQuiz.title} existe déjà\nVeuillez changer le nom du quiz`);
+        if (nouveauNom === '') window.prompt("Le titre d'un quiz ne peut pas être vide");
+        else this.importedQuiz.title = nouveauNom === null ? this.importedQuiz.title : nouveauNom;
+    }
+
+    private addImportedQuiz() {
+        this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((response) => {
+            if (response.status === CREATED) this.populateGameList();
+        });
     }
 }
