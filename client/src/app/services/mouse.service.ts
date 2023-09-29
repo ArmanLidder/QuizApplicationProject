@@ -14,10 +14,7 @@ export class MouseService {
     };
 
     mouseHitDetect(event: MouseEvent) {
-        if (event.button === this.mouseButton.left) {
-            return true;
-        } else {
-            return false;
-        }
+        return event.button === this.mouseButton.left;
+          
     }
 }

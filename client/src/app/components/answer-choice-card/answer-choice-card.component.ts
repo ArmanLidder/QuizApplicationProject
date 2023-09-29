@@ -1,4 +1,4 @@
-import { Component,Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 
 const intervalTime = 10;
 @Component({
@@ -43,8 +43,6 @@ export class AnswerChoiceCardComponent implements OnChanges {
             }
         }, intervalTime);
     }
-
-    
 
     selectedCard() {
         if (this.selected) {
