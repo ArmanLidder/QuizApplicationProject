@@ -46,6 +46,6 @@ export const fillerQuizzes = [
                 ],
             },
         ],
-        visible: true,
+        visible: false,
     },
 ];
