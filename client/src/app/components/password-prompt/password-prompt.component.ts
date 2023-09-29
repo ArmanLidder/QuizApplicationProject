@@ -9,7 +9,7 @@ import { AdminAuthenticatorService } from '@app/services/admin-authenticator.ser
 export class PasswordPromptComponent {
     @ViewChild('enterButton', { static: false }) enterButton: ElementRef;
     loginStatus: string | null;
-    errorMessage: string = 'Invalid password. Please try again!';
+    errorMessage: string = 'Mot de passe incorrect. Veuillez réessayer!';
     inputBorderColor: string = '';
     textColor: string = '';
 

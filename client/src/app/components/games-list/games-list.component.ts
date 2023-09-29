@@ -147,8 +147,7 @@ export class GamesListComponent implements OnInit {
     }
 
     private promptQuizName() {
-        const nouveauNom = window.prompt(`
-        Un quiz nommé ${this.importedQuiz.title} existe déjà\nVeuillez changer le nom du quiz`);
+        const nouveauNom = window.prompt(`Un quiz nommé ${this.importedQuiz.title} existe déjà!\nVeuillez changer le nom du quiz.`);
         if (nouveauNom === '') window.prompt("Le titre d'un quiz ne peut pas être vide");
         else this.importedQuiz.title = nouveauNom === null ? this.importedQuiz.title : nouveauNom;
     }
