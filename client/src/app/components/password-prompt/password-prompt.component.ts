@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { Component, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
 
@@ -14,7 +13,7 @@ export class PasswordPromptComponent {
     successMessage: string = 'Login Succesful';
     inputBorderColor: string = '';
     textColor: string = '';
-    constructor(public authenticatorService: AdminAuthenticatorService, private router: Router) {}
+    constructor(public authenticatorService: AdminAuthenticatorService) {}
 
     @HostListener('document:keydown.enter')
     handleKeyboardEvent() {
@@ -22,7 +21,7 @@ export class PasswordPromptComponent {
     }
 
     updateStatus() {
-        this.router.navigate(['/game-admin-page']).then((res) => {
+        this.authenticatorService.validatePassword().subscribe((res) => {
             this.loginStatus = res ? this.successMessage : this.errorMessage;
             if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
         });
