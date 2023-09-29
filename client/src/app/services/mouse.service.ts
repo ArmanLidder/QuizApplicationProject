@@ -15,6 +15,5 @@ export class MouseService {
 
     mouseHitDetect(event: MouseEvent) {
         return event.button === this.mouseButton.left;
-          
     }
 }

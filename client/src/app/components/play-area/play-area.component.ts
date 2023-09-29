@@ -7,9 +7,9 @@ import { ActivatedRoute } from '@angular/router';
 // TODO : Avoir un fichier séparé pour les constantes!
 export const DEFAULT_WIDTH = 200;
 export const DEFAULT_HEIGHT = 200;
-const validationTime = 5;
 const intervalTime = 10;
-
+const testValidationTime = 3;
+const normalValidationTime = 5;
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
@@ -17,11 +17,12 @@ const intervalTime = 10;
 })
 export class PlayAreaComponent implements OnInit, OnDestroy {
     bgColor = 'transparent';
+    validationTime = normalValidationTime;
+    bonusPointMultiplicator = 1;
     timeEnd = false;
     initInfos = true;
     timer = 0;
     currentTimerIndex = 0;
-    locked = false;
     disableOption = false;
     clickedValidation = false;
     clearInterval = false;
@@ -124,13 +125,13 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     timeElapsedConditions() {
         if (!this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
             if (this.numberOfcorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
-                this.pointage += this.questionPoints;
+                this.pointage += this.questionPoints * this.bonusPointMultiplicator;
             }
             this.timeEnd = true;
             this.timeService.stopTimer(this.currentTimerIndex);
 
             if (this.timeService.timersArray.length < 2) {
-                this.timeService.createTimer(validationTime);
+                this.timeService.createTimer(this.validationTime);
             }
 
             this.currentTimerIndex = this.currentTimerIndex + 1;
@@ -145,6 +146,11 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.route.params.subscribe(() => {
             const quizId = this.route.snapshot.paramMap.get('id');
+            const testPage = this.route.snapshot.url[0].path === 'quiz-testing-page';
+            if (testPage) {
+                this.validationTime = testValidationTime;
+                this.bonusPointMultiplicator = 1.2;
+            }
             if (quizId !== null) {
                 this.quizService.basicGetById(quizId).subscribe((quiz) => {
                     this.quiz = quiz;
