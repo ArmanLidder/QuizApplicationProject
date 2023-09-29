@@ -9,12 +9,13 @@ import { AdminAuthenticatorService } from '@app/services/admin-authenticator.ser
 })
 export class PasswordPromptComponent {
     @ViewChild('enterButton', { static: false }) enterButton: ElementRef;
-    loginStatus: string | null = '';
-    errorMessage: string = 'Invalid password. Please try again!';
-    successMessage: string = 'Login Succesful';
+    loginStatus: string | null;
+    errorMessage: string = 'Mot de passe incorrect. Veuillez réessayer!';
     inputBorderColor: string = '';
     textColor: string = '';
+
     constructor(public authenticatorService: AdminAuthenticatorService, private router: Router) {}
+
 
     @HostListener('document:keydown.enter')
     handleKeyboardEvent() {
@@ -23,12 +24,26 @@ export class PasswordPromptComponent {
 
     updateStatus() {
         this.router.navigate(['/game-admin-page']).then((res) => {
-            this.loginStatus = res ? this.successMessage : this.errorMessage;
-            if (this.loginStatus === this.errorMessage) this.showErrorFeedback();
+            this.treatResponse(res);
         });
     }
 
-    showErrorFeedback() {
+    private treatResponse(res: boolean): void {
+        if (!res) {
+            this.loginStatus = this.errorMessage;
+            this.showErrorFeedback();
+        } else {
+            this.reset();
+        }
+    }
+
+    private reset() {
+        this.loginStatus = null;
+        this.textColor = '';
+        this.inputBorderColor = '';
+    }
+
+    private showErrorFeedback() {
         this.textColor = 'red-text';
         this.inputBorderColor = 'red-border';
     }
