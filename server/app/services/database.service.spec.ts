@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { fillerQuizzes } from 'assets/data';
+import { fillerQuizzes } from '@app/mockData/data';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';

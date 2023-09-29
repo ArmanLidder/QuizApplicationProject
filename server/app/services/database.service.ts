@@ -2,7 +2,7 @@ import { Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 import 'dotenv/config';
 import * as process from 'process';
-import { fillerQuizzes } from 'assets/data';
+import { fillerQuizzes } from '@app/mockData/data';
 import { Quiz } from '@app/interfaces/quiz.interface';
 
 @Service()

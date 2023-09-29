@@ -5,7 +5,7 @@ import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 import { DatabaseServiceMock } from './database.service.mock';
 import { QuizService } from './quiz.service';
-import { fillerQuizzes } from 'assets/data';
+import { fillerQuizzes } from '@app/mockData/data';
 // import { Quiz } from '@app/interfaces/quiz.interface';
 chai.use(chaiAsPromised); // this allows us to test for rejection
 
