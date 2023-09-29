@@ -29,7 +29,7 @@ export class Server {
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
         try {
-            await this.databaseService.start();
+            await this.databaseService.start(process.env.DATABASE_URL);
         } catch {
             process.exit(1);
         }
