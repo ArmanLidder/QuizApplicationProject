@@ -74,7 +74,7 @@ export class GamesListComponent implements OnInit {
         this.fileInput.nativeElement.click();
         this.asyncFileRead = this.waitForFileRead();
         this.asyncFileRead.then(() => {
-            if (this.quizValidator.isValidQuizFormat(this.importedQuiz)) {
+            if (this.quizValidator.isQuiz(this.importedQuiz)) {
                 this.quizServices.checkTitleUniqueness(this.importedQuiz.title).subscribe((res) => {
                     if (res.body?.isUnique) {
                         try {
