@@ -13,9 +13,9 @@ export class DatabaseService {
     get database(): Db {
         return this.db;
     }
-    //process.env.DATABASE_URL causing the code coverage to think this whole function is untested, which is wrong, therefore using istanbul 
+    // process.env.DATABASE_URL causing the code coverage to think this whole function is untested, which is wrong, therefore using istanbul
     // istanbul ignore next
-    async start(url: string = process.env.DATABASE_URL ): Promise<void> {
+    async start(url: string = process.env.DATABASE_URL): Promise<void> {
         try {
             this.client = new MongoClient(url);
             await this.client.connect();

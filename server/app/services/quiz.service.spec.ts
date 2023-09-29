@@ -2,21 +2,32 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { DatabaseServiceMock } from './database.service.mock';
 import { QuizService } from './quiz.service';
 import { fillerQuizzes } from '@app/mockData/data';
-// import { Quiz } from '@app/interfaces/quiz.interface';
-chai.use(chaiAsPromised); // this allows us to test for rejection
+import { QuizQuestion } from '@app/interfaces/quiz.interface';
+import { DatabaseService } from './database.service';
+chai.use(chaiAsPromised);
+
+interface QuizMock {
+    _id: ObjectId;
+    id: string;
+    title: string;
+    description: string;
+    duration: number;
+    lastModification: string | null;
+    questions: QuizQuestion[];
+    visible: boolean;
+}
 
 describe('Quiz Service', () => {
     let quizService: QuizService;
     let databaseService: DatabaseServiceMock;
-    // let client: MongoClient;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let testQuizzes: any[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const extraQuiz: any = {
+
+    let testQuizzes: QuizMock[];
+    const extraQuiz: QuizMock = {
+        _id: new ObjectId(),
         id: '3',
         title: 'History Quiz',
         description: 'Test your knowledge of historical events!',
@@ -25,21 +36,21 @@ describe('Quiz Service', () => {
         questions: [],
         visible: true,
     };
+
     beforeEach(async () => {
-        testQuizzes = fillerQuizzes; // Note : First quiz is visible, Second quiz is not visible !
+        testQuizzes = fillerQuizzes as unknown[] as QuizMock[]; // Note : First quiz is visible, Second quiz is not visible !
         databaseService = new DatabaseServiceMock();
         (await databaseService.start()) as MongoClient;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        quizService = new QuizService(databaseService as any);
+
+        quizService = new QuizService(databaseService as unknown as DatabaseService);
         testQuizzes.forEach(async (quiz) => {
+            delete quiz._id;
             await quizService.collection.insertOne(quiz);
         });
     });
 
     const removeIds = () => {
-        // MongoDb ajouter _ID inutile causant des problemes, donc à enlever
         testQuizzes.forEach((quiz) => {
-            // eslint-disable-next-line no-underscore-dangle
             delete quiz._id;
         });
     };
@@ -88,6 +99,17 @@ describe('Quiz Service', () => {
         const titleTwo = 'This title is for sure not in the database!!';
         const resTwo = await quizService.isTitleUnique(titleTwo);
         expect(resTwo).to.equal(true);
+    });
+
+    it('should replace a quizz', async () => {
+        const TEST_ID = '1';
+        const TEST_TITLE = 'This is a test title replacing the first quizz title';
+        extraQuiz.id = TEST_ID;
+        extraQuiz.title = TEST_TITLE;
+        delete extraQuiz._id;
+        await quizService.replace(extraQuiz as unknown as any);
+        const quizzes = await quizService.collection.find({}).toArray();
+        expect(quizzes[0].title).to.equal(TEST_TITLE);
     });
 
     it('should delete a quizz', async () => {

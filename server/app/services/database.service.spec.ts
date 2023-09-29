@@ -6,7 +6,7 @@ import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { DatabaseService } from './database.service';
-chai.use(chaiAsPromised); // this allows us to test for rejection
+chai.use(chaiAsPromised);
 import 'dotenv/config';
 
 describe('Database service', () => {
