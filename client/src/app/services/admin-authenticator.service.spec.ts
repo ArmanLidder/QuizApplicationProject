@@ -11,6 +11,8 @@ describe('AdminAuthenticatorService', () => {
             imports: [HttpClientTestingModule],
             providers: [AdminAuthenticatorService],
         });
+
+        // Inject the service and HttpTestingController
         service = TestBed.inject(AdminAuthenticatorService);
         httpMock = TestBed.inject(HttpTestingController);
     });

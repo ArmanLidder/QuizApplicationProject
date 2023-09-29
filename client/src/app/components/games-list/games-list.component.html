@@ -1,10 +1,11 @@
 <div class="quizzes-container">
+    <!-- <h3 *ngIF="isImportError">{{importError}}</h3> -->
     <table>
         <thead>
             <tr>
-                <th>Jeu</th>
-                <th *ngIf="isAdmin">Visibilité</th>
-                <th *ngIf="isAdmin">Dernière Modification</th>
+                <th>Games</th>
+                <th *ngIf="isAdmin">Visibility</th>
+                <th *ngIf="isAdmin">Last Modified</th>
             </tr>
         </thead>
         <tbody>
@@ -27,15 +28,15 @@
         <tfoot>
             <tr>
                 <td class="button-container" *ngIf="isAdmin">
-                    <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Ajouter</button>
+                    <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Add Game</button>
                     <input type="file" #fileInput accept="/application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
-                    <button class="add" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Importer</button>
-                    <button routerLink="/home" class="cancel">Annuler</button>
+                    <button class="add" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Import</button>
+                    <button routerLink="/home" class="cancel">Cancel</button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
-                    <button [routerLink]="['/waiting-room-page', selectedQuiz?.id]"class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Jouer</button>
-                    <button [routerLink]="['/quiz-testing-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Tester</button>
-                    <button routerLink="/home" class="cancel">Annuler</button>
+                    <button [routerLink]="['/waiting-room-page', selectedQuiz?.id]"class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Play</button>
+                    <button [routerLink]="['/quiz-testing-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Test</button>
+                    <button routerLink="/home" class="cancel">Cancel</button>
                 </td>
             </tr>
         </tfoot>

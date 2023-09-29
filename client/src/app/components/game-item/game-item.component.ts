@@ -18,36 +18,25 @@ export class GameItemComponent {
         private router: Router,
     ) {}
 
-    deleteGame(): void {
+    deleteGame() {
         this.quizService.basicDelete(this.quiz.id).subscribe();
         this.removeQuiz.emit(this.quiz.id);
     }
 
-    updateGame(): void {
+    updateGame() {
         this.router.navigate(['quiz-creation', `${this.quiz.id}`]);
     }
 
-    formatQuiz(): object {
+    exportGame(): void {
         const { ...exportedQuiz } = this.quiz;
         delete exportedQuiz.visible;
-        return exportedQuiz;
-    }
-
-    buildJSONFile(formatedQuiz: object): string {
-        const blob = new Blob([JSON.stringify(formatedQuiz)], { type: 'application/json' });
-        return window.URL.createObjectURL(blob);
-    }
-
-    startExportFile(url: string): void {
+        const jsonQuizData = JSON.stringify(exportedQuiz);
+        const blob = new Blob([jsonQuizData], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
         const a = this.downloadLink.nativeElement;
         a.href = url;
         a.download = this.quiz.title + '.json';
         a.click();
-    }
-
-    exportGame(): void {
-        const url = this.buildJSONFile(this.formatQuiz());
-        this.startExportFile(url);
         window.URL.revokeObjectURL(url);
     }
 }

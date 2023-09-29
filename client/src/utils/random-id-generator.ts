@@ -1,4 +1,4 @@
-export const ID_LENGTH = 16;
+const ID_LENGTH = 16;
 export const generateRandomId = (): string => {
     let result = '';
     const characters = 'AYqLRwfYkcVyDG3iUWKNsrQhD6GzV5JEQFmWnJv0123456789';
