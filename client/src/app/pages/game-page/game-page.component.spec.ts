@@ -12,7 +12,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, SidebarComponent, PlayAreaComponent],
-            imports : [HttpClientModule, RouterTestingModule]
+            imports: [HttpClientModule, RouterTestingModule],
         }).compileComponents();
     });
 
