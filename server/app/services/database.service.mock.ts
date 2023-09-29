@@ -8,11 +8,15 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 const DATABASE_NAME = 'database';
 
 export class DatabaseServiceMock {
+    mongoServer: MongoMemoryServer;
     private db: Db;
     private client: MongoClient;
-    mongoServer: MongoMemoryServer;
 
-    async start(url?: string): Promise<MongoClient | null> {
+    get database(): Db {
+        return this.db;
+    }
+
+    async start(): Promise<MongoClient | null> {
         if (!this.client) {
             this.mongoServer = await MongoMemoryServer.create();
             const mongoUri = this.mongoServer.getUri();
@@ -26,9 +30,5 @@ export class DatabaseServiceMock {
 
     async closeConnection(): Promise<void> {
         return this.client ? this.client.close() : Promise.resolve();
-    }
-
-    get database(): Db {
-        return this.db;
     }
 }
