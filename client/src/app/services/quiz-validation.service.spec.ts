@@ -1,9 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-// import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { QuizValidationService } from './quiz-validation.service';
 import { Quiz, QuestionType, QuizChoice } from '@app/interfaces/quiz.interface';
-// import { Quiz, QuizQuestion, QuizChoice, QuestionType } from '@app/interfaces/quiz.interface';
 
 fdescribe('QuizValidationService', () => {
     let service: QuizValidationService;
