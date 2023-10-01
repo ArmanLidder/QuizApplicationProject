@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 // import { QuizService } from '@app/services/quiz.service';
 import SpyObj = jasmine.SpyObj;
 import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
+import { Router } from '@angular/router';
 
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;
@@ -14,6 +15,7 @@ describe('PlayAreaComponent', () => {
 
     // let quizServiceSpy: SpyObj<QuizService>;
     let timeServiceSpy: SpyObj<TimeService>;
+    let router: Router;
     let onCardSelectedSpy: jasmine.Spy;
     let resetInfoSpy: jasmine.Spy;
     const mockQuiz: Quiz = {
@@ -45,7 +47,7 @@ describe('PlayAreaComponent', () => {
         { text: 'test', isCorrect: false },
     ];
     beforeEach(async () => {
-        timeServiceSpy = jasmine.createSpyObj('TimeService', ['startTimer', 'stopTimer', 'deleteAllTimers', 'createTimer', 'getTime']);
+        timeServiceSpy = jasmine.createSpyObj('TimeService', ['startTimer', 'stopTimer', 'deleteAllTimers', 'createTimer', 'getTime', 'setTime']);
         Object.defineProperty(timeServiceSpy, 'timersArray', {
             get: () => {
                 return [];
@@ -56,6 +58,7 @@ describe('PlayAreaComponent', () => {
             imports: [HttpClientModule, RouterTestingModule],
             providers: [{ provide: TimeService, useValue: timeServiceSpy }],
         }).compileComponents();
+        
     });
 
     beforeEach(() => {
@@ -63,6 +66,7 @@ describe('PlayAreaComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         component.quiz = mockQuiz;
+        router = TestBed.inject(Router);
     });
 
     it('should create', () => {
@@ -143,6 +147,7 @@ describe('PlayAreaComponent', () => {
         component.timeEnd = true;
         component.initInfos = false;
         component.currentTimerIndex = 1;
+        component.addingPoints = true;
         const EXPECTEDINDEX = 6;
 
         component.quiz = {
@@ -172,6 +177,7 @@ describe('PlayAreaComponent', () => {
         expect(component.timeEnd).toBe(false);
         expect(component.initInfos).toBe(true);
         expect(component.currentTimerIndex).toBe(0);
+        expect(component.addingPoints).toBe(false);
 
         expect(timeServiceSpy.deleteAllTimers).toHaveBeenCalled();
         expect(timeServiceSpy.createTimer).toHaveBeenCalledWith(component.quiz.duration);
@@ -217,6 +223,11 @@ describe('PlayAreaComponent', () => {
     });
 
     it('should lock or unlock button correctly', () => {
+        component.timeEnd = false;
+        component.clickedValidation = true;
+        component.validationButtonLocked();
+        expect(timeServiceSpy.setTime).toHaveBeenCalledWith(component.currentTimerIndex, 0);
+
         component.timeEnd = true;
         component.clickedValidation = false;
         component.validationButtonLocked();
@@ -240,13 +251,16 @@ describe('PlayAreaComponent', () => {
         component.pointage = 100;
         component.questionPoints = 50;
         component.bonusPointMultiplicator = 1;
+        component.addingPoints = false;
+        
 
         timeServiceSpy.getTime.and.returnValue(0);
 
         component.timeElapsedConditions();
-
+        
         expect(component.pointage).toEqual(EXPECTEDPOINTAGE);
         expect(component.timeEnd).toBe(true);
+        expect(component.addingPoints).toBe(true);
         expect(timeServiceSpy.stopTimer).toHaveBeenCalledWith(component.currentTimerIndex - 1);
         expect(timeServiceSpy.createTimer).toHaveBeenCalledWith(component.validationTime);
         expect(component.currentTimerIndex).toBe(1);
@@ -259,8 +273,15 @@ describe('PlayAreaComponent', () => {
         component.currentTimerIndex = 0;
         timeServiceSpy.getTime.and.returnValue(0);
         resetInfoSpy = spyOn(component, 'resetInfos');
-
         component.timeElapsedConditions();
         expect(resetInfoSpy).toHaveBeenCalled();
+
+        component.quiz.questions.length = 5;
+        component.questionIndex = 5;
+        spyOn(router, 'navigate');
+        component.timeElapsedConditions();
+        expect(router.navigate).toHaveBeenCalledWith(['/game-creation-page']);
+        
+
     });
 });

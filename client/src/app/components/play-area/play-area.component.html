@@ -1,7 +1,7 @@
 <div id="grid-container">
     <div id="flex-container">
         <p>Pointage: {{ pointage }}</p>
-
+        <p *ngIf = 'testPage && addingPoints' >Vous avez recu des points Bonus!</p>
         <p>Temps restant : {{ timer }}</p>
     </div>
 

@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Quiz, QuizChoice } from '@app/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { TimeService } from '@app/services/time.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 // TODO : Avoir un fichier séparé pour les constantes!
 export const DEFAULT_WIDTH = 200;
@@ -10,12 +10,15 @@ export const DEFAULT_HEIGHT = 200;
 const intervalTime = 10;
 const testValidationTime = 3;
 const normalValidationTime = 5;
+
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
     styleUrls: ['./play-area.component.scss'],
 })
 export class PlayAreaComponent implements OnInit, OnDestroy {
+    testPage = false;
+    addingPoints = false;
     bgColor = 'transparent';
     validationTime = normalValidationTime;
     bonusPointMultiplicator = 1;
@@ -41,6 +44,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
         private readonly timeService: TimeService,
         private quizService: QuizService,
         private route: ActivatedRoute,
+        private router: Router,
     ) {}
 
     @HostListener('keydown', ['$event'])
@@ -85,6 +89,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
         this.clickedValidation = false;
         this.timeEnd = false;
         this.initInfos = true;
+        this.addingPoints = false;
         this.timeService.deleteAllTimers();
         this.currentTimerIndex = 0;
         this.timeService.createTimer(this.quiz.duration);
@@ -113,6 +118,10 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     }
 
     validationButtonLocked() {
+        if (this.clickedValidation && !this.timeEnd) {
+            this.timeService.setTime(this.currentTimerIndex, 0);
+        }
+
         if (this.timeEnd || this.clickedValidation) {
             this.disableOption = true;
             this.bgColor = 'green';
@@ -126,6 +135,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
         if (!this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
             if (this.numberOfcorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
                 this.pointage += this.questionPoints * this.bonusPointMultiplicator;
+                this.addingPoints = true;
             }
             this.timeEnd = true;
             this.timeService.stopTimer(this.currentTimerIndex);
@@ -139,6 +149,8 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
         } else if (this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
             if (this.questionIndex < this.quiz.questions.length - 1) {
                 this.resetInfos();
+            }else{
+                this.router.navigate(['/game-creation-page']);     
             }
         }
     }
@@ -146,8 +158,8 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.route.params.subscribe(() => {
             const quizId = this.route.snapshot.paramMap.get('id');
-            const testPage = this.route.snapshot.url[0].path === 'quiz-testing-page';
-            if (testPage) {
+            this.testPage = this.route.snapshot.url[0].path === 'quiz-testing-page';
+            if (this.testPage) {
                 this.validationTime = testValidationTime;
                 this.bonusPointMultiplicator = 1.2;
             }
@@ -160,11 +172,10 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
                             this.setQuestionInfos();
                             this.initInfos = false;
                         }
-
+                        this.validationButtonLocked();
                         this.timer = this.timeService.getTime(this.currentTimerIndex);
                         this.setNumberOfCorrectAnswers();
                         this.timeElapsedConditions();
-                        this.validationButtonLocked();
 
                         if (this.clearInterval) {
                             this.timeService.deleteAllTimers();
