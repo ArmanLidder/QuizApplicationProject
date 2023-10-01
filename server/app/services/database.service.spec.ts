@@ -12,7 +12,7 @@ import 'dotenv/config';
 describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
-    const dbPopulateLenght = fillerQuizzes.length;
+    const QUIZZES_LENGTH = fillerQuizzes.length;
     beforeEach(async () => {
         databaseService = new DatabaseService();
         mongoServer = await MongoMemoryServer.create();
@@ -46,18 +46,18 @@ describe('Database service', () => {
         databaseService['db'] = client.db('OnlyQuiz');
         await databaseService.populateDB(process.env.DATABASE_COLLECTION_QUIZZES);
         const quizzes = await databaseService.database.collection('quizzes').find({}).toArray();
-        expect(quizzes.length).to.equal(dbPopulateLenght);
+        expect(quizzes.length).to.equal(QUIZZES_LENGTH);
     });
 
     it('should not populate the database with start function if it is already populated', async () => {
         const mongoUri = mongoServer.getUri();
         await databaseService.start(mongoUri);
         let quizzes = await databaseService.database.collection('quizzes').find({}).toArray();
-        expect(quizzes.length).to.equal(dbPopulateLenght);
+        expect(quizzes.length).to.equal(QUIZZES_LENGTH);
         await databaseService.closeConnection();
 
         await databaseService.start(mongoUri);
         quizzes = await databaseService.database.collection('quizzes').find({}).toArray();
-        expect(quizzes.length).to.equal(dbPopulateLenght);
+        expect(quizzes.length).to.equal(QUIZZES_LENGTH);
     });
 });
