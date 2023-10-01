@@ -24,8 +24,8 @@ interface QuizMock {
 describe('Quiz Service', () => {
     let quizService: QuizService;
     let databaseService: DatabaseServiceMock;
-
     let testQuizzes: QuizMock[];
+
     const extraQuiz: QuizMock = {
         _id: new ObjectId(),
         id: '3',
