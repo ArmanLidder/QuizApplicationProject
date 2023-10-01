@@ -12,7 +12,6 @@ describe('AdminAuthController', () => {
     beforeEach(async () => {
         adminAuthService = createStubInstance(AdminAuthService);
         const app = Container.get(Application);
-        // eslint-disable-next-line dot-notation
         Object.defineProperty(app['adminAuthController'], 'adminAuthService', { value: adminAuthService, writable: true });
         expressApp = app.app;
     });
