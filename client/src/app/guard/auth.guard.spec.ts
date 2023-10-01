@@ -1,34 +1,40 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AuthGuard } from './auth.guard';
-import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
 import { of } from 'rxjs';
-import SpyObj = jasmine.SpyObj;
+import { authGuardAuthentification } from './auth.guard';
 
-describe('AuthGuard', () => {
-    let authServiceSpy: SpyObj<AdminAuthenticatorService>;
-    let component: AuthGuard;
-
-    beforeEach(() => {
-        authServiceSpy = jasmine.createSpyObj('authServiceSpy', { validatePassword: of(Boolean) });
-        authServiceSpy.validatePassword.and.returnValue(of(true));
-    });
-    beforeEach(() => {
+describe('authGuardAuthentification', () => {
+    const mockRouter = jasmine.createSpyObj<Router>(['navigate']);
+    const setup = (mockAuthenticatorService: unknown) => {
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
-            providers: [{ provide: AdminAuthenticatorService, useValue: authServiceSpy }],
-        }).compileComponents();
+            providers: [
+                authGuardAuthentification,
+                { provide: AdminAuthenticatorService, useValue: mockAuthenticatorService },
+                { provide: Router, useValue: mockRouter },
+            ],
+        });
+        return TestBed.runInInjectionContext(authGuardAuthentification);
+    };
 
-        component = TestBed.inject(AuthGuard);
+    it('should allow to continue if authentication is valid', () => {
+        const mockAuthenticatorService: unknown = {
+            validatePassword: () => of(true),
+        };
+        const guard = setup(mockAuthenticatorService);
+        guard.subscribe((isValid: unknown) => {
+            expect(isValid).toBe(true);
+        });
     });
 
-    it('should be created', () => {
-        expect(component).toBeTruthy();
-    });
-
-    it('can activate should call authservice validatePassword method', () => {
-        component.canActivate();
-        expect(authServiceSpy.validatePassword).toHaveBeenCalled();
+    it('should navigate to /game-admin-prompt if authentication is invalid', () => {
+        const mockAuthenticatorService: unknown = {
+            validatePassword: () => of(false),
+        };
+        const guard = setup(mockAuthenticatorService);
+        guard.subscribe((isValid: unknown) => {
+            expect(isValid).toBe(false);
+            expect(mockRouter.navigate).toHaveBeenCalledWith(['/game-admin-prompt']);
+        });
     });
 });

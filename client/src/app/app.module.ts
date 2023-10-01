@@ -23,6 +23,8 @@ import { QuizInfoComponent } from './components/quiz-info/quiz-info.component';
 import { QuizTestingPageComponent } from './pages/quiz-testing-page/quiz-testing-page.component';
 import { WaitingRoomPageComponent } from './pages/waiting-room-page/waiting-room-page.component';
 import { AnswerChoiceCardComponent } from './components/answer-choice-card/answer-choice-card.component';
+import { UniqueQuizErrorFeedbackComponent } from './components/unique-quiz-error-feedback/unique-quiz-error-feedback.component';
+import { ValidationQuizErrorFeedbackComponent } from './components/validation-quiz-error-feedback/validation-quiz-error-feedback.component';
 
 /**
  * Main module that is used in main.ts.
@@ -33,9 +35,9 @@ import { AnswerChoiceCardComponent } from './components/answer-choice-card/answe
 @NgModule({
     declarations: [
         AppComponent,
+        MaterialPageComponent,
         GamePageComponent,
         MainPageComponent,
-        MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
         AnswerChoiceCardComponent,
@@ -50,6 +52,8 @@ import { AnswerChoiceCardComponent } from './components/answer-choice-card/answe
         QuizInfoComponent,
         QuizTestingPageComponent,
         WaitingRoomPageComponent,
+        UniqueQuizErrorFeedbackComponent,
+        ValidationQuizErrorFeedbackComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
