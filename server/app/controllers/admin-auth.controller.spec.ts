@@ -11,26 +11,26 @@ describe('AdminAuthController', () => {
 
     beforeEach(async () => {
         adminAuthService = createStubInstance(AdminAuthService);
-        const app = Container.get(Application);
-        Object.defineProperty(app['adminAuthController'], 'adminAuthService', { value: adminAuthService, writable: true });
-        expressApp = app.app;
+        const APP = Container.get(Application);
+        Object.defineProperty(APP['adminAuthController'], 'adminAuthService', { value: adminAuthService, writable: true });
+        expressApp = APP.app;
     });
 
     it('should handle post request with successful authentication with OK code', async () => {
-        const message = { title: 'Hello', body: 'World' };
+        const MESSAGE = { title: 'Hello', body: 'World' };
         adminAuthService.authentificatePassword.returns(true);
-        return supertest(expressApp).post('/api/auth/admin-password').send(message).expect(StatusCodes.OK);
+        return supertest(expressApp).post('/api/auth/admin-password').send(MESSAGE).expect(StatusCodes.OK);
     });
 
     it('should handle post request with failed authentication by returning UNAUTHORIZED code', async () => {
-        const message = { title: 'Hello', body: 'World' };
+        const MESSAGE = { title: 'Hello', body: 'World' };
         adminAuthService.authentificatePassword.returns(false);
-        return supertest(expressApp).post('/api/auth/admin-password').send(message).expect(StatusCodes.UNAUTHORIZED);
+        return supertest(expressApp).post('/api/auth/admin-password').send(MESSAGE).expect(StatusCodes.UNAUTHORIZED);
     });
 
     it('should handle post request with error', async () => {
-        const message = { title: 'Hello', body: 'World' };
+        const MESSAGE = { title: 'Hello', body: 'World' };
         adminAuthService.authentificatePassword.throws(new Error('test error!'));
-        return supertest(expressApp).post('/api/auth/admin-password').send(message).expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        return supertest(expressApp).post('/api/auth/admin-password').send(MESSAGE).expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 });

@@ -9,8 +9,8 @@ import { expect } from 'chai';
 describe('QuizController', () => {
     let quizService: SinonStubbedInstance<QuizService>;
     let expressApp: Express.Application;
-    const testId = '1';
-    const mockQuiz = {
+    const TEST_ID = '1';
+    const MOCK_QUIZ = {
         id: '1',
         title: 'Filler',
         description: 'filler description',
@@ -28,13 +28,13 @@ describe('QuizController', () => {
     };
     beforeEach(async () => {
         quizService = createStubInstance(QuizService);
-        quizService.getAll.resolves([mockQuiz, mockQuiz, mockQuiz]);
-        quizService.getAllVisible.resolves([mockQuiz, mockQuiz]);
-        quizService.getById.resolves(mockQuiz);
-        const app = Container.get(Application);
+        quizService.getAll.resolves([MOCK_QUIZ, MOCK_QUIZ, MOCK_QUIZ]);
+        quizService.getAllVisible.resolves([MOCK_QUIZ, MOCK_QUIZ]);
+        quizService.getById.resolves(MOCK_QUIZ);
+        const APP = Container.get(Application);
         // eslint-disable-next-line dot-notation
-        Object.defineProperty(app['quizController'], 'quizService', { value: quizService, writable: true });
-        expressApp = app.app;
+        Object.defineProperty(APP['quizController'], 'quizService', { value: quizService, writable: true });
+        expressApp = APP.app;
     });
 
     it('should return quizzes from quiz service on valid get request', async () => {
@@ -42,7 +42,7 @@ describe('QuizController', () => {
             .get('/api/quiz')
             .expect(StatusCodes.OK)
             .then((response) => {
-                expect(response.body).to.deep.equal([mockQuiz, mockQuiz, mockQuiz]);
+                expect(response.body).to.deep.equal([MOCK_QUIZ, MOCK_QUIZ, MOCK_QUIZ]);
             });
     });
 
@@ -51,51 +51,51 @@ describe('QuizController', () => {
             .get('/api/quiz/visible')
             .expect(StatusCodes.OK)
             .then((response) => {
-                expect(response.body).to.deep.equal([mockQuiz, mockQuiz]);
+                expect(response.body).to.deep.equal([MOCK_QUIZ, MOCK_QUIZ]);
             });
     });
 
     it('should return a specific quiz by id from quiz service on valid get request', async () => {
         return supertest(expressApp)
-            .get(`/api/quiz/${testId}`)
+            .get(`/api/quiz/${TEST_ID}`)
             .expect(StatusCodes.OK)
             .then((response) => {
-                expect(response.body).to.deep.equal(mockQuiz);
+                expect(response.body).to.deep.equal(MOCK_QUIZ);
             });
     });
 
     it('should properly handle post request of a specific quiz and call add method of quizService', async () => {
-        const res = await supertest(expressApp).post('/api/quiz').send({ quiz: mockQuiz });
-        expect(res.status).to.equal(StatusCodes.CREATED);
-        expect(quizService.add.calledWith(mockQuiz)).to.equal(true);
+        const RES = await supertest(expressApp).post('/api/quiz').send({ quiz: MOCK_QUIZ });
+        expect(RES.status).to.equal(StatusCodes.CREATED);
+        expect(quizService.add.calledWith(MOCK_QUIZ)).to.equal(true);
     });
 
     it('should properly handle put request of a specific quiz and call replace method of quizService', async () => {
-        const res = await supertest(expressApp).put('/api/quiz').send({ quiz: mockQuiz });
-        expect(res.status).to.equal(StatusCodes.OK);
-        expect(quizService.replace.calledWith(mockQuiz)).to.equal(true);
+        const RES = await supertest(expressApp).put('/api/quiz').send({ quiz: MOCK_QUIZ });
+        expect(RES.status).to.equal(StatusCodes.OK);
+        expect(quizService.replace.calledWith(MOCK_QUIZ)).to.equal(true);
     });
 
     it('should properly handle patch request of a specific quiz with id and call update method of quizService', async () => {
         const updatedVisibility = false;
-        const res = await supertest(expressApp).patch(`/api/quiz/${testId}`).send({ visible: updatedVisibility });
+        const RES = await supertest(expressApp).patch(`/api/quiz/${TEST_ID}`).send({ visible: updatedVisibility });
 
-        expect(res.status).to.equal(StatusCodes.OK);
-        expect(quizService.update.calledWith(testId, updatedVisibility)).to.equal(true);
+        expect(RES.status).to.equal(StatusCodes.OK);
+        expect(quizService.update.calledWith(TEST_ID, updatedVisibility)).to.equal(true);
     });
 
     it('should properly handle title uniqueness check request and call isTitleUnique method of quizService', async () => {
         const titleToCheck = 'New Quiz Title';
-        const res = await supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: titleToCheck });
+        const RES = await supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: titleToCheck });
 
-        expect(res.status).to.equal(StatusCodes.OK);
+        expect(RES.status).to.equal(StatusCodes.OK);
         expect(quizService.isTitleUnique.calledWith(titleToCheck)).to.equal(true);
     });
 
     it('should properly handle delete request of a specific quiz by id and call delete method of quizService', async () => {
-        const res = await supertest(expressApp).delete(`/api/quiz/${testId}`);
-        expect(res.status).to.equal(StatusCodes.OK);
-        expect(quizService.delete.calledWith(testId)).to.equal(true);
+        const RES = await supertest(expressApp).delete(`/api/quiz/${TEST_ID}`);
+        expect(RES.status).to.equal(StatusCodes.OK);
+        expect(quizService.delete.calledWith(TEST_ID)).to.equal(true);
     });
 
     it('should handle the Internal Server error for all requests', async () => {
@@ -108,28 +108,13 @@ describe('QuizController', () => {
         quizService.isTitleUnique.throws(new Error('test error!'));
         quizService.delete.throws(new Error('test error!'));
 
-        const res = await supertest(expressApp).get('/api/quiz');
-        expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res2 = await supertest(expressApp).get('/api/quiz/visible');
-        expect(res2.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res3 = await supertest(expressApp).post('/api/quiz').send({ quiz: mockQuiz });
-        expect(res3.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res4 = await supertest(expressApp).put('/api/quiz').send({ quiz: mockQuiz });
-        expect(res4.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res5 = await supertest(expressApp).patch(`/api/quiz/${testId}`).send({ visible: false });
-        expect(res5.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res6 = await supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: 'New Quiz Title' });
-        expect(res6.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res7 = await supertest(expressApp).delete(`/api/quiz/${testId}`);
-        expect(res7.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
-
-        const res8 = await supertest(expressApp).get(`/api/quiz/${testId}`);
-        expect(res8.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR);
+        supertest(expressApp).get('/api/quiz').then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).get('/api/quiz/visible').then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).post('/api/quiz').send({ quiz: MOCK_QUIZ }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).put('/api/quiz').send({ quiz: MOCK_QUIZ }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).patch(`/api/quiz/${TEST_ID}`).send({ visible: false }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: 'New Quiz Title' }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).delete(`/api/quiz/${TEST_ID}`).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp).get(`/api/quiz/${TEST_ID}`).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
     });
 });
