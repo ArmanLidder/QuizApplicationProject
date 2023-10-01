@@ -3,21 +3,29 @@ import { PlayAreaComponent } from '@app/components/play-area/play-area.component
 import { TimeService } from '@app/services/time.service';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-// import { QuizChoice } from '@app/interfaces/quiz.interface';
-// import { QuizService } from '@app/services/quiz.service';
 import SpyObj = jasmine.SpyObj;
 import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
-import { Router } from '@angular/router';
+import {  Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { QuizService } from '@app/services/quiz.service';
+import { of } from 'rxjs';
+
+
+
 
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;
     let fixture: ComponentFixture<PlayAreaComponent>;
-
-    // let quizServiceSpy: SpyObj<QuizService>;
     let timeServiceSpy: SpyObj<TimeService>;
     let router: Router;
     let onCardSelectedSpy: jasmine.Spy;
     let resetInfoSpy: jasmine.Spy;
+    let quizService: jasmine.SpyObj<QuizService>;
+    let runGameSpy: jasmine.Spy;
+    let validationButtonLockedSpy: jasmine.Spy;
+    let setNumberOfCorrectAnswersSpy: jasmine.Spy;
+    let timeElapsedConditionsSpy: jasmine.Spy;
+    
     const mockQuiz: Quiz = {
         id: '1',
         title: 'Math Quiz',
@@ -53,11 +61,15 @@ describe('PlayAreaComponent', () => {
                 return [];
             },
         });
-        await TestBed.configureTestingModule({
+      
+          quizService = jasmine.createSpyObj('QuizService', ['basicGetById']);
+        TestBed.configureTestingModule({
             declarations: [PlayAreaComponent],
-            imports: [HttpClientModule, RouterTestingModule],
-            providers: [{ provide: TimeService, useValue: timeServiceSpy }],
-        }).compileComponents();
+            imports: [HttpClientModule, RouterTestingModule, FormsModule],
+            providers: [{ provide: TimeService, useValue: timeServiceSpy }, { provide: QuizService, useValue: quizService }],
+        });
+        await TestBed.compileComponents();
+        
         
     });
 
@@ -68,6 +80,8 @@ describe('PlayAreaComponent', () => {
         component.quiz = mockQuiz;
         router = TestBed.inject(Router);
     });
+
+    
 
     it('should create', () => {
         expect(component).toBeTruthy();
@@ -284,4 +298,51 @@ describe('PlayAreaComponent', () => {
         
 
     });
+
+   
+    it('should run all the fuction used in the runGame function', () => {
+       
+        jasmine.clock().install();
+        validationButtonLockedSpy = spyOn(component, 'validationButtonLocked');
+        setNumberOfCorrectAnswersSpy = spyOn(component, 'setNumberOfCorrectAnswers');
+        timeElapsedConditionsSpy = spyOn(component, 'timeElapsedConditions');
+        component.initInfos = true;
+        component.clearInterval = true;
+        const clearIntervalSpy = spyOn(window, 'clearInterval');
+        component.runGame();
+        jasmine.clock().tick(4000);
+        expect(validationButtonLockedSpy).toHaveBeenCalled();
+        expect(setNumberOfCorrectAnswersSpy).toHaveBeenCalled();
+        expect(timeElapsedConditionsSpy).toHaveBeenCalled();
+        expect(component.initInfos).toBe(false);
+        expect(timeServiceSpy.deleteAllTimers).toHaveBeenCalled();
+        expect(clearIntervalSpy).toHaveBeenCalledWith(component.intervalId);
+        jasmine.clock().uninstall();
+   
+     });
+
+    it('should look at if it is a test version and call runGame', () => {
+       
+            component.tempPath = false;
+            quizService.basicGetById.and.returnValue(of(mockQuiz));
+            runGameSpy = spyOn(component, 'runGame');
+         
+            component.ngOnInit();
+
+            expect(component.validationTime).toBe(3);
+            expect(component.bonusPointMultiplicator).toBe(1.2);
+            expect(component.initInfos).toBe(true);
+            expect(component.quiz).toBe(mockQuiz);
+            expect(runGameSpy).toHaveBeenCalled();
+   
+    });
+
+    it('should set clearInterval to true when we leave a page with ngOnDestroy', () => {
+       
+        component.ngOnDestroy();
+        expect(component.clearInterval).toBe(true);
+
+     });
+
+
 });

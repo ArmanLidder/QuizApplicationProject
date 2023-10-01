@@ -4,19 +4,26 @@ import { QuizService } from '@app/services/quiz.service';
 import { TimeService } from '@app/services/time.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+
+
 // TODO : Avoir un fichier séparé pour les constantes!
 export const DEFAULT_WIDTH = 200;
 export const DEFAULT_HEIGHT = 200;
 const intervalTime = 10;
 const testValidationTime = 3;
+const testMultPoint = 1.2;
 const normalValidationTime = 5;
+
 
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
     styleUrls: ['./play-area.component.scss'],
-})
+}) 
+
 export class PlayAreaComponent implements OnInit, OnDestroy {
+    intervalId = setInterval(() => {}, 0);;
+    tempPath = true ;
     testPage = false;
     addingPoints = false;
     bgColor = 'transparent';
@@ -43,7 +50,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     constructor(
         private readonly timeService: TimeService,
         private quizService: QuizService,
-        private route: ActivatedRoute,
+        public route: ActivatedRoute,
         private router: Router,
     ) {}
 
@@ -155,35 +162,45 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
         }
     }
 
-    ngOnInit(): void {
-        this.route.params.subscribe(() => {
-            const quizId = this.route.snapshot.paramMap.get('id');
-            this.testPage = this.route.snapshot.url[0].path === 'quiz-testing-page';
-            if (this.testPage) {
-                this.validationTime = testValidationTime;
-                this.bonusPointMultiplicator = 1.2;
-            }
-            if (quizId !== null) {
-                this.quizService.basicGetById(quizId).subscribe((quiz) => {
-                    this.quiz = quiz;
-                    this.initInfos = true;
-                    const intervalId = setInterval(() => {
-                        if (this.initInfos) {
-                            this.setQuestionInfos();
-                            this.initInfos = false;
-                        }
-                        this.validationButtonLocked();
-                        this.timer = this.timeService.getTime(this.currentTimerIndex);
-                        this.setNumberOfCorrectAnswers();
-                        this.timeElapsedConditions();
+    runGame(){
+        
+        this.intervalId = setInterval(() => {
+        if (this.initInfos) {
+            this.setQuestionInfos();
+            this.initInfos = false;
+        }
+        this.validationButtonLocked();
+        this.timer = this.timeService.getTime(this.currentTimerIndex);
+        this.setNumberOfCorrectAnswers();
+        this.timeElapsedConditions();
 
-                        if (this.clearInterval) {
-                            this.timeService.deleteAllTimers();
-                            clearInterval(intervalId);
-                        }
-                    }, intervalTime);
-                });
-            }
+        if (this.clearInterval) {
+            this.timeService.deleteAllTimers();
+            clearInterval(this.intervalId);
+        }
+        }, intervalTime);
+    }
+
+   
+
+    ngOnInit(): void {
+       this.route.params.subscribe(() => {
+            const quizId = this.tempPath ? this.route.snapshot.paramMap.get('id'): '1';
+            this.testPage = this.tempPath ? this.route.snapshot.url[0].path === 'quiz-testing-page' : true;
+        if (this.testPage) {
+            this.validationTime = testValidationTime;
+            this.bonusPointMultiplicator = testMultPoint;
+        }
+        if (quizId !== null) {
+            this.quizService.basicGetById(quizId).subscribe((quiz) => {
+                this.quiz = quiz;
+                this.initInfos = true;
+                
+                    this.runGame();
+                
+            });
+        }
+            
         });
     }
 
