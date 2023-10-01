@@ -44,14 +44,14 @@ describe('Quiz Service', () => {
 
         quizService = new QuizService(databaseService as unknown as DatabaseService);
         testQuizzes.forEach(async (quiz) => {
-            delete quiz._id;
+            delete quiz['_id'];
             await quizService.collection.insertOne(quiz);
         });
     });
 
     const removeIds = () => {
         testQuizzes.forEach((quiz) => {
-            delete quiz._id;
+            delete quiz['_id'];
         });
     };
 
@@ -106,8 +106,8 @@ describe('Quiz Service', () => {
         const TEST_TITLE = 'This is a test title replacing the first quizz title';
         extraQuiz.id = TEST_ID;
         extraQuiz.title = TEST_TITLE;
-        delete extraQuiz._id;
-        await quizService.replace(extraQuiz as unknown as any);
+        delete extraQuiz['_id'];
+        await quizService.replace(extraQuiz);
         const quizzes = await quizService.collection.find({}).toArray();
         expect(quizzes[0].title).to.equal(TEST_TITLE);
     });
