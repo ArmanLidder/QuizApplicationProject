@@ -4,30 +4,26 @@ import { QuizService } from '@app/services/quiz.service';
 import { TimeService } from '@app/services/time.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
-
-
 // TODO : Avoir un fichier séparé pour les constantes!
 export const DEFAULT_WIDTH = 200;
 export const DEFAULT_HEIGHT = 200;
-const intervalTime = 10;
-const testValidationTime = 3;
-const testMultPoint = 1.2;
-const normalValidationTime = 5;
-
+const INTERVALTIME = 10;
+const TESTVALIDATIONTIME = 3;
+const TESTMULTPOINT = 1.2;
+const NORMALVALIDATIONTIME = 5;
 
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
     styleUrls: ['./play-area.component.scss'],
-}) 
-
+})
 export class PlayAreaComponent implements OnInit, OnDestroy {
-    intervalId = setInterval(() => {}, 0);;
-    tempPath = true ;
+    intervalId = setInterval(() => void 0, 0);
+    tempPath = true;
     testPage = false;
     addingPoints = false;
     bgColor = 'transparent';
-    validationTime = normalValidationTime;
+    validationTime = NORMALVALIDATIONTIME;
     bonusPointMultiplicator = 1;
     timeEnd = false;
     initInfos = true;
@@ -116,8 +112,8 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     setNumberOfCorrectAnswers() {
         this.numberOfCorrectAnswers = 0;
         if (this.answerChoices !== undefined) {
-            for (const choice of this.answerChoices) {
-                if (choice.isCorrect) {
+            for (const CHOICE of this.answerChoices) {
+                if (CHOICE.isCorrect) {
                     this.numberOfCorrectAnswers++;
                 }
             }
@@ -156,51 +152,45 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
         } else if (this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
             if (this.questionIndex < this.quiz.questions.length - 1) {
                 this.resetInfos();
-            }else{
-                this.router.navigate(['/game-creation-page']);     
+            } else {
+                this.router.navigate(['/game-creation-page']);
             }
         }
     }
 
-    runGame(){
-        
+    runGame() {
         this.intervalId = setInterval(() => {
-        if (this.initInfos) {
-            this.setQuestionInfos();
-            this.initInfos = false;
-        }
-        this.validationButtonLocked();
-        this.timer = this.timeService.getTime(this.currentTimerIndex);
-        this.setNumberOfCorrectAnswers();
-        this.timeElapsedConditions();
+            if (this.initInfos) {
+                this.setQuestionInfos();
+                this.initInfos = false;
+            }
+            this.validationButtonLocked();
+            this.timer = this.timeService.getTime(this.currentTimerIndex);
+            this.setNumberOfCorrectAnswers();
+            this.timeElapsedConditions();
 
-        if (this.clearInterval) {
-            this.timeService.deleteAllTimers();
-            clearInterval(this.intervalId);
-        }
-        }, intervalTime);
+            if (this.clearInterval) {
+                this.timeService.deleteAllTimers();
+                clearInterval(this.intervalId);
+            }
+        }, INTERVALTIME);
     }
-
-   
-
     ngOnInit(): void {
-       this.route.params.subscribe(() => {
-            const quizId = this.tempPath ? this.route.snapshot.paramMap.get('id'): '1';
+        this.route.params.subscribe(() => {
+            const QUIZID = this.tempPath ? this.route.snapshot.paramMap.get('id') : '1';
             this.testPage = this.tempPath ? this.route.snapshot.url[0].path === 'quiz-testing-page' : true;
-        if (this.testPage) {
-            this.validationTime = testValidationTime;
-            this.bonusPointMultiplicator = testMultPoint;
-        }
-        if (quizId !== null) {
-            this.quizService.basicGetById(quizId).subscribe((quiz) => {
-                this.quiz = quiz;
-                this.initInfos = true;
-                
+            if (this.testPage) {
+                this.validationTime = TESTVALIDATIONTIME;
+                this.bonusPointMultiplicator = TESTMULTPOINT;
+            }
+            if (QUIZID !== null) {
+                this.quizService.basicGetById(QUIZID).subscribe((quiz) => {
+                    this.quiz = quiz;
+                    this.initInfos = true;
+
                     this.runGame();
-                
-            });
-        }
-            
+                });
+            }
         });
     }
 

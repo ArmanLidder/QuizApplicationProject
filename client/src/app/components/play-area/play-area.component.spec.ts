@@ -5,13 +5,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
 import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
-import {  Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { QuizService } from '@app/services/quiz.service';
 import { of } from 'rxjs';
-
-
-
 
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;
@@ -25,8 +22,8 @@ describe('PlayAreaComponent', () => {
     let validationButtonLockedSpy: jasmine.Spy;
     let setNumberOfCorrectAnswersSpy: jasmine.Spy;
     let timeElapsedConditionsSpy: jasmine.Spy;
-    
-    const mockQuiz: Quiz = {
+
+    const MOCKQUIZ: Quiz = {
         id: '1',
         title: 'Math Quiz',
         description: 'its a math quiz.',
@@ -48,7 +45,7 @@ describe('PlayAreaComponent', () => {
         ],
         visible: true,
     };
-    const mockChoices = [
+    const MOCKCHOICES = [
         { text: 'test', isCorrect: true },
         { text: 'test', isCorrect: false },
         { text: 'test', isCorrect: true },
@@ -61,27 +58,26 @@ describe('PlayAreaComponent', () => {
                 return [];
             },
         });
-      
-          quizService = jasmine.createSpyObj('QuizService', ['basicGetById']);
+
+        quizService = jasmine.createSpyObj('QuizService', ['basicGetById']);
         TestBed.configureTestingModule({
             declarations: [PlayAreaComponent],
             imports: [HttpClientModule, RouterTestingModule, FormsModule],
-            providers: [{ provide: TimeService, useValue: timeServiceSpy }, { provide: QuizService, useValue: quizService }],
+            providers: [
+                { provide: TimeService, useValue: timeServiceSpy },
+                { provide: QuizService, useValue: quizService },
+            ],
         });
         await TestBed.compileComponents();
-        
-        
     });
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PlayAreaComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component.quiz = mockQuiz;
+        component.quiz = MOCKQUIZ;
         router = TestBed.inject(Router);
     });
-
-    
 
     it('should create', () => {
         expect(component).toBeTruthy();
@@ -92,8 +88,8 @@ describe('PlayAreaComponent', () => {
         component.clickedValidation = false;
         component.answerChoices = [];
 
-        const event = new KeyboardEvent('keydown', { key: 'Enter' });
-        component.buttonDetect(event);
+        const EVENT = new KeyboardEvent('keydown', { key: 'Enter' });
+        component.buttonDetect(EVENT);
         expect(component.clickedValidation).toBe(true);
         expect(onCardSelectedSpy).not.toHaveBeenCalled();
     });
@@ -106,17 +102,17 @@ describe('PlayAreaComponent', () => {
         ];
         component.clickedValidation = false;
 
-        const event = new KeyboardEvent('keydown', { key: '3' });
-        component.buttonDetect(event);
+        const EVENT = new KeyboardEvent('keydown', { key: '3' });
+        component.buttonDetect(EVENT);
         expect(onCardSelectedSpy).not.toHaveBeenCalled();
 
-        const event2 = new KeyboardEvent('keydown', { key: '2' });
-        component.buttonDetect(event2);
+        const EVENT2 = new KeyboardEvent('keydown', { key: '2' });
+        component.buttonDetect(EVENT2);
         expect(onCardSelectedSpy).toHaveBeenCalled();
     });
 
     it('should increment number of correct cards', () => {
-        component.answerChoices = mockChoices;
+        component.answerChoices = MOCKCHOICES;
         component.numberOfcorrectCards = 0;
         component.selectedCard = [false, false, false, false];
         component.onCardSelected(0);
@@ -125,7 +121,7 @@ describe('PlayAreaComponent', () => {
         expect(component.numberOfcorrectCards).toBe(1);
     });
     it('should decrement number of correct cards', () => {
-        component.answerChoices = mockChoices;
+        component.answerChoices = MOCKCHOICES;
         component.numberOfcorrectCards = 1;
         component.selectedCard = [true, false, false, false];
         component.onCardSelected(0);
@@ -134,7 +130,7 @@ describe('PlayAreaComponent', () => {
         expect(component.numberOfcorrectCards).toBe(0);
     });
     it('should increment number of incorrect cards', () => {
-        component.answerChoices = mockChoices;
+        component.answerChoices = MOCKCHOICES;
         component.numberOfIncorrectCards = 0;
         component.selectedCard = [false, false, false, false];
         component.onCardSelected(1);
@@ -143,7 +139,7 @@ describe('PlayAreaComponent', () => {
         expect(component.numberOfIncorrectCards).toBe(1);
     });
     it('should decrement number of incorrect cards', () => {
-        component.answerChoices = mockChoices;
+        component.answerChoices = MOCKCHOICES;
         component.numberOfIncorrectCards = 1;
         component.selectedCard = [false, true, false, false];
         component.onCardSelected(1);
@@ -222,14 +218,14 @@ describe('PlayAreaComponent', () => {
     });
 
     it('should set the number of correct answers', () => {
-        const answerChoices = [
+        const ANSWERCHOICES = [
             { text: 'Choice 1', isCorrect: true },
             { text: 'Choice 2', isCorrect: false },
             { text: 'Choice 3', isCorrect: true },
             { text: 'Choice 4', isCorrect: false },
         ];
 
-        component.answerChoices = answerChoices;
+        component.answerChoices = ANSWERCHOICES;
 
         component.setNumberOfCorrectAnswers();
 
@@ -266,12 +262,11 @@ describe('PlayAreaComponent', () => {
         component.questionPoints = 50;
         component.bonusPointMultiplicator = 1;
         component.addingPoints = false;
-        
 
         timeServiceSpy.getTime.and.returnValue(0);
 
         component.timeElapsedConditions();
-        
+
         expect(component.pointage).toEqual(EXPECTEDPOINTAGE);
         expect(component.timeEnd).toBe(true);
         expect(component.addingPoints).toBe(true);
@@ -295,54 +290,45 @@ describe('PlayAreaComponent', () => {
         spyOn(router, 'navigate');
         component.timeElapsedConditions();
         expect(router.navigate).toHaveBeenCalledWith(['/game-creation-page']);
-        
-
     });
 
-   
     it('should run all the fuction used in the runGame function', () => {
-       
         jasmine.clock().install();
         validationButtonLockedSpy = spyOn(component, 'validationButtonLocked');
         setNumberOfCorrectAnswersSpy = spyOn(component, 'setNumberOfCorrectAnswers');
         timeElapsedConditionsSpy = spyOn(component, 'timeElapsedConditions');
         component.initInfos = true;
         component.clearInterval = true;
-        const clearIntervalSpy = spyOn(window, 'clearInterval');
+        const CLEARINTERVALSPY = spyOn(window, 'clearInterval');
+        const CLOCKTICK = 4000;
         component.runGame();
-        jasmine.clock().tick(4000);
+        jasmine.clock().tick(CLOCKTICK);
         expect(validationButtonLockedSpy).toHaveBeenCalled();
         expect(setNumberOfCorrectAnswersSpy).toHaveBeenCalled();
         expect(timeElapsedConditionsSpy).toHaveBeenCalled();
         expect(component.initInfos).toBe(false);
         expect(timeServiceSpy.deleteAllTimers).toHaveBeenCalled();
-        expect(clearIntervalSpy).toHaveBeenCalledWith(component.intervalId);
+        expect(CLEARINTERVALSPY).toHaveBeenCalledWith(component.intervalId);
         jasmine.clock().uninstall();
-   
-     });
+    });
 
     it('should look at if it is a test version and call runGame', () => {
-       
-            component.tempPath = false;
-            quizService.basicGetById.and.returnValue(of(mockQuiz));
-            runGameSpy = spyOn(component, 'runGame');
-         
-            component.ngOnInit();
+        component.tempPath = false;
+        quizService.basicGetById.and.returnValue(of(MOCKQUIZ));
+        runGameSpy = spyOn(component, 'runGame');
+        const FAKEVALIDATIONTIME = 3;
+        const FAKEBONUSPOINTMULT = 1.2;
+        component.ngOnInit();
 
-            expect(component.validationTime).toBe(3);
-            expect(component.bonusPointMultiplicator).toBe(1.2);
-            expect(component.initInfos).toBe(true);
-            expect(component.quiz).toBe(mockQuiz);
-            expect(runGameSpy).toHaveBeenCalled();
-   
+        expect(component.validationTime).toBe(FAKEVALIDATIONTIME);
+        expect(component.bonusPointMultiplicator).toBe(FAKEBONUSPOINTMULT);
+        expect(component.initInfos).toBe(true);
+        expect(component.quiz).toBe(MOCKQUIZ);
+        expect(runGameSpy).toHaveBeenCalled();
     });
 
     it('should set clearInterval to true when we leave a page with ngOnDestroy', () => {
-       
         component.ngOnDestroy();
         expect(component.clearInterval).toBe(true);
-
-     });
-
-
+    });
 });
