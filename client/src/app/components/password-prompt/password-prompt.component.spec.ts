@@ -1,34 +1,24 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
 import { PasswordPromptComponent } from './password-prompt.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import SpyObj = jasmine.SpyObj;
 
 describe('PasswordPromptComponent', () => {
-    let authServiceSpy: SpyObj<AdminAuthenticatorService>;
-    let router: Router;
     let component: PasswordPromptComponent;
     let fixture: ComponentFixture<PasswordPromptComponent>;
 
-    beforeEach(() => {
-        authServiceSpy = jasmine.createSpyObj('authServiceSpy', { validatePassword: of(Boolean) });
-    });
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PasswordPromptComponent],
-            imports: [HttpClientModule, FormsModule, RouterTestingModule.withRoutes([])],
-            providers: [{ provide: AdminAuthenticatorService, useValue: authServiceSpy }],
+            imports: [HttpClientModule, FormsModule],
+            providers: [{ provide: Router }],
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PasswordPromptComponent);
         component = fixture.componentInstance;
-        router = TestBed.inject(Router);
         fixture.detectChanges();
     });
 
@@ -36,48 +26,50 @@ describe('PasswordPromptComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should try to navigate to /home when cancel button is clicked', () => {
-        const cancelButton = fixture.debugElement.nativeElement.querySelector('.cancel');
-        const navigateSpy = spyOn(router, 'navigateByUrl');
-        cancelButton.click();
-        expect(navigateSpy.calls.mostRecent().args[0].toString()).toEqual('/home');
-    });
-
-    it('should try to navigate to /game-admin-page when enter button is clicked', () => {
-        const cancelButton = fixture.debugElement.nativeElement.querySelector('.enter');
-        const navigateSpy = spyOn(router, 'navigateByUrl');
-        cancelButton.click();
-        expect(navigateSpy.calls.mostRecent().args[0].toString()).toEqual('/game-admin-page');
-    });
-
-    it('should set loginStatus to success message on successful validation', () => {
-        authServiceSpy.validatePassword.and.returnValue(of(true));
+    it('should try to navigate to /game-admin-page when updatingStatus', () => {
+        const routerSpy = spyOn(component.router, 'navigate').and.resolveTo();
         component.updateStatus();
-        expect(component.loginStatus).toBe(null);
+        expect(routerSpy).toHaveBeenCalledWith(['/game-admin-page']);
+    });
+
+    it('should show error feedback on server negative response ', () => {
+        const showFeedbackSpy = spyOn(component, 'showErrorFeedback');
+        component.treatResponse(false);
+        expect(showFeedbackSpy).toHaveBeenCalled();
+        expect(component.loginStatus).toEqual(component.errorMessage);
+    });
+
+    it('should remove error feedback on server positive response ', () => {
+        const resetSpy = spyOn(component, 'reset');
+        component.treatResponse(true);
+        expect(resetSpy).toHaveBeenCalled();
+    });
+
+    it('should reset loginStatus, inputBorderColor, and textColor on successful updateStatus', () => {
+        const unEmptyString = 'notEmpty';
+        component.loginStatus = unEmptyString;
+        component.inputBorderColor = unEmptyString;
+        component.textColor = unEmptyString;
+        component.reset();
+        expect(component.loginStatus).toBeNull();
         expect(component.inputBorderColor).toEqual('');
         expect(component.textColor).toEqual('');
     });
 
-    it('should set loginStatus to error message on failed validation', () => {
-        authServiceSpy.validatePassword.and.returnValue(of(false));
-        component.updateStatus();
-        expect(component.loginStatus).toBe(component.errorMessage);
+    it('should reset loginStatus, inputBorderColor, and textColor', () => {
+        component.showErrorFeedback();
+        expect(component.inputBorderColor).toEqual('red-border');
+        expect(component.textColor).toEqual('red-text');
     });
 
-    it('should set different text and border colors to indicate an error', () => {
-        authServiceSpy.validatePassword.and.returnValue(of(false));
-        component.updateStatus();
-        expect(component.textColor).toBe('red-text');
-        expect(component.inputBorderColor).toBe('red-border');
-    });
-
-    it('should start password validation when user press enter key on keyboard', () => {
-        const clickEventSpy = spyOn(component.enterButton.nativeElement, 'click');
-        document.dispatchEvent(
-            new KeyboardEvent('keydown', {
-                key: 'Enter',
-            }),
-        );
-        expect(clickEventSpy).toHaveBeenCalled();
+    it('should handle keyboard event (Enter key) and click enterButton', () => {
+        const enterBtn = fixture.debugElement.nativeElement.querySelector('.enter');
+        const clickSpy = spyOn(enterBtn, 'click');
+        const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+        });
+        spyOnProperty(event, 'code', 'get').and.returnValue('Enter');
+        document.dispatchEvent(event);
+        expect(clickSpy).toHaveBeenCalled();
     });
 });

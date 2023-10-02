@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { GameCreationPageComponent } from './game-creation-page.component';
+import { GamesListComponent } from '@app/components/games-list/games-list.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('GameCreationPageComponent', () => {
     let component: GameCreationPageComponent;
@@ -8,7 +12,8 @@ describe('GameCreationPageComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [GameCreationPageComponent, SidebarComponent, GameCreationPageComponent],
+            imports: [HttpClientModule, FormsModule, RouterTestingModule],
+            declarations: [GameCreationPageComponent, SidebarComponent, GameCreationPageComponent, GamesListComponent],
         }).compileComponents();
     });
 

@@ -1,4 +1,5 @@
 import { Component, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
 
 @Component({
@@ -9,11 +10,14 @@ import { AdminAuthenticatorService } from '@app/services/admin-authenticator.ser
 export class PasswordPromptComponent {
     @ViewChild('enterButton', { static: false }) enterButton: ElementRef;
     loginStatus: string | null;
-    errorMessage: string = 'Invalid password. Please try again!';
+    errorMessage: string = 'Mot de passe incorrect. Veuillez réessayer!';
     inputBorderColor: string = '';
     textColor: string = '';
 
-    constructor(public authenticatorService: AdminAuthenticatorService) {}
+    constructor(
+        public router: Router,
+        public authenticatorService: AdminAuthenticatorService,
+    ) {}
 
     @HostListener('document:keydown.enter')
     handleKeyboardEvent() {
@@ -21,12 +25,12 @@ export class PasswordPromptComponent {
     }
 
     updateStatus() {
-        this.authenticatorService.validatePassword().subscribe((res) => {
+        this.router.navigate(['/game-admin-page']).then((res) => {
             this.treatResponse(res);
         });
     }
 
-    private treatResponse(res: boolean): void {
+    treatResponse(res: boolean): void {
         if (!res) {
             this.loginStatus = this.errorMessage;
             this.showErrorFeedback();
@@ -35,13 +39,13 @@ export class PasswordPromptComponent {
         }
     }
 
-    private reset() {
+    reset() {
         this.loginStatus = null;
         this.textColor = '';
         this.inputBorderColor = '';
     }
 
-    private showErrorFeedback() {
+    showErrorFeedback() {
         this.textColor = 'red-text';
         this.inputBorderColor = 'red-border';
     }

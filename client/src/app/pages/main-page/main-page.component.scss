@@ -11,14 +11,54 @@
 }
 
 .button {
-    margin-top: 10px;
-    text-align: center;
+    margin: 10px;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.button-container {
+    display: flex;
+    padding: 10px;
+    border: none;
+
+    .button {
+        margin-left: 10px;
+        background-color: #007bff;
+        color: white;
+        border: 4px solid #007bff;
+
+        &:hover {
+            background-color: white;
+            color: #007bff;
+            transition: 0.3s;
+        }
+
+        &:active {
+            background-color: #007bff;
+            color: black;
+            border: 4px solid black;
+        }
+
+        &.disabled-button {
+            background-color: #ccc;
+            color: #666;
+            border: 4px solid #ccc;
+            cursor: not-allowed;
+
+            &:hover {
+                background-color: #ccc;
+                color: #666;
+            }
+        }
+    }
 }
 
 .team-name {
     margin-top: 0.25em;
     margin-bottom: 0.25em;
-    color: green;
+    color: rgb(27, 164, 98);
 }
 
 .header-item {
@@ -28,17 +68,4 @@
 
 .footer-item {
     text-align: center;
-}
-
-.footer-item p :nth-child(even) {
-    color: orange;
-}
-.footer-item p :nth-child(odd) {
-    color: blue;
-}
-
-.server-message {
-    justify-content: center;
-    width: 20%;
-    min-width: min-content;
 }

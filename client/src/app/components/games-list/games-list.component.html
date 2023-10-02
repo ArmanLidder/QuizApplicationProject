@@ -1,11 +1,21 @@
-<div class="quizzes-container">
-    <!-- <h3 *ngIF="isImportError">{{importError}}</h3> -->
+<app-unique-quiz-error-feedback 
+    *ngIf='!isQuizUnique' 
+    [quizName]="this.importedQuiz.title" 
+    (sendNewQuizName)="receiveQuizName($event)"
+    (cancelOperation)="killErrorFeedback($event)">
+</app-unique-quiz-error-feedback>
+<app-validation-quiz-error-feedback
+    *ngIf='isErrors'
+    [errors]='this.errors'
+    (cancelOperation)="killErrorFeedback($event)">
+</app-validation-quiz-error-feedback>
+<div class="quizzes-container" *ngIf='!isErrors && isQuizUnique'>
     <table>
         <thead>
             <tr>
-                <th>Games</th>
-                <th *ngIf="isAdmin">Visibility</th>
-                <th *ngIf="isAdmin">Last Modified</th>
+                <th>Jeu</th>
+                <th *ngIf="isAdmin">Visibilité</th>
+                <th *ngIf="isAdmin">Dernière Modification</th>
             </tr>
         </thead>
         <tbody>
@@ -28,17 +38,18 @@
         <tfoot>
             <tr>
                 <td class="button-container" *ngIf="isAdmin">
-                    <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Add Game</button>
-                    <input type="file" #fileInput accept="/application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
-                    <button class="add" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Import</button>
-                    <button routerLink="/home" class="cancel">Cancel</button>
+                    <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Ajouter</button>
+                    <input type="file" class="file-selector" #fileInput accept="application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
+                    <button class="add upload" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Importer</button>
+                    <button routerLink="/home" class="cancel">Annuler</button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
-                    <button [routerLink]="['/waiting-room-page', selectedQuiz?.id]"class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Play</button>
-                    <button [routerLink]="['/quiz-testing-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Test</button>
-                    <button routerLink="/home" class="cancel">Cancel</button>
+                    <button [routerLink]="['/waiting-room-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Jouer</button>
+                    <button [routerLink]="['/quiz-testing-page/', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Tester</button>
+                    <button routerLink="/home" class="cancel">Annuler</button>
                 </td>
             </tr>
         </tfoot>
     </table>
 </div>
+
