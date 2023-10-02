@@ -72,5 +72,4 @@ describe('PasswordPromptComponent', () => {
         document.dispatchEvent(event);
         expect(clickSpy).toHaveBeenCalled();
     });
-
 });

@@ -25,12 +25,12 @@ export class QuizCreationComponent {
     isPopupVisibleForm: boolean = false;
 
     protected readonly pageModel = PageMode;
-
+    /* eslint-disable max-params*/
     constructor(
         public quizCreationService: QuizCreationService,
         private readonly quizService: QuizService,
         private route: ActivatedRoute,
-        private navigateRoute: Router,
+        private navigateRoute: Router /* eslint-disable max-params*/,
     ) {
         this.quizForm = this.quizCreationService.fillForm();
         const id = this.route.snapshot.paramMap.get('id');

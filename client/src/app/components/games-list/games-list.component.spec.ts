@@ -83,7 +83,6 @@ describe('GamesListComponent Admin view', () => {
             visible: false,
         },
     ];
-
     beforeEach(() => {
         quizServiceSpy = jasmine.createSpyObj('QuizService', [
             'basicGetAll',
@@ -97,7 +96,6 @@ describe('GamesListComponent Admin view', () => {
         quizServiceSpy.basicPatch.and.returnValue(of());
         quizServiceSpy.basicPost.and.returnValue(of());
     });
-
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GamesListComponent],
@@ -105,7 +103,6 @@ describe('GamesListComponent Admin view', () => {
             providers: [{ provide: QuizService, useValue: quizServiceSpy }],
         }).compileComponents();
     }));
-
     beforeEach(() => {
         fixture = TestBed.createComponent(GamesListComponent);
         component = fixture.componentInstance;
@@ -113,30 +110,25 @@ describe('GamesListComponent Admin view', () => {
         component.isAdmin = true;
         fixture.detectChanges();
     });
-
     it('should create', () => {
         quizServiceSpy.basicGetAll.and.returnValue(of([]));
         expect(component).toBeTruthy();
     });
-
     it('should populate game list for admin', () => {
         quizServiceSpy.basicGetAll.and.returnValue(of([]));
         component.populateGameList();
         expect(quizServiceSpy.basicGetAll).toHaveBeenCalled();
     });
-
     it('should populate game list for non-admin', () => {
         component.isAdmin = false;
         component.populateGameList();
         expect(quizServiceSpy.basicGetAllVisible).toHaveBeenCalled();
     });
-
     it('should update visibility', () => {
         component.quizzes = quizzesMock;
         component.updateVisibility(component.quizzes[0]);
         expect(quizServiceSpy.basicPatch).toHaveBeenCalledWith(component.quizzes[0].id, false);
     });
-
     it('should remove a quiz by ID', () => {
         component.quizzes = quizzesMock;
         const quizIdToRemove = '2';
@@ -145,7 +137,6 @@ describe('GamesListComponent Admin view', () => {
         expect(removedQuiz).toBeUndefined();
         expect(component.quizzes.length).toEqual(2);
     });
-
     it('should terminate the error feeback on user manipulation', () => {
         component.isErrors = true;
         component.errors = 'There is some errors';
@@ -155,13 +146,11 @@ describe('GamesListComponent Admin view', () => {
         expect(component.isQuizUnique).toBeTruthy();
         expect(component.errors).toBeNull();
     });
-
     it('should set the selectedQuiz property to the provided quiz', () => {
         const sampleQuiz: Quiz = component.quizzes[0];
         component.selectQuiz(sampleQuiz);
         expect(component.selectedQuiz).toEqual(sampleQuiz);
     });
-
     it('should call addImportedQuiz if name is unique', () => {
         component.importedQuiz = quizzesMock[0];
         quizServiceSpy.checkTitleUniqueness.and.returnValue(
@@ -176,7 +165,6 @@ describe('GamesListComponent Admin view', () => {
         component.checkQuizNameUnique();
         expect(quizServiceSpy.checkTitleUniqueness).toHaveBeenCalled();
     });
-
     it('should call readFile when a valid JSON file is selected', () => {
         const mockFile = new File(['{}'], 'mock.json', { type: 'application/json' });
         const event = new Event('change');
@@ -192,7 +180,6 @@ describe('GamesListComponent Admin view', () => {
         expect(readFileSpy).toHaveBeenCalledWith(mockFile);
         expect(inputElement.value).toEqual('');
     });
-
     it('should trigger file input click and validate file data', fakeAsync(() => {
         component.importedQuiz = quizzesMock[0];
         const clickSpy = spyOn(component.fileInput.nativeElement, 'click').and.returnValue();
@@ -202,7 +189,6 @@ describe('GamesListComponent Admin view', () => {
         tick();
         expect(waitForFileReadSpy).toHaveBeenCalled();
     }));
-
     it('should read a file as Text', () => {
         component.fileReader = new FileReader();
         const selectedFile = new File(['{}'], 'mock.json', { type: 'application/json' });
@@ -210,7 +196,6 @@ describe('GamesListComponent Admin view', () => {
         component.readFile(selectedFile);
         expect(fileReaderSpy).toHaveBeenCalledWith(selectedFile);
     });
-
     it('should return an error message if validation is not succesful ', () => {
         const errors = ['Error 1', 'Error 2', 'Error 3'];
         const expectedErrorMessage =
@@ -222,7 +207,6 @@ describe('GamesListComponent Admin view', () => {
         const errorMessage = component.setValidatorError(errors);
         expect(errorMessage).toEqual(expectedErrorMessage);
     });
-
     it('should call basicPost and populateGameList when response status is CREATED', () => {
         component.importedQuiz = quizzesMock[0];
         const populateSpy = spyOn(component, 'populateGameList');
@@ -238,7 +222,6 @@ describe('GamesListComponent Admin view', () => {
         component.addImportedQuiz();
         expect(populateSpy).toHaveBeenCalled();
     });
-
     it('should not call populateGameList when response status is not CREATED', () => {
         component.importedQuiz = quizzesMock[0];
         const populateSpy = spyOn(component, 'populateGameList');
@@ -254,7 +237,6 @@ describe('GamesListComponent Admin view', () => {
         component.addImportedQuiz();
         expect(populateSpy).not.toHaveBeenCalled();
     });
-
     it('should check if quiz name is unique if quiz is valid', () => {
         component.importedQuiz = quizzesMock[1];
         quizServiceSpy.checkTitleUniqueness.and.returnValue(
@@ -270,7 +252,6 @@ describe('GamesListComponent Admin view', () => {
         expect(quizServiceSpy.checkTitleUniqueness).toHaveBeenCalled();
         expect(component.errors).toBeNull();
     });
-
     it('should update the error message if quiz is not valid', () => {
         const setValidatorErrorSpy = spyOn(component, 'setValidatorError');
         const expectedError = 'Question 1 : les points doivent être entre 10 et 100 et être divisible par 10';
@@ -350,15 +331,18 @@ describe('GamesListComponent Admin view', () => {
     });
 
     it('should seize resolve callback promise', () => {
-       component.asyncFileResolver = () => {component.isQuizUnique = false};
-       component.resolveasyncFileRead();
-       expect(component.isQuizUnique).toBeFalsy();
+        component.asyncFileResolver = () => {
+            component.isQuizUnique = false;
+        };
+        component.resolveasyncFileRead();
+        expect(component.isQuizUnique).toBeFalsy();
     });
 
     it('should seize reject callback promise', () => {
-        component.asyncFileRejecter = (error) => {component.isQuizUnique = error ? true : false};        
+        component.asyncFileRejecter = (error) => {
+            component.isQuizUnique = error ? true : false;
+        };
         component.rejectasyncFileRead(false);
         expect(component.isQuizUnique).toBeFalsy();
-     });
-
+    });
 });

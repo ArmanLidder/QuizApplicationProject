@@ -11,7 +11,7 @@ describe('UniqueQuizErrorFeedbackComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [UniqueQuizErrorFeedbackComponent],
-            imports: [FormsModule]
+            imports: [FormsModule],
         });
         fixture = TestBed.createComponent(UniqueQuizErrorFeedbackComponent);
         component = fixture.componentInstance;
