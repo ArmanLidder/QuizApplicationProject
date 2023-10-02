@@ -87,7 +87,7 @@
                         Supprimer
                     </button><br><br>
                     <button class="buttonOption" type="button" (click)="addQuestion(i)">
-                        Ajouter
+                        Ajouter une question
                     </button><br><br>
                     <button class="buttonOption" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)">Valider</button><br><br>
                     <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)">Modifier</button><br><br>
