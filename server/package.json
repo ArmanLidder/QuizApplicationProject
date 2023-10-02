@@ -29,7 +29,8 @@
             "**/*.spec.ts",
             "app/index.ts",
             "app/server.ts",
-            "app/app.ts"
+            "app/app.ts",
+            "**/*.mock.ts"
         ],
         "require": [
             "ts-node/register",
@@ -50,6 +51,8 @@
         "@common": "out/common"
     },
     "dependencies": {
+        "chai-as-promised": "^7.1.1",
+        "ci": "^2.3.0",
         "cookie-parser": "1.4.6",
         "cors": "2.8.5",
         "debug": "4.3.4",
@@ -58,6 +61,7 @@
         "http-status-codes": "2.1.4",
         "module-alias": "2.2.2",
         "mongodb": "5.7.0",
+        "mongodb-memory-server": "^8.15.1",
         "prettier": "3.0.1",
         "reflect-metadata": "0.1.13",
         "serve-favicon": "2.5.0",
@@ -68,6 +72,7 @@
     "devDependencies": {
         "@types/body-parser": "1.19.2",
         "@types/chai": "4.3.5",
+        "@types/chai-as-promised": "^7.1.6",
         "@types/cookie-parser": "1.4.3",
         "@types/cors": "2.8.12",
         "@types/express": "4.17.17",

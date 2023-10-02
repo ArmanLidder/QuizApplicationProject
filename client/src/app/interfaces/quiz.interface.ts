@@ -10,7 +10,7 @@ export interface Quiz {
     duration: number;
     lastModification: string | null;
     questions: QuizQuestion[];
-    visible: boolean;
+    visible?: boolean;
 }
 
 export interface QuizQuestion {

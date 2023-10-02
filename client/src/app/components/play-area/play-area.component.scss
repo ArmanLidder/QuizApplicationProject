@@ -1,3 +1,102 @@
-#position-display {
-    border: 1px dashed blue;
+#button-position{
+    background-color: transparent;
+    border-radius: 10px;
+    border-color: green;
+    
+    
+}
+
+#button-position:hover{
+    background-color: rgb(220, 220, 220);
+    cursor: pointer;
+    
+}
+
+#button-position >p{
+    margin: 12px;
+}
+
+#abondon-position {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: end;
+    margin-right: 5vw;
+}
+
+#abondon-button {
+    background-color: transparent;
+    border-radius: 10px;
+    border-color: red;
+}
+
+#abondon-button:hover {
+    cursor: pointer;
+}
+
+#grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#question-field{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+}
+
+#question-field > * {
+    justify-content: space-between;
+}
+
+#question-field > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#question-field > div > * {
+    margin: 1vh;
+}
+
+#question-field > div > h2 {
+    font-weight: 600;
+    font-size: 2.5vw;
+}
+
+#question-field > div > h3 {
+    font-weight: 400;
+    font-size: 1vw;
+}
+
+#question-field > h4 {
+    font-weight: 500;
+    font-size: 2vw;
+}
+
+#answer-field {
+    width: 90%;
+    height: 40%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-around;
+    gap: 5%;
+    padding-bottom: 2% ;
+    margin-bottom: 5vh;
+    
+}
+
+#answer-field > app-answer-choice-card{
+    width: 45%;
+    height: auto;
+    
+}
+#flex-container {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px ;
 }

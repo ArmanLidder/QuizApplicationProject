@@ -1,0 +1,10 @@
+<div class="quiz-row">
+    <span> {{quiz.title}} </span>
+    <div class="button-container" *ngIf="isAdmin">
+        <button class="export-button" (click)="exportGame()"> Exporter </button>
+        <button class="update-button" (click)="updateGame()"> Modifier </button>
+        <button class="delete-button" (click)="deleteGame()"> Supprimer </button>
+    </div>
+</div>
+<a #downloadLink [hidden]='true'></a>
+
