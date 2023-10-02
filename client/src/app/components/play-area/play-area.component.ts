@@ -1,16 +1,9 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PlayAreaConst } from '@app/interfaces/play-area-const';
 import { Quiz, QuizChoice } from '@app/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { TimeService } from '@app/services/time.service';
-import { ActivatedRoute, Router } from '@angular/router';
-
-// TODO : Avoir un fichier séparé pour les constantes!
-export const DEFAULT_WIDTH = 200;
-export const DEFAULT_HEIGHT = 200;
-const INTERVALTIME = 10;
-const TESTVALIDATIONTIME = 3;
-const TESTMULTPOINT = 1.2;
-const NORMALVALIDATIONTIME = 5;
 
 @Component({
     selector: 'app-play-area',
@@ -18,12 +11,21 @@ const NORMALVALIDATIONTIME = 5;
     styleUrls: ['./play-area.component.scss'],
 })
 export class PlayAreaComponent implements OnInit, OnDestroy {
+    playAreaConst: PlayAreaConst = {
+        defaultWidth: 200,
+        defaultHeignt: 200,
+        intervalTime: 10,
+        testValidationTime: 3,
+        testMultPoint: 1.2,
+        normalValidationTime: 5,
+    };
+
     intervalId = setInterval(() => void 0, 0);
     tempPath = true;
     testPage = false;
     addingPoints = false;
     bgColor = 'transparent';
-    validationTime = NORMALVALIDATIONTIME;
+    validationTime = this.playAreaConst.normalValidationTime;
     bonusPointMultiplicator = 1;
     timeEnd = false;
     initInfos = true;
@@ -42,13 +44,16 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     numberOfcorrectCards = 0;
     numberOfCorrectAnswers = 0;
     selectedCard = [false, false, false, false];
-
-    constructor(
-        private readonly timeService: TimeService,
-        private quizService: QuizService,
-        public route: ActivatedRoute,
-        private router: Router,
-    ) {}
+    private timeService: TimeService;
+    private quizService: QuizService;
+    private route: ActivatedRoute;
+    private router: Router;
+    constructor(injector: Injector) {
+        this.timeService = injector.get<TimeService>(TimeService);
+        this.quizService = injector.get<QuizService>(QuizService);
+        this.route = injector.get<ActivatedRoute>(ActivatedRoute);
+        this.router = injector.get<Router>(Router);
+    }
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
@@ -173,15 +178,15 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
                 this.timeService.deleteAllTimers();
                 clearInterval(this.intervalId);
             }
-        }, INTERVALTIME);
+        }, this.playAreaConst.intervalTime);
     }
     ngOnInit(): void {
         this.route.params.subscribe(() => {
             const QUIZID = this.tempPath ? this.route.snapshot.paramMap.get('id') : '1';
             this.testPage = this.tempPath ? this.route.snapshot.url[0].path === 'quiz-testing-page' : true;
             if (this.testPage) {
-                this.validationTime = TESTVALIDATIONTIME;
-                this.bonusPointMultiplicator = TESTMULTPOINT;
+                this.validationTime = this.playAreaConst.testValidationTime;
+                this.bonusPointMultiplicator = this.playAreaConst.testMultPoint;
             }
             if (QUIZID !== null) {
                 this.quizService.basicGetById(QUIZID).subscribe((quiz) => {
