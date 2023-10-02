@@ -44,7 +44,7 @@ describe('MainPageComponent', () => {
     });
 
     it('should contain buttons with specific routerLink attributes', () => {
-        const createGameButton = fixture.nativeElement.querySelector('button[routerLink="/quiz-creation-page"]');
+        const createGameButton = fixture.nativeElement.querySelector('button[routerLink="/game-creation"]');
         const adminGamesButton = fixture.nativeElement.querySelector('button[routerLink="/game-admin"]');
         expect(createGameButton).toBeTruthy();
         expect(adminGamesButton).toBeTruthy();

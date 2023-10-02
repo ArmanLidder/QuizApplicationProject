@@ -113,7 +113,7 @@ export class QuizCreationComponent {
                 if (response.body?.isUnique || this.mode === PageMode.MODIFICATION) {
                     this.addOrUpdateQuiz(quiz);
                 } else {
-                    window.alert('The quiz name that you entered already exists');
+                    window.alert('Un quiz ayant le même titre existe déjà');
                 }
             });
         } else {

@@ -1,7 +1,7 @@
-import { Request, Response, Router } from 'express';
-import { Service } from 'typedi';
-import { StatusCodes } from 'http-status-codes';
 import { QuizService } from '@app/services/quiz.service';
+import { Request, Response, Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { Service } from 'typedi';
 
 @Service()
 export class QuizController {
@@ -36,6 +36,14 @@ export class QuizController {
         this.router.get('/', async (req: Request, res: Response) => {
             try {
                 res.status(StatusCodes.OK).json(await this.quizService.getAll());
+            } catch (e) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+            }
+        });
+
+        this.router.get('/visible', async (req: Request, res: Response) => {
+            try {
+                res.status(StatusCodes.OK).json(await this.quizService.getAllVisible());
             } catch (e) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
             }
@@ -87,7 +95,7 @@ export class QuizController {
          *         description: Internal server error
          */
         this.router.post('/', async (req: Request, res: Response) => {
-            const quiz = req.body;
+            const quiz = req.body.quiz;
             try {
                 await this.quizService.add(quiz);
                 res.status(StatusCodes.CREATED).json(quiz);
@@ -116,10 +124,73 @@ export class QuizController {
          */
         this.router.put('/', async (req: Request, res: Response) => {
             try {
-                await this.quizService.update(req.body);
-                res.json({});
+                await this.quizService.replace(req.body.quiz);
+                res.status(StatusCodes.OK).json(req.body.quiz);
             } catch (e) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+            }
+        });
+
+        this.router.patch('/:id', async (req: Request, res: Response) => {
+            try {
+                await this.quizService.update(req.params.id, req.body.visible);
+                res.status(StatusCodes.OK).json({ visible: (await this.quizService.getById(req.params.id)).visible });
+            } catch (e) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+            }
+        });
+
+        /**
+         * @swagger
+         * /quiz/checkTitleUniqueness:
+         *   post:
+         *     summary: Check title uniqueness
+         *     description: Check if a title is unique for a Quiz.
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             type: object
+         *             properties:
+         *               title:
+         *                 type: string
+         *     responses:
+         *       200:
+         *         description: Success. Returns whether the title is unique.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               existingQuiz: boolean
+         *               properties:
+         *                 isUnique:
+         *                   type: boolean
+         *       400:
+         *         description: Bad Request. Title is not unique.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               existingQuiz: boolean
+         *               properties:
+         *                 error:
+         *                   type: string
+         *       500:
+         *         description: Internal Server Error.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               existingQuiz: boolean
+         *               properties:
+         *                 error:
+         *                   type: string
+         */
+        this.router.post('/checkTitleUniqueness', async (req, res) => {
+            const { title } = req.body;
+            try {
+                const isUnique = await this.quizService.isTitleUnique(title);
+                res.json({ isUnique });
+            } catch (error) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
             }
         });
 

@@ -282,7 +282,7 @@ describe('QuizCreationComponent', () => {
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledWith(title);
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledTimes(1);
         // Ensure that an alert is shown
-        expect(windowAlertSpy).toHaveBeenCalledWith('The quiz name that you entered already exists');
+        expect(windowAlertSpy).toHaveBeenCalledWith('Un quiz ayant le même titre existe déjà');
     });
 
     it('should set form errors and show a popup when form is not valid', () => {
