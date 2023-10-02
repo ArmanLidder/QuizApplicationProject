@@ -74,7 +74,6 @@ export class DatabaseService {
     }
 
     async populateDB(collection: string, quizzes: Quiz[]): Promise<void> {
-        console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
         for (const course of quizzes) {
             await this.db.collection(collection).insertOne(course);
         }

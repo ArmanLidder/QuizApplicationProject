@@ -13,6 +13,7 @@ const routes: Routes = [
     { path: 'game', component: GamePageComponent },
     { path: 'game-creation', component: GameCreationPageComponent },
     { path: 'quiz-creation', component: QuizCreationPageComponent },
+    { path: 'quiz-creation/:id', component: QuizCreationPageComponent },
     { path: 'game-admin', component: GameAdministrationPageComponent },
     { path: 'material', component: MaterialPageComponent },
     { path: '**', redirectTo: '/home' },

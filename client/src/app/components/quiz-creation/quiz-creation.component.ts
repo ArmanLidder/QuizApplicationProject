@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
@@ -24,15 +24,18 @@ export class QuizCreationComponent {
     isPopupVisibleDuration: boolean = false;
     isPopupVisibleForm: boolean = false;
     formErrors: string[] = [];
-
+    quizCreationService: QuizCreationService;
     protected readonly pageModel = PageMode;
+    private quizService: QuizService;
+    private route: ActivatedRoute;
+    private navigateRoute: Router;
 
-    constructor(
-        public quizCreationService: QuizCreationService,
-        private quizService: QuizService,
-        private route: ActivatedRoute,
-        private navigateRoute: Router,
-    ) {
+    constructor(injector: Injector) {
+        this.quizCreationService = injector.get<QuizCreationService>(QuizCreationService);
+        this.quizService = injector.get<QuizService>(QuizService);
+        this.route = injector.get<ActivatedRoute>(ActivatedRoute);
+        this.navigateRoute = injector.get<Router>(Router);
+
         this.quizForm = this.quizCreationService.fillForm();
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
