@@ -108,13 +108,33 @@ describe('QuizController', () => {
         quizService.isTitleUnique.throws(new Error('test error!'));
         quizService.delete.throws(new Error('test error!'));
 
-        supertest(expressApp).get('/api/quiz').then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).get('/api/quiz/visible').then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).post('/api/quiz').send({ quiz: MOCK_QUIZ }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).put('/api/quiz').send({ quiz: MOCK_QUIZ }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).patch(`/api/quiz/${TEST_ID}`).send({ visible: false }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).post('/api/quiz/checkTitleUniqueness').send({ title: 'New Quiz Title' }).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).delete(`/api/quiz/${TEST_ID}`).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
-        supertest(expressApp).get(`/api/quiz/${TEST_ID}`).then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .get('/api/quiz')
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .get('/api/quiz/visible')
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .post('/api/quiz')
+            .send({ quiz: MOCK_QUIZ })
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .put('/api/quiz')
+            .send({ quiz: MOCK_QUIZ })
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .patch(`/api/quiz/${TEST_ID}`)
+            .send({ visible: false })
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .post('/api/quiz/checkTitleUniqueness')
+            .send({ title: 'New Quiz Title' })
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .delete(`/api/quiz/${TEST_ID}`)
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
+        supertest(expressApp)
+            .get(`/api/quiz/${TEST_ID}`)
+            .then((res) => expect(res.status).to.equal(StatusCodes.INTERNAL_SERVER_ERROR));
     });
 });
