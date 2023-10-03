@@ -13,4 +13,4 @@ coverage/
 
 #Node Modules
 /node_modules
-server/.env
+
