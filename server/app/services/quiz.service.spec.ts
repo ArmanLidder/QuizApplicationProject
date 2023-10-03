@@ -48,10 +48,10 @@ describe('Quiz Service', () => {
         (await databaseService.start()) as MongoClient;
 
         quizService = new QuizService(databaseService as unknown as DatabaseService);
-        testQuizzes.forEach(async (quiz) => {
+        for (const quiz of testQuizzes) {
             delete quiz['_id'];
             await quizService.collection.insertOne(quiz);
-        });
+        }
     });
 
     const removeIds = () => {
