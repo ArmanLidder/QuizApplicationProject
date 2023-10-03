@@ -1,4 +1,4 @@
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
+import { createStubInstance, restore, SinonStubbedInstance } from 'sinon';
 import { QuizService } from '@app/services/quiz.service';
 import { Application } from '@app/app';
 import { Container } from 'typedi';
@@ -26,6 +26,11 @@ describe('QuizController', () => {
         ],
         visible: true,
     };
+
+    before(() => {
+        restore();
+    });
+
     beforeEach(async () => {
         quizService = createStubInstance(QuizService);
         quizService.getAll.resolves([MOCK_QUIZ, MOCK_QUIZ, MOCK_QUIZ]);

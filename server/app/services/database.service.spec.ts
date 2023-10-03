@@ -8,11 +8,17 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { DatabaseService } from './database.service';
 chai.use(chaiAsPromised);
 import 'dotenv/config';
+import { restore } from 'sinon';
 
 describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
     const QUIZZES_LENGTH = fillerQuizzes.length;
+
+    before(() => {
+        restore();
+    });
+
     beforeEach(async () => {
         databaseService = new DatabaseService();
         mongoServer = await MongoMemoryServer.create();

@@ -1,4 +1,4 @@
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
+import { createStubInstance, restore, SinonStubbedInstance } from 'sinon';
 import { AdminAuthService } from '@app/services/admin-auth.service';
 import { Application } from '@app/app';
 import { Container } from 'typedi';
@@ -9,6 +9,10 @@ describe('AdminAuthController', () => {
     let adminAuthService: SinonStubbedInstance<AdminAuthService>;
     let expressApp: Express.Application;
 
+    before(() => {
+        restore();
+    });
+    
     beforeEach(async () => {
         adminAuthService = createStubInstance(AdminAuthService);
         const app = Container.get(Application);
