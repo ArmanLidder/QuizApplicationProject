@@ -43,10 +43,10 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     constructor(injector: Injector) {
         this.playAreaConst = {
             defaultWidth: 200,
-            defaultHeignt: 200,
+            defaultHeight: 200,
             intervalTime: 10,
             testValidationTime: 3,
-            testMultPoint: 1.2,
+            testMultiPoint: 1.2,
             normalValidationTime: 5,
         };
 
@@ -205,14 +205,14 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     }
     ngOnInit(): void {
         this.route.params.subscribe(() => {
-            const QUIZID = this.tempPath ? this.route.snapshot.paramMap.get('id') : '1';
+            const QUIZ_ID = this.tempPath ? this.route.snapshot.paramMap.get('id') : '1';
             this.testPage = this.tempPath ? this.route.snapshot.url[0].path === 'quiz-testing-page' : true;
             if (this.testPage) {
                 this.validationTime = this.playAreaConst.testValidationTime;
-                this.bonusPointMultiplicator = this.playAreaConst.testMultPoint;
+                this.bonusPointMultiplicator = this.playAreaConst.testMultiPoint;
             }
-            if (QUIZID !== null) {
-                this.quizService.basicGetById(QUIZID).subscribe((quiz) => {
+            if (QUIZ_ID !== null) {
+                this.quizService.basicGetById(QUIZ_ID).subscribe((quiz) => {
                     this.quiz = quiz;
                     this.initInfos = true;
 

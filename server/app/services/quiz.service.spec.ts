@@ -73,7 +73,7 @@ describe('Quiz Service', () => {
     it('should get all visible quizzes from DB', async () => {
         const quizzes = await quizService.getAllVisible();
         removeIds();
-        expect([testQuizzes[0]]).to.deep.equals(quizzes); // getallvisible should return only the first quiz, since it's the only visible
+        expect([testQuizzes[0]]).to.deep.equals(quizzes); // getAllVisible should return only the first quiz, since it's the only visible
     });
 
     it('should get quiz by id', async () => {
@@ -83,7 +83,7 @@ describe('Quiz Service', () => {
         expect(testQuizzes[1]).to.deep.equals(quizz); // ID = 2  corresponds to the second quiz in data.ts
     });
 
-    it('should add quizz', async () => {
+    it('should add quiz', async () => {
         await quizService.add(extraQuiz);
         const quizzes = await quizService.collection.find({}).toArray();
         expect(quizzes.find((x) => x.id === extraQuiz.id)).to.deep.equals(extraQuiz);
@@ -108,7 +108,7 @@ describe('Quiz Service', () => {
 
     it('should replace a quizz', async () => {
         const TEST_ID = '1';
-        const TEST_TITLE = 'This is a test title replacing the first quizz title';
+        const TEST_TITLE = 'This is a test title replacing the first quiz title';
         extraQuiz.id = TEST_ID;
         extraQuiz.title = TEST_TITLE;
         delete extraQuiz['_id'];
