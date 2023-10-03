@@ -33,8 +33,8 @@ export class GameItemComponent {
         return exportedQuiz;
     }
 
-    buildJSONFile(formatedQuiz: object): string {
-        const blob = new Blob([JSON.stringify(formatedQuiz)], { type: 'application/json' });
+    buildJSONFile(formattedQuiz: object): string {
+        const blob = new Blob([JSON.stringify(formattedQuiz)], { type: 'application/json' });
         return window.URL.createObjectURL(blob);
     }
 

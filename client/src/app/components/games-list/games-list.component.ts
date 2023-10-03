@@ -23,8 +23,8 @@ export class GamesListComponent implements OnInit {
     errors: string | null = null;
     isErrors: boolean = false;
     isQuizUnique: boolean = true;
-    isListShowable: boolean = this.isErrors === false && this.isQuizUnique === true;
-    asyncFileRead: Promise<void>;
+    // isListShowable: boolean = this.isErrors === false && this.isQuizUnique === true;
+    // asyncFileRead: Promise<void>;
     fileReader: FileReader = new FileReader();
 
     asyncFileResolver: () => void;

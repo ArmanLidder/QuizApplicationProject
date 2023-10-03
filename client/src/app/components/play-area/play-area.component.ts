@@ -11,44 +11,67 @@ import { TimeService } from '@app/services/time.service';
     styleUrls: ['./play-area.component.scss'],
 })
 export class PlayAreaComponent implements OnInit, OnDestroy {
-    playAreaConst: PlayAreaConst = {
-        defaultWidth: 200,
-        defaultHeignt: 200,
-        intervalTime: 10,
-        testValidationTime: 3,
-        testMultPoint: 1.2,
-        normalValidationTime: 5,
-    };
-
-    intervalId = setInterval(() => void 0, 0);
-    tempPath = true;
-    testPage = false;
-    addingPoints = false;
-    bgColor = 'transparent';
-    validationTime = this.playAreaConst.normalValidationTime;
-    bonusPointMultiplicator = 1;
-    timeEnd = false;
-    initInfos = true;
-    timer = 0;
-    currentTimerIndex = 0;
-    disableOption = false;
-    clickedValidation = false;
-    clearInterval = false;
+    playAreaConst: PlayAreaConst;
+    intervalId;
+    tempPath: boolean;
+    testPage: boolean;
+    addingPoints: boolean;
+    bgColor: string;
+    validationTime: number;
+    bonusPointMultiplicator: number;
+    timeEnd: boolean;
+    initInfos: boolean;
+    timer: number;
+    currentTimerIndex: number;
+    disableOption: boolean;
+    clickedValidation: boolean;
+    clearInterval: boolean;
     quiz: Quiz;
-    currentQuestion = '';
-    questionPoints = 0;
-    questionIndex = 0;
+    currentQuestion: string;
+    questionPoints: number;
+    questionIndex: number;
     answerChoices: QuizChoice[] | undefined;
-    pointage = 0;
-    numberOfIncorrectCards = 0;
-    numberOfCorrectCards = 0;
-    numberOfCorrectAnswers = 0;
-    selectedCard = [false, false, false, false];
+    pointage: number;
+    numberOfIncorrectCards: number;
+    numberOfCorrectCards: number;
+    numberOfCorrectAnswers: number;
+    selectedCard: boolean[];
     private timeService: TimeService;
     private quizService: QuizService;
     private route: ActivatedRoute;
     private router: Router;
     constructor(injector: Injector) {
+        this.playAreaConst = {
+            defaultWidth: 200,
+            defaultHeignt: 200,
+            intervalTime: 10,
+            testValidationTime: 3,
+            testMultPoint: 1.2,
+            normalValidationTime: 5,
+        };
+
+        this.intervalId = setInterval(() => void 0, 0);
+        this.tempPath = true;
+        this.testPage = false;
+        this.addingPoints = false;
+        this.bgColor = 'transparent';
+        this.validationTime = this.playAreaConst.normalValidationTime;
+        this.bonusPointMultiplicator = 1;
+        this.timeEnd = false;
+        this.initInfos = true;
+        this.timer = 0;
+        this.currentTimerIndex = 0;
+        this.disableOption = false;
+        this.clickedValidation = false;
+        this.clearInterval = false;
+        this.currentQuestion = '';
+        this.questionPoints = 0;
+        this.questionIndex = 0;
+        this.pointage = 0;
+        this.numberOfIncorrectCards = 0;
+        this.numberOfCorrectCards = 0;
+        this.numberOfCorrectAnswers = 0;
+        this.selectedCard = [false, false, false, false];
         this.timeService = injector.get<TimeService>(TimeService);
         this.quizService = injector.get<QuizService>(QuizService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
