@@ -107,6 +107,8 @@ describe('Quiz Service', () => {
         extraQuiz.id = TEST_ID;
         extraQuiz.title = TEST_TITLE;
         delete extraQuiz['_id'];
+        // eslint-disable-next-line no-console
+        console.log(quizService.collection.dbName);
         await quizService.replace(extraQuiz);
         const quizzes = await quizService.collection.find({}).toArray();
         expect(quizzes[0].title).to.equal(TEST_TITLE);
