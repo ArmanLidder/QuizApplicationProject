@@ -28,9 +28,8 @@ describe('ValidationQuizErrorFeedbackComponent', () => {
         expect(cancelOperationSpy).toHaveBeenCalledWith(true);
     });
 
-    it('should replace blank space with <br> for HTML redering', () => {
-        const threeWhiteSpace = '\n\n\n';
-        component.errors = threeWhiteSpace;
+    it('should replace blank space with <br> for HTML rendering', () => {
+        component.errors = '\n\n\n';
         const expectedResult = '<br><br><br>';
         expect(component.errorsWithLineBreaks).toEqual(expectedResult);
     });

@@ -22,9 +22,9 @@ export class QuizCreationComponent {
     quizForm: FormGroup;
     quiz: Quiz;
     mode: PageMode;
-    isPopupVisibleDuration: boolean = false;
-    isPopupVisibleForm: boolean = false;
-    formErrors: string[] = [];
+    isPopupVisibleDuration: boolean;
+    isPopupVisibleForm: boolean;
+    formErrors: string[];
     quizCreationService: QuizCreationService;
     protected readonly pageModel = PageMode;
     private quizService: QuizService;
@@ -36,7 +36,9 @@ export class QuizCreationComponent {
         this.quizService = injector.get<QuizService>(QuizService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.navigateRoute = injector.get<Router>(Router);
-
+        this.isPopupVisibleDuration = false;
+        this.isPopupVisibleForm = false;
+        this.formErrors = [];
         this.quizForm = this.quizCreationService.fillForm();
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {

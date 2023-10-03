@@ -45,10 +45,6 @@ export class AnswerChoiceCardComponent implements OnChanges {
     }
 
     selectedCard() {
-        if (this.selected) {
-            this.selected = false;
-        } else {
-            this.selected = true;
-        }
+        this.selected = !this.selected;
     }
 }

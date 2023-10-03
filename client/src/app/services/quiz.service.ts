@@ -49,7 +49,7 @@ export class QuizService {
         );
     }
 
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+    private handleError<T>(_: string, result?: T): (error: Error) => Observable<T> {
         return () => of(result as T);
     }
 }

@@ -340,7 +340,7 @@ describe('GamesListComponent Admin view', () => {
 
     it('should seize reject callback promise', () => {
         component.asyncFileRejecter = (error) => {
-            component.isQuizUnique = error ? true : false;
+            component.isQuizUnique = !!error;
         };
         component.rejectasyncFileRead(false);
         expect(component.isQuizUnique).toBeFalsy();
