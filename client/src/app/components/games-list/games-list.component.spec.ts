@@ -297,9 +297,7 @@ describe('GamesListComponent Admin view', () => {
         });
         spyOn(component, 'rejectasyncFileRead').and.returnValue();
         const event: ProgressEvent<FileReader> = {
-            target: {
-                result: 'invalidJSON',
-            },
+            target: { result: 'invalidJSON' },
         } as ProgressEvent<FileReader>;
         component.extractQuizData(event);
         expect(parseSpy).toHaveBeenCalledWith(event.target?.result as string);
@@ -323,19 +321,16 @@ describe('GamesListComponent Admin view', () => {
         component.selectedQuiz = { id: '1', visible: true } as Quiz;
         const basicGetByIdResponse = { id: '1', visible: true } as Quiz;
         quizServiceSpy.basicGetById.and.returnValue(of(basicGetByIdResponse));
-
         component.testGame();
         tick();
         expect(navigateSpy).toHaveBeenCalledWith(['/quiz-testing-page/', '1']);
         expect(component.selectedQuiz).toBeNull();
-
         component.selectedQuiz = { id: '2', visible: true } as Quiz;
         component.playGame();
         tick();
         expect(navigateSpy).toHaveBeenCalledWith(['/waiting-room-page/', '1']);
         expect(component.selectedQuiz).toBeNull();
     }));
-
     it('should handle deleted and invisible quizzes', fakeAsync(() => {
         component.selectedQuiz = { id: '1', visible: true } as Quiz;
         const alertSpy = spyOn(window, 'alert');
@@ -343,5 +338,13 @@ describe('GamesListComponent Admin view', () => {
         component.testGame();
         tick();
         expect(alertSpy).toHaveBeenCalledWith('Ce quiz a été supprimé, veuillez choisir un autre.');
+    }));
+    it('should handle invisible quizzes', fakeAsync(() => {
+        component.selectedQuiz = { id: '1', visible: false } as Quiz;
+        const alertSpy = spyOn(window, 'alert');
+        quizServiceSpy.basicGetById.and.returnValue(of(quizzesMock[2]));
+        component.testGame();
+        tick();
+        expect(alertSpy).toHaveBeenCalledWith('Ce quiz est maintenant caché, veuillez choisir un autre.');
     }));
 });
