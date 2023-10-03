@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QuizService } from '@app/services/quiz.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
-import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
@@ -23,8 +22,6 @@ export class GamesListComponent implements OnInit {
     errors: string | null = null;
     isErrors: boolean = false;
     isQuizUnique: boolean = true;
-    // isListShowable: boolean = this.isErrors === false && this.isQuizUnique === true;
-    // asyncFileRead: Promise<void>;
     fileReader: FileReader = new FileReader();
 
     asyncFileResolver: () => void;
@@ -33,7 +30,6 @@ export class GamesListComponent implements OnInit {
     constructor(
         public quizServices: QuizService,
         public quizValidator: QuizValidationService,
-        public quizCreationServices: QuizCreationService,
     ) {}
 
     ngOnInit() {
