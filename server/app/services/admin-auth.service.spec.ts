@@ -8,7 +8,7 @@ describe('AdminAuthService', () => {
     before(() => {
         restore();
     });
-    
+
     beforeEach(() => {
         adminAuthService = new AdminAuthService();
     });

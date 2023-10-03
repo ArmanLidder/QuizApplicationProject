@@ -12,7 +12,7 @@ describe('AdminAuthController', () => {
     before(() => {
         restore();
     });
-    
+
     beforeEach(async () => {
         adminAuthService = createStubInstance(AdminAuthService);
         const app = Container.get(Application);
