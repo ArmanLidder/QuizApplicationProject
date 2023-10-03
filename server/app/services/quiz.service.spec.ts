@@ -8,6 +8,7 @@ import { QuizService } from './quiz.service';
 import { fillerQuizzes } from '@app/mockData/data';
 import { QuizQuestion } from '@app/interfaces/quiz.interface';
 import { DatabaseService } from './database.service';
+import { restore } from 'sinon';
 chai.use(chaiAsPromised);
 
 interface QuizMock {
@@ -36,6 +37,10 @@ describe('Quiz Service', () => {
         questions: [],
         visible: true,
     };
+
+    before(() => {
+        restore();
+    });
 
     beforeEach(async () => {
         testQuizzes = fillerQuizzes as unknown[] as QuizMock[]; // Note : First quiz is visible, Second quiz is not visible !
@@ -107,6 +112,7 @@ describe('Quiz Service', () => {
         extraQuiz.id = TEST_ID;
         extraQuiz.title = TEST_TITLE;
         delete extraQuiz['_id'];
+        // eslint-disable-next-line no-console
         await quizService.replace(extraQuiz);
         const quizzes = await quizService.collection.find({}).toArray();
         expect(quizzes[0].title).to.equal(TEST_TITLE);

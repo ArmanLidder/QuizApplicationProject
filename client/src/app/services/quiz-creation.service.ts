@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { QuizValidationService } from '@app/services/quiz-validation.service';
 
-const nonExistantIndex = -1;
-const maxPointsPerQuestion = 100;
-const minPointsPerQuestion = 10;
-const maxQcmDuration = 60;
-const minQcmDuration = 10;
-const maxNumberOfChoicesPerQuestion = 4;
-const minNumberOfChoicesPerQuestion = 2;
-const minNumberOfQuestions = 1;
+const MAX_POINTS_PER_QUESTION = 100;
+const MIN_POINTS_PER_QUESTION = 10;
+const MAX_QCM_DURATION = 60;
+const MIN_QCM_DURATION = 10;
+const MAX_NUMBER_OF_CHOICES_PER_QUESTION = 4;
+const MIN_NUMBER_OF_CHOICES_PER_QUESTION = 2;
+const MIN_NUMBER_OF_QUESTIONS = 1;
+const NON_EXISTANT_INDEX = -1;
 
 export interface FormChoice {
     text: string;
@@ -30,61 +31,67 @@ export interface FormQuestion {
 export class QuizCreationService {
     questions: FormQuestion[] = [];
     quiz: Quiz;
-    modifiedQuestionIndex: number = nonExistantIndex;
+    modifiedQuestionIndex: number = NON_EXISTANT_INDEX;
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private validationService: QuizValidationService,
+    ) {}
+
+    validateQuiz(quiz: Quiz) {
+        return this.validationService.validateQuiz(quiz);
+    }
 
     addQuestion(index: number, questionsFormArray?: FormArray) {
-        const questionToAdd = this.initQuestion();
-        if (questionsFormArray?.length === 0) {
-            questionsFormArray?.push(questionToAdd);
-            this.modifiedQuestionIndex = 0;
-        } else {
-            const questionSaved = this.saveQuestion(this.modifiedQuestionIndex, questionsFormArray);
-            if (questionSaved) {
-                questionsFormArray?.insert(index + 1, questionToAdd);
-                this.modifiedQuestionIndex = index + 1;
+        if (this.modifiedQuestionIndex !== NON_EXISTANT_INDEX) {
+            const validationErrors = this.saveQuestion(this.modifiedQuestionIndex, questionsFormArray);
+            if (validationErrors.length !== 0) {
+                return validationErrors;
             }
         }
+        const newQuestion = this.initQuestion();
+        questionsFormArray?.insert(index + 1, newQuestion);
+        this.modifiedQuestionIndex = index + 1;
+        return [];
     }
 
     removeQuestion(index: number, questionsFormArray?: FormArray) {
-        if (questionsFormArray?.length && index === questionsFormArray?.length - 1 && this.modifiedQuestionIndex === index) {
-            this.modifiedQuestionIndex = 0;
-        } else if (this.modifiedQuestionIndex > index) {
+        if (index === this.modifiedQuestionIndex) {
+            this.modifiedQuestionIndex = -1;
+        } else if (index < this.modifiedQuestionIndex) {
             this.modifiedQuestionIndex--;
         }
         questionsFormArray?.removeAt(index);
     }
 
     modifyQuestion(index: number, questionFormArray?: FormArray) {
-        if (index !== this.modifiedQuestionIndex) {
-            const questionSaved = this.saveQuestion(this.modifiedQuestionIndex, questionFormArray);
-            if (questionSaved) {
-                this.modifiedQuestionIndex = index;
-                questionFormArray?.at(index).patchValue({ beingModified: true });
+        if (this.modifiedQuestionIndex !== NON_EXISTANT_INDEX) {
+            const validationErrors = this.saveQuestion(this.modifiedQuestionIndex, questionFormArray);
+            if (validationErrors.length !== 0) {
+                return validationErrors;
             }
-        } else {
-            this.modifiedQuestionIndex = index;
-            questionFormArray?.at(index).patchValue({ beingModified: true });
         }
+        questionFormArray?.at(index).patchValue({ beingModified: true });
+        this.modifiedQuestionIndex = index;
+        return [];
     }
 
-    saveQuestion(index: number, questionsFormArray?: FormArray): boolean {
+    saveQuestion(index: number, questionsFormArray?: FormArray): string[] {
         const questionToSave = questionsFormArray?.at(index);
         if (questionToSave?.valid) {
             questionsFormArray?.at(index).patchValue({ beingModified: false });
-            return true;
+            return [];
         }
-        return false;
+        const question = this.extractQuestion(questionToSave);
+        return this.validationService.validateQuestion(question, index);
     }
 
     fillForm(quiz?: Quiz) {
         const quizForm: FormGroup = this.fb.group({
             title: [quiz?.title, Validators.required],
-            duration: [quiz?.duration, [Validators.required, Validators.min(minQcmDuration), Validators.max(maxQcmDuration)]],
+            duration: [quiz?.duration, [Validators.required, Validators.min(MIN_QCM_DURATION), Validators.max(MAX_QCM_DURATION)]],
             description: [quiz?.description, Validators.required],
-            questions: this.fb.array([], [Validators.minLength(minNumberOfQuestions), Validators.required]),
+            questions: this.fb.array([], [Validators.minLength(MIN_NUMBER_OF_QUESTIONS), Validators.required]),
         });
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
         return quizForm;
@@ -112,8 +119,8 @@ export class QuizCreationService {
         const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
         const choicesArrayForm = questionGroup.get('choices') as FormArray;
         const choiceToAdd = this.initChoice();
-        if (choicesArrayForm.length < maxNumberOfChoicesPerQuestion) {
-            choicesArrayForm.insert(choiceIndex, choiceToAdd);
+        if (choicesArrayForm.length < MAX_NUMBER_OF_CHOICES_PER_QUESTION) {
+            choicesArrayForm.insert(choiceIndex + 1, choiceToAdd);
         }
     }
 
@@ -127,19 +134,10 @@ export class QuizCreationService {
         this.swapElements(choiceIndex, choiceIndex + 1, choicesArray);
     }
 
-    addChoiceFirst(questionIndex: number, questionFormArray?: FormArray) {
-        const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
-        const choicesArrayForm = questionGroup.get('choices') as FormArray;
-        const choiceToAdd = this.initChoice();
-        if (choicesArrayForm.length < maxNumberOfChoicesPerQuestion) {
-            choicesArrayForm.insert(0, choiceToAdd); // could be changed to push
-        }
-    }
-
     removeChoice(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
         const questionGroup = questionFormArray?.at(questionIndex) as FormGroup;
         const choicesArrayForm = questionGroup.get('choices') as FormArray;
-        if (choicesArrayForm.length > minNumberOfChoicesPerQuestion) {
+        if (choicesArrayForm.length > MIN_NUMBER_OF_CHOICES_PER_QUESTION) {
             choicesArrayForm.removeAt(choiceIndex);
         }
     }
@@ -149,46 +147,70 @@ export class QuizCreationService {
         return questionGroup?.get('choices') as FormArray;
     }
 
-    private swapElements(firstIndex: number, secondIndex: number, arrayForm?: FormArray) {
+    swapElements(firstIndex: number, secondIndex: number, arrayForm?: FormArray) {
         const elementA = arrayForm?.at(firstIndex) as FormGroup;
         const elementB = arrayForm?.at(secondIndex) as FormGroup;
         arrayForm?.setControl(firstIndex, elementB);
         arrayForm?.setControl(secondIndex, elementA);
     }
-    private fillQuestions(questionsFormArray: FormArray, quizQuestions?: QuizQuestion[]) {
+
+    fillQuestions(questionsFormArray: FormArray, quizQuestions?: QuizQuestion[]) {
         quizQuestions?.forEach((question) => {
             questionsFormArray.push(this.initQuestion(question));
         });
     }
 
-    private initQuestion(question?: QuizQuestion): FormGroup {
-        if (question) {
-            const questionForm = this.fb.group({
-                type: [question.type === QuestionType.QCM ? 'QCM' : 'QLR', Validators.required],
-                text: [question.text, Validators.required],
-                points: [question.points, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
-                choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
-                beingModified: false,
-            });
-            this.fillChoices(questionForm.get('choices') as FormArray, question?.choices);
-            return questionForm;
-        }
-        return this.fb.group({
-            type: [QuestionType.QCM, Validators.required],
-            text: ['', Validators.required],
-            points: [0, [Validators.required, Validators.min(minPointsPerQuestion), Validators.max(maxPointsPerQuestion)]],
-            choices: this.fb.array([], [Validators.minLength(minNumberOfChoicesPerQuestion), Validators.max(maxNumberOfChoicesPerQuestion)]),
-            beingModified: true,
+    initQuestion(question?: QuizQuestion): FormGroup {
+        const questionForm = this.fb.group({
+            type: [question?.type === QuestionType.QCM ? 'QCM' : 'QLR', Validators.required],
+            text: [question?.text ?? '', Validators.required],
+            points: [
+                question?.points ?? 0,
+                [
+                    Validators.required,
+                    Validators.min(MIN_POINTS_PER_QUESTION),
+                    Validators.max(MAX_POINTS_PER_QUESTION),
+                    this.validationService.divisibleByTen,
+                ],
+            ],
+            choices: this.fb.array(
+                [],
+                [
+                    Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
+                    Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
+                    this.validationService.validateChoicesForm,
+                ],
+            ),
+            beingModified: question === undefined,
         });
+        this.fillChoices(questionForm.get('choices') as FormArray, question?.choices);
+        return questionForm;
     }
 
-    private fillChoices(choicesFormArray: FormArray, choices?: QuizChoice[]) {
+    extractQuestion(questionForm?: AbstractControl) {
+        const question: QuizQuestion = {
+            type: questionForm?.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
+            text: questionForm?.get('text')?.value,
+            points: questionForm?.get('points')?.value,
+            choices: [],
+        };
+        questionForm?.get('choices')?.value.forEach((choiceForm: QuizChoice) => {
+            const choice: QuizChoice = {
+                text: choiceForm.text,
+                isCorrect: choiceForm.isCorrect,
+            };
+            question.choices?.push(choice);
+        });
+        return question;
+    }
+
+    fillChoices(choicesFormArray: FormArray, choices?: QuizChoice[]) {
         choices?.forEach((choice) => {
             choicesFormArray.push(this.initChoice(choice));
         });
     }
 
-    private initChoice(choice?: QuizChoice): FormGroup {
+    initChoice(choice?: QuizChoice): FormGroup {
         return this.fb.group({
             text: [choice?.text, Validators.required],
             isCorrect: [choice?.isCorrect ? 'true' : 'false'],

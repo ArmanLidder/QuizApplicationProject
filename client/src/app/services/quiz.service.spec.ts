@@ -27,7 +27,7 @@ describe('QuizService', () => {
         },
     ];
 
-    const putAndPatchReponse = { status: 200, statusText: 'Quiz updated successfully' };
+    const putAndPatchResponse = { status: 200, statusText: 'Quiz updated successfully' };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -67,7 +67,7 @@ describe('QuizService', () => {
         expectRequestTypeAndFlush('/quiz/visible', 'GET', mockQuizzes);
     });
 
-    it('should retrieve quizz by id', () => {
+    it('should retrieve quiz by id', () => {
         const testId = '1';
         service.basicGetById(testId).subscribe((quizz) => {
             expect(quizz).toEqual(mockQuizzes[0]);
@@ -75,31 +75,31 @@ describe('QuizService', () => {
         expectRequestTypeAndFlush(`/quiz/${testId}`, 'GET', mockQuizzes[0]);
     });
 
-    it('should post a quizz', () => {
+    it('should post a quiz', () => {
         service.basicPost(mockQuizzes[0]).subscribe();
         expectRequestTypeAndFlush('/quiz/', 'POST', mockQuizzes[0]);
     });
 
-    it('should update a quizz', () => {
+    it('should update a quiz', () => {
         service.basicPut(mockQuizzes[0]).subscribe();
-        expectRequestTypeAndFlush('/quiz/', 'PUT', putAndPatchReponse);
+        expectRequestTypeAndFlush('/quiz/', 'PUT', putAndPatchResponse);
     });
 
-    it('should patch a quizz', () => {
+    it('should patch a quiz', () => {
         const quizId = '1';
         const visibility = true;
         service.basicPatch(quizId, visibility).subscribe();
-        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'PATCH', putAndPatchReponse);
+        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'PATCH', putAndPatchResponse);
     });
 
     it('should check title uniqueness', () => {
         service.checkTitleUniqueness(mockQuizzes[0].title).subscribe();
-        expectRequestTypeAndFlush('/quiz/checkTitleUniqueness', 'POST', putAndPatchReponse);
+        expectRequestTypeAndFlush('/quiz/checkTitleUniqueness', 'POST', putAndPatchResponse);
     });
 
     it('should delete quiz', () => {
         const quizId = '1';
         service.basicDelete(quizId).subscribe();
-        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'DELETE', putAndPatchReponse);
+        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'DELETE', putAndPatchResponse);
     });
 });

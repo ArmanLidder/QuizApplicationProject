@@ -7,7 +7,10 @@
 .button-container {
     display: flex;
     align-content: space-between;
-    flex-direction: column;
+    flex-direction: row;
+    margin: 5px;
+    padding: 5px;
+    justify-content: space-between;
 }
 
 .error-message {
@@ -77,14 +80,19 @@
     display: none;
 }
 
-.truncate {
-    white-space: nowrap;       /* Prevent text from wrapping to the next line */
-    overflow: hidden;          /* Hide any content that overflows the container */
-    text-overflow: ellipsis;   /* Display ellipses (...) for hidden overflow text */
-    max-width: 50vw;
-}
-.choice-input-text {
-    display: flex;
-    flex-direction: row;
+.button {
+    margin: 5px;
+    padding: 5px;
 }
 
+.addQuestion{
+    margin: 10px;
+    padding: 5px;
+}
+
+.buttonOption {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: -5px;
+    padding-bottom: -5px;
+}
