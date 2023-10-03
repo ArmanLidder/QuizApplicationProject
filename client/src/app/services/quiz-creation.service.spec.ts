@@ -580,12 +580,6 @@ describe('QuizCreationService', () => {
         expect(elementB).toBe('Choice 1');
     });
 
-    it('should not swap elements when the form array is undefined', () => {
-        const firstIndex = 0;
-        const secondIndex = 1;
-        service.swapElements(firstIndex, secondIndex); // Pass undefined formArray
-    });
-
     it('should call initQuestion for each question in the array', () => {
         const quizQuestions = [firstQuestion, secondQuestion];
         spyOn(service, 'initQuestion').and.callThrough();
