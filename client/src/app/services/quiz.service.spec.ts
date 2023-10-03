@@ -27,7 +27,7 @@ describe('QuizService', () => {
         },
     ];
 
-    const putAndPatchReponse = { status: 200, statusText: 'Quiz updated successfully' };
+    const putAndPatchResponse = { status: 200, statusText: 'Quiz updated successfully' };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -82,24 +82,24 @@ describe('QuizService', () => {
 
     it('should update a quiz', () => {
         service.basicPut(mockQuizzes[0]).subscribe();
-        expectRequestTypeAndFlush('/quiz/', 'PUT', putAndPatchReponse);
+        expectRequestTypeAndFlush('/quiz/', 'PUT', putAndPatchResponse);
     });
 
     it('should patch a quiz', () => {
         const quizId = '1';
         const visibility = true;
         service.basicPatch(quizId, visibility).subscribe();
-        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'PATCH', putAndPatchReponse);
+        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'PATCH', putAndPatchResponse);
     });
 
     it('should check title uniqueness', () => {
         service.checkTitleUniqueness(mockQuizzes[0].title).subscribe();
-        expectRequestTypeAndFlush('/quiz/checkTitleUniqueness', 'POST', putAndPatchReponse);
+        expectRequestTypeAndFlush('/quiz/checkTitleUniqueness', 'POST', putAndPatchResponse);
     });
 
     it('should delete quiz', () => {
         const quizId = '1';
         service.basicDelete(quizId).subscribe();
-        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'DELETE', putAndPatchReponse);
+        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'DELETE', putAndPatchResponse);
     });
 });
