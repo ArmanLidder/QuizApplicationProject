@@ -91,4 +91,15 @@ describe('QuizService', () => {
         service.basicPatch(quizId, visibility).subscribe();
         expectRequestTypeAndFlush(`/quiz/${quizId}`, 'PATCH', putAndPatchReponse);
     });
+
+    it('should check title uniqueness', () => {
+        service.checkTitleUniqueness(mockQuizzes[0].title).subscribe();
+        expectRequestTypeAndFlush('/quiz/checkTitleUniqueness', 'POST', putAndPatchReponse);
+    });
+
+    it('should delete quiz', () => {
+        const quizId = '1';
+        service.basicDelete(quizId).subscribe();
+        expectRequestTypeAndFlush(`/quiz/${quizId}`, 'DELETE', putAndPatchReponse);
+    });
 });
