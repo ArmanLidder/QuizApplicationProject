@@ -41,7 +41,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     answerChoices: QuizChoice[] | undefined;
     pointage = 0;
     numberOfIncorrectCards = 0;
-    numberOfcorrectCards = 0;
+    numberOfCorrectCards = 0;
     numberOfCorrectAnswers = 0;
     selectedCard = [false, false, false, false];
     private timeService: TimeService;
@@ -72,10 +72,10 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     onCardSelected(index: number) {
         if (this.answerChoices && this.answerChoices.length > 1 && this.answerChoices[index] !== undefined) {
             if (this.answerChoices[index].isCorrect && !this.selectedCard[index]) {
-                this.numberOfcorrectCards++;
+                this.numberOfCorrectCards++;
                 this.selectedCard[index] = true;
             } else if (this.answerChoices[index].isCorrect && this.selectedCard[index]) {
-                this.numberOfcorrectCards--;
+                this.numberOfCorrectCards--;
                 this.selectedCard[index] = false;
             }
 
@@ -91,7 +91,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
 
     resetInfos() {
         this.numberOfIncorrectCards = 0;
-        this.numberOfcorrectCards = 0;
+        this.numberOfCorrectCards = 0;
         this.selectedCard = [false, false, false, false];
         this.questionIndex++;
         this.clickedValidation = false;
@@ -141,7 +141,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
 
     timeElapsedConditions() {
         if (!this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
-            if (this.numberOfcorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
+            if (this.numberOfCorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
                 this.pointage += this.questionPoints * this.bonusPointMultiplicator;
                 this.addingPoints = true;
             }
