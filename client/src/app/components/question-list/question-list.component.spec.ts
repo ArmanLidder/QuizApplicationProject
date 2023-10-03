@@ -124,39 +124,39 @@ describe('QuestionListComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should add a question', () => {
+    it('should add a question-list', () => {
         quizCreationServiceMock.addQuestion.and.returnValue([]);
         component.addQuestion(0);
         expect(quizCreationServiceMock.addQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
         expect(component.questionErrors).toEqual([]);
     });
 
-    it('should remove a question', () => {
+    it('should remove a question-list', () => {
         component.questionsArray = formQuestionsArrayAllSaved;
         component.removeQuestion(0);
         expect(quizCreationServiceMock.removeQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
     });
 
-    it('should modify a question', () => {
+    it('should modify a question-list', () => {
         quizCreationServiceMock.modifyQuestion.and.returnValue([]);
         component.modifyQuestion(0);
         expect(quizCreationServiceMock.modifyQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
         expect(component.questionErrors).toEqual([]);
     });
 
-    it('should save a question', () => {
+    it('should save a question-list', () => {
         quizCreationServiceMock.saveQuestion.and.returnValue([]);
         component.saveQuestion(0);
         expect(quizCreationServiceMock.saveQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
         expect(component.questionErrors).toEqual([]);
     });
 
-    it('should move a question up', () => {
+    it('should move a question-list up', () => {
         component.moveQuestionUp(0);
         expect(quizCreationServiceMock.moveQuestionUp).toHaveBeenCalledOnceWith(0, component.questionsArray);
     });
 
-    it('should move a question down', () => {
+    it('should move a question-list down', () => {
         component.moveQuestionDown(0);
         expect(quizCreationServiceMock.moveQuestionDown).toHaveBeenCalledOnceWith(0, component.questionsArray);
     });
@@ -215,7 +215,7 @@ describe('QuestionListComponent', () => {
         expect(component.isPopupVisible).toBeFalse();
     });
 
-    it('shouldn t add a question when the validator is not valid', () => {
+    it('shouldn t add a question-list when the validator is not valid', () => {
         quizCreationServiceMock.addQuestion.and.returnValue([]);
         component.addQuestion(1);
         expect(quizCreationServiceMock.addQuestion).toHaveBeenCalledOnceWith(1, component.questionsArray);

@@ -5,7 +5,7 @@ import { PageMode, QuizCreationComponent } from './quiz-creation.component';
 import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service';
 import { QuizService } from '@app/services/quiz.service';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
-import { QuestionListComponent } from '@app/components/question/question-list.component';
+import { QuestionListComponent } from '@app/components/question-list/question-list.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { of } from 'rxjs';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
@@ -66,7 +66,7 @@ describe('QuizCreationComponent', () => {
                     points: 5,
                 },
             ],
-            visible: true,
+            visible: false,
         };
         const choice1: FormChoice = {
             text: 'Choice 1',

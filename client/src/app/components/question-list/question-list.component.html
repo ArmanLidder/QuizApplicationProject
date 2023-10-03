@@ -55,9 +55,9 @@
                                     Le texte est requis
                                 </div>
                                 <input type="radio" [attr.id]="'trueRadio' + i + j" formControlName="isCorrect" value="true">
-                                <label for="'trueRadio' + i + j">True</label>
+                                <label for="'trueRadio' + i + j">Vrai</label>
                                 <input type="radio" [attr.id]="'falseRadio' + i + j" formControlName="isCorrect" value="false">
-                                <label for="'falseRadio' + i + j">False</label><br><br>
+                                <label for="'falseRadio' + i + j">Faux</label><br><br>
                                 <button type="button" (click)="addChoice(i, j)">Ajouter choix</button><br><br>
                                 <button type="button" (click)="removeChoice(i, j)">Enlever choix</button><br><br>
                             </div>
@@ -77,7 +77,7 @@
                             <p>le choix {{j + 1}}: </p>
                             <ul>
                                 <li>{{choice.get('text')?.value}}</li>
-                                <li>{{choice.get('isCorrect')?.value}}</li>
+                                <li>{{choice.get('isCorrect')?.value === 'true' ? 'Vrai' : 'Faux'}}</li>
                             </ul>
                         </div>
                     </div>
