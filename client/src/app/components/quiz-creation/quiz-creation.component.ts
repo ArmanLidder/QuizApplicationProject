@@ -5,6 +5,7 @@ import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/qu
 import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { QuizService } from '@app/services/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
+import { getCurrentDateService } from 'src/utils/current-date-format';
 
 const POPUP_TIMEOUT = 3000;
 
@@ -65,7 +66,7 @@ export class QuizCreationComponent {
     }
 
     extractQuizFromForm() {
-        const now = new Date();
+        const now = getCurrentDateService();
         const questions: QuizQuestion[] = [];
         this.questionsArray.controls.forEach((questionForm) => {
             const question: QuizQuestion = {
@@ -89,9 +90,9 @@ export class QuizCreationComponent {
             title: this.quizForm.value.title,
             description: this.quizForm.value.description,
             duration: this.quizForm.value.duration,
-            lastModification: now.toString(),
+            lastModification: now,
             questions,
-            visible: false,
+            visible: this.quiz.visible,
         };
         return quiz;
     }
