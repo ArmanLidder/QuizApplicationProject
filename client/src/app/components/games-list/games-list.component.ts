@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { QuizService } from '@app/services/quiz.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { Quiz } from '@app/interfaces/quiz.interface';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
+import { Router } from '@angular/router';
 const CREATED = 201;
 
 @Component({
@@ -16,7 +17,7 @@ export class GamesListComponent implements OnInit {
     @Input() isAdmin: boolean;
     @Input() isImportError: boolean = false;
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
-
+    router = inject(Router);
     quizzes: Quiz[] = [];
     importedQuiz: Quiz;
     selectedQuiz: Quiz | null;
@@ -166,8 +167,34 @@ export class GamesListComponent implements OnInit {
     }
 
     addImportedQuiz() {
-        this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((response) => {
-            if (response.status === CREATED) this.populateGameList();
+        this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((res) => {
+            if (res.status === CREATED) this.populateGameList();
         });
+    }
+
+    handleQuizAction(route: string) {
+        this.populateGameList();
+
+        if (!this.selectedQuiz) return;
+
+        this.quizServices.basicGetById(this.selectedQuiz.id).subscribe((res) => {
+            this.selectedQuiz = null;
+
+            if (res === null) {
+                window.alert('Ce quiz a été supprimé, veuillez choisir un autre.');
+            } else if (res.visible) {
+                this.router.navigate([route, res.id]);
+            } else {
+                window.alert('Ce quiz est maintenant caché, veuillez choisir un autre.');
+            }
+        });
+    }
+
+    testGame() {
+        this.handleQuizAction('/quiz-testing-page/');
+    }
+
+    playGame() {
+        this.handleQuizAction('/waiting-room-page/');
     }
 }

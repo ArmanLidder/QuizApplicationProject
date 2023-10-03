@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
 import { tap } from 'rxjs';
-// comment
+
 export const authGuardAuthentification = () => {
     const router = inject(Router);
     const authServices = inject(AdminAuthenticatorService);

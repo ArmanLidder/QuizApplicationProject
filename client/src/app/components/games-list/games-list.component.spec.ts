@@ -57,29 +57,7 @@ describe('GamesListComponent Admin view', () => {
             description: 'its a science quiz!',
             duration: 45,
             lastModification: '2023-09-15',
-            questions: [
-                {
-                    type: QuestionType.QCM,
-                    text: 'What is the chemical symbol for water?',
-                    points: 50,
-                    choices: [
-                        { text: 'O2', isCorrect: false },
-                        { text: 'H2O', isCorrect: true },
-                        { text: 'CO2', isCorrect: true },
-                    ],
-                },
-                {
-                    type: QuestionType.QCM,
-                    text: 'What is the boiling point of water in Celsius?',
-                    points: 10,
-                    choices: [
-                        { text: '0°C', isCorrect: false },
-                        { text: '100°C', isCorrect: true },
-                        { text: '50°C', isCorrect: true },
-                        { text: '-10°C', isCorrect: false },
-                    ],
-                },
-            ],
+            questions: [],
             visible: false,
         },
     ];
@@ -90,6 +68,7 @@ describe('GamesListComponent Admin view', () => {
             'basicPatch',
             'checkTitleUniqueness',
             'basicPost',
+            'basicGetById',
         ]);
         quizServiceSpy.basicGetAll.and.returnValue(of([]));
         quizServiceSpy.basicGetAllVisible.and.returnValue(of([]));
@@ -267,7 +246,6 @@ describe('GamesListComponent Admin view', () => {
         component.treatResponse(false);
         expect(component.isQuizUnique).toBeFalsy();
     });
-
     it('should change component isQuizUnique to false if quiz is not unique', () => {
         component.importedQuiz = quizzesMock[0];
         const addImportedQuizSpy = spyOn(component, 'addImportedQuiz');
@@ -275,7 +253,6 @@ describe('GamesListComponent Admin view', () => {
         expect(component.isQuizUnique).toBeTruthy();
         expect(addImportedQuizSpy).toHaveBeenCalled();
     });
-
     it('should verify uniqueness of a user provided name for quiz', () => {
         const newName = 'test';
         component.importedQuiz = quizzesMock[0];
@@ -294,7 +271,6 @@ describe('GamesListComponent Admin view', () => {
         expect(component.isQuizUnique).toBeTruthy();
         expect(quizServiceSpy.checkTitleUniqueness).toHaveBeenCalled();
     });
-
     it('should correctly parse and handle a valid JSON result', fakeAsync(() => {
         const mockData = JSON.stringify(quizzesMock[0]);
         const parseSpy = spyOn(JSON, 'parse').and.returnValue(quizzesMock[0]);
@@ -314,7 +290,6 @@ describe('GamesListComponent Admin view', () => {
         expect(parseSpy).toHaveBeenCalledWith(event.target?.result as string);
         expect(component.importedQuiz.lastModification).toEqual(getCurrentDateService());
     }));
-
     it('should handle an error when parsing invalid JSON result', () => {
         const parseSpy = spyOn(JSON, 'parse');
         spyOn(component, 'resolveasyncFileRead').and.callFake(async () => {
@@ -329,7 +304,6 @@ describe('GamesListComponent Admin view', () => {
         component.extractQuizData(event);
         expect(parseSpy).toHaveBeenCalledWith(event.target?.result as string);
     });
-
     it('should seize resolve callback promise', () => {
         component.asyncFileResolver = () => {
             component.isQuizUnique = false;
@@ -337,7 +311,6 @@ describe('GamesListComponent Admin view', () => {
         component.resolveasyncFileRead();
         expect(component.isQuizUnique).toBeFalsy();
     });
-
     it('should seize reject callback promise', () => {
         component.asyncFileRejecter = (error) => {
             component.isQuizUnique = error ? true : false;
@@ -345,4 +318,30 @@ describe('GamesListComponent Admin view', () => {
         component.rejectasyncFileRead(false);
         expect(component.isQuizUnique).toBeFalsy();
     });
+    it('should test the game and navigate to quiz-testing-page', fakeAsync(() => {
+        const navigateSpy = spyOn(component.router, 'navigate');
+        component.selectedQuiz = { id: '1', visible: true } as Quiz;
+        const basicGetByIdResponse = { id: '1', visible: true } as Quiz;
+        quizServiceSpy.basicGetById.and.returnValue(of(basicGetByIdResponse));
+
+        component.testGame();
+        tick();
+        expect(navigateSpy).toHaveBeenCalledWith(['/quiz-testing-page/', '1']);
+        expect(component.selectedQuiz).toBeNull();
+
+        component.selectedQuiz = { id: '2', visible: true } as Quiz;
+        component.playGame();
+        tick();
+        expect(navigateSpy).toHaveBeenCalledWith(['/waiting-room-page/', '1']);
+        expect(component.selectedQuiz).toBeNull();
+    }));
+
+    it('should handle deleted and invisible quizzes', fakeAsync(() => {
+        component.selectedQuiz = { id: '1', visible: true } as Quiz;
+        const alertSpy = spyOn(window, 'alert');
+        quizServiceSpy.basicGetById.and.returnValue(of(null as unknown as Quiz));
+        component.testGame();
+        tick();
+        expect(alertSpy).toHaveBeenCalledWith('Ce quiz a été supprimé, veuillez choisir un autre.');
+    }));
 });
