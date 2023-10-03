@@ -9,7 +9,7 @@ const HTTP_STATUS_OK = 200;
     providedIn: 'root',
 })
 export class AdminAuthenticatorService {
-    password: string;
+    password: string = '';
     readonly baseUrl: string = environment.serverUrl;
 
     constructor(private readonly http: HttpClient) {}
