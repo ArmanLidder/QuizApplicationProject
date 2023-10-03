@@ -8,7 +8,7 @@ import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { QuestionListComponent } from '@app/components/question/question-list.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { of } from 'rxjs';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import SpyObj = jasmine.SpyObj;
 
 const createFormQuestionFormGroup = (question: FormQuestion, fb: FormBuilder): FormGroup => {

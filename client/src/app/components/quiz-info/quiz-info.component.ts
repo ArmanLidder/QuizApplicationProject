@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Quiz } from '@app/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
 
 @Component({
     selector: 'app-quiz-info',

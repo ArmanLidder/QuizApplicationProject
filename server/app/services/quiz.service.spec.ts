@@ -6,7 +6,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import { DatabaseServiceMock } from './database.service.mock';
 import { QuizService } from './quiz.service';
 import { fillerQuizzes } from '@app/mockData/data';
-import { QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { DatabaseService } from './database.service';
 import { restore } from 'sinon';
 chai.use(chaiAsPromised);

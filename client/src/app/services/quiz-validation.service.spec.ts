@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { QuizValidationService } from './quiz-validation.service';
-import { Quiz, QuestionType, QuizChoice } from '@app/interfaces/quiz.interface';
+import { Quiz, QuestionType, QuizChoice } from '@common/interfaces/quiz.interface';
 
 describe('QuizValidationService', () => {
     let service: QuizValidationService;
@@ -252,7 +252,7 @@ describe('QuizValidationService', () => {
         expect(errors).toContain("Question 1 : les points d'une question sont requis");
     });
 
-    it(`validateQuestion should return Question 1 : 
+    it(`validateQuestion should return Question 1 :
     les points doivent être entre 10 et 100 et être divisible par 10 if 1st questions invalid`, () => {
         const overMax = 200;
         const notFactorTen = 37;

@@ -5,7 +5,7 @@ import { QuizService } from '@app/services/quiz.service';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { getCurrentDateService } from 'src/utils/current-date-format';
-import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
 import SpyObj = jasmine.SpyObj;
 
 describe('GamesListComponent Admin view', () => {

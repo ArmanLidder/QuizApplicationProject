@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 

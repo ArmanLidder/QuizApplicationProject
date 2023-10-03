@@ -4,7 +4,7 @@ import { TimeService } from '@app/services/time.service';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
-import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { QuizService } from '@app/services/quiz.service';

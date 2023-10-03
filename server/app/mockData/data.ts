@@ -1,4 +1,4 @@
-import { QuestionType } from '@app/interfaces/quiz.interface';
+import { QuestionType } from '@common/interfaces/quiz.interface';
 
 export const fillerQuizzes = [
     {

@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QuizService } from '@app/services/quiz.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
-import { Quiz } from '@app/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 const CREATED = 201;

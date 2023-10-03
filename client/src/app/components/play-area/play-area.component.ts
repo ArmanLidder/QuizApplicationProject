@@ -1,7 +1,7 @@
 import { Component, HostListener, Injector, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlayAreaConst } from '@app/interfaces/play-area-const';
-import { Quiz, QuizChoice } from '@app/interfaces/quiz.interface';
+import { Quiz, QuizChoice } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { TimeService } from '@app/services/time.service';
 
