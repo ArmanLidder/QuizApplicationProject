@@ -44,8 +44,8 @@
                     <button routerLink="/home" class="cancel">Annuler</button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
-                    <button [routerLink]="['/waiting-room-page', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Jouer</button>
-                    <button [routerLink]="['/quiz-testing-page/', selectedQuiz?.id]" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Tester</button>
+                    <button (click)="playGame()" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Jouer</button>
+                    <button (click)="testGame()" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Tester</button>
                     <button routerLink="/home" class="cancel">Annuler</button>
                 </td>
             </tr>
