@@ -43,7 +43,7 @@
                             <div [formGroupName]="j">
                                 <label for="choix{{i}}{{j}}">le choix{{j + 1}}:</label><br>
                                 <div class='choice-input-text'>
-                                    <input type="text" [attr.id]="'choix' + i + j" name="textchoix{{i}}{{j}}" formControlName="text" required><br>
+                                    <input type="text" [attr.id]="'choix' + i + j" name="textChoix{{i}}{{j}}" formControlName="text" required><br>
                                     <button *ngIf='j !== 0' type="button" (click)='moveChoiceUp(i, j)'>
                                         <mat-icon>keyboard_arrow_up</mat-icon>
                                     </button><br><br>

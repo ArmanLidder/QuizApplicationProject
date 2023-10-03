@@ -298,9 +298,9 @@ describe('PlayAreaComponent', () => {
         component.initInfos = true;
         component.clearInterval = true;
         const clearIntervalSpy = spyOn(window, 'clearInterval');
-        const CLOCKTICK = 4000;
+        const CLOCK_TICK = 4000;
         component.runGame();
-        jasmine.clock().tick(CLOCKTICK);
+        jasmine.clock().tick(CLOCK_TICK);
         expect(validationButtonLockedSpy).toHaveBeenCalled();
         expect(setNumberOfCorrectAnswersSpy).toHaveBeenCalled();
         expect(timeElapsedConditionsSpy).toHaveBeenCalled();

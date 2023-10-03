@@ -37,13 +37,12 @@ describe('QuizCreationService', () => {
     let secondQuestion: QuizQuestion;
     let firstChoice: QuizChoice;
     let secondChoice: QuizChoice;
+    let validQuiz: Quiz;
 
     const NON_EXISTANT_INDEX = -1;
-    const LENGTH_ONE = 2;
-    const LENGTH_TWO = 3;
-    const LENGTH_THREE = 4;
-
-    let validQuiz: Quiz;
+    const LENGTH_TWO = 2;
+    const LENGTH_THREE = 3;
+    const LENGTH_FOUR = 4;
 
     beforeEach(() => {
         quizValidationServiceSpy = jasmine.createSpyObj('QuizValidationService', [
@@ -249,10 +248,10 @@ describe('QuizCreationService', () => {
         const index = 1;
         const questionToAddForm = createFormQuestionFormGroup(validQuestion);
         spyOn(service, 'initQuestion').and.returnValue(questionToAddForm);
-        expect(questionsArrayForm.length).toBe(LENGTH_ONE);
+        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
         service.addQuestion(index, questionsArrayForm);
         expect(questionsArrayForm.at(index + 1).get('text')?.value).toEqual(validQuestion.text);
-        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
+        expect(questionsArrayForm.length).toBe(LENGTH_THREE);
     });
 
     it('should save the unsaved valid question before adding a new question', () => {
@@ -266,7 +265,7 @@ describe('QuizCreationService', () => {
         service.addQuestion(index, questionsArrayForm);
         expect(service.modifiedQuestionIndex).toBe(index + 1);
         expect(questionsArrayForm.at(index + 1).get('text')?.value).toEqual(validQuestion.text);
-        expect(questionsArrayForm.length).toBe(LENGTH_THREE);
+        expect(questionsArrayForm.length).toBe(LENGTH_FOUR);
     });
 
     it('should not add a new question if saving an invalid question', () => {
@@ -282,14 +281,14 @@ describe('QuizCreationService', () => {
         expect(validationErrors.length).toBeGreaterThan(0);
         expect(service.initQuestion).not.toHaveBeenCalled();
         expect(service.modifiedQuestionIndex).toBe(1);
-        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
+        expect(questionsArrayForm.length).toBe(LENGTH_THREE);
     });
 
     it('should remove the question that is specified by its index in the array', () => {
         const questionsArrayForm: FormArray = formQuestionsArrayAllSaved;
         const indexToRemove = 1;
         expect(service.modifiedQuestionIndex).toBe(NON_EXISTANT_INDEX);
-        expect(questionsArrayForm.length).toBe(LENGTH_ONE);
+        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
         service.removeQuestion(indexToRemove, questionsArrayForm);
         expect(questionsArrayForm.length).toBe(1);
     });
@@ -298,21 +297,21 @@ describe('QuizCreationService', () => {
         const questionsArrayForm: FormArray = formQuestionsArrayOneUnsaved;
         service.modifiedQuestionIndex = 1;
         const indexToRemove = 1;
-        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
+        expect(questionsArrayForm.length).toBe(LENGTH_THREE);
         service.removeQuestion(indexToRemove, questionsArrayForm);
         expect(service.modifiedQuestionIndex).toBe(NON_EXISTANT_INDEX);
-        expect(questionsArrayForm.length).toBe(LENGTH_ONE);
+        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
     });
 
     it('should change the modified question index accordingly if the modified question is after the removed one', () => {
         const questionsArrayForm: FormArray = formQuestionsArrayOneUnsaved;
         service.modifiedQuestionIndex = 1;
         const indexToRemove = 0;
-        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
+        expect(questionsArrayForm.length).toBe(LENGTH_THREE);
         service.removeQuestion(indexToRemove, questionsArrayForm);
         // Assert
         expect(service.modifiedQuestionIndex).toBe(0);
-        expect(questionsArrayForm.length).toBe(LENGTH_ONE);
+        expect(questionsArrayForm.length).toBe(LENGTH_TWO);
     });
 
     it('should not call saveQuestion and set beingModified to true when modifiedQuestionIndex is NON_EXISTANT_INDEX', () => {
@@ -342,14 +341,11 @@ describe('QuizCreationService', () => {
     it('should call saveQuestion and set beingModified to false when saveQuestion returns a non-empty string array', () => {
         const questionsArrayForm: FormArray = formQuestionsArrayAllSaved;
         const indexToModify = 0;
-        spyOn(service, 'saveQuestion').and.returnValue(['Validation Error']); // Mock saveQuestion to return a non-empty string array
+        spyOn(service, 'saveQuestion').and.returnValue(['Validation Error']);
         service.modifiedQuestionIndex = indexToModify;
         const result = service.modifyQuestion(indexToModify, questionsArrayForm);
-        // Check that saveQuestion was called
         expect(service.saveQuestion).toHaveBeenCalledWith(indexToModify, questionsArrayForm);
-        // Check that beingModified is set to false for the modified question
         expect(questionsArrayForm.at(indexToModify).get('beingModified')?.value).toBe(false);
-        // Check that the validationErrors array is returned
         expect(result).toEqual(['Validation Error']);
     });
 
@@ -380,7 +376,6 @@ describe('QuizCreationService', () => {
     });
 
     it('should return a FormGroup with default values when no quiz is provided', () => {
-        // Act
         spyOn(service, 'fillQuestions');
         const quizForm: FormGroup = service.fillForm();
         expect(quizForm.get('title')?.value).toBe(null);
@@ -392,7 +387,6 @@ describe('QuizCreationService', () => {
 
     it('should return a FormGroup with values from the provided quiz when calling fillForm', () => {
         const quizForm: FormGroup = service.fillForm(validQuiz);
-        // Assert
         expect(quizForm.get('title')?.value).toBe(validQuiz.title);
         expect(quizForm.get('duration')?.value).toBe(validQuiz.duration);
         expect(quizForm.get('description')?.value).toBe(validQuiz.description);
@@ -411,28 +405,22 @@ describe('QuizCreationService', () => {
     });
 
     it('should swap questions accordingly when moveQuestionUp is called', () => {
-        // Arrange
         const questionsFormArray = formQuestionsArrayOneUnsaved;
         const firstQuestionText = formQuestionsArrayOneUnsaved.at(0).get('text')?.value;
         const secondQuestionText = formQuestionsArrayOneUnsaved.at(1).get('text')?.value;
         service.modifiedQuestionIndex = 1;
-        // Act
         service.moveQuestionUp(1, questionsFormArray);
-        // Assert
         expect(questionsFormArray.at(0).get('text')?.value).toEqual(secondQuestionText);
         expect(questionsFormArray.at(1).get('text')?.value).toEqual(firstQuestionText);
         expect(service.modifiedQuestionIndex).toBe(0);
     });
 
     it('should swap questions accordingly when moveQuestionDown is called', () => {
-        // Arrange
         const questionsFormArray = formQuestionsArrayOneUnsaved;
         const firstQuestionText = formQuestionsArrayOneUnsaved.at(1).get('text')?.value;
         const secondQuestionText = formQuestionsArrayOneUnsaved.at(2).get('text')?.value;
         service.modifiedQuestionIndex = 1;
-        // Act
         service.moveQuestionDown(1, questionsFormArray);
-        // Assert
         expect(questionsFormArray.at(1).get('text')?.value).toEqual(secondQuestionText);
         expect(questionsFormArray.at(2).get('text')?.value).toEqual(firstQuestionText);
         expect(service.modifiedQuestionIndex).toBe(2);
@@ -487,9 +475,8 @@ describe('QuizCreationService', () => {
         // adds to four elements
         service.addChoice(questionIndex, choiceIndex, questionFormArray);
         service.addChoice(questionIndex, choiceIndex, questionFormArray);
-        // Assert
         const choicesArray = questionFormArray.at(questionIndex)?.get('choices') as FormArray;
-        expect(choicesArray.length).toBe(LENGTH_THREE); // Should not have added a new choice
+        expect(choicesArray.length).toBe(LENGTH_FOUR);
     });
 
     it('should call swapElements and getChoicesArray when moving choice up or down', () => {
@@ -508,7 +495,6 @@ describe('QuizCreationService', () => {
     });
 
     it('should move a choice up or move choice down within the specified question', () => {
-        // Arrange
         const questionIndex = 0;
         let choiceIndex = 1;
         const choicesArray = new FormArray([new FormControl('Choice 1'), new FormControl('Choice 2')]);
