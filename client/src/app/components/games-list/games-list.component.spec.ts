@@ -103,10 +103,10 @@ describe('GamesListComponent Admin view', () => {
             providers: [{ provide: QuizService, useValue: quizServiceSpy }],
         }).compileComponents();
     }));
+
     beforeEach(() => {
         fixture = TestBed.createComponent(GamesListComponent);
         component = fixture.componentInstance;
-        component.quizServices = TestBed.inject(QuizService);
         component.isAdmin = true;
         fixture.detectChanges();
     });
