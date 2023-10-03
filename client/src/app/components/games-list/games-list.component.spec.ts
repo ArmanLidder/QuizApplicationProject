@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
 import SpyObj = jasmine.SpyObj;
-
 describe('GamesListComponent Admin view', () => {
     let quizServiceSpy: SpyObj<QuizService>;
     let component: GamesListComponent;
@@ -50,6 +49,7 @@ describe('GamesListComponent Admin view', () => {
                     ],
                 },
             ],
+            visible: true,
         },
         {
             id: '2',
@@ -342,7 +342,7 @@ describe('GamesListComponent Admin view', () => {
     it('should handle invisible quizzes', fakeAsync(() => {
         component.selectedQuiz = { id: '1', visible: false } as Quiz;
         const alertSpy = spyOn(window, 'alert');
-        quizServiceSpy.basicGetById.and.returnValue(of(quizzesMock[2]));
+        quizServiceSpy.basicGetById.and.returnValue(of(component.selectedQuiz));
         component.testGame();
         tick();
         expect(alertSpy).toHaveBeenCalledWith('Ce quiz est maintenant caché, veuillez choisir un autre.');
