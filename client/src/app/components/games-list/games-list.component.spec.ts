@@ -68,7 +68,7 @@ describe('GamesListComponent Admin view', () => {
             'basicPatch',
             'checkTitleUniqueness',
             'basicPost',
-            'basicGetById'
+            'basicGetById',
         ]);
         quizServiceSpy.basicGetAll.and.returnValue(of([]));
         quizServiceSpy.basicGetAllVisible.and.returnValue(of([]));
