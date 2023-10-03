@@ -67,7 +67,7 @@ describe('QuizService', () => {
         expectRequestTypeAndFlush('/quiz/visible', 'GET', mockQuizzes);
     });
 
-    it('should retrieve quizz by id', () => {
+    it('should retrieve quiz by id', () => {
         const testId = '1';
         service.basicGetById(testId).subscribe((quizz) => {
             expect(quizz).toEqual(mockQuizzes[0]);
@@ -75,17 +75,17 @@ describe('QuizService', () => {
         expectRequestTypeAndFlush(`/quiz/${testId}`, 'GET', mockQuizzes[0]);
     });
 
-    it('should post a quizz', () => {
+    it('should post a quiz', () => {
         service.basicPost(mockQuizzes[0]).subscribe();
         expectRequestTypeAndFlush('/quiz/', 'POST', mockQuizzes[0]);
     });
 
-    it('should update a quizz', () => {
+    it('should update a quiz', () => {
         service.basicPut(mockQuizzes[0]).subscribe();
         expectRequestTypeAndFlush('/quiz/', 'PUT', putAndPatchReponse);
     });
 
-    it('should patch a quizz', () => {
+    it('should patch a quiz', () => {
         const quizId = '1';
         const visibility = true;
         service.basicPatch(quizId, visibility).subscribe();

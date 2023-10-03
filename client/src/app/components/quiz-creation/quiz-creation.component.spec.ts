@@ -142,6 +142,7 @@ describe('QuizCreationComponent', () => {
                 [createFormQuestionFormGroup(question1, formBuilder), createFormQuestionFormGroup(question3, formBuilder)],
                 Validators.required,
             ),
+            visible: [false, Validators.required],
         });
         component['quizService'] = TestBed.inject(QuizService);
     });
@@ -205,7 +206,7 @@ describe('QuizCreationComponent', () => {
         expect(extractedQuiz.title).toEqual(component.quizForm.get('title')?.value);
         expect(extractedQuiz.description).toEqual(component.quizForm.get('description')?.value);
         expect(extractedQuiz.duration).toEqual(component.quizForm.get('duration')?.value);
-        expect(extractedQuiz.visible).toEqual(false); // Ensure default value
+        expect(extractedQuiz.visible).toEqual(component.quizForm.get('visible')?.value);
         // Check the questions
         const questionsArray = component.quizForm.get('questions') as FormArray;
         expect(extractedQuiz.questions.length).toEqual(questionsArray.length);

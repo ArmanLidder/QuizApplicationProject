@@ -92,7 +92,7 @@ export class QuizCreationComponent {
             duration: this.quizForm.value.duration,
             lastModification: now,
             questions,
-            visible: this.quiz.visible,
+            visible: this.quizForm.value.visible,
         };
         return quiz;
     }
