@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Quiz } from '@app/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -49,7 +49,7 @@ export class QuizService {
         );
     }
 
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+    private handleError<T>(_: string, result?: T): (error: Error) => Observable<T> {
         return () => of(result as T);
     }
 }

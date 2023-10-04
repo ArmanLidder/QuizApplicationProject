@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Quiz, QuizChoice, QuizQuestion, QuestionType } from '@app/interfaces/quiz.interface';
+import { Quiz, QuizChoice, QuizQuestion, QuestionType } from '@common/interfaces/quiz.interface';
 
 const DIVIDER = 10;
 const MIN_QUESTION_POINTS = 10;

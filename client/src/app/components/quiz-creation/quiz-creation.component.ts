@@ -1,7 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { QuizService } from '@app/services/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
@@ -22,9 +22,9 @@ export class QuizCreationComponent {
     quizForm: FormGroup;
     quiz: Quiz;
     mode: PageMode;
-    isPopupVisibleDuration: boolean = false;
-    isPopupVisibleForm: boolean = false;
-    formErrors: string[] = [];
+    isPopupVisibleDuration: boolean;
+    isPopupVisibleForm: boolean;
+    formErrors: string[];
     quizCreationService: QuizCreationService;
     protected readonly pageModel = PageMode;
     private quizService: QuizService;
@@ -36,7 +36,9 @@ export class QuizCreationComponent {
         this.quizService = injector.get<QuizService>(QuizService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.navigateRoute = injector.get<Router>(Router);
-
+        this.isPopupVisibleDuration = false;
+        this.isPopupVisibleForm = false;
+        this.formErrors = [];
         this.quizForm = this.quizCreationService.fillForm();
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {

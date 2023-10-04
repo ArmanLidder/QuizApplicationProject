@@ -1,8 +1,8 @@
 export interface PlayAreaConst {
     defaultWidth: number;
-    defaultHeignt: number;
+    defaultHeight: number;
     intervalTime: number;
     testValidationTime: number;
-    testMultPoint: number;
+    testMultiPoint: number;
     normalValidationTime: number;
 }

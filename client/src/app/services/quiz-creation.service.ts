@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 
@@ -92,6 +92,7 @@ export class QuizCreationService {
             duration: [quiz?.duration, [Validators.required, Validators.min(MIN_QCM_DURATION), Validators.max(MAX_QCM_DURATION)]],
             description: [quiz?.description, Validators.required],
             questions: this.fb.array([], [Validators.minLength(MIN_NUMBER_OF_QUESTIONS), Validators.required]),
+            visible: [quiz?.visible],
         });
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
         return quizForm;

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { Quiz } from '@app/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { Router } from '@angular/router';
 
@@ -33,8 +33,8 @@ export class GameItemComponent {
         return exportedQuiz;
     }
 
-    buildJSONFile(formatedQuiz: object): string {
-        const blob = new Blob([JSON.stringify(formatedQuiz)], { type: 'application/json' });
+    buildJSONFile(formattedQuiz: object): string {
+        const blob = new Blob([JSON.stringify(formattedQuiz)], { type: 'application/json' });
         return window.URL.createObjectURL(blob);
     }
 

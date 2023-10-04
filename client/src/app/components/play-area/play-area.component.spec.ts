@@ -4,7 +4,7 @@ import { TimeService } from '@app/services/time.service';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
-import { QuestionType, Quiz } from '@app/interfaces/quiz.interface';
+import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { QuizService } from '@app/services/quiz.service';
@@ -23,7 +23,7 @@ describe('PlayAreaComponent', () => {
     let setNumberOfCorrectAnswersSpy: jasmine.Spy;
     let timeElapsedConditionsSpy: jasmine.Spy;
 
-    const MOCKQUIZ: Quiz = {
+    const MOCK_QUIZ: Quiz = {
         id: '1',
         title: 'Math Quiz',
         description: 'its a math quiz.',
@@ -45,7 +45,7 @@ describe('PlayAreaComponent', () => {
         ],
         visible: true,
     };
-    const MOCKCHOICES = [
+    const MOCK_CHOICES = [
         { text: 'test', isCorrect: true },
         { text: 'test', isCorrect: false },
         { text: 'test', isCorrect: true },
@@ -75,7 +75,7 @@ describe('PlayAreaComponent', () => {
         fixture = TestBed.createComponent(PlayAreaComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component.quiz = MOCKQUIZ;
+        component.quiz = MOCK_QUIZ;
         router = TestBed.inject(Router);
     });
 
@@ -106,31 +106,31 @@ describe('PlayAreaComponent', () => {
         component.buttonDetect(EVENT);
         expect(onCardSelectedSpy).not.toHaveBeenCalled();
 
-        const EVENT2 = new KeyboardEvent('keydown', { key: '2' });
-        component.buttonDetect(EVENT2);
+        const EVENT_2 = new KeyboardEvent('keydown', { key: '2' });
+        component.buttonDetect(EVENT_2);
         expect(onCardSelectedSpy).toHaveBeenCalled();
     });
 
     it('should increment number of correct cards', () => {
-        component.answerChoices = MOCKCHOICES;
-        component.numberOfcorrectCards = 0;
+        component.answerChoices = MOCK_CHOICES;
+        component.numberOfCorrectCards = 0;
         component.selectedCard = [false, false, false, false];
         component.onCardSelected(0);
 
         expect(component.selectedCard[0]).toBe(true);
-        expect(component.numberOfcorrectCards).toBe(1);
+        expect(component.numberOfCorrectCards).toBe(1);
     });
     it('should decrement number of correct cards', () => {
-        component.answerChoices = MOCKCHOICES;
-        component.numberOfcorrectCards = 1;
+        component.answerChoices = MOCK_CHOICES;
+        component.numberOfCorrectCards = 1;
         component.selectedCard = [true, false, false, false];
         component.onCardSelected(0);
 
         expect(component.selectedCard[0]).toBe(false);
-        expect(component.numberOfcorrectCards).toBe(0);
+        expect(component.numberOfCorrectCards).toBe(0);
     });
     it('should increment number of incorrect cards', () => {
-        component.answerChoices = MOCKCHOICES;
+        component.answerChoices = MOCK_CHOICES;
         component.numberOfIncorrectCards = 0;
         component.selectedCard = [false, false, false, false];
         component.onCardSelected(1);
@@ -139,7 +139,7 @@ describe('PlayAreaComponent', () => {
         expect(component.numberOfIncorrectCards).toBe(1);
     });
     it('should decrement number of incorrect cards', () => {
-        component.answerChoices = MOCKCHOICES;
+        component.answerChoices = MOCK_CHOICES;
         component.numberOfIncorrectCards = 1;
         component.selectedCard = [false, true, false, false];
         component.onCardSelected(1);
@@ -150,7 +150,7 @@ describe('PlayAreaComponent', () => {
 
     it('resetInfos should set the variables properly', () => {
         component.numberOfIncorrectCards = 3;
-        component.numberOfcorrectCards = 2;
+        component.numberOfCorrectCards = 2;
         component.selectedCard = [true, true, false, false];
         component.questionIndex = 5;
         component.clickedValidation = true;
@@ -158,7 +158,7 @@ describe('PlayAreaComponent', () => {
         component.initInfos = false;
         component.currentTimerIndex = 1;
         component.addingPoints = true;
-        const EXPECTEDINDEX = 6;
+        const EXPECTED_INDEX = 6;
 
         component.quiz = {
             id: '1',
@@ -180,9 +180,9 @@ describe('PlayAreaComponent', () => {
         component.resetInfos();
 
         expect(component.numberOfIncorrectCards).toBe(0);
-        expect(component.numberOfcorrectCards).toBe(0);
+        expect(component.numberOfCorrectCards).toBe(0);
         expect(component.selectedCard).toEqual([false, false, false, false]);
-        expect(component.questionIndex).toBe(EXPECTEDINDEX);
+        expect(component.questionIndex).toBe(EXPECTED_INDEX);
         expect(component.clickedValidation).toBe(false);
         expect(component.timeEnd).toBe(false);
         expect(component.initInfos).toBe(true);
@@ -218,14 +218,12 @@ describe('PlayAreaComponent', () => {
     });
 
     it('should set the number of correct answers', () => {
-        const ANSWERCHOICES = [
+        component.answerChoices = [
             { text: 'Choice 1', isCorrect: true },
             { text: 'Choice 2', isCorrect: false },
             { text: 'Choice 3', isCorrect: true },
             { text: 'Choice 4', isCorrect: false },
         ];
-
-        component.answerChoices = ANSWERCHOICES;
 
         component.setNumberOfCorrectAnswers();
 
@@ -252,10 +250,10 @@ describe('PlayAreaComponent', () => {
     });
 
     it('should handle time elapsed conditions when timeEnd is false and timer reaches 0', () => {
-        const EXPECTEDPOINTAGE = 150;
+        const EXPECTED_POINTAGE = 150;
         component.timeEnd = false;
         component.currentTimerIndex = 0;
-        component.numberOfcorrectCards = 2;
+        component.numberOfCorrectCards = 2;
         component.numberOfCorrectAnswers = 2;
         component.numberOfIncorrectCards = 0;
         component.pointage = 100;
@@ -267,7 +265,7 @@ describe('PlayAreaComponent', () => {
 
         component.timeElapsedConditions();
 
-        expect(component.pointage).toEqual(EXPECTEDPOINTAGE);
+        expect(component.pointage).toEqual(EXPECTED_POINTAGE);
         expect(component.timeEnd).toBe(true);
         expect(component.addingPoints).toBe(true);
         expect(timeServiceSpy.stopTimer).toHaveBeenCalledWith(component.currentTimerIndex - 1);
@@ -299,31 +297,31 @@ describe('PlayAreaComponent', () => {
         timeElapsedConditionsSpy = spyOn(component, 'timeElapsedConditions');
         component.initInfos = true;
         component.clearInterval = true;
-        const CLEARINTERVALSPY = spyOn(window, 'clearInterval');
-        const CLOCKTICK = 4000;
+        const clearIntervalSpy = spyOn(window, 'clearInterval');
+        const CLOCK_TICK = 4000;
         component.runGame();
-        jasmine.clock().tick(CLOCKTICK);
+        jasmine.clock().tick(CLOCK_TICK);
         expect(validationButtonLockedSpy).toHaveBeenCalled();
         expect(setNumberOfCorrectAnswersSpy).toHaveBeenCalled();
         expect(timeElapsedConditionsSpy).toHaveBeenCalled();
         expect(component.initInfos).toBe(false);
         expect(timeServiceSpy.deleteAllTimers).toHaveBeenCalled();
-        expect(CLEARINTERVALSPY).toHaveBeenCalledWith(component.intervalId);
+        expect(clearIntervalSpy).toHaveBeenCalledWith(component.intervalId);
         jasmine.clock().uninstall();
     });
 
     it('should look at if it is a test version and call runGame', () => {
         component.tempPath = false;
-        quizService.basicGetById.and.returnValue(of(MOCKQUIZ));
+        quizService.basicGetById.and.returnValue(of(MOCK_QUIZ));
         runGameSpy = spyOn(component, 'runGame');
-        const FAKEVALIDATIONTIME = 3;
-        const FAKEBONUSPOINTMULT = 1.2;
+        const FAKE_VALIDATION_TIME = 3;
+        const FAKE_BONUS_POINT_MULTI = 1.2;
         component.ngOnInit();
 
-        expect(component.validationTime).toBe(FAKEVALIDATIONTIME);
-        expect(component.bonusPointMultiplicator).toBe(FAKEBONUSPOINTMULT);
+        expect(component.validationTime).toBe(FAKE_VALIDATION_TIME);
+        expect(component.bonusPointMultiplicator).toBe(FAKE_BONUS_POINT_MULTI);
         expect(component.initInfos).toBe(true);
-        expect(component.quiz).toBe(MOCKQUIZ);
+        expect(component.quiz).toBe(MOCK_QUIZ);
         expect(runGameSpy).toHaveBeenCalled();
     });
 

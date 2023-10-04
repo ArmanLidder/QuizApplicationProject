@@ -1,5 +1,5 @@
-/* 
-CODE TIRÉE DE L'EXEMPLE MONGODB PAR NIKOLAY RADOEV
+/*
+CODE TIRÉ DE L'EXEMPLE MONGODB PAR NIKOLAY RADOEV
 */
 
 import { Db, MongoClient } from 'mongodb';

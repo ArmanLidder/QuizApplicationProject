@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { QuizService } from './quiz.service';
-import { Quiz } from '@app/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
 
 describe('QuizService', () => {
     let service: QuizService;

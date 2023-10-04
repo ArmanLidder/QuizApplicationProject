@@ -37,10 +37,12 @@
             <div class="popup" [ngClass]="{ 'show': isPopupVisibleForm }">
                 <span class="popuptext" [innerHTML]="formErrors.join('<br>')"></span>
             </div>
-
-            <button type="submit">
-                {{mode === pageModel.CREATION ? 'Créer' : 'Sauvegarder'}} le quiz
-            </button>
+            <div class='footer-buttons-container'>
+                <button type="submit">
+                    {{mode === pageModel.CREATION ? 'Créer' : 'Sauvegarder'}} le quiz
+                </button>
+                <button routerLink="/game-admin-page" id="cancel">Annuler</button>
+            </div>
         </form>
     </div>
 </div>

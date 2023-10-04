@@ -6,7 +6,6 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-creation-page.component';
 import { GameAdministrationPageComponent } from '@app/pages/game-administration-page/game-administration-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
-import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
 import { WaitingRoomPageComponent } from '@app/pages/waiting-room-page/waiting-room-page.component';
 
@@ -21,7 +20,6 @@ const routes: Routes = [
     { path: 'quiz-testing-page/:id', component: GamePageComponent },
     { path: 'waiting-room-page/:id', component: WaitingRoomPageComponent },
     { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [authGuardAuthentification] },
-    { path: 'material', component: MaterialPageComponent },
     { path: '**', redirectTo: '/home' },
 ];
 

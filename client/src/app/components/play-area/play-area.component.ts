@@ -1,7 +1,7 @@
 import { Component, HostListener, Injector, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlayAreaConst } from '@app/interfaces/play-area-const';
-import { Quiz, QuizChoice } from '@app/interfaces/quiz.interface';
+import { Quiz, QuizChoice } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { TimeService } from '@app/services/time.service';
 
@@ -11,44 +11,67 @@ import { TimeService } from '@app/services/time.service';
     styleUrls: ['./play-area.component.scss'],
 })
 export class PlayAreaComponent implements OnInit, OnDestroy {
-    playAreaConst: PlayAreaConst = {
-        defaultWidth: 200,
-        defaultHeignt: 200,
-        intervalTime: 10,
-        testValidationTime: 3,
-        testMultPoint: 1.2,
-        normalValidationTime: 5,
-    };
-
-    intervalId = setInterval(() => void 0, 0);
-    tempPath = true;
-    testPage = false;
-    addingPoints = false;
-    bgColor = 'transparent';
-    validationTime = this.playAreaConst.normalValidationTime;
-    bonusPointMultiplicator = 1;
-    timeEnd = false;
-    initInfos = true;
-    timer = 0;
-    currentTimerIndex = 0;
-    disableOption = false;
-    clickedValidation = false;
-    clearInterval = false;
+    playAreaConst: PlayAreaConst;
+    intervalId;
+    tempPath: boolean;
+    testPage: boolean;
+    addingPoints: boolean;
+    bgColor: string;
+    validationTime: number;
+    bonusPointMultiplicator: number;
+    timeEnd: boolean;
+    initInfos: boolean;
+    timer: number;
+    currentTimerIndex: number;
+    disableOption: boolean;
+    clickedValidation: boolean;
+    clearInterval: boolean;
     quiz: Quiz;
-    currentQuestion = '';
-    questionPoints = 0;
-    questionIndex = 0;
+    currentQuestion: string;
+    questionPoints: number;
+    questionIndex: number;
     answerChoices: QuizChoice[] | undefined;
-    pointage = 0;
-    numberOfIncorrectCards = 0;
-    numberOfcorrectCards = 0;
-    numberOfCorrectAnswers = 0;
-    selectedCard = [false, false, false, false];
+    pointage: number;
+    numberOfIncorrectCards: number;
+    numberOfCorrectCards: number;
+    numberOfCorrectAnswers: number;
+    selectedCard: boolean[];
     private timeService: TimeService;
     private quizService: QuizService;
     private route: ActivatedRoute;
     private router: Router;
     constructor(injector: Injector) {
+        this.playAreaConst = {
+            defaultWidth: 200,
+            defaultHeight: 200,
+            intervalTime: 10,
+            testValidationTime: 3,
+            testMultiPoint: 1.2,
+            normalValidationTime: 5,
+        };
+
+        this.intervalId = setInterval(() => void 0, 0);
+        this.tempPath = true;
+        this.testPage = false;
+        this.addingPoints = false;
+        this.bgColor = 'transparent';
+        this.validationTime = this.playAreaConst.normalValidationTime;
+        this.bonusPointMultiplicator = 1;
+        this.timeEnd = false;
+        this.initInfos = true;
+        this.timer = 0;
+        this.currentTimerIndex = 0;
+        this.disableOption = false;
+        this.clickedValidation = false;
+        this.clearInterval = false;
+        this.currentQuestion = '';
+        this.questionPoints = 0;
+        this.questionIndex = 0;
+        this.pointage = 0;
+        this.numberOfIncorrectCards = 0;
+        this.numberOfCorrectCards = 0;
+        this.numberOfCorrectAnswers = 0;
+        this.selectedCard = [false, false, false, false];
         this.timeService = injector.get<TimeService>(TimeService);
         this.quizService = injector.get<QuizService>(QuizService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
@@ -72,10 +95,10 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     onCardSelected(index: number) {
         if (this.answerChoices && this.answerChoices.length > 1 && this.answerChoices[index] !== undefined) {
             if (this.answerChoices[index].isCorrect && !this.selectedCard[index]) {
-                this.numberOfcorrectCards++;
+                this.numberOfCorrectCards++;
                 this.selectedCard[index] = true;
             } else if (this.answerChoices[index].isCorrect && this.selectedCard[index]) {
-                this.numberOfcorrectCards--;
+                this.numberOfCorrectCards--;
                 this.selectedCard[index] = false;
             }
 
@@ -91,7 +114,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
 
     resetInfos() {
         this.numberOfIncorrectCards = 0;
-        this.numberOfcorrectCards = 0;
+        this.numberOfCorrectCards = 0;
         this.selectedCard = [false, false, false, false];
         this.questionIndex++;
         this.clickedValidation = false;
@@ -141,7 +164,7 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
 
     timeElapsedConditions() {
         if (!this.timeEnd && this.timeService.getTime(this.currentTimerIndex) === 0) {
-            if (this.numberOfcorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
+            if (this.numberOfCorrectCards === this.numberOfCorrectAnswers && this.numberOfIncorrectCards === 0) {
                 this.pointage += this.questionPoints * this.bonusPointMultiplicator;
                 this.addingPoints = true;
             }
@@ -182,14 +205,14 @@ export class PlayAreaComponent implements OnInit, OnDestroy {
     }
     ngOnInit(): void {
         this.route.params.subscribe(() => {
-            const QUIZID = this.tempPath ? this.route.snapshot.paramMap.get('id') : '1';
+            const QUIZ_ID = this.tempPath ? this.route.snapshot.paramMap.get('id') : '1';
             this.testPage = this.tempPath ? this.route.snapshot.url[0].path === 'quiz-testing-page' : true;
             if (this.testPage) {
                 this.validationTime = this.playAreaConst.testValidationTime;
-                this.bonusPointMultiplicator = this.playAreaConst.testMultPoint;
+                this.bonusPointMultiplicator = this.playAreaConst.testMultiPoint;
             }
-            if (QUIZID !== null) {
-                this.quizService.basicGetById(QUIZID).subscribe((quiz) => {
+            if (QUIZ_ID !== null) {
+                this.quizService.basicGetById(QUIZ_ID).subscribe((quiz) => {
                     this.quiz = quiz;
                     this.initInfos = true;
 
