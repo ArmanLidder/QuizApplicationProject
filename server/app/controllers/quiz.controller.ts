@@ -142,9 +142,10 @@ export class QuizController {
 
         /**
          * @swagger
-         * /quiz/checkTitleUniqueness:
+         * /api/quiz/checkTitleUniqueness:
          *   post:
          *     summary: Check title uniqueness
+         *     tags: [Quiz]
          *     description: Check if a title is unique for a Quiz.
          *     requestBody:
          *       required: true
