@@ -145,6 +145,7 @@ export class QuizController {
          * /quiz/checkTitleUniqueness:
          *   post:
          *     summary: Check title uniqueness
+         *     tags: [Quiz]
          *     description: Check if a title is unique for a Quiz.
          *     requestBody:
          *       required: true
