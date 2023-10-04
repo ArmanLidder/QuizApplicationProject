@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { GamesListComponent } from './games-list.component';
@@ -186,6 +187,15 @@ describe('GamesListComponent Admin view', () => {
         const errorMessage = component.setValidatorError(errors);
         expect(errorMessage).toEqual(expectedErrorMessage);
     });
+    it('should return an error message if validation is not succesful ', () => {
+        const errors = ['Error 1'];
+        const expectedErrorMessage =
+            "Le fichier que vous tenter d'importer contient le problème suivant :\n\n " +
+            '\n1- Error 1\n' +
+            '\n\n Veuillez corriger cela avant de réessayer.';
+        const errorMessage = component.setValidatorError(errors);
+        expect(errorMessage).toEqual(expectedErrorMessage);
+    });
     it('should call basicPost and populateGameList when response status is CREATED', () => {
         component.importedQuiz = quizzesMock[0];
         const populateSpy = spyOn(component, 'populateGameList');
@@ -346,5 +356,13 @@ describe('GamesListComponent Admin view', () => {
         component.testGame();
         tick();
         expect(alertSpy).toHaveBeenCalledWith('Ce quiz est maintenant caché, veuillez choisir un autre.');
+    }));
+    it('should not handle when no quiz is selected', fakeAsync(() => {
+        component.selectedQuiz = null;
+        const alertSpy = spyOn(window, 'alert');
+        quizServiceSpy.basicGetById.and.returnValue(of());
+        component.handleQuizAction('');
+        tick();
+        expect(alertSpy).not.toHaveBeenCalled();
     }));
 });
