@@ -95,9 +95,7 @@ export class GamesListComponent implements OnInit {
 
     readFile(selectedFile: File) {
         this.fileReader.readAsText(selectedFile);
-        this.fileReader.onload = (e) => {
-            this.extractQuizData(e);
-        };
+        this.fileReader.onload = (e) => this.extractQuizData(e);
     }
 
     extractQuizData(event: ProgressEvent<FileReader>) {
@@ -137,7 +135,7 @@ export class GamesListComponent implements OnInit {
 
     setValidatorError(errors: string[]) {
         let index = 0;
-        const isPlural = errors.length >= 1;
+        const isPlural = errors.length > 1;
         const endSentence = isPlural ? 'les problèmes suivants' : 'le problème suivant';
         let errorMessage = `Le fichier que vous tenter d'importer contient ${endSentence} :\n\n `;
         errors.forEach((error) => {
