@@ -28,7 +28,7 @@ export class SocketManager {
         }, ONE_SECOND_DELAY);
     }
 
-    private emitTime() {
+    emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
 }
