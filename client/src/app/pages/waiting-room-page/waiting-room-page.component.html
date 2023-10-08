@@ -1,1 +1,31 @@
-<p>waiting-room-page works!</p>
+<div class="waiting-room">
+    <div class="waiting-room-header">
+        <h1>Salle d'attente</h1>
+        <h2>Room Code: {{roomCode}}</h2>
+        <button class="lock-button">Vérouiller la salle</button>
+    </div>
+
+    <div class="players-list">
+        <h2>Joueurs:</h2>
+        <i class="fas fa-plus"></i>
+        <ul>
+            <li class="player-item">
+                <span class="player-name">Joueur 1</span>
+                <span class="ban-icon" title="Bannir">🚫</span>
+            </li>
+            <li class="player-item">
+                <span class="player-name">Joueur 2</span>
+                <span class="ban-icon" title="Bannir">🚫</span>
+            </li>
+            <li class="player-item">
+                <span class="player-name">Joueur 3</span>
+                <span class="ban-icon" title="Bannir">🚫</span>
+            </li>
+            <!-- Add more players here -->
+        </ul>
+    </div>
+
+    <div class="actions">
+        <button class="start-button">Commencer !</button>
+    </div>
+</div>
