@@ -15,6 +15,12 @@ export class SocketManager {
             // message initial
             socket.emit('hello', 'Hello World!');
 
+            socket.on('create Room', (callback) => {
+                const roomCode = "1234";
+                console.log(`Room code created for: ${socket.id}`);
+                callback(roomCode);
+            });
+
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
