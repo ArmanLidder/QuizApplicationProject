@@ -2,97 +2,94 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+const DELETE_NUMBER = 1;
 @Component({
-  selector: 'app-waiting-room',
-  templateUrl: './waiting-room.component.html',
-  styleUrls: ['./waiting-room.component.scss']
+    selector: 'app-waiting-room',
+    templateUrl: './waiting-room.component.html',
+    styleUrls: ['./waiting-room.component.scss'],
 })
-export class WaitingRoomComponent implements OnInit{
-  @Input() isHost: boolean = true; // temporary set to true for testing functionality
-  roomId: number;
-  players: string[]=['K','y','z'];
-  readonly DELETE_NUMBER = 1;
+export class WaitingRoomComponent implements OnInit {
+    @Input() isHost: boolean;
+    roomId: number;
+    players: string[];
 
-  constructor(
-      public socketService: SocketClientService,
-      private readonly route: ActivatedRoute,
-      private router: Router
-  ) {}
+    constructor(
+        public socketService: SocketClientService,
+        private readonly route: ActivatedRoute,
+        private router: Router,
+    ) {}
 
-  get socketId() {
-    return this.socketService.socket.id ? this.socketService.socket.id : '';
-  }
-
-  ngOnInit() {
-    this.connect();
-    if (this.isHost)
-      this.sendRoomCreation();
-  }
-
-  connect() {
-    if (!this.socketService.isSocketAlive()) {
-      this.socketService.connect();
-      this.configureBaseSocketFeatures();
+    get socketId() {
+        return this.socketService.socket.id ? this.socketService.socket.id : '';
     }
-  }
 
-  banPlayer(username: string) {
-    this.sendBanPlayer(username)
-  }
+    ngOnInit() {
+        this.connect();
+        if (this.isHost) this.sendRoomCreation();
+    }
 
-  toggleRoomLocked() {
-    this.sendToggleRoomLock()
-  }
+    connect() {
+        if (!this.socketService.isSocketAlive()) {
+            this.socketService.connect();
+            this.configureBaseSocketFeatures();
+        }
+    }
 
-  startGame() {
-    this.sendStartSignal();
-  }
+    banPlayer(username: string) {
+        this.sendBanPlayer(username);
+    }
 
-  private sendRoomCreation() {
-    const QUIZ_ID = this.route.snapshot.paramMap.get('id');
-    this.socketService.send('create Room', QUIZ_ID, (roomCode: number) => {
-      this.roomId = roomCode;
-    });
-  }
+    toggleRoomLocked() {
+        this.sendToggleRoomLock();
+    }
 
-  private configureBaseSocketFeatures() {
-    this.socketService.on('connect', () => {
-      console.log(`Connexion par WebSocket sur le socket ${this.socketId}`);
-    });
+    startGame() {
+        this.sendStartSignal();
+    }
 
-    this.socketService.on('new player', (username: string) => {
-      this.addPlayer(username);
-    });
+    private sendRoomCreation() {
+        const QUIZ_ID = this.route.snapshot.paramMap.get('id');
+        this.socketService.send('create Room', QUIZ_ID, (roomCode: number) => {
+            this.roomId = roomCode;
+        });
+    }
 
-    this.socketService.on('you have been banned',() => {
-      this.router.navigate(['/home']);
-    });
+    private configureBaseSocketFeatures() {
+        this.socketService.on('connect', () => {
+            // console.log(`Connexion par WebSocket sur le socket ${this.socketId}`);
+        });
 
-    this.socketService.on('banned player', (username: string) => {
-      this.removePlayer(username)
-    })
-  }
+        this.socketService.on('new player', (players: string[]) => {
+            this.players = players;
+        });
 
-  private sendBanPlayer( username: string) {
-    this.socketService.send('ban player', {roomId: this.roomId, username: username});
-  }
+        this.socketService.on('you have been banned', () => {
+            this.router.navigate(['/home']);
+        });
 
-  private sendToggleRoomLock() {
-    this.socketService.send('toggle room lock', this.roomId);
-  }
+        this.socketService.on('banned player', (username: string) => {
+            this.removePlayer(username);
+        });
+    }
 
-  private sendStartSignal() {
-    this.socketService.send('start', this.roomId);
-  }
+    private sendBanPlayer(username: string) {
+        this.socketService.send('ban player', { roomId: this.roomId, username });
+    }
 
-  private addPlayer(username: string) {
-    this.players.push(username);
-  }
+    private sendToggleRoomLock() {
+        this.socketService.send('toggle room lock', this.roomId);
+    }
 
-  private removePlayer(username: string) {
-    const index = this.players.indexOf(username);
-    this.players.splice(index, this.DELETE_NUMBER);
-  }
+    private sendStartSignal() {
+        this.socketService.send('start', this.roomId);
+    }
+
+    // private addPlayer(username: string) {
+    //     this.players.push(username);
+    // }
+
+    private removePlayer(username: string) {
+        const index = this.players.indexOf(username);
+        this.players.splice(index, DELETE_NUMBER);
+    }
 }
-
-
