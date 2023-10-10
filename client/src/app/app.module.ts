@@ -23,6 +23,7 @@ import { WaitingRoomPageComponent } from './pages/waiting-room-page/waiting-room
 import { AnswerChoiceCardComponent } from './components/answer-choice-card/answer-choice-card.component';
 import { UniqueQuizErrorFeedbackComponent } from './components/unique-quiz-error-feedback/unique-quiz-error-feedback.component';
 import { ValidationQuizErrorFeedbackComponent } from './components/validation-quiz-error-feedback/validation-quiz-error-feedback.component';
+import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 
 /**
  * Main module that is used in main.ts.
@@ -50,6 +51,7 @@ import { ValidationQuizErrorFeedbackComponent } from './components/validation-qu
         WaitingRoomPageComponent,
         UniqueQuizErrorFeedbackComponent,
         ValidationQuizErrorFeedbackComponent,
+        WaitingRoomComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
