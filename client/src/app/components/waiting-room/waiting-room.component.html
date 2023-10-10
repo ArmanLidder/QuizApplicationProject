@@ -1,8 +1,8 @@
 <div class="waiting-room">
     <div class="waiting-room-header">
         <h1>Salle d'attente</h1>
-        <h2>Room Code: {{roomId}}</h2>
-        <button class="lock-button">Vérouiller la salle</button>
+        <h2 *ngIf='isHost'>Room Code: {{roomId}}</h2>
+        <button *ngIf='isHost' class="lock-button">Vérouiller la salle</button>
     </div>
 
     <div class="players-list">
@@ -10,14 +10,14 @@
         <ul>
             <li class="player-item" *ngFor="let player of players">
                 <span class="player-name">{{ player }}</span>
-                <i class='fa fa-ban'(click)="banPlayer(player)"></i>
+                <i class='fa fa-ban'(click)="banPlayer(player)" *ngIf='isHost'></i>
             </li>
         </ul>
     </div>
 
 
     <div class="actions">
-        <button class="start-button">Commencer !</button>
+        <button *ngIf='isHost' class="start-button">Commencer !</button>
     </div>
 </div>
 

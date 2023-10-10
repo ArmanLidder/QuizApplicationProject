@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class WaitingRoomComponent implements OnInit{
   @Input() isHost: boolean = true; // temporary set to true for testing functionality
   roomId: number;
-  players: string[] = ['karim', 'benzema'];
+  players: string[]=['K','y','z'];
   readonly DELETE_NUMBER = 1;
 
   constructor(

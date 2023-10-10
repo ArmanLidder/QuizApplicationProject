@@ -189,6 +189,6 @@ export class GamesListComponent implements OnInit {
     }
 
     playGame() {
-        this.handleQuizAction('/waiting-room-page/');
+        this.handleQuizAction('/waiting-room-host-page/');
     }
 }
