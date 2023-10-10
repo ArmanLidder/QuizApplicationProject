@@ -50,8 +50,18 @@ export class RoomManagingService {
         playerMap.delete(name);
     }
 
-    isNameValid(roomID : number, name: string): boolean{
-        return !this.rooms.get(roomID).bannedNames.includes(name);
+    // isNameValid(roomID : number, name: string): boolean{
+    //     isBanned = this.rooms.get(roomID).bannedNames.includes(name);
+    //     isUsed = this.rooms.get(roomID).players.has(name);
+    //     return {isBanned: isBanned};
+    // }
+
+    isNameUsed(roomID : number, name: string): boolean {
+        return this.rooms.get(roomID).players.has(name);
+    }
+
+    isNameBanned(roomID : number, name: string): boolean {
+        return this.rooms.get(roomID).bannedNames.includes(name);
     }
 
     changeLockState(roomID: number): void {
