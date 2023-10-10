@@ -1,9 +1,9 @@
-<div class="container justified">
+<div *ngIf='!isWantingToJoinGame' class="container justified">
     <h1 class="header-item">Bienvenue à {{ title }} !</h1>
     <img src="../../../assets/Logo.png" alt="Logo Projet" />
 
     <div class="button-container">
-        <button class="button" routerLink='/waiting-room-player-page'>Joindre une partie</button>
+        <button class="button" (click)='toggleChange(true)'>Joindre une partie</button>
         <button class="button" routerLink="/game-creation-page">Créer une partie</button>
         <button class="button" routerLink="/game-admin-prompt">Administrer les jeux</button>
     </div>
@@ -16,3 +16,4 @@
         </p>
     </footer>
 </div>
+<app-room-code-prompt *ngIf='isWantingToJoinGame' (toggleView)="toggleChange($event)"></app-room-code-prompt>
