@@ -1,0 +1,36 @@
+<div class="center-content">
+    <div id="prompt_container">
+       <div *ngIf='(!isRoomIdValid)&&(!isUsernameValid)'>
+            <h3>Veuillez saisir le code de 4 chiffre fourni par l'organisateur</h3>
+            <label for="roomId"> Saisir le code: </label>
+            <input
+                id="roomId"
+                [(ngModel)]="roomId"
+                [class]="inputBorderColor"
+                type="text"
+                maxlength='4'>
+            <p [class]="textColor"> {{error}} <p>
+            <div class="justify-content">
+                <button  class="cancel" (click)='returnToHomePage()'> Annuler </button>
+                <button #enterButton class="enter" (click)='validateRoomId()'> Valider </button>
+            </div>
+       </div>
+        <div *ngIf='(!isUsernameValid)&&(isRoomIdValid)'>
+                <h3>Veuillez choisir votre nom d'utilisateur</h3>
+                <label for="name"> Saisir le nom d'utilisateur: </label>
+                <input type="text" id="name" [(ngModel)]="username" [class]="inputBorderColor" maxlength='20'>
+                <p [class]="textColor"> {{error}} <p>
+            <div class="justify-content">
+                <button  class="cancel" (click)='returnToHomePage()'> Annuler </button>
+                <button #enterButton class="enter" (click)='validateUsername()'> Valider </button>
+            </div>
+        </div>
+        <div *ngIf='(isUsernameValid)&&(isRoomIdValid)'>
+            <h3> Parfait {{username}}! Vous pouvez rejoindre la partie </h3>
+            <div class="justify-content">
+                <button  class="cancel" (click)='returnToHomePage()'> Annuler </button>
+                <button #enterButton class="enter" (click)='joinRoom()'> Rejoindre </button>
+            </div>
+        </div>
+    </div>
+</div>
