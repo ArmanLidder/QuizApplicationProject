@@ -8,7 +8,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 })
 export class WaitingRoomPageComponent implements OnInit {
     @Input() isHost: boolean = true; // temporary set to true for testing functionality
-    roomCode: number = 1234; // temporary number for viewing
+    roomCode: number; // temporary number for viewing
 
     constructor(public socketService: SocketClientService) {}
 
@@ -29,8 +29,8 @@ export class WaitingRoomPageComponent implements OnInit {
     }
 
     private sendRoomCreation() {
-        this.socketService.send('create Room', (room: string) => {
-            console.log(room);
+        this.socketService.send('create Room', (room: number) => {
+            this.roomCode = room;
         });
     }
 

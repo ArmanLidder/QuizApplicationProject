@@ -1,11 +1,14 @@
 import * as io from 'socket.io';
 import * as http from 'http';
+import { RoomManagingService } from '@app/services/room-managing.service';
 
 const ONE_SECOND_DELAY = 1000;
 export class SocketManager {
     private sio: io.Server;
+    private roomManager: RoomManagingService;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+        this.roomManager = new RoomManagingService();
     }
 
     handleSockets(): void {
@@ -16,7 +19,7 @@ export class SocketManager {
             socket.emit('hello', 'Hello World!');
 
             socket.on('create Room', (callback) => {
-                const roomCode = "1234";
+                const roomCode = this.roomManager.addRoom();
                 console.log(`Room code created for: ${socket.id}`);
                 callback(roomCode);
             });
