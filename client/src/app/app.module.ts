@@ -26,6 +26,7 @@ import { ValidationQuizErrorFeedbackComponent } from './components/validation-qu
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 import { WaitingRoomHostPageComponent } from './pages/waiting-room-host-page/waiting-room-host-page.component';
 import { WaitingRoomPlayerPageComponent } from './pages/waiting-room-player-page/waiting-room-player-page.component';
+import { RoomCodePromptComponent } from './components/room-code-prompt/room-code-prompt.component';
 
 /**
  * Main module that is used in main.ts.
@@ -56,6 +57,7 @@ import { WaitingRoomPlayerPageComponent } from './pages/waiting-room-player-page
         WaitingRoomComponent,
         WaitingRoomHostPageComponent,
         WaitingRoomPlayerPageComponent,
+        RoomCodePromptComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
