@@ -6,6 +6,7 @@ import { io, Socket } from 'socket.io-client';
 })
 export class SocketClientService {
     socket: Socket;
+    // type CallbackFunction = () => void;
 
     isSocketAlive() {
         return this.socket && this.socket.connected;
@@ -23,7 +24,7 @@ export class SocketClientService {
         this.socket.on(event, action);
     }
 
-    send<T>(event: string, data?: T, callback?: () => void): void {
+    send<T, A>(event: string, data?: T, callback?: (data: A) => void): void {
         this.socket.emit(event, ...[data, callback].filter((x) => x));
     }
 }
