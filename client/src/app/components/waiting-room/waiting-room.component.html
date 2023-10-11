@@ -10,7 +10,7 @@
         <ul>
             <li class="player-item" *ngFor="let player of players">
                 <span class="player-name">{{ player }}</span>
-                <i class='fa fa-ban'(click)="banPlayer(player)" *ngIf='isHost'></i>
+                <div class='icon-container'><i class='fa fa-ban'(click)="banPlayer(player)" *ngIf='isHost'></i></div>
             </li>
         </ul>
     </div>

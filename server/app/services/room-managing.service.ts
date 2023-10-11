@@ -57,15 +57,16 @@ export class RoomManagingService {
         playerMap.delete(name);
     }
 
-    removeUserBySocketID(userSocketID: string): void {
+    removeUserBySocketID(userSocketID: string) {
         for (const [roomId, roomData] of this.rooms.entries()) {
             for (const [username, socketID] of roomData.players.entries()) {
                 if (userSocketID === socketID) {
                     this.removeUserFromRoom(roomId, username);
-                    return;
+                    return { roomId, username };
                 }
             }
-}
+        }
+        return undefined;
     }
 
     banUser(roomID: number, name: string): void {

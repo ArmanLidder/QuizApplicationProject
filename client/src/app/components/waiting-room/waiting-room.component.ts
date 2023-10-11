@@ -18,16 +18,17 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         public socketService: SocketClientService,
         private readonly route: ActivatedRoute,
         private router: Router,
-    ) {}
-
-    get socketId() {
-        return this.socketService.socket.id ? this.socketService.socket.id : '';
+    ) {
+        this.connect();
     }
 
     ngOnInit() {
-        this.connect();
         if (this.isHost) this.sendRoomCreation();
-        if (this.isActive) this.gatherRoomData();
+    }
+
+    ngOnDestroy() {
+        const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
+        this.socketService.send(messageType, this.roomId);
     }
 
     connect() {
@@ -57,10 +58,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on('connect', () => {
-            // console.log(`Connexion par WebSocket sur le socket ${this.socketId}`);
-        });
-
         this.socketService.on('new player', (players: string[]) => {
             this.players = players;
         });
@@ -70,13 +67,13 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.on('removed player', (username: string) => {
-            this.removePlayer(username);
-            console.log("wesh");
+            if (this.players.includes(username)) {
+                this.removePlayer(username);
+            }
         });
     }
 
     private sendBanPlayer(username: string) {
-        console.log(this.players);
         this.socketService.send('ban player', { roomId: this.roomId, username });
     }
 
@@ -88,24 +85,8 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         this.socketService.send('start', this.roomId);
     }
 
-    // private addPlayer(username: string) {
-    //     this.players.push(username);
-    // }
-
-    private gatherRoomData() {
-        this.socketService.send('gather room data', this.roomId, (players: string[]) => {
-            this.players = players
-        })
-    }
-
     private removePlayer(username: string) {
         const index = this.players.indexOf(username);
         this.players.splice(index, DELETE_NUMBER);
     }
-
-    ngOnDestroy() {
-        const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
-        this.socketService.send(messageType, this.roomId);
-    }
-
 }

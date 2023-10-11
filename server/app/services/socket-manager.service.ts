@@ -29,24 +29,24 @@ export class SocketManager {
             socket.on('ban player', (data: { roomId: number; username: string }) => {
                 const bannedID = this.roomManager.getSocketIDByUsername(data.roomId, data.username);
                 this.roomManager.banUser(data.roomId, data.username);
-                this.sio.to(String(data.roomId)).emit('removed player', data.username);
                 this.sio.to(bannedID).emit('removed from game');
+                this.sio.to(String(data.roomId)).emit('removed player', data.username);
             });
 
             // Todo verify if it works
             socket.on('toggle room lock', (roomId: number) => {
                 console.log('before treatm:');
-                console.log((this.roomManager.getRoomByID(roomId).locked))
+                console.log(this.roomManager.getRoomByID(roomId).locked);
                 this.roomManager.changeLockState(roomId);
                 console.log('after treatment');
-                console.log((this.roomManager.getRoomByID(roomId).locked))
+                console.log(this.roomManager.getRoomByID(roomId).locked);
             });
             // For above create service to configure those event reception for organizer view
 
             // TODO create service to configure those event reception for player joining view
             socket.on('player join', (data: { roomId: number; username: string }, callback) => {
                 const isLocked = this.roomManager.getRoomByID(data.roomId).locked;
-                console.log("playing trying to join...");
+                console.log('playing trying to join...');
                 if (!isLocked) {
                     this.roomManager.addUser(data.roomId, data.username, socket.id);
                     const room = this.roomManager.getRoomByID(data.roomId);
@@ -71,21 +71,17 @@ export class SocketManager {
 
             socket.on('validate roomID', (roomId: number, callback) => {
                 let isLocked = false;
-                const isRoom = this.roomManager.roomMap.has(roomId)
-                if (isRoom)  isLocked = this.roomManager.getRoomByID(roomId).locked;
+                const isRoom = this.roomManager.roomMap.has(roomId);
+                if (isRoom) isLocked = this.roomManager.getRoomByID(roomId).locked;
                 callback(isRoom && !isLocked);
-            });
-
-            socket.on('gather room data', (roomId: number, callback) => {
-                const room = this.roomManager.getRoomByID(roomId);
-                const players = Array.from(room.players.keys());
-                callback(players);
             });
 
             // For above create service to configure those event reception for organizer view
             socket.on('player abandonment', (roomId: number) => {
-                this.roomManager.removeUserBySocketID(socket.id);
-                this.sio.to(String(roomId)).emit('removed player','a');
+                const socketData = this.roomManager.removeUserBySocketID(socket.id);
+                if (socketData != undefined) {
+                    this.sio.to(String(roomId)).emit('removed player', socketData.username);
+                }
                 socket.disconnect(true);
             });
 
@@ -96,7 +92,8 @@ export class SocketManager {
             });
 
             socket.on('disconnect', (reason) => {
-                this.roomManager.removeUserBySocketID(socket.id);
+                // const socketInfo = this.roomManager.removeUserBySocketID(socket.id);
+                // this.sio.to(String(socketInfo.roomId)).emit('removed player',socketInfo.username);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 // eslint-disable-next-line no-console
                 console.log(`Raison de deconnexion : ${reason}`);

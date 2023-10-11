@@ -8,9 +8,7 @@ export class MainPageComponent {
     readonly title: string = 'OnlyQuiz';
     isWantingToJoinGame: boolean;
 
-    toggleChange(value: boolean){
+    toggleChange(value: boolean) {
         this.isWantingToJoinGame = value;
     }
-
-
 }
