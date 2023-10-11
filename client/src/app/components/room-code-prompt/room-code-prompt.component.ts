@@ -21,14 +21,16 @@ export class RoomCodePromptComponent {
     error: string | undefined;
     textColor: string;
 
-    constructor(private socketServices: SocketClientService) {}
+    constructor(private socketService: SocketClientService) {}
 
     ngOnInit() {
         this.connect();
     }
 
-    connect(){
-        this.socketServices.connect();
+    connect() {
+        if (!this.socketService.isSocketAlive()) {
+            this.socketService.connect();
+        }
     }
 
     sendRoomIdToWaitingRoom(){
@@ -70,22 +72,22 @@ export class RoomCodePromptComponent {
     }
 
     private sendJoinRoomRequest() {
-        this.socketServices.send(
+        this.socketService.send(
             'player join',
             { roomId: Number(this.roomId), username: this.username },
             (isLocked: boolean) => {
             if(isLocked) {
-                isLocked = true;
+                this.isLocked = true;
                 this.showErrorFeedback()
             } else {
-                isLocked = false;
+                this.isLocked = false;
                 this.reset()
             }
         });
     }
 
     private sendUsername() {
-        this.socketServices.send('validate username', {roomId: Number(this.roomId), username: this.username}, (data: {isValid:boolean, error:string}) => {
+        this.socketService.send('validate username', {roomId: Number(this.roomId), username: this.username}, (data: {isValid:boolean, error:string}) => {
             if (!data.isValid){
                 this.showErrorFeedback()
                 this.error = data.error;
@@ -97,7 +99,7 @@ export class RoomCodePromptComponent {
     }
 
     private sendRoomId() {
-        this.socketServices.send('validate roomID', Number(this.roomId), (isValid:boolean) => {
+        this.socketService.send('validate roomID', Number(this.roomId), (isValid:boolean) => {
             if (!isValid) {
                 this.showErrorFeedback()
                 this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer'

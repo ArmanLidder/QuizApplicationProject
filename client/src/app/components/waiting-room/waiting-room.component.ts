@@ -33,8 +33,8 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     connect() {
         if (!this.socketService.isSocketAlive()) {
             this.socketService.connect();
-            this.configureBaseSocketFeatures();
         }
+        this.configureBaseSocketFeatures();
     }
 
     banPlayer(username: string) {
@@ -69,12 +69,14 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             this.router.navigate(['/home']);
         });
 
-        this.socketService.on('banned player', (username: string) => {
+        this.socketService.on('removed player', (username: string) => {
             this.removePlayer(username);
+            console.log("wesh");
         });
     }
 
     private sendBanPlayer(username: string) {
+        console.log(this.players);
         this.socketService.send('ban player', { roomId: this.roomId, username });
     }
 
