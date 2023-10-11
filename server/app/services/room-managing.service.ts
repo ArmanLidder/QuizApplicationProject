@@ -81,11 +81,13 @@ export class RoomManagingService {
     // }
 
     isNameUsed(roomID: number, name: string): boolean {
-        return this.rooms.get(roomID).players.has(name);
+        const room = this.getRoomByID(roomID);
+        return Array.from(room.players.keys()).some(username => username.toLowerCase() === name.toLowerCase());
     }
 
     isNameBanned(roomID: number, name: string): boolean {
-        return this.rooms.get(roomID).bannedNames.includes(name);
+        const room = this.getRoomByID(roomID);
+        return Array.from(room.bannedNames).some(username => username.toLowerCase() === name.toLowerCase())
     }
 
     changeLockState(roomID: number): void {

@@ -24,6 +24,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
+        window.onbeforeunload = () => this.ngOnDestroy();
     }
 
     ngOnDestroy() {

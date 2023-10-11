@@ -49,7 +49,12 @@ export class RoomCodePromptComponent implements OnInit {
         if (this.username === undefined || /^\s*$/.test(this.username)) {
             this.error = "Le nom de l'utilisateur doit contenir au moins un caractère !";
             this.showErrorFeedback();
-        } else {
+        }
+        if (this.username?.toLowerCase() === 'organisateur') {
+            this.error = "Le nom de l'utilisateur ne peut pas être Organisateur!";
+            this.showErrorFeedback();
+        }
+        else {
             this.sendUsername();
             this.reset();
         }
