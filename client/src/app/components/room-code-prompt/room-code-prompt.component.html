@@ -11,7 +11,7 @@
                 maxlength='4'>
             <p [class]="textColor"> {{error}} <p>
             <div class="justify-content">
-                <button  class="cancel" (click)='returnToHomePage()'> Annuler </button>
+                <button  class="cancel" routerLink='/home'> Annuler </button>
                 <button #enterButton class="enter" (click)='validateRoomId()'> Valider </button>
             </div>
        </div>
@@ -21,14 +21,15 @@
                 <input type="text" id="name" [(ngModel)]="username" [class]="inputBorderColor" maxlength='20'>
                 <p [class]="textColor"> {{error}} <p>
             <div class="justify-content">
-                <button  class="cancel" (click)='returnToHomePage()'> Annuler </button>
+                <button  class="cancel" routerLink='/home'> Annuler </button>
                 <button #enterButton class="enter" (click)='validateUsername()'> Valider </button>
             </div>
         </div>
         <div *ngIf='(isUsernameValid)&&(isRoomIdValid)'>
-            <h3> Parfait {{username}}! Vous pouvez rejoindre la partie </h3>
+            <h3 *ngIf='!isLocked'> Parfait {{username}}! Vous pouvez rejoindre la partie </h3>
+            <h3 *ngIf='isLocked'> Désolé {{username}}! La partie est vérouiller. </h3>
             <div class="justify-content">
-                <button  class="cancel" (click)='returnToHomePage()'> Annuler </button>
+                <button  class="cancel" routerLink='/home'> Annuler </button>
                 <button #enterButton class="enter" (click)='joinRoom()'> Rejoindre </button>
             </div>
         </div>

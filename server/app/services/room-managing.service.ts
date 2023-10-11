@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 
 type SocketId = string;
-type Username = string
+type Username = string;
 
 interface RoomData {
     room: number;
@@ -23,12 +23,16 @@ export class RoomManagingService {
         return this.rooms;
     }
 
+    getRoomByID(roomId: number) {
+        return this.rooms.get(roomId);
+    }
+
     addRoom(quizID: string): number {
         const roomID = this.generateUniqueRoomID();
         const roomData: RoomData = {
             room: roomID,
-            quizID: quizID,
-            players:  new Map<Username, SocketId>(),
+            quizID,
+            players: new Map<Username, SocketId>(),
             locked: false,
             bannedNames: [],
         };
@@ -41,13 +45,32 @@ export class RoomManagingService {
     }
 
     addUser(roomId: number, username: string, socketID: string) {
-        this.rooms.get(roomId).players.set(username,socketID);
+        this.rooms.get(roomId).players.set(username, socketID);
+    }
+
+    getSocketIDByUsername(roomId: number, username: string): string {
+        return this.rooms.get(roomId).players.get(username);
+    }
+
+    removeUserFromRoom(roomID: number, name: string): void {
+        const playerMap = this.rooms.get(roomID).players;
+        playerMap.delete(name);
+    }
+
+    removeUserBySocketID(userSocketID: string): void {
+        for (const [roomId, roomData] of this.rooms.entries()) {
+            for (const [username, socketID] of roomData.players.entries()) {
+                if (userSocketID === socketID) {
+                    this.removeUserFromRoom(roomId, username);
+                    return;
+                }
+            }
+}
     }
 
     banUser(roomID: number, name: string): void {
         this.rooms.get(roomID).bannedNames.push(name);
-        let playerMap = this.rooms.get(roomID).players;
-        playerMap.delete(name);
+        this.removeUserFromRoom(roomID, name);
     }
 
     // isNameValid(roomID : number, name: string): boolean{
@@ -56,11 +79,11 @@ export class RoomManagingService {
     //     return {isBanned: isBanned};
     // }
 
-    isNameUsed(roomID : number, name: string): boolean {
+    isNameUsed(roomID: number, name: string): boolean {
         return this.rooms.get(roomID).players.has(name);
     }
 
-    isNameBanned(roomID : number, name: string): boolean {
+    isNameBanned(roomID: number, name: string): boolean {
         return this.rooms.get(roomID).bannedNames.includes(name);
     }
 

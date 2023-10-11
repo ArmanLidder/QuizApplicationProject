@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -10,7 +9,10 @@ import { Router } from '@angular/router';
 })
 
 export class RoomCodePromptComponent {
-    @Output() toggleView: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() sendRoomData: EventEmitter<number> = new EventEmitter<number>();
+    @Output() validationDone: EventEmitter<boolean> = new EventEmitter<boolean>();
+    isLocked: boolean = false;
+    isActive: boolean = true;
     isRoomIdValid: boolean = false;
     isUsernameValid: boolean = false;
     roomId: string | undefined;
@@ -19,7 +21,7 @@ export class RoomCodePromptComponent {
     error: string | undefined;
     textColor: string;
 
-    constructor(private socketServices: SocketClientService, private router: Router) {}
+    constructor(private socketServices: SocketClientService) {}
 
     ngOnInit() {
         this.connect();
@@ -29,27 +31,59 @@ export class RoomCodePromptComponent {
         this.socketServices.connect();
     }
 
-    returnToHomePage() {
-        this.toggleView.emit(false);
+    sendRoomIdToWaitingRoom(){
+        this.sendRoomData.emit(Number(this.roomId));
+    }
+
+    sendValidationDone() {
+        this.validationDone.emit(this.isActive);
     }
 
     validateRoomId() {
-        this.sendRoomId();
+        if (this.isOnlyDigit()) this.sendRoomId();
+        else this.roomIdClientValidation();
     }
 
     validateUsername(){
-        this.sendUsername()
+        this.sendUsername();
     }
 
     joinRoom() {
-        this.sendJoinRoomRequest();
+            this.sendJoinRoomRequest();
+            this.sendRoomIdToWaitingRoom();
+            this.isActive = false;
+            this.sendValidationDone();
+    }
+
+    private roomIdClientValidation() {
+        if (!this.isOnlyDigit()) {
+            this.error = 'Votre code doit contenir seulement 4 chiffre (ex: 1234)'
+            this.showErrorFeedback();
+        } else {
+            this.reset()
+        }
+
+    }
+
+    private isOnlyDigit() {
+        return this.roomId?.match('[0-9]{4}')
     }
 
     private sendJoinRoomRequest() {
-        this.socketServices.send('player join', {roomId: Number(this.roomId), username: this.username}, () => {
-            this.router.navigate(['/waiting-room-player-page'])
-        })
+        this.socketServices.send(
+            'player join',
+            { roomId: Number(this.roomId), username: this.username },
+            (isLocked: boolean) => {
+            if(isLocked) {
+                isLocked = true;
+                this.showErrorFeedback()
+            } else {
+                isLocked = false;
+                this.reset()
+            }
+        });
     }
+
     private sendUsername() {
         this.socketServices.send('validate username', {roomId: Number(this.roomId), username: this.username}, (data: {isValid:boolean, error:string}) => {
             if (!data.isValid){
@@ -64,7 +98,6 @@ export class RoomCodePromptComponent {
 
     private sendRoomId() {
         this.socketServices.send('validate roomID', Number(this.roomId), (isValid:boolean) => {
-            console.log(isValid);
             if (!isValid) {
                 this.showErrorFeedback()
                 this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer'

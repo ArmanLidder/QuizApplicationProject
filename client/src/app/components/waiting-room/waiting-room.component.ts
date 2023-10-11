@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -8,9 +8,10 @@ const DELETE_NUMBER = 1;
     templateUrl: './waiting-room.component.html',
     styleUrls: ['./waiting-room.component.scss'],
 })
-export class WaitingRoomComponent implements OnInit {
+export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isHost: boolean;
-    roomId: number;
+    @Input() roomId: number;
+    @Input() isActive: boolean;
     players: string[];
 
     constructor(
@@ -26,6 +27,7 @@ export class WaitingRoomComponent implements OnInit {
     ngOnInit() {
         this.connect();
         if (this.isHost) this.sendRoomCreation();
+        if (this.isActive) this.gatherRoomData();
     }
 
     connect() {
@@ -63,7 +65,7 @@ export class WaitingRoomComponent implements OnInit {
             this.players = players;
         });
 
-        this.socketService.on('you have been banned', () => {
+        this.socketService.on('removed from game', () => {
             this.router.navigate(['/home']);
         });
 
@@ -88,8 +90,20 @@ export class WaitingRoomComponent implements OnInit {
     //     this.players.push(username);
     // }
 
+    private gatherRoomData() {
+        this.socketService.send('gather room data', this.roomId, (players: string[]) => {
+            this.players = players
+        })
+    }
+
     private removePlayer(username: string) {
         const index = this.players.indexOf(username);
         this.players.splice(index, DELETE_NUMBER);
     }
+
+    ngOnDestroy() {
+        const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
+        this.socketService.send(messageType, this.roomId);
+    }
+
 }
