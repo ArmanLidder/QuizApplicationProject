@@ -69,7 +69,7 @@ export class RoomCodePromptComponent implements OnInit {
 
     private roomIdClientValidation() {
         if (!this.isOnlyDigit()) {
-            this.error = 'Votre code doit contenir seulement 4 chiffre (ex: 1234)';
+            this.error = 'Votre code doit contenir seulement 4 chiffres (ex: 1234)';
             this.showErrorFeedback();
         } else {
             this.reset();
