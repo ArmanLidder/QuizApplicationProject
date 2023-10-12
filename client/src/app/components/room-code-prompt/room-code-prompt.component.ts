@@ -58,9 +58,10 @@ export class RoomCodePromptComponent implements OnInit {
         }
     }
 
-    joinRoom() {
-        this.sendJoinRoomRequest();
-        if (this.isLocked) {
+    async joinRoom() {
+        await this.sendJoinRoomRequest();
+        console.log(`in join room ${this.isLocked}`)
+        if (!this.isLocked) {
             this.sendRoomIdToWaitingRoom();
             this.isActive = false;
             this.sendValidationDone();
@@ -81,14 +82,20 @@ export class RoomCodePromptComponent implements OnInit {
     }
 
     private sendJoinRoomRequest() {
-        this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
-            if (isLocked) {
-                this.isLocked = true;
-                this.showErrorFeedback();
-            } else {
-                this.isLocked = false;
-                this.reset();
-            }
+        return new Promise<void>((resolve, reject) => {
+            this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
+                console.log(`server response: ${isLocked}`)
+                if (isLocked) {
+                    this.isLocked = true;
+                    console.log(`changing component value to: ${this.isLocked}`);
+                    this.showErrorFeedback();
+                } else {
+                    this.isLocked = false;
+                    console.log(`else changing component value to: ${this.isLocked}`);
+                    this.reset();
+                }
+                resolve();
+            });
         });
     }
 
