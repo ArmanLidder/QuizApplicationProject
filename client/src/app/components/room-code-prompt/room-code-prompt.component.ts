@@ -14,7 +14,7 @@ export class RoomCodePromptComponent implements OnInit {
     isRoomIdValid: boolean = false;
     isUsernameValid: boolean = false;
     roomId: string | undefined;
-    username: string | undefined;
+    username: string = '';
     inputBorderColor: string;
     error: string | undefined;
     textColor: string;
@@ -45,16 +45,14 @@ export class RoomCodePromptComponent implements OnInit {
     }
 
     validateUsername() {
-        // Check if the username is undefined or contains only whitespace
-        if (this.username === undefined || /^\s*$/.test(this.username)) {
-            this.error = "Le nom de l'utilisateur doit contenir au moins un caractère !";
+        const whitespacePattern = /^\s*$/;
+        if (this.username === undefined || whitespacePattern.test(this.username)) {
+            this.error = "Le nom de l'utilisateur doit contenir au moins un caractère!";
             this.showErrorFeedback();
-        }
-        if (this.username?.toLowerCase() === 'organisateur') {
+        } else if (this.username?.toLowerCase() === 'organisateur') {
             this.error = "Le nom de l'utilisateur ne peut pas être Organisateur!";
             this.showErrorFeedback();
-        }
-        else {
+        } else {
             this.sendUsername();
             this.reset();
         }
@@ -62,9 +60,11 @@ export class RoomCodePromptComponent implements OnInit {
 
     joinRoom() {
         this.sendJoinRoomRequest();
-        this.sendRoomIdToWaitingRoom();
-        this.isActive = false;
-        this.sendValidationDone();
+        if (this.isLocked) {
+            this.sendRoomIdToWaitingRoom();
+            this.isActive = false;
+            this.sendValidationDone();
+        }
     }
 
     private roomIdClientValidation() {

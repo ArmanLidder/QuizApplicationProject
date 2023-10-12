@@ -27,7 +27,7 @@
         </div>
         <div *ngIf='(isUsernameValid)&&(isRoomIdValid)'>
             <h3 *ngIf='!isLocked'> Parfait {{username}}! Vous pouvez rejoindre la partie </h3>
-            <h3 *ngIf='isLocked'> Désolé {{username}}! La partie est vérouiller. </h3>
+            <h3 *ngIf='isLocked'> Désolé {{username}}! La partie est vérouillé. </h3>
             <div class="justify-content">
                 <button  class="cancel" routerLink='/home'> Annuler </button>
                 <button #enterButton class="enter" (click)='joinRoom()'> Rejoindre </button>

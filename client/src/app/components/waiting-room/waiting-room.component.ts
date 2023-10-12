@@ -12,6 +12,8 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isHost: boolean;
     @Input() roomId: number;
     @Input() isActive: boolean;
+    isRoomLocked: boolean = false;
+    lockActionMessage: string = this.setLockActionMessage();
     players: string[];
 
     constructor(
@@ -44,7 +46,13 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     toggleRoomLocked() {
+        this.isRoomLocked = !this.isRoomLocked;
+        this.setLockActionMessage();
         this.sendToggleRoomLock();
+    }
+
+    setLockActionMessage() {
+        return this.isRoomLocked ? 'vérouillée' : 'ouverte';
     }
 
     startGame() {
@@ -55,22 +63,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         const QUIZ_ID = this.route.snapshot.paramMap.get('id');
         this.socketService.send('create Room', QUIZ_ID, (roomCode: number) => {
             this.roomId = roomCode;
-        });
-    }
-
-    private configureBaseSocketFeatures() {
-        this.socketService.on('new player', (players: string[]) => {
-            this.players = players;
-        });
-
-        this.socketService.on('removed from game', () => {
-            this.router.navigate(['/home']);
-        });
-
-        this.socketService.on('removed player', (username: string) => {
-            if (this.players.includes(username)) {
-                this.removePlayer(username);
-            }
         });
     }
 
@@ -89,5 +81,21 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     private removePlayer(username: string) {
         const index = this.players.indexOf(username);
         this.players.splice(index, DELETE_NUMBER);
+    }
+
+    private configureBaseSocketFeatures() {
+        this.socketService.on('new player', (players: string[]) => {
+            this.players = players;
+        });
+
+        this.socketService.on('removed from game', () => {
+            this.router.navigate(['/home']);
+        });
+
+        this.socketService.on('removed player', (username: string) => {
+            if (this.players.includes(username)) {
+                this.removePlayer(username);
+            }
+        });
     }
 }
