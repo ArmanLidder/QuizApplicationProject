@@ -4,10 +4,13 @@
     </div>
 
     <div class="sidebar-content">
-
+        <div class="message-container" *ngFor="let message of messages">
+            <div class="username-said">{{message.sender}} dit:</div>
+            <p>{{ message.content }}</p>
+        </div>
     </div>
 
     <div class="message-input">
-        <input type="text" placeholder="Envoyer un message"/>
+        <input type="text" placeholder="Envoyer un message" [(ngModel)]='newMessageContent' (keyup.enter)='sendMessage()'/>
     </div>
 </div>

@@ -10,6 +10,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 export class SidebarComponent {
     @Input() roomId: number;
     @Input() myName: string;
+    newMessageContent: string;
     messages: Message[];
 
     constructor(public socketService: SocketClientService) {
@@ -19,8 +20,9 @@ export class SidebarComponent {
         }
     }
 
-    sendMessage(message: Message) {
-        this.socketService.send('new message', { roomId: Number(this.roomId), message });
+    sendMessage() {
+        const newMessage: Message = {sender: this.myName, content: this.newMessageContent};
+        this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
     }
 
     private getRoomMessages() {
