@@ -34,4 +34,3 @@ describe('SocketClientServiceTestHelper', () => {
         expect(sendResult).toEqual({ event, data, callback });
     });
 });
-
