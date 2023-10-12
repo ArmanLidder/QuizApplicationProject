@@ -19,4 +19,14 @@ describe('WaitingRoomPlayerPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should receive room id', () => {
+        component.receiveRoomId(0);
+        expect(component.roomId).toEqual(0);
+    });
+
+    it('should set validation state', () => {
+        component.receiveValidation(true);
+        expect(component.isValidation).toBeTruthy();
+    });
 });
