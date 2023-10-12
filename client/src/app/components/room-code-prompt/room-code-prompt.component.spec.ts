@@ -128,12 +128,12 @@ describe('RoomCodePromptComponent', () => {
         expect(component.isActive).toBeTruthy();
     });
 
-    it('should access room if room is not locked', () => {
+    it('should access room if room is not locked', async () => {
         const sendJoinRoomRequestSpy = spyOn<any>(component, 'sendJoinRoomRequest');
         const sendRoomIdToWaitingRoomSpy = spyOn(component, 'sendRoomIdToWaitingRoom');
         const sendValidationDoneSpy = spyOn(component, 'sendValidationDone');
-        component.isLocked = true;
-        component.joinRoom();
+        component.isLocked = false;
+        await component.joinRoom();
         expect(sendJoinRoomRequestSpy).toHaveBeenCalled();
         expect(sendRoomIdToWaitingRoomSpy).toHaveBeenCalled();
         expect(sendValidationDoneSpy).toHaveBeenCalled();
