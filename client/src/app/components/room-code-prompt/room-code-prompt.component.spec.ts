@@ -3,6 +3,9 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { TestBed } from '@angular/core/testing';
 
+// Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix
+// Because some spies are on private method
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('RoomCodePromptComponent', () => {
     let component: RoomCodePromptComponent;
     let socketService: SocketClientServiceTestHelper;
@@ -59,9 +62,9 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should send room id to server only if room id is a number', () => {
-        const roomIdClientValidationSpy = spyOn<unknown>(component, 'roomIdClientValidation');
-        const sendRoomIdSpy = spyOn<unknown>(component, 'sendRoomId');
-        spyOn<unknown>(component, 'isOnlyDigit').and.callFake(() => {
+        const roomIdClientValidationSpy = spyOn<any>(component, 'roomIdClientValidation');
+        const sendRoomIdSpy = spyOn<any>(component, 'sendRoomId');
+        spyOn<any>(component, 'isOnlyDigit').and.callFake(() => {
             return true;
         });
         component.validateRoomId();
@@ -70,9 +73,9 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should not send room id to server and display error if room id is not a number', () => {
-        const roomIdClientValidationSpy = spyOn<unknown>(component, 'roomIdClientValidation');
-        const sendRoomIdSpy = spyOn<unknown>(component, 'sendRoomId');
-        spyOn<unknown>(component, 'isOnlyDigit').and.callFake(() => {
+        const roomIdClientValidationSpy = spyOn<any>(component, 'roomIdClientValidation');
+        const sendRoomIdSpy = spyOn<any>(component, 'sendRoomId');
+        spyOn<any>(component, 'isOnlyDigit').and.callFake(() => {
             return false;
         });
         component.validateRoomId();
@@ -81,7 +84,7 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should not accept empty username', () => {
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
         component.username = '';
         component.validateUsername();
         expect(showErrorFeedbackSpy).toHaveBeenCalled();
@@ -89,7 +92,7 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should not accept only whitespace in username', () => {
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
         component.username = ' ';
         component.validateUsername();
         expect(showErrorFeedbackSpy).toHaveBeenCalled();
@@ -97,7 +100,7 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should not accept organisateur as username', () => {
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
         component.username = 'Organisateur';
         component.validateUsername();
         expect(showErrorFeedbackSpy).toHaveBeenCalled();
@@ -105,8 +108,8 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should send username if it passes client side validation', () => {
-        const sendUsernameSpy = spyOn<unknown>(component, 'sendUsername');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const sendUsernameSpy = spyOn<any>(component, 'sendUsername');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.username = 'test';
         component.validateUsername();
         expect(sendUsernameSpy).toHaveBeenCalled();
@@ -114,7 +117,7 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should not access room if room is locked', () => {
-        const sendJoinRoomRequestSpy = spyOn<unknown>(component, 'sendJoinRoomRequest');
+        const sendJoinRoomRequestSpy = spyOn<any>(component, 'sendJoinRoomRequest');
         const sendRoomIdToWaitingRoomSpy = spyOn(component, 'sendRoomIdToWaitingRoom');
         const sendValidationDoneSpy = spyOn(component, 'sendValidationDone');
         component.isLocked = false;
@@ -126,7 +129,7 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should access room if room is not locked', () => {
-        const sendJoinRoomRequestSpy = spyOn<unknown>(component, 'sendJoinRoomRequest');
+        const sendJoinRoomRequestSpy = spyOn<any>(component, 'sendJoinRoomRequest');
         const sendRoomIdToWaitingRoomSpy = spyOn(component, 'sendRoomIdToWaitingRoom');
         const sendValidationDoneSpy = spyOn(component, 'sendValidationDone');
         component.isLocked = true;
@@ -138,9 +141,9 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should set the error and display if room id is not a number', () => {
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
-        spyOn<unknown>(component, 'isOnlyDigit').and.callFake(() => {
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
+        spyOn<any>(component, 'isOnlyDigit').and.callFake(() => {
             return false;
         });
         component['roomIdClientValidation']();
@@ -150,9 +153,9 @@ describe('RoomCodePromptComponent', () => {
     });
 
     it('should reset the error and the display if room id is a number', () => {
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
-        spyOn<unknown>(component, 'isOnlyDigit').and.callFake(() => {
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
+        spyOn<any>(component, 'isOnlyDigit').and.callFake(() => {
             return true;
         });
         component['roomIdClientValidation']();
@@ -184,8 +187,8 @@ describe('RoomCodePromptComponent', () => {
 
     it('should deny player entry if room is locked', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.roomId = '1234';
         component.username = 'test';
         component.isLocked = false;
@@ -203,8 +206,8 @@ describe('RoomCodePromptComponent', () => {
 
     it('should accept player entry if room is not locked', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.roomId = '1234';
         component.username = 'test';
         component.isLocked = false;
@@ -222,8 +225,8 @@ describe('RoomCodePromptComponent', () => {
 
     it('should display error if username not valid after server validation', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.roomId = '1234';
         component.username = 'test';
         component.isUsernameValid = false;
@@ -242,8 +245,8 @@ describe('RoomCodePromptComponent', () => {
 
     it('should pass to next step if username is valid on server side', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.roomId = '1234';
         component.username = 'test';
         component.isUsernameValid = false;
@@ -261,8 +264,8 @@ describe('RoomCodePromptComponent', () => {
 
     it('should display error if roomId not valid after server validation', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.roomId = '1234';
         component.username = 'test';
         component.isRoomIdValid = false;
@@ -281,8 +284,8 @@ describe('RoomCodePromptComponent', () => {
 
     it('should move to the next step if roomId is valid on server side', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
-        const showErrorFeedbackSpy = spyOn<unknown>(component, 'showErrorFeedback');
-        const resetSpy = spyOn<unknown>(component, 'reset');
+        const showErrorFeedbackSpy = spyOn<any>(component, 'showErrorFeedback');
+        const resetSpy = spyOn<any>(component, 'reset');
         component.roomId = '1234';
         component.username = 'test';
         component.isRoomIdValid = false;
