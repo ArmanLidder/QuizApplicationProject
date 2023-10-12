@@ -26,6 +26,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
+        if(!this.isHost) this.gatherPlayers();
         window.onbeforeunload = () => this.ngOnDestroy();
     }
 
@@ -49,7 +50,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     toggleRoomLocked() {
         this.isRoomLocked = !this.isRoomLocked;
-        this.setLockActionMessage();
         this.sendToggleRoomLock();
     }
 
@@ -70,7 +70,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     private sendBanPlayer(username: string) {
-        this.socketService.send('ban player', { roomId: this.roomId, username });
+        this.socketService.send('ban player', { roomId: this.roomId, username: username });
     }
 
     private sendToggleRoomLock() {
@@ -84,6 +84,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     private removePlayer(username: string) {
         const index = this.players.indexOf(username);
         this.players.splice(index, DELETE_NUMBER);
+    }
+
+    private gatherPlayers(){
+        this.socketService.send('gather players username', this.roomId, (players:string[]) => {
+            this.players = players;
+        });
     }
 
     private configureBaseSocketFeatures() {
