@@ -80,7 +80,7 @@ export class RoomCodePromptComponent implements OnInit {
         return this.roomId?.match('[0-9]{4}');
     }
 
-    private sendJoinRoomRequest() {
+    private async sendJoinRoomRequest() {
         return new Promise<void>((resolve, reject) => {
             this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
                 if (isLocked) {
