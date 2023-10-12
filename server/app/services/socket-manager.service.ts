@@ -72,9 +72,9 @@ export class SocketManager {
 
             // For above create service to configure those event reception for organizer view
             socket.on('player abandonment', (roomId: number) => {
-                const socketData = this.roomManager.removeUserBySocketID(socket.id);
-                if (socketData !== undefined) {
-                    this.sio.to(String(roomId)).emit('removed player', socketData.username);
+                const userInfo = this.roomManager.removeUserBySocketID(socket.id);
+                if (userInfo !== undefined) {
+                    this.sio.to(String(roomId)).emit('removed player', userInfo.username);
                 }
                 socket.disconnect(true);
             });
