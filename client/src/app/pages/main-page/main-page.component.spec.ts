@@ -45,6 +45,6 @@ describe('MainPageComponent', () => {
 
     it('should contain two buttons with routerLink attributes', () => {
         const buttonsWithRouterLink = fixture.nativeElement.querySelectorAll('button[routerLink]');
-        expect(buttonsWithRouterLink.length).toBe(2);
+        expect(buttonsWithRouterLink.length).toBe(3);
     });
 });
