@@ -31,17 +31,21 @@ describe('WaitingRoomComponent', () => {
 
     it('should send room creation event if it is the host of the game', () => {
         const sendRoomCreationSpy = spyOn<any>(component,'sendRoomCreation');
+        const gatherPlayersSpy = spyOn<any>(component,'gatherPlayers');
         component.isHost = true;
         component.ngOnInit();
         expect(sendRoomCreationSpy).toHaveBeenCalled();
+        expect(gatherPlayersSpy).not.toHaveBeenCalled();
         expect(window.onbeforeunload).toEqual(jasmine.any(Function));
     })
 
     it('should not send room creation event if it is player joining game', () => {
         const sendRoomCreationSpy = spyOn<any>(component,'sendRoomCreation');
+        const gatherPlayersSpy = spyOn<any>(component,'gatherPlayers');
         component.isHost = false;
         component.ngOnInit();
         expect(sendRoomCreationSpy).not.toHaveBeenCalled();
+        expect(gatherPlayersSpy).toHaveBeenCalled();
         expect(window.onbeforeunload).toEqual(jasmine.any(Function));
     })
 
@@ -152,6 +156,18 @@ describe('WaitingRoomComponent', () => {
             component['removePlayer'](player)
             expect(component.players).not.toContain(player);
             expect(component.players.length).toEqual(length - DIGIT_CONSTANT)
+        }
+    })
+
+    it('should send gather players username event to server on player entry', () => {
+        const sendSpy = spyOn(socketService, 'send').and.callThrough();
+        component.roomId = DIGIT_CONSTANT; component['gatherPlayers']();
+        const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
+        expect(event).toEqual('gather players username');
+        expect(roomId).toEqual(DIGIT_CONSTANT);
+        if (typeof callback === 'function') {
+            callback(['1','2']);
+            expect(component.players).toEqual(['1','2']);
         }
     })
 
