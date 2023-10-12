@@ -26,7 +26,7 @@ export class SidebarComponent {
     }
 
     private getRoomMessages() {
-        this.socketService.send('player join', { roomId: Number(this.roomId) }, (messages: Message[]) => {
+        this.socketService.send('get messages', { roomId: Number(this.roomId) }, (messages: Message[]) => {
             this.messages = messages;
         });
     }

@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import {Message} from "@common/interfaces/message.interface";
 
 type SocketId = string;
 type Username = string;
@@ -9,6 +10,7 @@ interface RoomData {
     players: Map<Username, SocketId>;
     locked: boolean;
     bannedNames: string[];
+    messages: Message[];
 }
 
 @Service()
@@ -35,6 +37,7 @@ export class RoomManagingService {
             players: new Map<Username, SocketId>(),
             locked: false,
             bannedNames: [],
+            messages: [],
         };
         this.rooms.set(roomID, roomData);
         return roomID;
@@ -46,6 +49,10 @@ export class RoomManagingService {
 
     addUser(roomId: number, username: string, socketID: string) {
         this.rooms.get(roomId).players.set(username, socketID);
+    }
+
+    addMessage(roomId: number, message: Message) {
+        this.getRoomByID(roomId).messages.push(message);
     }
 
     getSocketIDByUsername(roomId: number, username: string): string {

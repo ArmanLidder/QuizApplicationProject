@@ -1,6 +1,7 @@
 import * as io from 'socket.io';
 import * as http from 'http';
 import { RoomManagingService } from '@app/services/room-managing.service';
+import {Message} from "@common/interfaces/message.interface";
 
 const ONE_SECOND_DELAY = 1000;
 export class SocketManager {
@@ -84,6 +85,16 @@ export class SocketManager {
                 this.sio.in(String(roomId)).disconnectSockets(true);
                 this.roomManager.deleteRoom(roomId);
             });
+
+            socket.on('get messages', (roomId: number, callback) => {
+                const messages = this.roomManager.getRoomByID(roomId).messages;
+                callback(messages);
+            });
+
+            socket.on('new message', (data: {roomId: number, message: Message}) => {
+                this.roomManager.addMessage(data.roomId, data.message);
+                this.sio.to(String(data.roomId)).emit('message received', data.message);
+            })
 
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
