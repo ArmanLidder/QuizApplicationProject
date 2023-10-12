@@ -21,7 +21,6 @@ export class SocketManager {
             // TODO create service to configure those event reception for organizer waiting view
             socket.on('create Room', (quizID: string, callback) => {
                 const roomCode = this.roomManager.addRoom(quizID);
-                console.log(this.roomManager.roomMap.has(roomCode));
                 socket.join(String(roomCode));
                 callback(roomCode);
             });
@@ -35,18 +34,13 @@ export class SocketManager {
 
             // Todo verify if it works
             socket.on('toggle room lock', (roomId: number) => {
-                console.log('before treatm:');
-                console.log(this.roomManager.getRoomByID(roomId).locked);
                 this.roomManager.changeLockState(roomId);
-                console.log('after treatment');
-                console.log(this.roomManager.getRoomByID(roomId).locked);
             });
             // For above create service to configure those event reception for organizer view
 
             // TODO create service to configure those event reception for player joining view
             socket.on('player join', (data: { roomId: number; username: string }, callback) => {
                 const isLocked = this.roomManager.getRoomByID(data.roomId).locked;
-                console.log('playing trying to join...');
                 if (!isLocked) {
                     this.roomManager.addUser(data.roomId, data.username, socket.id);
                     const room = this.roomManager.getRoomByID(data.roomId);
@@ -79,7 +73,7 @@ export class SocketManager {
             // For above create service to configure those event reception for organizer view
             socket.on('player abandonment', (roomId: number) => {
                 const socketData = this.roomManager.removeUserBySocketID(socket.id);
-                if (socketData != undefined) {
+                if (socketData !== undefined) {
                     this.sio.to(String(roomId)).emit('removed player', socketData.username);
                 }
                 socket.disconnect(true);
@@ -92,8 +86,7 @@ export class SocketManager {
             });
 
             socket.on('disconnect', (reason) => {
-                // const socketInfo = this.roomManager.removeUserBySocketID(socket.id);
-                // this.sio.to(String(socketInfo.roomId)).emit('removed player',socketInfo.username);
+                // eslint-disable-next-line no-console
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 // eslint-disable-next-line no-console
                 console.log(`Raison de deconnexion : ${reason}`);
