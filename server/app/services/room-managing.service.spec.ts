@@ -2,7 +2,7 @@ import { describe } from 'mocha';
 import { expect } from 'chai';
 import { RoomManagingService } from '@app/services/room-managing.service';
 
-describe.only('Room Managing Service', () => {
+describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
     const roomId = 1;
     const mockUsername = 'usernameOne';

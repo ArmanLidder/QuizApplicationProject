@@ -3,7 +3,7 @@ import { Service } from 'typedi';
 type SocketId = string;
 type Username = string;
 
-interface RoomData {
+export interface RoomData {
     room: number;
     quizID: string;
     players: Map<Username, SocketId>;
@@ -82,6 +82,10 @@ export class RoomManagingService {
     isNameBanned(roomID: number, name: string): boolean {
         const room = this.getRoomByID(roomID);
         return Array.from(room.bannedNames).some((username) => username.toLowerCase() === name.toLowerCase());
+    }
+
+    isRoomLocked(roomID: number): boolean {
+        return this.getRoomByID(roomID).locked;
     }
 
     changeLockState(roomID: number): void {
