@@ -13,7 +13,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() roomId: number;
     @Input() isActive: boolean;
     isRoomLocked: boolean = false;
-    lockActionMessage: string = this.setLockActionMessage();
+    isGameStarting: boolean = false;
     players: string[];
 
     constructor(
@@ -30,8 +30,10 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
-        this.socketService.send(messageType, this.roomId);
+        if (!this.isGameStarting) {
+            const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
+            this.socketService.send(messageType, this.roomId);
+        }
     }
 
     connect() {
@@ -56,6 +58,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     startGame() {
+        this.isGameStarting = false;
         this.sendStartSignal();
     }
 
