@@ -1,6 +1,7 @@
 <div *ngIf='isValidation'>
     <app-room-code-prompt
         (sendRoomData)='receiveRoomId($event)'
+        (sendUsernameData)='receiveUsername($event)'
         (validationDone)='receiveValidation($event)'>
     </app-room-code-prompt>
 </div>
@@ -8,6 +9,7 @@
     <app-waiting-room
         [isHost]='false'
         [roomId]='this.roomId'
+        [myName]="username"
         [isActive]='!isValidation'>
     </app-waiting-room>
 </div>

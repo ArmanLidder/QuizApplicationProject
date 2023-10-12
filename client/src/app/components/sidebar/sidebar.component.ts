@@ -18,7 +18,6 @@ export class SidebarComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.roomId) {
             if (this.roomId) {
-                console.log(this.roomId);
                 this.getRoomMessages();
                 this.configureBaseSocketFeatures();
             }
@@ -34,7 +33,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     private getRoomMessages() {
-        this.socketService.send('get messages', { roomId: Number(this.roomId) }, (messages: Message[]) => {
+        this.socketService.send('get messages', Number(this.roomId), (messages: Message[]) => {
             this.messages = messages ?? [];
         });
     }

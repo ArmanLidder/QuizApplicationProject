@@ -11,9 +11,9 @@ const DELETE_NUMBER = 1;
 export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isHost: boolean;
     @Input() roomId: number;
+    @Input() myName: string;
     @Input() isActive: boolean;
     isRoomLocked: boolean = false;
-    myName: string = "user 1";
     lockActionMessage: string = this.setLockActionMessage();
     players: string[];
 
@@ -27,6 +27,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
+        this.myName = !this.myName ? 'Organisateur' : this.myName;
         window.onbeforeunload = () => this.ngOnDestroy();
     }
 

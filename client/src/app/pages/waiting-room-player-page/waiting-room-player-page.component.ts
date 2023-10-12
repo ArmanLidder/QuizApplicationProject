@@ -7,10 +7,15 @@ import { Component } from '@angular/core';
 })
 export class WaitingRoomPlayerPageComponent {
     roomId: number;
+    username: string;
     isValidation: boolean = true;
 
     receiveRoomId(roomId: number) {
         this.roomId = roomId;
+    }
+
+    receiveUsername(username: string) {
+        this.username = username;
     }
 
     receiveValidation(isValid: boolean) {
