@@ -60,6 +60,12 @@ export class SocketManager {
                 }
             });
 
+            socket.on('gather players username', (roomId:number, callback) => {
+                const room = this.roomManager.getRoomByID(roomId);
+                const players = Array.from(room?.players.keys());
+                callback(players);
+            });
+
             socket.on('validate roomID', (roomId: number, callback) => {
                 let isLocked = false;
                 const isRoom = this.roomManager.roomMap.has(roomId);
