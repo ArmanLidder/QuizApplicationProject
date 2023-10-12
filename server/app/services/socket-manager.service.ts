@@ -25,6 +25,20 @@ export class SocketManager {
                 callback(roomCode);
             });
 
+            socket.on('player join', (data: { roomId: number; username: string }, callback) => {
+                const isLocked = this.roomManager.isRoomLocked(data.roomId);
+                if (!isLocked) {
+                    this.roomManager.addUser(data.roomId, data.username, socket.id);
+                    const room = this.roomManager.getRoomByID(data.roomId);
+                    const players = Array.from(room.players.keys());
+                    socket.join(String(data.roomId));
+                    this.sio.to(String(data.roomId)).emit('new player', players);
+                    callback(isLocked);
+                } else {
+                    callback(isLocked);
+                }
+            });
+
             socket.on('ban player', (data: { roomId: number; username: string }) => {
                 const bannedID = this.roomManager.getSocketIDByUsername(data.roomId, data.username);
                 this.roomManager.banUser(data.roomId, data.username);
@@ -32,24 +46,8 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('removed player', data.username);
             });
 
-            // Todo verify if it works
             socket.on('toggle room lock', (roomId: number) => {
                 this.roomManager.changeLockState(roomId);
-            });
-            // For above create service to configure those event reception for organizer view
-
-            // TODO create service to configure those event reception for player joining view
-            socket.on('player join', (data: { roomId: number; username: string }, callback) => {
-                const isLocked = this.roomManager.getRoomByID(data.roomId).locked;
-                if (!isLocked) {
-                    this.roomManager.addUser(data.roomId, data.username, socket.id);
-                    const room = this.roomManager.getRoomByID(data.roomId);
-                    const players = Array.from(room.players.keys());
-                    socket.join(String(data.roomId));
-                    this.sio.to(String(data.roomId)).emit('new player', players);
-                } else {
-                    callback(isLocked);
-                }
             });
 
             socket.on('validate username', (data: { roomId: number; username: string }, callback) => {
@@ -60,7 +58,6 @@ export class SocketManager {
                 } else {
                     callback({ isValid: true, error: '' });
                 }
-                // Todo complete by checking also in the banned list and upgrade (still case sensitive)
             });
 
             socket.on('validate roomID', (roomId: number, callback) => {
