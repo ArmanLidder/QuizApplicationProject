@@ -4,10 +4,10 @@ import { RoomManagingService } from '@app/services/room-managing.service';
 
 describe.only('Room Managing Service', () => {
     let roomService: RoomManagingService;
-    const roomId = 1
+    const roomId = 1;
     const mockUsername = 'usernameOne';
-    const mockSocket = 'socketOne'
-    const mockBannedNames = ['Jean']
+    const mockSocket = 'socketOne';
+    const mockBannedNames = ['Jean'];
     beforeEach(() => {
         roomService = new RoomManagingService();
         roomService['rooms'].set(roomId, {
@@ -15,36 +15,35 @@ describe.only('Room Managing Service', () => {
             quizID: 'quiz123',
             players: new Map([[mockUsername, mockSocket]]),
             locked: false,
-            bannedNames: mockBannedNames.slice(), //Deep copy of mockBannedNames
-        })
+            bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
+        });
     });
 
     it('should add a room and retrieve it by ID', () => {
         const roomID = roomService.addRoom('quiz123');
         const roomData = roomService.roomMap.get(roomID);
 
-        expect(roomData).to.exist;
-        expect(roomData!.room).to.equal(roomID);
-        expect(roomData!.quizID).to.equal('quiz123');
+        expect(roomData).to.not.equal(undefined);
+        expect(roomData.room).to.equal(roomID);
+        expect(roomData.quizID).to.equal('quiz123');
     });
 
     it('should delete a room', () => {
         roomService.deleteRoom(roomId);
-        expect(roomService.getRoomByID(roomId)).to.be.undefined;
+        expect(roomService.getRoomByID(roomId)).to.equal(undefined);
     });
 
     it('should add a user to a room', () => {
-        const mockUsername = 'username';
-        const mockSocketId = 'socketID'
+        const mockSocketId = 'socketID';
         const roomData = roomService['rooms'].get(roomId);
 
-        roomService.addUser(roomId,mockUsername,mockSocketId)
+        roomService.addUser(roomId, mockUsername, mockSocketId);
         expect(roomData.players.get(mockUsername)).to.equal(mockSocketId);
     });
 
     it('get socketID by username', () => {
         const username = 'usernameOne';
-        const socket = roomService.getSocketIDByUsername(roomId,username);
+        const socket = roomService.getSocketIDByUsername(roomId, username);
 
         expect(socket).to.equal(mockSocket);
     });
@@ -52,25 +51,25 @@ describe.only('Room Managing Service', () => {
     it('should remove a user from a room', () => {
         const roomData = roomService['rooms'].get(roomId);
         roomService.removeUserFromRoom(roomId, mockUsername);
-        expect(roomData.players.has(mockUsername)).to.be.false;
+        expect(roomData.players.has(mockUsername)).to.equal(false);
     });
 
     it('should ban a user from a room', () => {
         const roomData = roomService['rooms'].get(roomId);
         roomService.banUser(roomId, mockUsername);
         expect(roomData.bannedNames).to.include(mockUsername);
-        expect(roomService.roomMap.get(roomId).players.get(mockUsername)).to.be.undefined;
+        expect(roomService.roomMap.get(roomId).players.get(mockUsername)).to.equal(undefined);
     });
 
     it('should check if a name is used in a room', () => {
         const nonExistingName = 'usernameNonExistent';
-        expect(roomService.isNameUsed(roomId, mockUsername)).to.be.true;
-        expect(roomService.isNameUsed(roomId, nonExistingName)).to.be.false;
+        expect(roomService.isNameUsed(roomId, mockUsername)).to.equal(true);
+        expect(roomService.isNameUsed(roomId, nonExistingName)).to.equal(false);
     });
 
     it('should check if a name is banned in a room', () => {
-        expect(roomService.isNameBanned(roomId, mockBannedNames[0])).to.be.true;
-        expect(roomService.isNameBanned(roomId, mockUsername)).to.be.false;
+        expect(roomService.isNameBanned(roomId, mockBannedNames[0])).to.equal(true);
+        expect(roomService.isNameBanned(roomId, mockUsername)).to.equal(false);
     });
 
     it('should change the lock state of a room', () => {
@@ -85,17 +84,17 @@ describe.only('Room Managing Service', () => {
         const socketToRemove = 'socketToRemove';
         roomService.addUser(roomId, 'userToRemove', socketToRemove);
         let result = roomService.removeUserBySocketID(socketToRemove);
-        expect(roomData.players.get('userToRemove')).to.be.undefined;
+        expect(roomData.players.get('userToRemove')).to.equal(undefined);
         expect(result).to.deep.equal({ roomId, username: 'userToRemove' });
 
         result = roomService.removeUserBySocketID('non existant socket');
-        expect(result).to.be.undefined
+        expect(result).to.equal(undefined);
     });
 
     it('should check if room is existent', () => {
-        const nonExistentRoomId = 6
-        expect(roomService['isRoomExistent'](roomId)).to.be.true;
-        expect(roomService['isRoomExistent'](nonExistentRoomId)).to.be.false;
+        const nonExistentRoomId = 6;
+        expect(roomService['isRoomExistent'](roomId)).to.to.equal(true);
+        expect(roomService['isRoomExistent'](nonExistentRoomId)).to.equal(false);
     });
 
     it('should generate a uniqueRoomID between 1000 and 9999', () => {
