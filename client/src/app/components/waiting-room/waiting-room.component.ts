@@ -13,6 +13,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() roomId: number;
     @Input() isActive: boolean;
     isRoomLocked: boolean = false;
+    myName: string = "user 1";
     lockActionMessage: string = this.setLockActionMessage();
     players: string[];
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { Message } from '@common/interfaces/message.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
 
@@ -7,27 +7,35 @@ import { SocketClientService } from '@app/services/socket-client.service';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnChanges {
     @Input() roomId: number;
     @Input() myName: string;
     newMessageContent: string;
-    messages: Message[];
+    messages: Message[] = [];
 
-    constructor(public socketService: SocketClientService) {
-        if (this.roomId) {
-            this.getRoomMessages();
-            this.configureBaseSocketFeatures();
+    constructor(public socketService: SocketClientService) {}
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.roomId) {
+            if (this.roomId) {
+                console.log(this.roomId);
+                this.getRoomMessages();
+                this.configureBaseSocketFeatures();
+            }
         }
     }
 
     sendMessage() {
-        const newMessage: Message = {sender: this.myName, content: this.newMessageContent};
-        this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
+        if (this.newMessageContent.trim()) {
+            const newMessage: Message = {sender: this.myName, content: this.newMessageContent};
+            this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
+            this.newMessageContent = '';
+        }
     }
 
     private getRoomMessages() {
         this.socketService.send('get messages', { roomId: Number(this.roomId) }, (messages: Message[]) => {
-            this.messages = messages;
+            this.messages = messages ?? [];
         });
     }
 

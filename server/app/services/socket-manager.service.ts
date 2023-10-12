@@ -87,7 +87,7 @@ export class SocketManager {
             });
 
             socket.on('get messages', (roomId: number, callback) => {
-                const messages = this.roomManager.getRoomByID(roomId).messages;
+                const messages = this.roomManager.getRoomByID(roomId)?.messages;
                 callback(messages);
             });
 

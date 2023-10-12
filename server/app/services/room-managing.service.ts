@@ -10,7 +10,7 @@ interface RoomData {
     players: Map<Username, SocketId>;
     locked: boolean;
     bannedNames: string[];
-    messages: Message[];
+    messages?: Message[];
 }
 
 @Service()
@@ -52,7 +52,7 @@ export class RoomManagingService {
     }
 
     addMessage(roomId: number, message: Message) {
-        this.getRoomByID(roomId).messages.push(message);
+        this.getRoomByID(roomId).messages?.push(message);
     }
 
     getSocketIDByUsername(roomId: number, username: string): string {
