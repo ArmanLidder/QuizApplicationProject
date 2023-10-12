@@ -86,8 +86,8 @@ export class SocketManager {
                 this.roomManager.deleteRoom(roomId);
             });
 
-            socket.on('get messages', (roomId: number, callback) => {
-                const messages = this.roomManager.getRoomByID(roomId)?.messages;
+            socket.on('get messages', (data: number, callback) => {
+                const messages = this.roomManager.getRoomByID(data)?.messages;
                 callback(messages);
             });
 

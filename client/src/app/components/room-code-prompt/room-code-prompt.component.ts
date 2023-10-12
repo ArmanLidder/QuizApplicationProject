@@ -8,6 +8,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 })
 export class RoomCodePromptComponent implements OnInit {
     @Output() sendRoomData: EventEmitter<number> = new EventEmitter<number>();
+    @Output() sendUsernameData: EventEmitter<string> = new EventEmitter<string>();
     @Output() validationDone: EventEmitter<boolean> = new EventEmitter<boolean>();
     isLocked: boolean = false;
     isActive: boolean = true;
@@ -35,6 +36,10 @@ export class RoomCodePromptComponent implements OnInit {
         this.sendRoomData.emit(Number(this.roomId));
     }
 
+    sendUsernameToWaitingRoom() {
+        this.sendUsernameData.emit(this.username);
+    }
+
     sendValidationDone() {
         this.validationDone.emit(this.isActive);
     }
@@ -60,8 +65,9 @@ export class RoomCodePromptComponent implements OnInit {
 
     joinRoom() {
         this.sendJoinRoomRequest();
-        if (this.isLocked) {
+        if (!this.isLocked) {
             this.sendRoomIdToWaitingRoom();
+            this.sendUsernameToWaitingRoom();
             this.isActive = false;
             this.sendValidationDone();
         }
