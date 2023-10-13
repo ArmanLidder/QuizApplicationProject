@@ -58,7 +58,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     startGame() {
-        this.isGameStarting = false;
+        this.isGameStarting = true;
         this.sendStartSignal();
     }
 

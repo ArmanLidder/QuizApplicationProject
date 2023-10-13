@@ -19,7 +19,7 @@ describe('WaitingRoomComponent', () => {
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
-                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: (id?: string) => '1' } } } },
+                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
             ],
         });
         fixture = TestBed.createComponent(WaitingRoomComponent);
@@ -70,7 +70,7 @@ describe('WaitingRoomComponent', () => {
         expect(sendSpy).toHaveBeenCalledWith('player abandonment', DIGIT_CONSTANT);
     });
 
-    it('should not sen abandonment event on component destruction if game is starting', () => {
+    it('should not send abandonment event on component destruction if game is starting', () => {
         const sendSpy = spyOn(socketService, 'send');
         component.isGameStarting = true;
         component.ngOnDestroy();
@@ -122,7 +122,7 @@ describe('WaitingRoomComponent', () => {
     it('should send a start game signal when host starts game', () => {
         const sendStartSignalSpy = spyOn<any>(component, 'sendStartSignal');
         component.startGame();
-        expect(component.isGameStarting).toBeFalsy();
+        expect(component.isGameStarting).toBeTruthy();
         expect(sendStartSignalSpy).toHaveBeenCalled();
     });
 
