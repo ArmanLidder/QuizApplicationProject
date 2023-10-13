@@ -9,7 +9,7 @@ import { RoomData, RoomManagingService } from '@app/services/room-managing.servi
 
 const RESPONSE_DELAY = 200;
 
-describe.only('SocketManager service tests', () => {
+describe('SocketManager service tests', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
@@ -18,27 +18,29 @@ describe.only('SocketManager service tests', () => {
 
     const mockRoomId = 1000;
     const mockUsername = 'mockUsername';
-    const mockRoom: RoomData = {
-        room: mockRoomId, // Replace with the desired room number
-        quizID: 'quiz123',
-        players: new Map([
-            ['username1', 'socketId1'],
-            ['username2', 'socketId2'],
-        ]),
-        locked: false,
-        bannedNames: ['John', 'Alice'],
-    };
+    let mockRoom: RoomData;
 
     beforeEach(async () => {
+        mockRoom = {
+            room: mockRoomId, // Replace with the desired room number
+            quizID: 'quiz123',
+            players: new Map([
+                ['username1', 'socketId1'],
+                ['username2', 'socketId2'],
+            ]),
+            locked: false,
+            bannedNames: ['John', 'Alice'],
+        };
         server = Container.get(Server);
         await server.init();
         service = server['socketManager'];
         clientSocket = ioClient(urlString);
         roomManager = sinon.createStubInstance(RoomManagingService);
-        roomManager['rooms'] = new Map([[mockRoomId,mockRoom]]);
+        roomManager['rooms'] = new Map([[mockRoomId, mockRoom]]);
         roomManager.addRoom.returns(mockRoomId);
         roomManager.getRoomByID.returns(mockRoom);
         service['roomManager'] = roomManager;
+        sinon.stub(console, 'log');
     });
 
     afterEach(() => {
@@ -73,7 +75,6 @@ describe.only('SocketManager service tests', () => {
         roomManager.isRoomLocked.returns(true);
         const clientCallBack = (isLocked: boolean) => {
             expect(isLocked).to.equal(true);
-            console.log('ok')
             done();
         };
         clientSocket.emit('player join', { roomId: mockRoomId, username: mockUsername }, clientCallBack);
@@ -84,13 +85,11 @@ describe.only('SocketManager service tests', () => {
         roomManager.isRoomLocked.returns(false);
 
         const clientCallBack = (isLocked: boolean) => {
-            console.log('ok1')
             expect(isLocked).to.equal(false);
-            expect(roomManager.addUser.called)
+            expect(roomManager.addUser.called);
         };
         clientSocket.emit('player join', { roomId: mockRoomId, username: mockUsername }, clientCallBack);
         clientSocket.on('new player', (players: string[]) => {
-            console.log('ok2')
             expect(players).to.deep.equal(expectedPlayers);
             done();
         });
@@ -99,7 +98,7 @@ describe.only('SocketManager service tests', () => {
     it('should handle a player ban', (done) => {
         const spy = sinon.spy(service['sio'], 'to');
         roomManager.getSocketIDByUsername.returns('Test');
-        clientSocket.emit('ban player',{ roomId: mockRoomId, username: mockUsername } );
+        clientSocket.emit('ban player', { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
             assert(spy.calledWith(String(mockRoomId)));
             assert(spy.calledWith('Test'));
@@ -109,12 +108,12 @@ describe.only('SocketManager service tests', () => {
 
     it('should handle a room lock toggle', (done) => {
         const initialLockState = mockRoom.locked;
-        roomManager.changeLockState.callsFake((roomId) => {
+        roomManager.changeLockState.callsFake(() => {
             mockRoom.locked = !mockRoom.locked;
         });
         clientSocket.emit('toggle room lock', mockRoomId);
         setTimeout(() => {
-            const finalLockState = mockRoom.locked
+            const finalLockState = mockRoom.locked;
             expect(initialLockState).to.not.equal(finalLockState);
             done();
         }, RESPONSE_DELAY);
@@ -126,8 +125,8 @@ describe.only('SocketManager service tests', () => {
             expect(data.isValid).to.equal(false);
             expect(data.error).to.equal('Le nom choisi est déjà utiliser. Veuillez choisir un autre.');
             done();
-        }
-        clientSocket.emit('validate username', {mockRoomId, mockUsername},clientCallBack);
+        };
+        clientSocket.emit('validate username', { mockRoomId, mockUsername }, clientCallBack);
     });
 
     it('should handle a "validate username" event when name is banned', (done) => {
@@ -137,8 +136,8 @@ describe.only('SocketManager service tests', () => {
             expect(data.isValid).to.equal(false);
             expect(data.error).to.equal('Vous avez été banni du lobby et vous ne pouvez plus rentrez.');
             done();
-        }
-        clientSocket.emit('validate username', {mockRoomId, mockUsername},clientCallBack);
+        };
+        clientSocket.emit('validate username', { mockRoomId, mockUsername }, clientCallBack);
     });
 
     it('should handle a "validate username" event when name is unused and not banned', (done) => {
@@ -147,46 +146,73 @@ describe.only('SocketManager service tests', () => {
         const clientCallBack = (data: { isValid: boolean; error: string }) => {
             expect(data.isValid).to.equal(true);
             done();
-        }
-        clientSocket.emit('validate username', {mockRoomId, mockUsername},clientCallBack);
+        };
+        clientSocket.emit('validate username', { mockRoomId, mockUsername }, clientCallBack);
     });
 
-    it('should validate roomID', (done) => {
+    it('should validate good roomID properly', (done) => {
         const clientCallBack = (isValid: boolean) => {
             expect(isValid).to.equal(true);
             done();
-        }
-        clientSocket.emit('validate roomID', mockRoomId, clientCallBack)
+        };
+        clientSocket.emit('validate roomID', mockRoomId, clientCallBack);
+    });
+
+    it('should validate bad roomID properly', (done) => {
+        const badRoomID = 123;
+        const clientCallBack = (isValid: boolean) => {
+            expect(isValid).to.equal(false);
+            done();
+        };
+        clientSocket.emit('validate roomID', badRoomID, clientCallBack);
     });
 
     it('should handle "gather players username" event', (done) => {
-        const room = roomManager.getRoomByID(mockRoomId);
-        const players = Array.from(room?.players.keys());
+        const players = Array.from(mockRoom?.players.keys());
+        roomManager.getUsernamesArray.returns(players);
         const clientCallback = (playerNames: string[]) => {
             expect(playerNames).to.deep.equal(players);
             done();
         };
-        clientSocket.emit('gather players username', mockRoomId,clientCallback);//c'est bon sa marche pozer
+        clientSocket.emit('gather players username', mockRoomId, clientCallback); // c'est bon sa marche pozer
     });
 
-    // socket.on('player abandonment', (roomId: number) => {
-    //     const userInfo = this.roomManager.removeUserBySocketID(socket.id);
-    //     if (userInfo !== undefined) {
-    //         this.sio.to(String(roomId)).emit('removed player', userInfo.username);
-    //     }
-    //     socket.disconnect(true);
-    // });
-
-    it('should handle "player abandonment" event', (done) => {
-        roomManager.removeUserBySocketID.returns(null);
-        const disconnectSpy = sinon.stub(clientSocket, 'disconnect');
+    it('should handle "player abandonment" event when undefined', (done) => {
+        roomManager.removeUserBySocketID.returns(undefined);
+        const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        const clientCallback = (roomId: number) => {
+        clientSocket.emit('player abandonment', mockRoomId);
+        setTimeout(() => {
             expect(disconnectSpy.called);
             expect(emitSpy.notCalled);
             done();
-        }
-        clientSocket.emit('player abandonment', clientCallback)
+        }, RESPONSE_DELAY);
     });
 
+    it('should handle "player abandonment" event when defined', (done) => {
+        roomManager.removeUserBySocketID.returns({ roomId: mockRoomId, username: 'username1' });
+        const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit('player abandonment', mockRoomId);
+        setTimeout(() => {
+            expect(disconnectSpy.called);
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle "host abandonment" event when defined', (done) => {
+        roomManager.deleteRoom.callsFake((roomId) => {
+            roomManager['rooms'].delete(roomId);
+        });
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        const disconnectSpy = sinon.spy(service['sio'].sockets, 'disconnectSockets');
+        clientSocket.emit('host abandonment', mockRoomId);
+        setTimeout(() => {
+            expect(disconnectSpy.called);
+            expect(emitSpy.called);
+            expect(roomManager['rooms'].has(mockRoomId)).to.equal(false);
+            done();
+        }, RESPONSE_DELAY);
+    });
 });

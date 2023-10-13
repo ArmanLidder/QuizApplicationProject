@@ -69,6 +69,11 @@ export class RoomManagingService {
         return undefined;
     }
 
+    getUsernamesArray(roomId: number) {
+        if (roomId !== undefined) return Array.from(this.getRoomByID(roomId).players.keys());
+        else return undefined;
+    }
+
     banUser(roomID: number, name: string): void {
         this.rooms.get(roomID).bannedNames.push(name);
         this.removeUserFromRoom(roomID, name);

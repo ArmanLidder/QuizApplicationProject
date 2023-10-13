@@ -72,6 +72,15 @@ describe('Room Managing Service', () => {
         expect(roomService.isNameBanned(roomId, mockUsername)).to.equal(false);
     });
 
+    it('should return players name list', () => {
+        expect(roomService.getUsernamesArray(roomId)).to.deep.equals(['usernameOne']);
+        expect(roomService.getUsernamesArray(undefined)).to.equal(undefined)
+    });
+
+    it('should check if room is locked', () => {
+        expect(roomService.isRoomLocked(roomId)).to.equal(false);
+    });
+
     it('should change the lock state of a room', () => {
         const initialLockState = roomService.roomMap.get(roomId).locked;
         roomService.changeLockState(roomId);

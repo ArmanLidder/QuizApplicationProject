@@ -60,9 +60,8 @@ export class SocketManager {
                 }
             });
 
-            socket.on('gather players username', (roomId:number, callback) => {
-                const room = this.roomManager.getRoomByID(roomId);
-                const players = Array.from(room?.players.keys());
+            socket.on('gather players username', (roomId: number, callback) => {
+                const players = this.roomManager.getUsernamesArray(roomId);
                 callback(players);
             });
 
@@ -70,7 +69,7 @@ export class SocketManager {
                 let isLocked = false;
                 const isRoom = this.roomManager.roomMap.has(roomId);
                 if (isRoom) isLocked = this.roomManager.getRoomByID(roomId).locked;
-                callback(isRoom && !isLocked);
+                callback({ isRoom, isLocked });
             });
 
             // For above create service to configure those event reception for organizer view
