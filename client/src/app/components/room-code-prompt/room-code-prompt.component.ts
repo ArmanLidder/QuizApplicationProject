@@ -80,10 +80,9 @@ export class RoomCodePromptComponent implements OnInit {
     }
 
     private async sendJoinRoomRequest() {
-        await this.sendRoomId()
+        await this.sendRoomId();
         if (this.isRoomIdValid) {
-            console.log('inside');
-            return new Promise<void>((resolve, reject) => {
+            return new Promise<void>((resolve) => {
                 this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
                     if (isLocked) {
                         this.isLocked = true;
@@ -117,28 +116,25 @@ export class RoomCodePromptComponent implements OnInit {
         }
     }
 
-    private sendRoomId() {
-        return new Promise<void>((resolve, reject) => {
-            this.socketService.send(
-                'validate roomID',
-                Number(this.roomId),
-                (data: {isRoom:boolean, isLocked: boolean}) => {
-                    if (!data.isRoom) {
-                        this.isRoomIdValid = false;
-                        this.isUsernameValid = false;
-                        this.showErrorFeedback();
-                        this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
-                    } else if (data.isLocked) {
-                        this.showErrorFeedback();
-                        this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
-                    } else {
-                        this.isRoomIdValid = true;
-                        this.reset();
-
-                    }
-                    resolve();
-                });
-        })
+    private async sendRoomId() {
+        return new Promise<void>((resolve) => {
+            this.socketService.send('validate roomID', Number(this.roomId), (data: { isRoom: boolean; isLocked: boolean }) => {
+                if (!data.isRoom) {
+                    this.isRoomIdValid = false;
+                    this.isUsernameValid = false;
+                    this.showErrorFeedback();
+                    this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
+                } else if (data.isLocked) {
+                    this.isRoomIdValid = false;
+                    this.showErrorFeedback();
+                    this.error = 'La partie est vérouillée. Veuillez réessayer.';
+                } else {
+                    this.isRoomIdValid = true;
+                    this.reset();
+                }
+                resolve();
+            });
+        });
     }
 
     private reset() {
