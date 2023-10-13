@@ -10,9 +10,7 @@ describe('WaitingRoomHostPageComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [WaitingRoomHostPageComponent],
-            providers: [
-                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: (id?: string) => '1' } } } }
-            ],
+            providers: [{ provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } }],
             schemas: [NO_ERRORS_SCHEMA],
         });
         fixture = TestBed.createComponent(WaitingRoomHostPageComponent);
