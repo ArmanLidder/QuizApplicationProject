@@ -152,7 +152,7 @@ describe('SocketManager service tests', () => {
 
     it('should validate good roomID properly', (done) => {
         const clientCallBack = (isValid: boolean) => {
-            expect(isValid).to.equal(true);
+            expect(isValid).to.deep.equal({ isRoom: true, isLocked: false });
             done();
         };
         clientSocket.emit('validate roomID', mockRoomId, clientCallBack);
@@ -161,7 +161,7 @@ describe('SocketManager service tests', () => {
     it('should validate bad roomID properly', (done) => {
         const badRoomID = 123;
         const clientCallBack = (isValid: boolean) => {
-            expect(isValid).to.equal(false);
+            expect(isValid).to.deep.equal({ isRoom: false, isLocked: false });
             done();
         };
         clientSocket.emit('validate roomID', badRoomID, clientCallBack);

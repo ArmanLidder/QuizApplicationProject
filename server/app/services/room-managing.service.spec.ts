@@ -74,7 +74,7 @@ describe('Room Managing Service', () => {
 
     it('should return players name list', () => {
         expect(roomService.getUsernamesArray(roomId)).to.deep.equals(['usernameOne']);
-        expect(roomService.getUsernamesArray(undefined)).to.equal(undefined)
+        expect(roomService.getUsernamesArray(undefined)).to.equal(undefined);
     });
 
     it('should check if room is locked', () => {
