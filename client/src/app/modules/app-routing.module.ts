@@ -7,7 +7,8 @@ import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-cr
 import { GameAdministrationPageComponent } from '@app/pages/game-administration-page/game-administration-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
-import { WaitingRoomPageComponent } from '@app/pages/waiting-room-page/waiting-room-page.component';
+import { WaitingRoomPlayerPageComponent } from '@app/pages/waiting-room-player-page/waiting-room-player-page.component';
+import { WaitingRoomHostPageComponent } from '@app/pages/waiting-room-host-page/waiting-room-host-page.component';
 
 const routes: Routes = [
     { path: '', component: MainPageComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
     { path: 'quiz-creation/:id', component: QuizCreationPageComponent, canActivate: [authGuardAuthentification] },
     { path: 'game-admin-prompt', component: PasswordPromptComponent },
     { path: 'quiz-testing-page/:id', component: GamePageComponent },
-    { path: 'waiting-room-page/:id', component: WaitingRoomPageComponent },
+    { path: 'waiting-room-host-page/:id', component: WaitingRoomHostPageComponent },
+    { path: 'waiting-room-player-page', component: WaitingRoomPlayerPageComponent },
     { path: 'game-admin-page', component: GameAdministrationPageComponent, canActivate: [authGuardAuthentification] },
     { path: '**', redirectTo: '/home' },
 ];

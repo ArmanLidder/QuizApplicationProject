@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
 import { io, Socket } from 'socket.io-client';
 
 @Injectable({
@@ -13,7 +12,7 @@ export class SocketClientService {
     }
 
     connect() {
-        this.socket = io(environment.serverUrl, { transports: ['websocket'], upgrade: false });
+        this.socket = io('http://localhost:3000', { transports: ['websocket'], upgrade: false });
     }
 
     disconnect() {
@@ -24,7 +23,7 @@ export class SocketClientService {
         this.socket.on(event, action);
     }
 
-    send<T>(event: string, data?: T, callback?: () => void): void {
+    send<T, A>(event: string, data?: T, callback?: (data: A) => void): void {
         this.socket.emit(event, ...[data, callback].filter((x) => x));
     }
 }

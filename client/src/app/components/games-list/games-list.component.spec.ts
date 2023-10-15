@@ -335,10 +335,15 @@ describe('GamesListComponent Admin view', () => {
         tick();
         expect(navigateSpy).toHaveBeenCalledWith(['/quiz-testing-page/', '1']);
         expect(component.selectedQuiz).toBeNull();
-        component.selectedQuiz = { id: '2', visible: true } as Quiz;
+    }));
+    it('should play the game and navigate to waiting-room-host-page', fakeAsync(() => {
+        const navigateSpy = spyOn(component.router, 'navigate');
+        component.selectedQuiz = { id: '1', visible: true } as Quiz;
+        const basicGetByIdResponse = { id: '1', visible: true } as Quiz;
+        quizServiceSpy.basicGetById.and.returnValue(of(basicGetByIdResponse));
         component.playGame();
         tick();
-        expect(navigateSpy).toHaveBeenCalledWith(['/waiting-room-page/', '1']);
+        expect(navigateSpy).toHaveBeenCalledWith(['/waiting-room-host-page/', '1']);
         expect(component.selectedQuiz).toBeNull();
     }));
     it('should handle deleted and invisible quizzes', fakeAsync(() => {
