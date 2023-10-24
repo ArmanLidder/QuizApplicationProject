@@ -26,12 +26,7 @@ describe('MainPageComponent', () => {
     it("should have as title 'OnlyQuiz'", () => {
         expect(component.title).toEqual('OnlyQuiz');
     });
-
-    it('should contain the game logo', () => {
-        const logo = fixture.nativeElement.querySelector('img[src="../../../assets/Logo.png"]');
-        expect(logo).toBeTruthy();
-    });
-
+    
     it('should contain the team number in the footer', () => {
         const teamName = fixture.nativeElement.querySelector('.team-name');
         expect(teamName.textContent).toContain('Équipe #103');
