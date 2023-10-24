@@ -1,29 +1,79 @@
 import { expect } from 'chai';
-import { fillerQuizzes } from '@app/mockData/data';
+import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { QuizService } from 'app/services/quiz.service';
 chai.use(chaiAsPromised);
+import { MongoClient, ObjectId } from 'mongodb';
+import { DatabaseServiceMock } from 'app/services/database.service.mock';
 import { Game } from './game';
 import sinon = require('sinon');
-import { SinonStubbedInstance } from 'sinon';
+import { DatabaseService } from '@app/services/database.service';
+
+interface QuizMock {
+    _id: ObjectId;
+    id: string;
+    title: string;
+    description: string;
+    duration: number;
+    lastModification: string | null;
+    questions: QuizQuestion[];
+    visible: boolean;
+}
 
 describe('Game', () => {
     let game: Game;
-    let quizService: SinonStubbedInstance<QuizService>;
+    let databaseService: DatabaseServiceMock;
+    let quizService: QuizService;
     const BONUS_MULTIPLIER = 1.2;
-    // Before each test, create a new Game instance
-    beforeEach(() => {
-        quizService = sinon.createStubInstance(QuizService)
-        quizService.getById.resolves(fillerQuizzes[0]);
-        game = new Game(['Player1', 'Player2'], 'quizId', quizService); 
+    const testQuiz : QuizMock = {
+        _id: new ObjectId(),
+        id: 'quiz123',
+        title: 'Sample Quiz',
+        description: 'This is a sample quiz for testing purposes.',
+        duration: 180,
+        lastModification: 'none',
+        questions: [
+            {
+                type: QuestionType.QCM,
+                text: 'What is the capital of France?',
+                points: 10,
+                choices: [
+                    { text: 'Paris', isCorrect: true },
+                    { text: 'London', isCorrect: false },
+                    { text: 'Berlin', isCorrect: false },
+                    { text: 'Madrid', isCorrect: false },
+                ],
+            },
+            {
+                type: QuestionType.QCM,
+                text: 'Which of the following are prime numbers?',
+                points: 15,
+                choices: [
+                    { text: '2', isCorrect: true },
+                    { text: '4', isCorrect: false },
+                    { text: '7', isCorrect: true },
+                    { text: '10', isCorrect: false },
+                ],
+            },
+        ],
+        visible: true,
+    };
+
+    beforeEach(async () => {
+        databaseService = new DatabaseServiceMock();
+        (await databaseService.start()) as MongoClient;
+        quizService = new QuizService(databaseService as unknown as DatabaseService);
+        delete testQuiz['_id'];
+        await quizService.collection.insertOne(testQuiz);
+        game = new Game(['Player1', 'Player2'], 'quiz123', quizService);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
+        await databaseService.closeConnection();
         sinon.restore();
     });
-
 
     it('should initialize instance game correctly', () => {
         expect(game.players.size).to.equal(2);
@@ -32,8 +82,8 @@ describe('Game', () => {
     it('should pass to the next question when next is called', () => {
        const updateScoresSpy = sinon.createStubInstance((game['updateScores']));
        const setValueSpy = sinon.createStubInstance((game['setValues']));
-       updateScoresSpy.callsFake(()=> {})
-        setValueSpy.callsFake(() => {})
+       updateScoresSpy.callsFake(()=> {});
+       setValueSpy.callsFake(() => {})
        game.curr_index = 0;
        game.next();
        expect(updateScoresSpy.called);
