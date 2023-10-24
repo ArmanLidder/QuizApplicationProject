@@ -12,18 +12,19 @@ const BONUS_MULTIPLIER = 1.2;
 export class Game {
     curr_index: number = 0;
     quiz: Quiz;
-    players: Players;
+    players: Players = new Map();
     currentQuizQuestion: QuizQuestion;
     question: string;
     choicesStats: ChoiceStats;
     correctChoices: string[];
     duration: number;
-    playersAnswers: PlayerAnswers;
+    playersAnswers: PlayerAnswers = new Map();
 
     constructor(usernames: string[], quizId: string, private readonly quizService: QuizService) {
         this.configurePlayers(usernames);
-        this.getQuiz(quizId);
-        this.setValues();
+        this.getQuiz(quizId).then(() => {
+            this.setValues()
+        });
     }
 
     next() {
@@ -123,6 +124,7 @@ export class Game {
     }
 
     private setValues(){
+        console.log(this.quiz)
         this.currentQuizQuestion = this.quiz.questions[this.curr_index];
         this.question = this.currentQuizQuestion.text;
         this.getAllCorrectChoices();
@@ -138,9 +140,7 @@ export class Game {
         });
     }
 
-    private getQuiz(quizId: string) {
-        this.quizService.getById(quizId).then((quiz : Quiz) => {
-           this.quiz = quiz;
-        });
+    private async getQuiz(quizId: string) {
+        this.quiz = await this.quizService.getById(quizId)
     }
 }
