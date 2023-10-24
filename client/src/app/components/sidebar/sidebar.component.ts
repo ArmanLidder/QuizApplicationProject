@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Message } from '@common/interfaces/message.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
 
@@ -26,7 +26,7 @@ export class SidebarComponent implements OnChanges {
 
     sendMessage() {
         if (this.newMessageContent.trim()) {
-            const newMessage: Message = {sender: this.myName, content: this.newMessageContent};
+            const newMessage: Message = { sender: this.myName, content: this.newMessageContent };
             this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
             this.newMessageContent = '';
         }
