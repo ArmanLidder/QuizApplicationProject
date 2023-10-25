@@ -15,16 +15,14 @@ export class Game {
     players: Players = new Map();
     currentQuizQuestion: QuizQuestion;
     question: string;
-    choicesStats: ChoiceStats;
-    correctChoices: string[];
+    choicesStats: ChoiceStats = new Map();
+    correctChoices: string[] = [];
     duration: number;
     playersAnswers: PlayerAnswers = new Map();
 
     constructor(usernames: string[], quizId: string, private readonly quizService: QuizService) {
         this.configurePlayers(usernames);
-        this.getQuiz(quizId).then(() => {
-            this.setValues()
-        });
+        this.getQuiz(quizId);
     }
 
     next() {
@@ -109,6 +107,7 @@ export class Game {
         for (let [username, answers] of playerAnswers) {
             if (answers.time < lowestTime) {
                 lowestTime = answers.time;
+                lowestTimePlayers.clear();
                 lowestTimePlayers.set(username, answers);
             } else if (answers.time === lowestTime) {
                 lowestTimePlayers.set(username, answers);
@@ -124,7 +123,6 @@ export class Game {
     }
 
     private setValues(){
-        console.log(this.quiz)
         this.currentQuizQuestion = this.quiz.questions[this.curr_index];
         this.question = this.currentQuizQuestion.text;
         this.getAllCorrectChoices();
@@ -140,7 +138,10 @@ export class Game {
         });
     }
 
-    private async getQuiz(quizId: string) {
-        this.quiz = await this.quizService.getById(quizId)
+    private getQuiz(quizId: string) {
+        this.quizService.getById(quizId).then( (quiz: Quiz) => {
+            this.quiz = quiz;
+            this.setValues();
+        });
     }
 }
