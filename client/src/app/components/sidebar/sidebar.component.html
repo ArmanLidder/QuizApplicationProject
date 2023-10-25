@@ -7,10 +7,17 @@
         <div class="message-container" *ngFor="let message of messages">
             <div class="username-said">{{message.sender}} dit:</div>
             <p>{{ message.content }}</p>
+            <p>{{ message.time }}</p>
         </div>
     </div>
 
-    <div class="message-input">
-        <input type="text" placeholder="Envoyer un message" [(ngModel)]='newMessageContent' (keyup.enter)='sendMessage()'/>
-    </div>
+    <form class="message-input" [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+        <input
+            type="text"
+            formControlName="message"
+            placeholder="Envoyer un message"
+            (keyup.enter)="sendMessage()"
+        >
+    </form>
+    <div class="error-message" *ngIf="messageForm.get('message')?.hasError('maxlength')">Votre message dépasse 200 caractères</div>
 </div>

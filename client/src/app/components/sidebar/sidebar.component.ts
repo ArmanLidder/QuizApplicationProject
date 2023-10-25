@@ -1,6 +1,10 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Message } from '@common/interfaces/message.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { getCurrentDateService } from 'src/utils/current-date-format';
+
+const MESSAGE_MAX_CHARACTERS = 200;
 
 @Component({
     selector: 'app-sidebar',
@@ -10,10 +14,17 @@ import { SocketClientService } from '@app/services/socket-client.service';
 export class SidebarComponent implements OnChanges {
     @Input() roomId: number;
     @Input() myName: string;
-    newMessageContent: string;
+    messageForm: FormGroup;
     messages: Message[] = [];
 
-    constructor(public socketService: SocketClientService) {}
+    constructor(
+        public socketService: SocketClientService,
+        private formBuilder: FormBuilder,
+    ) {
+        this.messageForm = this.formBuilder.group({
+            message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
+        });
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.roomId) {
@@ -25,10 +36,11 @@ export class SidebarComponent implements OnChanges {
     }
 
     sendMessage() {
-        if (this.newMessageContent.trim()) {
-            const newMessage: Message = { sender: this.myName, content: this.newMessageContent };
+        const newMessageContent: string = this.messageForm.get('message')?.value;
+        if (this.messageForm.get('message')?.valid && newMessageContent.trim()) {
+            const newMessage: Message = { sender: this.myName, content: newMessageContent, time: getCurrentDateService() };
             this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
-            this.newMessageContent = '';
+            this.messageForm.get('message')?.setValue('');
         }
     }
 
