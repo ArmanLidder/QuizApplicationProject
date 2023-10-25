@@ -8,8 +8,12 @@ chai.use(chaiAsPromised);
 import { MongoClient, ObjectId } from 'mongodb';
 import { DatabaseServiceMock } from 'app/services/database.service.mock';
 import { Game } from './game';
-import sinon = require('sinon');
+import * as sinon from 'sinon';
 import { DatabaseService } from '@app/services/database.service';
+
+const MAX_TIME = 1200;
+const MID_TIME = 1000;
+const MIN_TIME = 800;
 
 interface QuizMock {
     _id: ObjectId;
@@ -26,7 +30,7 @@ describe('Game', () => {
     let game: Game;
     let databaseService: DatabaseServiceMock;
     let quizService: QuizService;
-    const testQuiz : QuizMock = {
+    const testQuiz: QuizMock = {
         _id: new ObjectId(),
         id: 'quiz123',
         title: 'Sample Quiz',
@@ -82,67 +86,80 @@ describe('Game', () => {
 
     it('should upload next question when calling next', () => {
         game.next();
-        expect(game.curr_index).to.equal(1);
-        expect(game.question).to.equal(testQuiz.questions[game.curr_index].text)
+        expect(game.currIndex).to.equal(1);
+        expect(game.question).to.equal(testQuiz.questions[game.currIndex].text);
         expect(game.playersAnswers.size).to.equal(0);
     });
 
     it('should correctly validate answers', () => {
-        game.correctChoices = ['choice1', 'choice2']
+        game.correctChoices = ['choice1', 'choice2'];
         const invalidAnswer = ['choice1', 'choice3'];
-        const invalidLength = ['choice1', 'choice2', 'plus']
-        expect(game['validateAnswer'](game.correctChoices)).to.be.true;
-        expect(game['validateAnswer'](invalidLength)).to.be.false;
-        expect(game['validateAnswer'](invalidAnswer)).to.be.false;
+        const invalidLength = ['choice1', 'choice2', 'plus'];
+        expect(game['validateAnswer'](game.correctChoices)).to.equal(true);
+        expect(game['validateAnswer'](invalidLength)).to.equal(false);
+        expect(game['validateAnswer'](invalidAnswer)).to.equal(false);
     });
 
     it('should remove a player', () => {
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 800, ['Paris']);
-        game.storePlayerAnswer('Player3', 1200, ['Paris']);
+        game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
+        game.storePlayerAnswer('Player3', MAX_TIME, ['Paris']);
         expect(game.playersAnswers.size).to.equal(3);
         game.removePlayer('Player2');
         expect(game.playersAnswers.size).to.equal(2);
-        expect(game.playersAnswers.has('Player2')).to.be.false;
+        expect(game.playersAnswers.has('Player2')).to.equal(false);
     });
 
     it('should handle wrong answers', () => {
-        game.currentQuizQuestion = testQuiz.questions[0]; // Use the first question for testing
+        game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
-        // Simulate player answers
-        game.storePlayerAnswer('Player1', 1000, ['London']);
-        game.storePlayerAnswer('Player2', 800, ['Paris']);
-        game.storePlayerAnswer('Player3', 1200, ['Madrid']);
+        game.storePlayerAnswer('Player1', MID_TIME, ['London']);
+        game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
+        game.storePlayerAnswer('Player3', MAX_TIME, ['Madrid']);
         game['handleWrongAnswer']('Player1');
         game['handleWrongAnswer']('Player2');
         game['handleWrongAnswer']('Player3');
-        // All players' answers are wrong, so playersAnswers should be empty
         expect(game.playersAnswers.size).to.equal(0);
     });
 
     it('should get all players with correct answers', () => {
-        game.currentQuizQuestion = testQuiz.questions[0]; // Use the first question for testing
+        game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
-        // Simulate player answers
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 800, ['Paris']);
-        game.storePlayerAnswer('Player3', 1200, ['London']);
-        game.storePlayerAnswer('Player4', 1100, ['Paris']);
-        game.storePlayerAnswer('Player5', 900, ['Paris']);
+        game.storePlayerAnswer('Player1', MAX_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player3', MAX_TIME, ['London']);
+        game.storePlayerAnswer('Player4', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player5', MAX_TIME, ['Paris']);
         const playersWithCorrectAnswers = game['getAllPlayersCorrectAnswer']();
-        // Only Player1, Player2, Player4, and Player5 have correct answers
-        expect(playersWithCorrectAnswers.size).to.equal(4);
-        expect(playersWithCorrectAnswers.has('Player1')).to.be.true;
-        expect(playersWithCorrectAnswers.has('Player2')).to.be.true;
-        expect(playersWithCorrectAnswers.has('Player4')).to.be.true;
-        expect(playersWithCorrectAnswers.has('Player5')).to.be.true;
+        const expectedNumberOfCorrectAns = 4;
+        expect(playersWithCorrectAnswers.size).to.equal(expectedNumberOfCorrectAns);
+        expect(playersWithCorrectAnswers.has('Player1')).to.equal(true);
+        expect(playersWithCorrectAnswers.has('Player2')).to.equal(true);
+        expect(playersWithCorrectAnswers.has('Player4')).to.equal(true);
+        expect(playersWithCorrectAnswers.has('Player5')).to.equal(true);
     });
 
     it('should correctly add bonus points', () => {
         const points = 10;
         const bonusPoints = game['addBonusPoint'](points);
-        // Bonus points should be 10 * 1.2 = 12
-        expect(bonusPoints).to.equal(12);
+        const expectedScore = 12;
+        expect(bonusPoints).to.equal(expectedScore);
+    });
+
+    it('should not add bonus points if no player is faster than all the others', () => {
+        game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        const getFasterPlayerSpy = sinon.stub(game, 'getFastestPlayer' as any);
+        /* eslint-enable  @typescript-eslint/no-explicit-any */
+        getFasterPlayerSpy.returns(null);
+        const points = 10;
+        const expectedNewScore = {
+            points,
+            bonusCount: 0,
+        };
+        game['handleGoodAnswer']('Player1');
+        expect(game.players.get('Player1').points).to.equal(expectedNewScore.points);
+        expect(game.players.get('Player1').bonusCount).to.equal(expectedNewScore.bonusCount);
     });
 
     it('should configure players correctly', () => {
@@ -153,9 +170,10 @@ describe('Game', () => {
 
     it('should set values correctly', () => {
         game['setValues']();
+        const expectedSizeOfChoicesStats = 4;
         expect(game.currentQuizQuestion).to.deep.equal(testQuiz.questions[0]);
         expect(game.question).to.equal('What is the capital of France?');
-        expect(game.choicesStats.size).to.equal(4);
+        expect(game.choicesStats.size).to.equal(expectedSizeOfChoicesStats);
         expect(game.choicesStats.get('Paris')).to.equal(0);
         expect(game.choicesStats.get('London')).to.equal(0);
         expect(game.choicesStats.get('Berlin')).to.equal(0);
@@ -163,90 +181,82 @@ describe('Game', () => {
     });
 
     it('should correctly handle cases where there is one fastest player', () => {
-        // Simulate player answers
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 800, ['Paris']);
-        game.storePlayerAnswer('Player3', 1200, ['Paris']);
+        game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
+        game.storePlayerAnswer('Player3', MAX_TIME, ['Paris']);
         const fastestPlayer = game['getFastestPlayer']();
-        expect(fastestPlayer.get('Player2').time).to.equal(800); // Player2 has the fastest time
+        expect(fastestPlayer.get('Player2').time).to.equal(MIN_TIME);
+    });
+
+    it('should update choicesStats correctly', () => {
+        game.choicesStats.set('Paris', 2);
+        game.choicesStats.set('London', 1);
+        const playerAnswer = ['Paris', 'London', 'Berlin', 'Test'];
+        game['updateChoicesStats'](playerAnswer);
+        expect(game.choicesStats.get('Paris')).to.equal(3);
+        expect(game.choicesStats.get('London')).to.equal(2);
+        expect(game.choicesStats.get('Berlin')).to.equal(1);
+        expect(game.choicesStats.get('Test')).to.equal(undefined);
     });
 
     it('should correctly handle cases where there is no fastest player', () => {
-        // Simulate player answers
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 1000, ['Paris']);
+        game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MID_TIME, ['Paris']);
         const fastestPlayer = game['getFastestPlayer']();
-        expect(fastestPlayer).to.be.null; // No single fastest player
+        expect(fastestPlayer).to.equal(null);
     });
 
     it('should update scores correctly for good answers', () => {
-        game.currentQuizQuestion = testQuiz.questions[0]; // Use the first question for testing
+        game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
-
         game.playersAnswers = new Map();
         game.players.set('Player1', { points: 0, bonusCount: 0 });
         game.players.set('Player2', { points: 0, bonusCount: 0 });
         game.players.set('Player3', { points: 0, bonusCount: 0 });
-
-        // Simulate player answers
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 800, ['Paris']);
-        game.storePlayerAnswer('Player3', 1200, ['London']);
-
+        game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
+        game.storePlayerAnswer('Player3', MAX_TIME, ['London']);
         game['updateScores']();
-
-        // Check Player1's score
+        const expectedScore = 12;
         const player1Score = game.players.get('Player1');
-        expect(player1Score.points).to.equal(12); // 10 points (correct answer) + 1.2 bonus
+        expect(player1Score.points).to.equal(expectedScore);
         expect(player1Score.bonusCount).to.equal(1);
-
-        // Check Player2's score
         const player2Score = game.players.get('Player2');
-        expect(player2Score.points).to.equal(12); // 10 points (correct answer) + 1.2 bonus
+        expect(player2Score.points).to.equal(expectedScore);
         expect(player2Score.bonusCount).to.equal(1);
-
-        // Player3's score should remain unchanged
         const player3Score = game.players.get('Player3');
         expect(player3Score.points).to.equal(0);
         expect(player3Score.bonusCount).to.equal(0);
     });
 
     it('should handle the case where there are no correct choices for a question', () => {
-        game.currentQuizQuestion = testQuiz.questions[1]; // Use the second question for testing
-        game.correctChoices = []; // No correct choices for this question
-
+        game.currentQuizQuestion = testQuiz.questions[1];
+        game.correctChoices = [];
         game.playersAnswers = new Map();
         game.players.set('Player1', { points: 0, bonusCount: 0 });
         game.players.set('Player2', { points: 0, bonusCount: 0 });
-
-        // Simulate player answers
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 800, ['London']);
-
+        game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MIN_TIME, ['London']);
         game['updateScores']();
-
-        // Check Player1's score
         const player1Score = game.players.get('Player1');
-        expect(player1Score.points).to.equal(0); // No points as there are no correct choices
+        expect(player1Score.points).to.equal(0);
         expect(player1Score.bonusCount).to.equal(0);
-
-        // Check Player2's score
         const player2Score = game.players.get('Player2');
-        expect(player2Score.points).to.equal(0); // No points as there are no correct choices
+        expect(player2Score.points).to.equal(0);
         expect(player2Score.bonusCount).to.equal(0);
     });
 
     it('should correctly handle cases where there are multiple fastest players with the same time', () => {
-        game.currentQuizQuestion = testQuiz.questions[0]; // Use the first question for testing
+        game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
         game.playersAnswers = new Map();
         game.players.set('Player1', { points: 0, bonusCount: 0 });
         game.players.set('Player2', { points: 0, bonusCount: 0 });
         game.players.set('Player3', { points: 0, bonusCount: 0 });
-        game.storePlayerAnswer('Player1', 1000, ['Paris']);
-        game.storePlayerAnswer('Player2', 1000, ['Paris']);
-        game.storePlayerAnswer('Player3', 1000, ['Paris']);
+        game.storePlayerAnswer('Player1', MIN_TIME, ['Paris']);
+        game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
+        game.storePlayerAnswer('Player3', MIN_TIME, ['Paris']);
         const fastestPlayers = game['getFastestPlayer']();
-        expect(fastestPlayers).to.be.null;
+        expect(fastestPlayers).to.equal(null);
     });
 });
