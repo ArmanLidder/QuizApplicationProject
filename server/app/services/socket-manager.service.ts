@@ -102,8 +102,6 @@ export class SocketManager {
             });
 
             socket.on('get username', (data: number, callback) => {
-                console.log(data);
-                console.log(socket.id);
                 const username = this.roomManager.getUsernameBySocketId(data, socket.id);
                 callback(username);
             });
