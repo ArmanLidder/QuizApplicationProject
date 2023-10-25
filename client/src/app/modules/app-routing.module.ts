@@ -13,7 +13,7 @@ import { WaitingRoomHostPageComponent } from '@app/pages/waiting-room-host-page/
 const routes: Routes = [
     { path: '', component: MainPageComponent },
     { path: 'home', component: MainPageComponent },
-    { path: 'game', component: GamePageComponent },
+    { path: 'game/:id', component: GamePageComponent },
     { path: 'game-creation-page', component: GameCreationPageComponent },
     { path: 'quiz-creation', component: QuizCreationPageComponent, canActivate: [authGuardAuthentification] },
     { path: 'quiz-creation/:id', component: QuizCreationPageComponent, canActivate: [authGuardAuthentification] },
