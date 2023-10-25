@@ -80,7 +80,10 @@ describe('Game', () => {
     });
 
     it('should initialize instance game correctly', () => {
+        const getQuizSpy = sinon.spy(game['getQuiz']);
+
         expect(game.players.size).to.equal(2);
+        expect(getQuizSpy.called);
     });
 
     it('should upload next question when calling next', () => {
