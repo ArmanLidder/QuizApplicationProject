@@ -4,6 +4,6 @@ export interface Answers {
 }
 
 export interface Score {
-    points: number,
-    bonusCount : number
+    points: number;
+    bonusCount: number;
 }
