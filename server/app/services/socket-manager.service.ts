@@ -75,7 +75,6 @@ export class SocketManager {
 
             // For above create service to configure those event reception for organizer view
             socket.on('player abandonment', (roomId: number) => {
-                this.roomManager.removePlayerMessages(socket.id);
                 const userInfo = this.roomManager.removeUserBySocketID(socket.id);
                 if (userInfo !== undefined) {
                     this.sio.to(String(roomId)).emit('removed player', userInfo.username);
@@ -113,9 +112,9 @@ export class SocketManager {
 
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
-                console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
+                console.log(`Déconnexion par l'utilisateur avec id : ${socket.id}`);
                 // eslint-disable-next-line no-console
-                console.log(`Raison de deconnexion : ${reason}`);
+                console.log(`Raison de déconnexion : ${reason}`);
             });
         });
 
