@@ -59,6 +59,14 @@ export class RoomManagingService {
         return this.getRoomByID(roomId).players.get(username);
     }
 
+    getUsernameBySocketId(roomId: number, userSocketId: string): string {
+        const playersMap = this.getRoomByID(roomId).players;
+        for (const [username] of playersMap.entries()) {
+            if (playersMap.get(username) === userSocketId) return username;
+        }
+        return undefined;
+    }
+
     removeUserFromRoom(roomID: number, name: string): void {
         const playerMap = this.getRoomByID(roomID).players;
         playerMap.delete(name);

@@ -89,9 +89,23 @@ export class SocketManager {
                 this.roomManager.deleteRoom(roomId);
             });
 
+            socket.on('start', (roomId: number) => {
+                // create a game
+                // emit a transition to the game page
+                // emit a game started event
+                this.sio.to(String(roomId)).emit('game started');
+            });
+
             socket.on('get messages', (data: number, callback) => {
                 const messages = this.roomManager.getRoomByID(data)?.messages;
                 callback(messages);
+            });
+
+            socket.on('get username', (data: number, callback) => {
+                console.log(data);
+                console.log(socket.id);
+                const username = this.roomManager.getUsernameBySocketId(data, socket.id);
+                callback(username);
             });
 
             socket.on('new message', (data: { roomId: number; message: Message }) => {

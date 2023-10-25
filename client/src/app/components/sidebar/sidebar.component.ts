@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Message } from '@common/interfaces/message.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getCurrentDateService } from 'src/utils/current-date-format';
+import { ActivatedRoute } from '@angular/router';
 
 const MESSAGE_MAX_CHARACTERS = 200;
 
@@ -11,27 +12,28 @@ const MESSAGE_MAX_CHARACTERS = 200;
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnChanges {
-    @Input() roomId: number;
-    @Input() myName: string;
+export class SidebarComponent {
+    @Input() isHost: boolean;
+    myName: string;
+    roomId: string;
     messageForm: FormGroup;
     messages: Message[] = [];
 
     constructor(
         public socketService: SocketClientService,
         private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
     ) {
-        this.messageForm = this.formBuilder.group({
-            message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
-        });
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes.roomId) {
-            if (this.roomId) {
-                this.getRoomMessages();
-                this.configureBaseSocketFeatures();
-            }
+        const roomId = this.route.snapshot.paramMap.get('id');
+        if (roomId) {
+            this.roomId = roomId;
+            this.messageForm = this.formBuilder.group({
+                message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
+            });
+            if (this.isHost) this.getUsername();
+            else this.myName = 'Organisateur';
+            this.getRoomMessages();
+            this.configureBaseSocketFeatures();
         }
     }
 
@@ -47,6 +49,12 @@ export class SidebarComponent implements OnChanges {
     private getRoomMessages() {
         this.socketService.send('get messages', Number(this.roomId), (messages: Message[]) => {
             this.messages = messages ?? [];
+        });
+    }
+
+    private getUsername() {
+        this.socketService.send('get username', Number(this.roomId), (name: string) => {
+            this.myName = name;
         });
     }
 
