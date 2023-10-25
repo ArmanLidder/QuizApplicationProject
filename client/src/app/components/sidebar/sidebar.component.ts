@@ -27,13 +27,7 @@ export class SidebarComponent {
         const roomId = this.route.snapshot.paramMap.get('id');
         if (roomId) {
             this.roomId = roomId;
-            this.messageForm = this.formBuilder.group({
-                message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
-            });
-            if (this.isHost) this.getUsername();
-            else this.myName = 'Organisateur';
-            this.getRoomMessages();
-            this.configureBaseSocketFeatures();
+            this.setup();
         }
     }
 
@@ -44,6 +38,19 @@ export class SidebarComponent {
             this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
             this.messageForm.get('message')?.setValue('');
         }
+    }
+
+    private setup() {
+        this.messageForm = this.formBuilder.group({
+            message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
+        });
+        if (!this.isHost) {
+            this.getUsername();
+        } else {
+            this.myName = 'Organisateur';
+        }
+        this.getRoomMessages();
+        this.configureBaseSocketFeatures();
     }
 
     private getRoomMessages() {
