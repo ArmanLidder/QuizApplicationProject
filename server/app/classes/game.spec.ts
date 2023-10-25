@@ -71,8 +71,7 @@ describe('Game', () => {
         delete testQuiz['_id'];
         await quizService.collection.insertOne(testQuiz);
         game = new Game(['Player1', 'Player2'], 'quiz123', quizService);
-        game.quiz = testQuiz;
-        game['setValues']();
+        await game.setup(testQuiz.id);
     });
 
     afterEach(async () => {
@@ -81,7 +80,10 @@ describe('Game', () => {
     });
 
     it('should initialize instance game correctly', () => {
+        const getQuizSpy = sinon.spy(game['getQuiz']);
+
         expect(game.players.size).to.equal(2);
+        expect(getQuizSpy.called);
     });
 
     it('should upload next question when calling next', () => {
