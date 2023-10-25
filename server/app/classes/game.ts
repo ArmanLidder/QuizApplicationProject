@@ -26,7 +26,10 @@ export class Game {
         private readonly quizService: QuizService,
     ) {
         this.configurePlayers(usernames);
-        this.getQuiz(quizId);
+    }
+
+    async setup(id: string) {
+        await this.getQuiz(id);
     }
 
     next() {
@@ -142,10 +145,8 @@ export class Game {
         });
     }
 
-    private getQuiz(quizId: string) {
-        this.quizService.getById(quizId).then((quiz: Quiz) => {
-            this.quiz = quiz;
-            this.setValues();
-        });
+    private async getQuiz(quizId: string) {
+        this.quiz = await this.quizService.getById(quizId);
+        this.setValues();
     }
 }

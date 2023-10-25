@@ -71,8 +71,7 @@ describe('Game', () => {
         delete testQuiz['_id'];
         await quizService.collection.insertOne(testQuiz);
         game = new Game(['Player1', 'Player2'], 'quiz123', quizService);
-        game.quiz = testQuiz;
-        game['setValues']();
+        await game.setup(testQuiz.id);
     });
 
     afterEach(async () => {
