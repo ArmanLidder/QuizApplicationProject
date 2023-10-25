@@ -1,5 +1,3 @@
-export type CallbackSignature = (params: unknown) => object;
-
 export class SocketClientServiceTestHelper {
     isSocketAlive() {
         return;

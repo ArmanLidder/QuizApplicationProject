@@ -4,7 +4,7 @@ import { Message } from '@common/interfaces/message.interface';
 type SocketId = string;
 type Username = string;
 
-interface RoomData {
+export interface RoomData {
     room: number;
     quizID: string;
     players: Map<Username, SocketId>;
@@ -48,7 +48,7 @@ export class RoomManagingService {
     }
 
     addUser(roomId: number, username: string, socketID: string) {
-        this.rooms.get(roomId).players.set(username, socketID);
+        this.getRoomByID(roomId).players.set(username, socketID);
     }
 
     addMessage(roomId: number, message: Message) {
@@ -56,11 +56,11 @@ export class RoomManagingService {
     }
 
     getSocketIDByUsername(roomId: number, username: string): string {
-        return this.rooms.get(roomId).players.get(username);
+        return this.getRoomByID(roomId).players.get(username);
     }
 
     removeUserFromRoom(roomID: number, name: string): void {
-        const playerMap = this.rooms.get(roomID).players;
+        const playerMap = this.getRoomByID(roomID).players;
         playerMap.delete(name);
     }
 
@@ -85,16 +85,15 @@ export class RoomManagingService {
         return undefined;
     }
 
+    getUsernamesArray(roomId: number) {
+        if (roomId !== undefined) return Array.from(this.getRoomByID(roomId).players.keys());
+        else return undefined;
+    }
+
     banUser(roomID: number, name: string): void {
         this.rooms.get(roomID).bannedNames.push(name);
         this.removeUserFromRoom(roomID, name);
     }
-
-    // isNameValid(roomID : number, name: string): boolean{
-    //     isBanned = this.rooms.get(roomID).bannedNames.includes(name);
-    //     isUsed = this.rooms.get(roomID).players.has(name);
-    //     return {isBanned: isBanned};
-    // }
 
     isNameUsed(roomID: number, name: string): boolean {
         const room = this.getRoomByID(roomID);
@@ -104,6 +103,10 @@ export class RoomManagingService {
     isNameBanned(roomID: number, name: string): boolean {
         const room = this.getRoomByID(roomID);
         return Array.from(room.bannedNames).some((username) => username.toLowerCase() === name.toLowerCase());
+    }
+
+    isRoomLocked(roomID: number): boolean {
+        return this.getRoomByID(roomID).locked;
     }
 
     changeLockState(roomID: number): void {

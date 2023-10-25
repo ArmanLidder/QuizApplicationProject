@@ -14,7 +14,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() myName: string;
     @Input() isActive: boolean;
     isRoomLocked: boolean = false;
-    lockActionMessage: string = this.setLockActionMessage();
+    isGameStarting: boolean = false;
     players: string[];
 
     constructor(
@@ -28,12 +28,15 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
         this.myName = !this.myName ? 'Organisateur' : this.myName;
+        if (!this.isHost) this.gatherPlayers();
         window.onbeforeunload = () => this.ngOnDestroy();
     }
 
     ngOnDestroy() {
-        const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
-        this.socketService.send(messageType, this.roomId);
+        if (!this.isGameStarting) {
+            const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
+            this.socketService.send(messageType, this.roomId);
+        }
     }
 
     connect() {
@@ -49,7 +52,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     toggleRoomLocked() {
         this.isRoomLocked = !this.isRoomLocked;
-        this.setLockActionMessage();
         this.sendToggleRoomLock();
     }
 
@@ -58,6 +60,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     startGame() {
+        this.isGameStarting = true;
         this.sendStartSignal();
     }
 
@@ -83,6 +86,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     private removePlayer(username: string) {
         const index = this.players.indexOf(username);
         this.players.splice(index, DELETE_NUMBER);
+    }
+
+    private gatherPlayers() {
+        this.socketService.send('gather players username', this.roomId, (players: string[]) => {
+            this.players = players;
+        });
     }
 
     private configureBaseSocketFeatures() {

@@ -44,12 +44,12 @@ export class RoomCodePromptComponent implements OnInit {
         this.validationDone.emit(this.isActive);
     }
 
-    validateRoomId() {
-        if (this.isOnlyDigit()) this.sendRoomId();
+    async validateRoomId() {
+        if (this.isOnlyDigit()) await this.sendRoomId();
         else this.roomIdClientValidation();
     }
 
-    validateUsername() {
+    async validateUsername() {
         const whitespacePattern = /^\s*$/;
         if (this.username === undefined || whitespacePattern.test(this.username)) {
             this.error = "Le nom de l'utilisateur doit contenir au moins un caractère!";
@@ -58,14 +58,13 @@ export class RoomCodePromptComponent implements OnInit {
             this.error = "Le nom de l'utilisateur ne peut pas être Organisateur!";
             this.showErrorFeedback();
         } else {
-            this.sendUsername();
-            this.reset();
+            await this.sendUsername();
         }
     }
 
-    joinRoom() {
-        this.sendJoinRoomRequest();
-        if (!this.isLocked) {
+    async joinRoom() {
+        await this.sendJoinRoomRequest();
+        if (!this.isLocked && this.isRoomIdValid) {
             this.sendRoomIdToWaitingRoom();
             this.sendUsernameToWaitingRoom();
             this.isActive = false;
@@ -75,7 +74,7 @@ export class RoomCodePromptComponent implements OnInit {
 
     private roomIdClientValidation() {
         if (!this.isOnlyDigit()) {
-            this.error = 'Votre code doit contenir seulement 4 chiffre (ex: 1234)';
+            this.error = 'Votre code doit contenir seulement 4 chiffres (ex: 1234)';
             this.showErrorFeedback();
         } else {
             this.reset();
@@ -86,43 +85,61 @@ export class RoomCodePromptComponent implements OnInit {
         return this.roomId?.match('[0-9]{4}');
     }
 
-    private sendJoinRoomRequest() {
-        this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
-            if (isLocked) {
-                this.isLocked = true;
-                this.showErrorFeedback();
-            } else {
-                this.isLocked = false;
-                this.reset();
-            }
-        });
+    private async sendJoinRoomRequest() {
+        await this.sendRoomId();
+        if (this.isRoomIdValid) {
+            return new Promise<void>((resolve) => {
+                this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
+                    if (isLocked) {
+                        this.isLocked = true;
+                        this.showErrorFeedback();
+                    } else {
+                        this.isLocked = false;
+                        this.reset();
+                    }
+                    resolve();
+                });
+            });
+        }
     }
 
-    private sendUsername() {
-        this.socketService.send(
-            'validate username',
-            { roomId: Number(this.roomId), username: this.username },
-            (data: { isValid: boolean; error: string }) => {
-                if (!data.isValid) {
+    private async sendUsername() {
+        await this.sendRoomId();
+        if (this.isRoomIdValid) {
+            this.socketService.send(
+                'validate username',
+                { roomId: Number(this.roomId), username: this.username },
+                (data: { isValid: boolean; error: string }) => {
+                    if (!data.isValid) {
+                        this.showErrorFeedback();
+                        this.error = data.error;
+                    } else {
+                        this.isUsernameValid = data.isValid;
+                        this.reset();
+                    }
+                },
+            );
+        }
+    }
+
+    private async sendRoomId() {
+        return new Promise<void>((resolve) => {
+            this.socketService.send('validate roomID', Number(this.roomId), (data: { isRoom: boolean; isLocked: boolean }) => {
+                if (!data.isRoom) {
+                    this.isRoomIdValid = false;
+                    this.isUsernameValid = false;
                     this.showErrorFeedback();
-                    this.error = data.error;
+                    this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
+                } else if (data.isLocked) {
+                    this.isRoomIdValid = false;
+                    this.showErrorFeedback();
+                    this.error = 'La partie est vérouillée. Veuillez réessayer.';
                 } else {
-                    this.isUsernameValid = data.isValid;
+                    this.isRoomIdValid = true;
                     this.reset();
                 }
-            },
-        );
-    }
-
-    private sendRoomId() {
-        this.socketService.send('validate roomID', Number(this.roomId), (isValid: boolean) => {
-            if (!isValid) {
-                this.showErrorFeedback();
-                this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
-            } else {
-                this.isRoomIdValid = isValid;
-                this.reset();
-            }
+                resolve();
+            });
         });
     }
 
