@@ -14,10 +14,6 @@ export class WaitingRoomPlayerPageComponent {
         this.roomId = roomId;
     }
 
-    receiveUsername(username: string) {
-        this.username = username;
-    }
-
     receiveValidation(isValid: boolean) {
         this.isValidation = isValid;
     }

@@ -11,7 +11,6 @@ const DELETE_NUMBER = 1;
 export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isHost: boolean;
     @Input() roomId: number;
-    @Input() myName: string;
     @Input() isActive: boolean;
     isRoomLocked: boolean = false;
     isGameStarting: boolean = false;
@@ -27,7 +26,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
-        this.myName = !this.myName ? 'Organisateur' : this.myName;
         if (!this.isHost) this.gatherPlayers();
         window.onbeforeunload = () => this.ngOnDestroy();
     }
@@ -56,7 +54,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     setLockActionMessage() {
-        return this.isRoomLocked ? 'vérouillée' : 'ouverte';
+        return this.isRoomLocked ? 'verrouillée' : 'ouverte';
     }
 
     startGame() {
@@ -107,6 +105,11 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             if (this.players.includes(username)) {
                 this.removePlayer(username);
             }
+        });
+
+        this.socketService.on('game started', () => {
+            this.isGameStarting = true;
+            this.router.navigate(['game', this.roomId]);
         });
     }
 }
