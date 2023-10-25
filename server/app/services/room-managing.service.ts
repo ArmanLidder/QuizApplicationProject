@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import {Message} from "@common/interfaces/message.interface";
+import { Message } from '@common/interfaces/message.interface';
 
 type SocketId = string;
 type Username = string;
