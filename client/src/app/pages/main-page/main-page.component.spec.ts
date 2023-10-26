@@ -26,7 +26,7 @@ describe('MainPageComponent', () => {
     it("should have as title 'OnlyQuiz'", () => {
         expect(component.title).toEqual('OnlyQuiz');
     });
-    
+
     it('should contain the team number in the footer', () => {
         const teamName = fixture.nativeElement.querySelector('.team-name');
         expect(teamName.textContent).toContain('Équipe #103');
