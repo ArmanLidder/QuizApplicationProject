@@ -21,6 +21,8 @@
 
 /* (message display area) */
 .sidebar-content {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
     padding: 20px;
     margin: 10px;
@@ -38,9 +40,9 @@
 }
 /* (the little text above the message) */
 .username-said {
-    font-size: 14px; 
-    font-weight: bold; 
-    color: #0151a6; 
+    font-size: 14px;
+    font-weight: bold;
+    color: #0151a6;
 }
 
 /* Message input box */
@@ -62,4 +64,10 @@
 
 .message-input input::placeholder {
     color: #999;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    text-align: center;
 }

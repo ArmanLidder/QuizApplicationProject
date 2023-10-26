@@ -6,6 +6,7 @@ import { Container } from 'typedi';
 import { SocketManager } from '@app/services/socket-manager.service';
 import { SinonStubbedInstance } from 'sinon';
 import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
+import { Message } from '@common/interfaces/message.interface';
 
 const RESPONSE_DELAY = 200;
 
@@ -18,6 +19,7 @@ describe('SocketManager service tests', () => {
 
     const mockRoomId = 1000;
     const mockUsername = 'mockUsername';
+    const mockMessages: Message[] = [{ sender: 'user 1', content: 'message 1', time: 'time 1' }];
     let mockRoom: RoomData;
 
     beforeEach(async () => {
@@ -25,11 +27,13 @@ describe('SocketManager service tests', () => {
             room: mockRoomId, // Replace with the desired room number
             quizID: 'quiz123',
             players: new Map([
+                ['Organisateur', 'socket organisateur'],
                 ['username1', 'socketId1'],
                 ['username2', 'socketId2'],
             ]),
             locked: false,
             bannedNames: ['John', 'Alice'],
+            messages: mockMessages,
         };
         server = Container.get(Server);
         await server.init();
@@ -57,7 +61,7 @@ describe('SocketManager service tests', () => {
         });
     });
 
-    it('should broadcast to all sockets when emiting time', () => {
+    it('should broadcast to all sockets when editing time', () => {
         const spy = sinon.spy(service['sio'].sockets, 'emit');
         service['emitTime']();
         assert(spy.called);
@@ -81,9 +85,9 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle a "player join" event when room is unlocked', (done) => {
-        const expectedPlayers = Array.from(roomManager.getRoomByID(mockRoomId).players.keys());
+        roomManager.getUsernamesArray.returns(['username1', 'username2']);
+        const expectedPlayers = roomManager.getUsernamesArray(mockRoomId);
         roomManager.isRoomLocked.returns(false);
-
         const clientCallBack = (isLocked: boolean) => {
             expect(isLocked).to.equal(false);
             expect(roomManager.addUser.called);
@@ -174,7 +178,7 @@ describe('SocketManager service tests', () => {
             expect(playerNames).to.deep.equal(players);
             done();
         };
-        clientSocket.emit('gather players username', mockRoomId, clientCallback); // c'est bon sa marche pozer
+        clientSocket.emit('gather players username', mockRoomId, clientCallback);
     });
 
     it('should handle "player abandonment" event when undefined', (done) => {
@@ -214,5 +218,60 @@ describe('SocketManager service tests', () => {
             expect(roomManager['rooms'].has(mockRoomId)).to.equal(false);
             done();
         }, RESPONSE_DELAY);
+    });
+
+    it('should handle "start" event', (done) => {
+        const roomId = 123;
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit('start', roomId);
+
+        setTimeout(() => {
+            expect(emitSpy.called);
+            expect(emitSpy.calledWith('game started'));
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle "get messages" event', (done) => {
+        roomManager.getRoomByID.returns(mockRoom);
+        const clientCallback = (messages: string[]) => {
+            expect(messages).to.deep.equal(mockMessages);
+            done();
+        };
+        clientSocket.emit('get messages', mockRoomId, clientCallback);
+    });
+
+    it('should handle "get messages" event if messages is undefined', (done) => {
+        roomManager.getRoomByID.returns(undefined);
+        const clientCallback = (messages?: string[]) => {
+            expect(messages).to.equal(null);
+            done();
+        };
+        clientSocket.emit('get messages', mockRoomId, clientCallback);
+    });
+
+    it('should handle "get username" event', (done) => {
+        roomManager.getUsernameBySocketId.returns(mockUsername);
+        const clientCallback = (username: string) => {
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, clientSocket.id));
+            expect(username).to.deep.equal(mockUsername);
+            done();
+        };
+        clientSocket.emit('get username', mockRoomId, clientCallback);
+    });
+
+    it('should handle "new message" event', (done) => {
+        const newMessage: Message = { sender: 'user1', content: 'New message', time: 'time 1' };
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+
+        setTimeout(() => {
+            expect(emitSpy.called);
+            expect(emitSpy.calledWith('message received'));
+            expect(roomManager.addMessage.calledWith(mockRoomId, newMessage)).to.equal(true);
+
+            done();
+        }, RESPONSE_DELAY);
+
+        clientSocket.emit('new message', { roomId: mockRoomId, message: newMessage });
     });
 });

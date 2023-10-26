@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import { Message } from '@common/interfaces/message.interface';
 
 type SocketId = string;
 type Username = string;
@@ -9,6 +10,7 @@ export interface RoomData {
     players: Map<Username, SocketId>;
     locked: boolean;
     bannedNames: string[];
+    messages?: Message[];
 }
 
 @Service()
@@ -35,6 +37,7 @@ export class RoomManagingService {
             players: new Map<Username, SocketId>(),
             locked: false,
             bannedNames: [],
+            messages: [],
         };
         this.rooms.set(roomID, roomData);
         return roomID;
@@ -48,8 +51,20 @@ export class RoomManagingService {
         this.getRoomByID(roomId).players.set(username, socketID);
     }
 
+    addMessage(roomId: number, message: Message) {
+        this.getRoomByID(roomId).messages?.push(message);
+    }
+
     getSocketIDByUsername(roomId: number, username: string): string {
         return this.getRoomByID(roomId).players.get(username);
+    }
+
+    getUsernameBySocketId(roomId: number, userSocketId: string): string {
+        const playersMap = this.getRoomByID(roomId).players;
+        for (const [username] of playersMap.entries()) {
+            if (playersMap.get(username) === userSocketId) return username;
+        }
+        return undefined;
     }
 
     removeUserFromRoom(roomID: number, name: string): void {
@@ -70,8 +85,11 @@ export class RoomManagingService {
     }
 
     getUsernamesArray(roomId: number) {
-        if (roomId !== undefined) return Array.from(this.getRoomByID(roomId).players.keys());
-        else return undefined;
+        if (roomId !== undefined) {
+            const players = Array.from(this.getRoomByID(roomId).players.keys());
+            players.splice(players.indexOf('Organisateur'), 1);
+            return players;
+        } else return undefined;
     }
 
     banUser(roomID: number, name: string): void {

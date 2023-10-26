@@ -1,6 +1,7 @@
 import * as io from 'socket.io';
 import * as http from 'http';
 import { RoomManagingService } from '@app/services/room-managing.service';
+import { Message } from '@common/interfaces/message.interface';
 
 const ONE_SECOND_DELAY = 1000;
 export class SocketManager {
@@ -21,6 +22,7 @@ export class SocketManager {
             // TODO create service to configure those event reception for organizer waiting view
             socket.on('create Room', (quizID: string, callback) => {
                 const roomCode = this.roomManager.addRoom(quizID);
+                this.roomManager.addUser(roomCode, 'Organisateur', socket.id);
                 socket.join(String(roomCode));
                 callback(roomCode);
             });
@@ -29,8 +31,7 @@ export class SocketManager {
                 const isLocked = this.roomManager.isRoomLocked(data.roomId);
                 if (!isLocked) {
                     this.roomManager.addUser(data.roomId, data.username, socket.id);
-                    const room = this.roomManager.getRoomByID(data.roomId);
-                    const players = Array.from(room.players.keys());
+                    const players = this.roomManager.getUsernamesArray(data.roomId);
                     socket.join(String(data.roomId));
                     this.sio.to(String(data.roomId)).emit('new player', players);
                     callback(isLocked);
@@ -87,11 +88,33 @@ export class SocketManager {
                 this.roomManager.deleteRoom(roomId);
             });
 
+            socket.on('start', (roomId: number) => {
+                // create a game
+                // emit a transition to the game page
+                // emit a game started event
+                this.sio.to(String(roomId)).emit('game started');
+            });
+
+            socket.on('get messages', (data: number, callback) => {
+                const messages = this.roomManager.getRoomByID(data)?.messages;
+                callback(messages);
+            });
+
+            socket.on('get username', (data: number, callback) => {
+                const username = this.roomManager.getUsernameBySocketId(data, socket.id);
+                callback(username);
+            });
+
+            socket.on('new message', (data: { roomId: number; message: Message }) => {
+                this.roomManager.addMessage(data.roomId, data.message);
+                this.sio.to(String(data.roomId)).emit('message received', data.message);
+            });
+
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
-                console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
+                console.log(`Déconnexion par l'utilisateur avec id : ${socket.id}`);
                 // eslint-disable-next-line no-console
-                console.log(`Raison de deconnexion : ${reason}`);
+                console.log(`Raison de déconnexion : ${reason}`);
             });
         });
 

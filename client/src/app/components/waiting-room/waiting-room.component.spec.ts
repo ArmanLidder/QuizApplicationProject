@@ -114,7 +114,7 @@ describe('WaitingRoomComponent', () => {
 
     it('should display the proper message if room is locked', () => {
         component.isRoomLocked = true;
-        expect(component.setLockActionMessage()).toEqual('vérouillée');
+        expect(component.setLockActionMessage()).toEqual('verrouillée');
         component.isRoomLocked = false;
         expect(component.setLockActionMessage()).toEqual('ouverte');
     });
@@ -190,15 +190,18 @@ describe('WaitingRoomComponent', () => {
     });
 
     it('should configure the right socket event listener', () => {
+        component.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         const routerSpy = spyOn(component['router'], 'navigate');
         const removePlayerSpy = spyOn<any>(component, 'removePlayer');
         component.players = ['1', '2', '3', '4'];
         component['configureBaseSocketFeatures']();
-        const [[firstEvent, firstAction], [secondEvent, secondAction], [lastEvent, lastAction]] = onSpy.calls.allArgs();
+        const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction], [lastEvent, lastAction]] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual('new player');
         expect(secondEvent).toEqual('removed from game');
-        expect(lastEvent).toEqual('removed player');
+        expect(thirdEvent).toEqual('removed player');
+        expect(lastEvent).toEqual('game started');
+
         if (typeof firstAction === 'function') {
             firstAction(['1', '2', '3', '4', '5']);
             expect(component.players).toEqual(['1', '2', '3', '4', '5']);
@@ -207,11 +210,17 @@ describe('WaitingRoomComponent', () => {
             secondAction(DIGIT_CONSTANT);
             expect(routerSpy).toHaveBeenCalledWith(['/home']);
         }
-        if (typeof lastAction === 'function') {
-            lastAction('test');
+        if (typeof thirdAction === 'function') {
+            thirdAction('test');
             expect(removePlayerSpy).not.toHaveBeenCalled();
-            lastAction('1');
+            thirdAction('1');
             expect(removePlayerSpy).toHaveBeenCalledWith('1');
+        }
+        if (typeof lastAction === 'function') {
+            routerSpy.calls.reset();
+            lastAction(null);
+            expect(component.isGameStarting).toBeTruthy();
+            expect(routerSpy).toHaveBeenCalledWith(['game', DIGIT_CONSTANT]);
         }
     });
 });

@@ -54,7 +54,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     setLockActionMessage() {
-        return this.isRoomLocked ? 'vérouillée' : 'ouverte';
+        return this.isRoomLocked ? 'verrouillée' : 'ouverte';
     }
 
     startGame() {
@@ -105,6 +105,11 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             if (this.players.includes(username)) {
                 this.removePlayer(username);
             }
+        });
+
+        this.socketService.on('game started', () => {
+            this.isGameStarting = true;
+            this.router.navigate(['game', this.roomId]);
         });
     }
 }
