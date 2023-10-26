@@ -22,6 +22,7 @@ export class SocketManager {
             // TODO create service to configure those event reception for organizer waiting view
             socket.on('create Room', (quizID: string, callback) => {
                 const roomCode = this.roomManager.addRoom(quizID);
+                this.roomManager.addUser(roomCode, 'Organisateur', socket.id);
                 socket.join(String(roomCode));
                 callback(roomCode);
             });
@@ -30,8 +31,7 @@ export class SocketManager {
                 const isLocked = this.roomManager.isRoomLocked(data.roomId);
                 if (!isLocked) {
                     this.roomManager.addUser(data.roomId, data.username, socket.id);
-                    const room = this.roomManager.getRoomByID(data.roomId);
-                    const players = Array.from(room.players.keys());
+                    const players = this.roomManager.getUsernamesArray(data.roomId);
                     socket.join(String(data.roomId));
                     this.sio.to(String(data.roomId)).emit('new player', players);
                     callback(isLocked);

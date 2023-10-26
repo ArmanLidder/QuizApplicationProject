@@ -15,7 +15,10 @@ describe('Room Managing Service', () => {
         roomService['rooms'].set(roomId, {
             room: roomId,
             quizID: 'quiz123',
-            players: new Map([[mockUsername, mockSocket]]),
+            players: new Map([
+                ['Organisateur', 'socket organisateur'],
+                [mockUsername, mockSocket],
+            ]),
             locked: false,
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,

@@ -85,8 +85,11 @@ export class RoomManagingService {
     }
 
     getUsernamesArray(roomId: number) {
-        if (roomId !== undefined) return Array.from(this.getRoomByID(roomId).players.keys());
-        else return undefined;
+        if (roomId !== undefined) {
+            const players = Array.from(this.getRoomByID(roomId).players.keys());
+            players.splice(players.indexOf('Organisateur'), 1);
+            return players;
+        } else return undefined;
     }
 
     banUser(roomID: number, name: string): void {

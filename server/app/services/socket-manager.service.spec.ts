@@ -27,6 +27,7 @@ describe('SocketManager service tests', () => {
             room: mockRoomId, // Replace with the desired room number
             quizID: 'quiz123',
             players: new Map([
+                ['Organisateur', 'socket organisateur'],
                 ['username1', 'socketId1'],
                 ['username2', 'socketId2'],
             ]),
@@ -60,7 +61,7 @@ describe('SocketManager service tests', () => {
         });
     });
 
-    it('should broadcast to all sockets when emiting time', () => {
+    it('should broadcast to all sockets when editing time', () => {
         const spy = sinon.spy(service['sio'].sockets, 'emit');
         service['emitTime']();
         assert(spy.called);
@@ -84,9 +85,9 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle a "player join" event when room is unlocked', (done) => {
-        const expectedPlayers = Array.from(roomManager.getRoomByID(mockRoomId).players.keys());
+        roomManager.getUsernamesArray.returns(['username1', 'username2']);
+        const expectedPlayers = roomManager.getUsernamesArray(mockRoomId);
         roomManager.isRoomLocked.returns(false);
-
         const clientCallBack = (isLocked: boolean) => {
             expect(isLocked).to.equal(false);
             expect(roomManager.addUser.called);
