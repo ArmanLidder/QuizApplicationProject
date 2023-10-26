@@ -1,13 +1,15 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
-import { RoomManagingService } from '@app/services/room-managing.service';
-
+import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
+import * as sinon from 'sinon';
+import { Message } from '@common/interfaces/message.interface';
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
     const roomId = 1;
     const mockUsername = 'usernameOne';
     const mockSocket = 'socketOne';
     const mockBannedNames = ['Jean'];
+    const mockMessages: Message[] = [{ sender: 'user 1', content: 'message 1', time: 'time 1' }];
     beforeEach(() => {
         roomService = new RoomManagingService();
         roomService['rooms'].set(roomId, {
@@ -16,6 +18,7 @@ describe('Room Managing Service', () => {
             players: new Map([[mockUsername, mockSocket]]),
             locked: false,
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
+            messages: mockMessages,
         });
     });
 
@@ -115,5 +118,50 @@ describe('Room Managing Service', () => {
             expect(roomService['generateUniqueRoomID']()).gte(lowerBound);
             expect(roomService['generateUniqueRoomID']()).lte(upperBound);
         }
+    });
+
+    it('should add a new message to the messages of the room', () => {
+        const newMessage: Message = { sender: 'user 2', content: 'message 2', time: 'time 2' };
+        roomService.addMessage(roomId, newMessage);
+        expect(roomService.roomMap.get(roomId).messages.length).to.equal(2);
+        expect(roomService.roomMap.get(roomId).messages[1]).to.deep.equal(newMessage);
+    });
+
+    it('should add a new message to an empty array of messages', () => {
+        const newMessage: Message = { sender: 'user 2', content: 'message 2', time: 'time 2' };
+        roomService.roomMap.get(roomId).messages = undefined;
+        roomService.addMessage(roomId, newMessage);
+        expect(roomService.roomMap.get(roomId).messages).to.equal(undefined);
+    });
+
+    it('should return the username for a valid socket ID', () => {
+        const mockRoom: RoomData = {
+            room: 1,
+            quizID: '',
+            players: new Map<string, string>(),
+            locked: false,
+            bannedNames: [],
+        };
+        mockRoom.players.set(mockUsername, mockSocket);
+
+        sinon.stub(roomService, 'getRoomByID').returns(mockRoom);
+        const result = roomService.getUsernameBySocketId(roomId, mockSocket);
+        expect(result).to.equal(mockUsername);
+    });
+
+    it('should return undefined for an invalid socket ID', () => {
+        const nonExistantSocketId = 'none';
+        const mockRoom: RoomData = {
+            room: 1,
+            quizID: '',
+            players: new Map<string, string>(),
+            locked: false,
+            bannedNames: [],
+        };
+        mockRoom.players.set(mockUsername, mockSocket);
+
+        sinon.stub(roomService, 'getRoomByID').returns(mockRoom);
+        const result = roomService.getUsernameBySocketId(roomId, nonExistantSocketId);
+        expect(result).to.equal(undefined);
     });
 });
