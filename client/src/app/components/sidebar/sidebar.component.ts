@@ -29,6 +29,9 @@ export class SidebarComponent {
             this.roomId = roomId;
             this.setup();
         }
+        this.messageForm = this.formBuilder.group({
+            message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
+        });
     }
 
     sendMessage() {
@@ -41,14 +44,7 @@ export class SidebarComponent {
     }
 
     private setup() {
-        this.messageForm = this.formBuilder.group({
-            message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
-        });
-        if (!this.isHost) {
-            this.getUsername();
-        } else {
-            this.myName = 'Organisateur';
-        }
+        this.getUsername();
         this.getRoomMessages();
         this.configureBaseSocketFeatures();
     }

@@ -190,6 +190,7 @@ describe('WaitingRoomComponent', () => {
     });
 
     it('should configure the right socket event listener', () => {
+        component.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         const routerSpy = spyOn(component['router'], 'navigate');
         const removePlayerSpy = spyOn<any>(component, 'removePlayer');
@@ -216,6 +217,7 @@ describe('WaitingRoomComponent', () => {
             expect(removePlayerSpy).toHaveBeenCalledWith('1');
         }
         if (typeof lastAction === 'function') {
+            routerSpy.calls.reset();
             lastAction(null);
             expect(component.isGameStarting).toBeTruthy();
             expect(routerSpy).toHaveBeenCalledWith(['game', DIGIT_CONSTANT]);

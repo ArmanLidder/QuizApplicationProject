@@ -55,13 +55,7 @@ describe('SidebarComponent', () => {
         expect(component.messageForm).toBeDefined();
     });
 
-    it('should set myName to "Organisateur" when is the host', () => {
-        component.isHost = true;
-        component['setup']();
-        expect(component.myName).toBe('Organisateur');
-    });
-
-    it('should call getUsername() when the user is the host', () => {
+    it('should call getUsername() when setting up the chat', () => {
         const getUsernameSpy = spyOn<any>(component, 'getUsername');
         component['setup']();
         expect(getUsernameSpy).toHaveBeenCalled();
