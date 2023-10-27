@@ -45,6 +45,7 @@ describe('GameItemComponent', () => {
         };
         component.isAdmin = true;
         removeQuizSpy = spyOn(component.removeQuiz, 'emit');
+        spyOn(fixture.debugElement.nativeElement.querySelector('.download'), 'click').and.stub();
         fixture.detectChanges();
     });
 
@@ -101,6 +102,7 @@ describe('GameItemComponent', () => {
     });
 
     it('should call startExportFile when exporting game ', () => {
+        spyOn(component, 'buildJSONFile').and.stub();
         const startExportFileSpy = spyOn(component, 'startExportFile');
         const revokeObjectURLSpy = spyOn(window.URL, 'revokeObjectURL');
         component.exportGame();
