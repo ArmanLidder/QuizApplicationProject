@@ -11,8 +11,9 @@
         </div>
         <h4>{{ question.text }}</h4>
     </section>
-    <app-game-answers-list *ngIf='question.type === QuestionType.QCM'
-                           [duration]='duration' [question]='question'
+    <app-game-answers-list [duration]='timer'
+                           [question]='question'
                             id='answer-field'>
     </app-game-answers-list>
 </div>
+<!--                           (sendSelectedChoices)='updatePlayerAnswer($event)'-->

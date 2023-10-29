@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
 
@@ -12,6 +12,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 export class GameAnswersListComponent {
     @Input() duration: number;
     @Input() question: QuizQuestion;
+    @Output() sendSelectedChoices: EventEmitter<Map<number, string | null>>;
     validated: boolean = false;
     timer: number = 25;
     answers: Map<number, string | null> = new Map<number, string | null>;
@@ -28,8 +29,10 @@ export class GameAnswersListComponent {
                 const textChoice = this.question.choices ? this.question.choices[index].text : null;
                 this.answers.set(index, textChoice);
             }
+            this.sendSelectedChoices.emit(this.answers)
         }
     }
+
 
     handleMultipleEmission() {
         this.receptionDebounce += 1;
@@ -37,7 +40,6 @@ export class GameAnswersListComponent {
     }
 
     validate() {
-        console.log(this.answers);
         if (!this.validated) {
             this.validated = true;
             this.socketClientService.send('player answer',
