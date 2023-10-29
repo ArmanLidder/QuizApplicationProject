@@ -1,0 +1,8 @@
+<app-game-answer-choice-card *ngFor='let choice of this.question.choices; let index = index'
+                             [index]='index+1'
+                             [choice]='choice'
+                             [isValidation]='validated'
+                             (selectEvent)='this.selectChoice($event)'
+                             (enterPressed)='handleMultipleEmission()'>
+</app-game-answer-choice-card>
+<button (click)='validate()'>Valider</button>
