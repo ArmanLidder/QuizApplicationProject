@@ -7,6 +7,7 @@ const ONE_SECOND_DELAY = 1000;
 export class SocketManager {
     private sio: io.Server;
     private roomManager: RoomManagingService;
+
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.roomManager = new RoomManagingService();
@@ -16,10 +17,7 @@ export class SocketManager {
         this.sio.on('connection', (socket) => {
             // eslint-disable-next-line no-console
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-            // message initial
             socket.emit('hello', 'Hello World!');
-
-            // TODO create service to configure those event reception for organizer waiting view
             socket.on('create Room', (quizID: string, callback) => {
                 const roomCode = this.roomManager.addRoom(quizID);
                 this.roomManager.addUser(roomCode, 'Organisateur', socket.id);
@@ -69,11 +67,10 @@ export class SocketManager {
             socket.on('validate roomID', (roomId: number, callback) => {
                 let isLocked = false;
                 const isRoom = this.roomManager.roomMap.has(roomId);
-                if (isRoom) isLocked = this.roomManager.getRoomByID(roomId).locked;
+                if (isRoom) isLocked = this.roomManager.getRoomById(roomId).locked;
                 callback({ isRoom, isLocked });
             });
 
-            // For above create service to configure those event reception for organizer view
             socket.on('player abandonment', (roomId: number) => {
                 const userInfo = this.roomManager.removeUserBySocketID(socket.id);
                 if (userInfo !== undefined) {
@@ -88,15 +85,8 @@ export class SocketManager {
                 this.roomManager.deleteRoom(roomId);
             });
 
-            socket.on('start', (roomId: number) => {
-                // create a game
-                // emit a transition to the game page
-                // emit a game started event
-                this.sio.to(String(roomId)).emit('game started');
-            });
-
             socket.on('get messages', (data: number, callback) => {
-                const messages = this.roomManager.getRoomByID(data)?.messages;
+                const messages = this.roomManager.getRoomById(data)?.messages;
                 callback(messages);
             });
 
@@ -110,6 +100,10 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('message received', data.message);
             });
 
+            socket.on('start', (data: { roomId: number; time: number }) => {
+                this.timerFunction(data.roomId, data.time);
+            });
+
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
                 console.log(`Déconnexion par l'utilisateur avec id : ${socket.id}`);
@@ -117,13 +111,21 @@ export class SocketManager {
                 console.log(`Raison de déconnexion : ${reason}`);
             });
         });
+    }
 
-        setInterval(() => {
-            this.emitTime();
+    private timerFunction(roomId: number, timeValue: number) {
+        this.emitTime(roomId, timeValue--);
+        this.roomManager.getRoomById(roomId).timer = setInterval(() => {
+            if (timeValue >= 0) {
+                this.emitTime(roomId, timeValue);
+                timeValue--;
+            } else {
+                this.roomManager.clearRoomTimer(roomId);
+            }
         }, ONE_SECOND_DELAY);
     }
 
-    emitTime() {
-        this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
+    private emitTime(roomId: number, time: number) {
+        this.sio.to(String(roomId)).emit('time', time);
     }
 }

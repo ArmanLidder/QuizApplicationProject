@@ -3,6 +3,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 const DELETE_NUMBER = 1;
+const START_TRANSITION_DELAY = 5;
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
@@ -15,6 +16,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     isRoomLocked: boolean = false;
     isGameStarting: boolean = false;
     players: string[];
+    time: number;
 
     constructor(
         public socketService: SocketClientService,
@@ -58,8 +60,11 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     startGame() {
-        this.isGameStarting = true;
         this.sendStartSignal();
+    }
+
+    stopTimer() {
+        this.socketService.send('stop timer', this.roomId);
     }
 
     private sendRoomCreation() {
@@ -78,7 +83,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     private sendStartSignal() {
-        this.socketService.send('start', this.roomId);
+        this.socketService.send('start', { roomId: this.roomId, time: START_TRANSITION_DELAY });
     }
 
     private removePlayer(username: string) {
@@ -107,9 +112,10 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.socketService.on('game started', () => {
+        this.socketService.on('time', (timeValue: number) => {
             this.isGameStarting = true;
-            this.router.navigate(['game', this.roomId]);
+            this.time = timeValue;
+            if (this.time === 0) this.router.navigate(['game', this.roomId]);
         });
     }
 }

@@ -9,6 +9,7 @@ export interface RoomData {
     quizID: string;
     players: Map<Username, SocketId>;
     locked: boolean;
+    timer: NodeJS.Timer;
     bannedNames: string[];
     messages?: Message[];
 }
@@ -25,7 +26,11 @@ export class RoomManagingService {
         return this.rooms;
     }
 
-    getRoomByID(roomId: number) {
+    clearRoomTimer(roomId: number) {
+        clearInterval(this.getRoomById(roomId).timer);
+    }
+
+    getRoomById(roomId: number) {
         return this.rooms.get(roomId);
     }
 
@@ -38,6 +43,7 @@ export class RoomManagingService {
             locked: false,
             bannedNames: [],
             messages: [],
+            timer: null,
         };
         this.rooms.set(roomID, roomData);
         return roomID;
@@ -48,19 +54,19 @@ export class RoomManagingService {
     }
 
     addUser(roomId: number, username: string, socketID: string) {
-        this.getRoomByID(roomId).players.set(username, socketID);
+        this.getRoomById(roomId).players.set(username, socketID);
     }
 
     addMessage(roomId: number, message: Message) {
-        this.getRoomByID(roomId).messages?.push(message);
+        this.getRoomById(roomId).messages?.push(message);
     }
 
     getSocketIDByUsername(roomId: number, username: string): string {
-        return this.getRoomByID(roomId).players.get(username);
+        return this.getRoomById(roomId).players.get(username);
     }
 
     getUsernameBySocketId(roomId: number, userSocketId: string): string {
-        const playersMap = this.getRoomByID(roomId).players;
+        const playersMap = this.getRoomById(roomId).players;
         for (const [username] of playersMap.entries()) {
             if (playersMap.get(username) === userSocketId) return username;
         }
@@ -68,7 +74,7 @@ export class RoomManagingService {
     }
 
     removeUserFromRoom(roomID: number, name: string): void {
-        const playerMap = this.getRoomByID(roomID).players;
+        const playerMap = this.getRoomById(roomID).players;
         playerMap.delete(name);
     }
 
@@ -86,7 +92,7 @@ export class RoomManagingService {
 
     getUsernamesArray(roomId: number) {
         if (roomId !== undefined) {
-            const players = Array.from(this.getRoomByID(roomId).players.keys());
+            const players = Array.from(this.getRoomById(roomId).players.keys());
             players.splice(players.indexOf('Organisateur'), 1);
             return players;
         } else return undefined;
@@ -98,17 +104,17 @@ export class RoomManagingService {
     }
 
     isNameUsed(roomID: number, name: string): boolean {
-        const room = this.getRoomByID(roomID);
+        const room = this.getRoomById(roomID);
         return Array.from(room.players.keys()).some((username) => username.toLowerCase() === name.toLowerCase());
     }
 
     isNameBanned(roomID: number, name: string): boolean {
-        const room = this.getRoomByID(roomID);
+        const room = this.getRoomById(roomID);
         return Array.from(room.bannedNames).some((username) => username.toLowerCase() === name.toLowerCase());
     }
 
     isRoomLocked(roomID: number): boolean {
-        return this.getRoomByID(roomID).locked;
+        return this.getRoomById(roomID).locked;
     }
 
     changeLockState(roomID: number): void {

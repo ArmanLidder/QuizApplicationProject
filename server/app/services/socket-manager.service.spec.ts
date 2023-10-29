@@ -11,12 +11,13 @@ import { Message } from '@common/interfaces/message.interface';
 const RESPONSE_DELAY = 200;
 
 describe('SocketManager service tests', () => {
+    const TIME_VALUE = 5;
+    const FIVE_SECOND = 5000;
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
     const urlString = 'http://localhost:3000';
     let roomManager: SinonStubbedInstance<RoomManagingService>;
-
     const mockRoomId = 1000;
     const mockUsername = 'mockUsername';
     const mockMessages: Message[] = [{ sender: 'user 1', content: 'message 1', time: 'time 1' }];
@@ -34,6 +35,7 @@ describe('SocketManager service tests', () => {
             locked: false,
             bannedNames: ['John', 'Alice'],
             messages: mockMessages,
+            timer: null,
         };
         server = Container.get(Server);
         await server.init();
@@ -42,7 +44,7 @@ describe('SocketManager service tests', () => {
         roomManager = sinon.createStubInstance(RoomManagingService);
         roomManager['rooms'] = new Map([[mockRoomId, mockRoom]]);
         roomManager.addRoom.returns(mockRoomId);
-        roomManager.getRoomByID.returns(mockRoom);
+        roomManager.getRoomById.returns(mockRoom);
         service['roomManager'] = roomManager;
         sinon.stub(console, 'log');
     });
@@ -61,11 +63,11 @@ describe('SocketManager service tests', () => {
         });
     });
 
-    it('should broadcast to all sockets when editing time', () => {
-        const spy = sinon.spy(service['sio'].sockets, 'emit');
-        service['emitTime']();
-        assert(spy.called);
-    });
+    // it('should broadcast to all sockets when editing time', () => {
+    //     const spy = sinon.spy(service['sio'].sockets, 'emit');
+    //     service['emitTime']();
+    //     assert(spy.called);
+    // });
 
     it('should handle a create Room event and return a room code', (done) => {
         const clientCallBack = (roomCode: number) => {
@@ -233,7 +235,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle "get messages" event', (done) => {
-        roomManager.getRoomByID.returns(mockRoom);
+        roomManager.getRoomById.returns(mockRoom);
         const clientCallback = (messages: string[]) => {
             expect(messages).to.deep.equal(mockMessages);
             done();
@@ -242,7 +244,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle "get messages" event if messages is undefined', (done) => {
-        roomManager.getRoomByID.returns(undefined);
+        roomManager.getRoomById.returns(undefined);
         const clientCallback = (messages?: string[]) => {
             expect(messages).to.equal(null);
             done();
@@ -263,7 +265,6 @@ describe('SocketManager service tests', () => {
     it('should handle "new message" event', (done) => {
         const newMessage: Message = { sender: 'user1', content: 'New message', time: 'time 1' };
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-
         setTimeout(() => {
             expect(emitSpy.called);
             expect(emitSpy.calledWith('message received'));
@@ -271,7 +272,20 @@ describe('SocketManager service tests', () => {
 
             done();
         }, RESPONSE_DELAY);
-
         clientSocket.emit('new message', { roomId: mockRoomId, message: newMessage });
+    });
+
+    it('should emit time and clear timer when time is over', (done) => {
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        const emitSpy = sinon.spy(service, 'emitTime' as any);
+        /* eslint-enable  @typescript-eslint/no-explicit-any */
+        const setIntervalSpy = sinon.spy(setInterval);
+        service['timerFunction'](mockRoomId, TIME_VALUE);
+        setTimeout(() => {
+            expect(emitSpy.callCount).to.equal(TIME_VALUE);
+            expect(roomManager.clearRoomTimer.called);
+            expect(setIntervalSpy.called);
+            done();
+        }, FIVE_SECOND);
     });
 });

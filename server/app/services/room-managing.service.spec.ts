@@ -6,6 +6,7 @@ import { Message } from '@common/interfaces/message.interface';
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
     const roomId = 1;
+    const FIVE_SECOND = 5000;
     const mockUsername = 'usernameOne';
     const mockSocket = 'socketOne';
     const mockBannedNames = ['Jean'];
@@ -22,6 +23,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,
+            timer: null,
         });
     });
 
@@ -36,7 +38,7 @@ describe('Room Managing Service', () => {
 
     it('should delete a room', () => {
         roomService.deleteRoom(roomId);
-        expect(roomService.getRoomByID(roomId)).to.equal(undefined);
+        expect(roomService.getRoomById(roomId)).to.equal(undefined);
     });
 
     it('should add a user to a room', () => {
@@ -50,7 +52,6 @@ describe('Room Managing Service', () => {
     it('get socketID by username', () => {
         const username = 'usernameOne';
         const socket = roomService.getSocketIDByUsername(roomId, username);
-
         expect(socket).to.equal(mockSocket);
     });
 
@@ -112,6 +113,15 @@ describe('Room Managing Service', () => {
         expect(roomService['isRoomExistent'](nonExistentRoomId)).to.equal(false);
     });
 
+    it('should clear timer', () => {
+        const clearIntervalSpy = sinon.spy(clearInterval);
+        roomService.getRoomById(roomId).timer = setInterval(() => {
+            return;
+        }, FIVE_SECOND);
+        roomService.clearRoomTimer(roomId);
+        expect(clearIntervalSpy.calledWith(roomService.getRoomById(roomId).timer));
+    });
+
     it('should generate a uniqueRoomID between 1000 and 9999', () => {
         const maxLoop = 10000;
         const lowerBound = 1000;
@@ -144,10 +154,11 @@ describe('Room Managing Service', () => {
             players: new Map<string, string>(),
             locked: false,
             bannedNames: [],
+            timer: null,
         };
         mockRoom.players.set(mockUsername, mockSocket);
 
-        sinon.stub(roomService, 'getRoomByID').returns(mockRoom);
+        sinon.stub(roomService, 'getRoomById').returns(mockRoom);
         const result = roomService.getUsernameBySocketId(roomId, mockSocket);
         expect(result).to.equal(mockUsername);
     });
@@ -160,10 +171,10 @@ describe('Room Managing Service', () => {
             players: new Map<string, string>(),
             locked: false,
             bannedNames: [],
+            timer: null,
         };
         mockRoom.players.set(mockUsername, mockSocket);
-
-        sinon.stub(roomService, 'getRoomByID').returns(mockRoom);
+        sinon.stub(roomService, 'getRoomById').returns(mockRoom);
         const result = roomService.getUsernameBySocketId(roomId, nonExistantSocketId);
         expect(result).to.equal(undefined);
     });

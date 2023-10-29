@@ -1,4 +1,4 @@
-<div class="waiting-room">
+<div *ngIf='!isGameStarting' class="waiting-room">
     <div class="waiting-room-header">
         <h1>Salle d'attente</h1>
         <h2 *ngIf='isHost'>Code : {{roomId}}</h2>
@@ -26,5 +26,12 @@
         <button *ngIf='isHost' class="action-btn" (click)='startGame()' [disabled]="!this.isRoomLocked">Commencer</button>
         <button class="cancel" routerLink='/home'> Quitter </button>
     </div>
+</div>
+<div *ngIf='isGameStarting' class='transition'>
+    <div class='timer'>
+        <h2>Game is starting in :</h2>
+        <div>{{time}}</div>
+    </div>
+<!--    <button (click)='stopTimer()'> Quitter </button>-->
 </div>
 

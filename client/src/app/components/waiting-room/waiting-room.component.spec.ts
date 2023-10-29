@@ -122,7 +122,6 @@ describe('WaitingRoomComponent', () => {
     it('should send a start game signal when host starts game', () => {
         const sendStartSignalSpy = spyOn<any>(component, 'sendStartSignal');
         component.startGame();
-        expect(component.isGameStarting).toBeTruthy();
         expect(sendStartSignalSpy).toHaveBeenCalled();
     });
 
@@ -163,10 +162,10 @@ describe('WaitingRoomComponent', () => {
         component['sendStartSignal']();
         const [event, roomId] = sendSpy.calls.mostRecent().args;
         expect(event).toEqual('start');
-        expect(roomId).toEqual(DIGIT_CONSTANT);
+        expect(roomId).toEqual({ roomId: DIGIT_CONSTANT, time: 5 });
     });
 
-    it('should remove the right player from the players list', () => {
+    it('should remove the right player from the playùers list', () => {
         component.players = ['1', '2', '3', '4'];
         for (const player of component.players) {
             const length = component.players.length;
@@ -200,7 +199,7 @@ describe('WaitingRoomComponent', () => {
         expect(firstEvent).toEqual('new player');
         expect(secondEvent).toEqual('removed from game');
         expect(thirdEvent).toEqual('removed player');
-        expect(lastEvent).toEqual('game started');
+        expect(lastEvent).toEqual('time');
 
         if (typeof firstAction === 'function') {
             firstAction(['1', '2', '3', '4', '5']);
@@ -218,9 +217,17 @@ describe('WaitingRoomComponent', () => {
         }
         if (typeof lastAction === 'function') {
             routerSpy.calls.reset();
-            lastAction(null);
+            lastAction(0);
             expect(component.isGameStarting).toBeTruthy();
             expect(routerSpy).toHaveBeenCalledWith(['game', DIGIT_CONSTANT]);
         }
+    });
+
+    it('should send stop timer signal to server', () => {
+        const sendSpy = spyOn(socketService, 'send').and.callThrough();
+        component.stopTimer();
+        const [eventName, roomId] = sendSpy.calls.mostRecent().args;
+        expect(eventName).toEqual('stop timer');
+        expect(roomId).toEqual(component.roomId);
     });
 });
