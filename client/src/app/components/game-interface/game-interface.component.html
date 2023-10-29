@@ -1,3 +1,18 @@
-<app-game-answers-list *ngIf='question.type === QuestionType.QCM'
-                       [duration]='duration' [question]='question'>
-</app-game-answers-list>
+<div id="grid-container">
+    <div id="flex-container">
+        <p>Pointage: 0</p>
+<!--        <p *ngIf = 'testPage && addingPoints' >Vous avez recu des points Bonus!</p>-->
+        <p>Temps restant : {{ timer }}</p>
+    </div>
+    <section id="question-field">
+        <div>
+            <h2>Question 1</h2>
+            <h3>Valeur : 20 points</h3>
+        </div>
+        <h4>{{ question.text }}</h4>
+    </section>
+    <app-game-answers-list *ngIf='question.type === QuestionType.QCM'
+                           [duration]='duration' [question]='question'
+                            id='answer-field'>
+    </app-game-answers-list>
+</div>
