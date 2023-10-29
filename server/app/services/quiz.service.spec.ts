@@ -5,7 +5,7 @@ import { describe } from 'mocha';
 import { MongoClient, ObjectId } from 'mongodb';
 import { DatabaseServiceMock } from './database.service.mock';
 import { QuizService } from './quiz.service';
-import { fillerQuizzes } from '@app/mockData/data';
+import { fillerQuizzes } from '@app/mock-data/data';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { DatabaseService } from './database.service';
 import { restore } from 'sinon';
