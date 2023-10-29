@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { GameService } from '@app/services/game.service';
 
 @Component({
@@ -8,17 +7,9 @@ import { GameService } from '@app/services/game.service';
     styleUrls: ['./game-answers-list.component.scss'],
 })
 export class GameAnswersListComponent {
-    // @Input() duration: number;
-    // @Input() question: QuizQuestion;
-    // validated: boolean = false;
-    // timer: number = 25;
-    // answers: Map<number, string | null> = new Map<number, string | null>();
     private receptionDebounce: number = 0;
 
-    constructor(
-        public gameService: GameService,
-        private socketClientService: SocketClientService,
-    ) {}
+    constructor(public gameService: GameService) {}
 
     selectChoice(index: number) {
         this.gameService.selectChoice(index);
@@ -32,11 +23,7 @@ export class GameAnswersListComponent {
     validate() {
         if (!this.gameService.validated) {
             this.gameService.validated = true;
-            this.socketClientService.send('player answer', {
-                roomId: this.gameService.roomId,
-                answers: this.gameService.answers,
-                time: this.gameService.timer,
-            });
+            this.gameService.sendAnswer();
         }
     }
 }

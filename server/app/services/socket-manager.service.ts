@@ -104,6 +104,7 @@ export class SocketManager {
             socket.on('start', (data: { roomId: number; time: number }) => {
                 this.timerFunction(data.roomId, data.time);
             });
+            
 
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
