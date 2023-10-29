@@ -1,56 +1,58 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
-
+import { GameService } from '@app/services/game.service';
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameAnswerChoiceCardComponent', () => {
-  let component: GameAnswerChoiceCardComponent;
-  let fixture: ComponentFixture<GameAnswerChoiceCardComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [GameAnswerChoiceCardComponent]
+    let component: GameAnswerChoiceCardComponent;
+    let fixture: ComponentFixture<GameAnswerChoiceCardComponent>;
+    let service: GameService;
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [GameAnswerChoiceCardComponent],
+            providers: [GameService],
+        });
+        fixture = TestBed.createComponent(GameAnswerChoiceCardComponent);
+        component = fixture.componentInstance;
+        component.choice = { text: 'test', isCorrect: true };
+        fixture.detectChanges();
     });
-    fixture = TestBed.createComponent(GameAnswerChoiceCardComponent);
-    component = fixture.componentInstance;
-    component.choice = { text: 'test', isCorrect: true };
-    fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-  it ('should call toggle select when pressing item index on key board', () => {
-      const toggleSelectSpy = spyOn(component, 'toggleSelect');
-      const emitSpy = spyOn(component.enterPressed, 'emit');
-      component.index = 1;
-      const keyboardEvent = new KeyboardEvent('keydown', { key: '1'});
-      component.handleKeyboardEvent(keyboardEvent)
-      expect(toggleSelectSpy).toHaveBeenCalled();
-      expect(emitSpy).not.toHaveBeenCalled()
-  });
-
-    it ('should call toggle select when pressing item index on key board', () => {
+    it('should call toggle select when pressing item index on key board', () => {
         const toggleSelectSpy = spyOn(component, 'toggleSelect');
         const emitSpy = spyOn(component.enterPressed, 'emit');
         component.index = 1;
-        const keyboardEvent = new KeyboardEvent('keydown', { key: 'Enter'});
-        component.handleKeyboardEvent(keyboardEvent)
-        expect(toggleSelectSpy).not.toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalled()
+        const keyboardEvent = new KeyboardEvent('keydown', { key: '1' });
+        component.handleKeyboardEvent(keyboardEvent);
+        expect(toggleSelectSpy).toHaveBeenCalled();
+        expect(emitSpy).not.toHaveBeenCalled();
     });
 
-  it('should call show Result during validation state', () => {
-      const showResultSpy = spyOn<any>(component, 'showResult');
-      component.isValidation = true;
-      component.ngOnChanges()
-      expect(showResultSpy).toHaveBeenCalled()
-  });
+    it('should call toggle select when pressing item index on key board', () => {
+        const toggleSelectSpy = spyOn(component, 'toggleSelect');
+        const emitSpy = spyOn(component.enterPressed, 'emit');
+        component.index = 1;
+        const keyboardEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+        component.handleKeyboardEvent(keyboardEvent);
+        expect(toggleSelectSpy).not.toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalled();
+    });
+
+    it('should call show Result during validation state', () => {
+        const showResultSpy = spyOn<any>(component, 'showResult');
+        service.validated = true;
+        component.ngOnChanges();
+        expect(showResultSpy).toHaveBeenCalled();
+    });
 
     it('should not call show Result if not during validation state', () => {
         const showResultSpy = spyOn<any>(component, 'showResult');
-        component.isValidation = false;
-        component.ngOnChanges()
-        expect(showResultSpy).not.toHaveBeenCalled()
+        service.validated = false;
+        component.ngOnChanges();
+        expect(showResultSpy).not.toHaveBeenCalled();
     });
 
     it('should change isSelected value to true and show the appropriate feedback and emit the right number', () => {
@@ -80,7 +82,7 @@ describe('GameAnswerChoiceCardComponent', () => {
     it('should show the appropriate feedback according to choice correctness value', () => {
         const showGoodAnswerFeedBackSpy = spyOn<any>(component, 'showGoodAnswerFeedBack');
         const showBadAnswerFeedBackSpy = spyOn<any>(component, 'showBadAnswerFeedBack');
-        component.choice.text = 'test'
+        component.choice.text = 'test';
         component.choice.isCorrect = false;
         component['showResult']();
         expect(showGoodAnswerFeedBackSpy).not.toHaveBeenCalled();
@@ -92,22 +94,22 @@ describe('GameAnswerChoiceCardComponent', () => {
         expect(showBadAnswerFeedBackSpy).not.toHaveBeenCalled();
     });
 
-    it('should set the class to normal when calling reset', ()=> {
-       component['reset']();
-       expect(component.feedbackDisplay).toEqual('normal');
+    it('should set the class to normal when calling reset', () => {
+        component['reset']();
+        expect(component.feedbackDisplay).toEqual('normal');
     });
 
-    it('should set the class to selected when calling showSelectionFeedback', ()=> {
+    it('should set the class to selected when calling showSelectionFeedback', () => {
         component['showSelectionFeedback']();
         expect(component.feedbackDisplay).toEqual('selected');
     });
 
-    it('should set the class to selected when calling showSelectionFeedback', ()=> {
+    it('should set the class to selected when calling showSelectionFeedback', () => {
         component['showGoodAnswerFeedBack']();
         expect(component.feedbackDisplay).toEqual('good-answer');
     });
 
-    it('should set the class to selected when calling showSelectionFeedback', ()=> {
+    it('should set the class to selected when calling showSelectionFeedback', () => {
         component['showBadAnswerFeedBack']();
         expect(component.feedbackDisplay).toEqual('bad-answer');
     });
