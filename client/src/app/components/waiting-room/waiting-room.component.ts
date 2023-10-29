@@ -15,6 +15,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isActive: boolean;
     isRoomLocked: boolean = false;
     isGameStarting: boolean = false;
+    isTransition: boolean = false;
     players: string[];
     time: number;
 
@@ -113,9 +114,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.on('time', (timeValue: number) => {
-            this.isGameStarting = true;
+            this.isTransition = true;
             this.time = timeValue;
-            if (this.time === 0) this.router.navigate(['game', this.roomId]);
+            if (this.time === 0) {
+                this.router.navigate(['game', this.roomId]);
+                this.isGameStarting = true;
+            }
         });
     }
 }

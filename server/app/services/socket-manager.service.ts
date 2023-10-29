@@ -80,6 +80,7 @@ export class SocketManager {
             });
 
             socket.on('host abandonment', (roomId: number) => {
+                this.roomManager.clearRoomTimer(roomId);
                 this.sio.to(String(roomId)).emit('removed from game');
                 this.sio.in(String(roomId)).disconnectSockets(true);
                 this.roomManager.deleteRoom(roomId);
