@@ -26,6 +26,9 @@ import { WaitingRoomComponent } from './components/waiting-room/waiting-room.com
 import { WaitingRoomHostPageComponent } from './pages/waiting-room-host-page/waiting-room-host-page.component';
 import { WaitingRoomPlayerPageComponent } from './pages/waiting-room-player-page/waiting-room-player-page.component';
 import { RoomCodePromptComponent } from './components/room-code-prompt/room-code-prompt.component';
+import { GameInterfaceComponent } from './components/game-interface/game-interface.component';
+import { GameAnswersListComponent } from './components/game-answers-list/game-answers-list.component';
+import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-card/game-answer-choice-card.component';
 
 /**
  * Main module that is used in main.ts.
@@ -56,6 +59,9 @@ import { RoomCodePromptComponent } from './components/room-code-prompt/room-code
         WaitingRoomHostPageComponent,
         WaitingRoomPlayerPageComponent,
         RoomCodePromptComponent,
+        GameInterfaceComponent,
+        GameAnswersListComponent,
+        GameAnswerChoiceCardComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
