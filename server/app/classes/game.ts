@@ -1,7 +1,7 @@
 import { Quiz, QuizQuestion, QuizChoice } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { Answers } from '@app/interface/game-interface';
-import { Score } from '@common/interfaces/score.interface'
+import { Score } from '@common/interfaces/score.interface';
 
 type Username = string;
 type Players = Map<Username, Score>;
@@ -41,11 +41,18 @@ export class Game {
 
     storePlayerAnswer(username: string, time: number, playerAnswer: string[]) {
         this.updateChoicesStats(playerAnswer);
-        this.playersAnswers.set(username, { answers: playerAnswer, time });
+        this.playersAnswers.set(username, { answers: playerAnswer, time: this.duration - time });
     }
 
     removePlayer(username: string) {
         this.playersAnswers.delete(username);
+    }
+
+    updateScores() {
+        this.playersAnswers.forEach((player, username) => {
+            if (this.validateAnswer(player.answers)) this.handleGoodAnswer(username);
+            else this.handleWrongAnswer(username);
+        });
     }
 
     private updateChoicesStats(playerAnswer: string[]) {
@@ -57,17 +64,12 @@ export class Game {
         });
     }
 
-    updateScores() {
-        this.playersAnswers.forEach((player, username) => {
-            if (this.validateAnswer(player.answers)) this.handleGoodAnswer(username);
-            else this.handleWrongAnswer(username);
-        });
-    }
-
     private validateAnswer(playerAnswers: string[]) {
         if (playerAnswers.length === 0) return false;
         for (const answer of playerAnswers) {
-            if (!this.correctChoices.includes(answer)) return false;
+            if (!this.correctChoices.includes(answer)) {
+                return false;
+            }
         }
         return true;
     }
@@ -76,11 +78,12 @@ export class Game {
         const oldScore = this.players.get(username);
         const points = this.currentQuizQuestion.points;
         let newScore: Score;
-        if (this.getFastestPlayer()) {
+        const fastestPlayers = this.getFastestPlayer();
+        if (fastestPlayers) {
             newScore = {
-                points: oldScore.points + this.addBonusPoint(points),
-                bonusCount: oldScore.bonusCount + 1,
-                isBonus: true,
+                points: fastestPlayers.has(username) ? oldScore.points + this.addBonusPoint(points) : oldScore.points + points,
+                bonusCount: fastestPlayers.has(username) ? oldScore.bonusCount + 1 : oldScore.bonusCount,
+                isBonus: fastestPlayers.has(username),
             };
         } else {
             newScore = {
@@ -97,6 +100,7 @@ export class Game {
     }
 
     private handleWrongAnswer(username: string) {
+        this.players.get(username).isBonus = false;
         this.playersAnswers.delete(username);
     }
 
