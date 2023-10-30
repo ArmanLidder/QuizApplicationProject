@@ -1,6 +1,7 @@
 import { Quiz, QuizQuestion, QuizChoice } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service';
-import { Answers, Score } from '@app/interface/game-interface';
+import { Answers } from '@app/interface/game-interface';
+import { Score } from '@common/interfaces/score.interface'
 
 type Username = string;
 type Players = Map<Username, Score>;
@@ -33,7 +34,6 @@ export class Game {
     }
 
     next() {
-        this.updateScores();
         this.playersAnswers.clear();
         this.currIndex++;
         this.setValues();
@@ -57,7 +57,7 @@ export class Game {
         });
     }
 
-    private updateScores() {
+    updateScores() {
         this.playersAnswers.forEach((player, username) => {
             if (this.validateAnswer(player.answers)) this.handleGoodAnswer(username);
             else this.handleWrongAnswer(username);
@@ -65,6 +65,7 @@ export class Game {
     }
 
     private validateAnswer(playerAnswers: string[]) {
+        if (playerAnswers.length === 0) return false;
         for (const answer of playerAnswers) {
             if (!this.correctChoices.includes(answer)) return false;
         }
@@ -79,11 +80,13 @@ export class Game {
             newScore = {
                 points: oldScore.points + this.addBonusPoint(points),
                 bonusCount: oldScore.bonusCount + 1,
+                isBonus: true,
             };
         } else {
             newScore = {
                 points: oldScore.points + points,
                 bonusCount: oldScore.bonusCount,
+                isBonus: false,
             };
         }
         this.players.set(username, newScore);
@@ -125,7 +128,7 @@ export class Game {
 
     private configurePlayers(usernames: string[]) {
         usernames.forEach((username) => {
-            this.players.set(username, { points: 0, bonusCount: 0 });
+            this.players.set(username, { points: 0, bonusCount: 0, isBonus: false });
         });
     }
 

@@ -25,7 +25,6 @@ export class GameAnswersListComponent {
 
     validate() {
         if (!this.gameService.validated) {
-            this.gameService.validated = true;
             this.gameService.sendAnswer();
         }
     }

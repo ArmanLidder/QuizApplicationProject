@@ -8,9 +8,11 @@ type Score = Map<string, number>;
     providedIn: 'root',
 })
 export class GameService {
+    username: string;
     roomId: number = 0;
     timer: number = 0;
     question: QuizQuestion | null;
+    locked: boolean = false;
     validated: boolean = false;
     players: Map<string, Score> = new Map();
     answers: Map<number, string | null> = new Map();
@@ -20,7 +22,7 @@ export class GameService {
         this.configureBaseSockets();
     }
     selectChoice(index: number) {
-        if (!this.validated) {
+        if (!this.locked) {
             if (this.answers.has(index)) {
                 this.answers.delete(index);
             } else {
@@ -31,12 +33,33 @@ export class GameService {
     }
 
     sendAnswer() {
-        this.socketService.send('submit answers', { roomId: this.roomId, answers: this.answers, timer: this.timer });
+        const answers = Array.from(this.answers.values());
+        this.socketService.send('submit answer',
+            {
+                roomId: this.roomId,
+                answers,
+                timer: this.timer,
+                username: this.username
+            });
+        this.answers.clear();
     }
 
     configureBaseSockets() {
-        this.socketService.on('get question data', (question: QuizQuestion) => {
+        this.socketService.on('get initial question', (data: {question: QuizQuestion, username: string}) => {
+            this.question = data.question;
+            this.username = data.username;
+        });
+
+        this.socketService.on('get next question', (question: QuizQuestion) => {
             this.question = question;
+        });
+
+        this.socketService.on('time', (timeValue: number) => {
+            this.timer = timeValue;
+            if (this.timer === 0 && !this.locked)  {
+                this.locked = true;
+                this.sendAnswer();
+            }
         });
     }
 }

@@ -1,12 +1,12 @@
 <div id="grid-container">
     <div id="flex-container">
         <p>Pointage: {{playerScore}}</p>
-<!--        <p *ngIf = 'testPage && addingPoints' >Vous avez recu des points Bonus!</p>-->
+        <p *ngIf = 'isBonus'> Salam! Vous avez recu des points Bonus! Bsaha</p>
         <p>Temps restant : {{ gameService.timer }}</p>
     </div>
     <section id="question-field">
         <div>
-            <h2>Question 1</h2>
+            <h2>Question {{gameService.currentQuestionIndex + 1}}</h2>
             <h3>Valeur : {{ gameService.question?.points }} points</h3>
         </div>
         <h4>{{ gameService.question?.text }}</h4>

@@ -3,12 +3,14 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
+import { Score } from '@common/interfaces/score.interface';
 
 @Component({
     selector: 'app-game-interface',
     templateUrl: './game-interface.component.html',
     styleUrls: ['./game-interface.component.scss'],
 })
+
 export class GameInterfaceComponent implements OnInit {
     // roomId: string | null;
     isBonus: boolean = false;
@@ -28,43 +30,34 @@ export class GameInterfaceComponent implements OnInit {
         console.log(this.gameService.roomId);
         this.configureBaseSocketFeatures();
         this.socketService.send('get question', this.gameService.roomId);
-        // this.quizService.basicGetById('1').subscribe((quiz: Quiz) => {
-        //     this.gameService.question = quiz.questions[0];
-        //     this.gameService.timer = quiz.duration;
-        // });
     }
 
     nextQuestion() {
         this.gameService.validated = false;
+        this.gameService.locked = false;
         this.gameService.currentQuestionIndex++;
-        this.socketService.send('next question', this.gameService.roomId);
+        this.socketService.send('start transition', this.gameService.roomId);
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on('question round done', (result: { score: number; isBonus: boolean }) => {
-            this.isTransition = true;
-            this.playerScore = result.score;
-            this.isBonus = result.isBonus;
-        });
-
-        this.socketService.on('new question', (data: { question: QuizQuestion }) => {
-            this.isTransition = false;
-            this.isGameLocked = false;
-            this.gameService.question = data.question;
-        });
+        this.socketService.on('end question', () => {
+            if (this.gameService.username !== 'Organisateur') {
+                this.socketService.send('get score',{ roomId: this.gameService.roomId, username: this.gameService.username },(score : Score) => {
+                    this.gameService.validated = true;
+                    this.playerScore = score.points;
+                    this.isBonus = score.isBonus;
+                });
+            }
+        })
 
         this.socketService.on('time transition', (timeValue: number) => {
             this.gameService.timer = timeValue;
-            if (this.gameService.timer === 0) this.isTransition = true;
-        });
-
-        this.socketService.on('time question', (timeValue: number) => {
-            this.gameService.timer = timeValue;
-            if (this.gameService.timer === 0) this.gameService.sendAnswer();
-        });
-
-        this.socketService.on('end game', () => {
-            // navigate to result view
+            if (this.gameService.timer === 0) {
+                this.gameService.locked = false;
+                this.gameService.validated = false;
+                this.isBonus = false;
+                this.socketService.send('next question', this.gameService.roomId);
+            }
         });
     }
 

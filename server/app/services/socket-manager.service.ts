@@ -6,6 +6,8 @@ import { Game } from '@app/classes/game';
 import { QuizService } from '@app/services/quiz.service';
 
 const ONE_SECOND_DELAY = 1000;
+const TRANSITION_QUESTIONS_DELAY = 3;
+
 export class SocketManager {
     private sio: io.Server;
     private roomManager: RoomManagingService;
@@ -107,8 +109,11 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('message received', data.message);
             });
 
+            socket.on('clear timer', (roomId:number) => {
+                this.roomManager.clearRoomTimer(roomId, 'transition');
+            })
+
             socket.on('start', async (data: { roomId: number; time: number }) => {
-                // create the game
                 const room = this.roomManager.getRoomById(data.roomId);
                 const quizId = room.quizID;
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
@@ -118,12 +123,40 @@ export class SocketManager {
             });
 
             socket.on('get question', (roomId: number) => {
-                socket.emit('get question data', this.roomManager.getGameByRoomId(roomId).currentQuizQuestion);
+                const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
+                const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
+                socket.emit('get initial question', { question, username });
+                const duration = this.roomManager.getGameByRoomId(roomId).duration;
+                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') this.timerFunction(roomId, duration);
+            });
+
+            socket.on('submit answer', (data : { roomId: number, answers: string[], timer: number, username: string }) => {
+                const game = this.roomManager.getGameByRoomId(data.roomId);
+                this.roomManager.getGameByRoomId(data.roomId).storePlayerAnswer(data.username, data.timer, data.answers);
+                if (game.playersAnswers.size === game.players.size) {
+                    this.roomManager.getGameByRoomId(data.roomId).updateScores();
+                    this.roomManager.clearRoomTimer(data.roomId);
+                    this.sio.to(String(data.roomId)).emit('end question');
+                }
+            });
+
+            socket.on('start transition', (roomId: number) => {
+               this.timerFunction(roomId, TRANSITION_QUESTIONS_DELAY, 'transition', 'time transition');
+            });
+
+            socket.on('get score', (data : { roomId: number, username: string }, callback) => {
+                console.log('Enter get score');
+                const playerScore = this.roomManager.getGameByRoomId(data.roomId).players.get(data.username);
+                callback(playerScore);
             });
 
             socket.on('next question', (roomId: number) => {
                 this.roomManager.getGameByRoomId(roomId).next();
-                this.sio.to(String(roomId)).emit('get question data', this.roomManager.getGameByRoomId(roomId).currentQuizQuestion);
+                const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
+                console.log(this.roomManager.getGameByRoomId(roomId).currentQuizQuestion);
+                this.sio.to(String(roomId)).emit('get next question', question);
+                const duration = this.roomManager.getGameByRoomId(roomId).duration;
+                if (this.roomManager.getUsernameBySocketId(roomId,socket.id) === 'Organisateur') this.timerFunction(roomId, duration, 'transition');
             });
 
             socket.on('disconnect', (reason) => {
@@ -135,14 +168,17 @@ export class SocketManager {
         });
     }
 
-    private timerFunction(roomId: number, timeValue: number, mode: string) {
+    private timerFunction(roomId: number, timeValue: number, mode?: string, eventName?: string) {
         this.emitTime(roomId, timeValue--);
+        console.log(timeValue);
         const timer = setInterval(() => {
             if (timeValue >= 0) {
+                console.log('inside');
                 this.emitTime(roomId, timeValue);
                 timeValue--;
             } else {
-                this.roomManager.clearRoomTimer(roomId, mode);
+                console.log('timer over');
+                this.roomManager.clearRoomTimer(roomId);
             }
         }, ONE_SECOND_DELAY);
         if (mode === 'transition') {
@@ -152,7 +188,7 @@ export class SocketManager {
         }
     }
 
-    private emitTime(roomId: number, time: number) {
-        this.sio.to(String(roomId)).emit('time', time);
+    private emitTime(roomId: number, time: number, eventName?: string) {
+        eventName ? this.sio.to(String(roomId)).emit(eventName, time) : this.sio.to(String(roomId)).emit('time', time);
     }
 }

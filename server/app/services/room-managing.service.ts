@@ -29,7 +29,7 @@ export class RoomManagingService {
         return this.rooms;
     }
 
-    clearRoomTimer(roomId: number, mode: string) {
+    clearRoomTimer(roomId: number, mode?: string) {
         if (mode === 'transition') {
             clearInterval(this.getRoomById(roomId).timer);
         } else {
