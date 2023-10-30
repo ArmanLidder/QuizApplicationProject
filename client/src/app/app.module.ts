@@ -29,6 +29,7 @@ import { RoomCodePromptComponent } from './components/room-code-prompt/room-code
 import { GameInterfaceComponent } from './components/game-interface/game-interface.component';
 import { GameAnswersListComponent } from './components/game-answers-list/game-answers-list.component';
 import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-card/game-answer-choice-card.component';
+import { HostInterfaceComponent } from './components/host-interface/host-interface.component';
 
 /**
  * Main module that is used in main.ts.
@@ -62,6 +63,7 @@ import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-c
         GameInterfaceComponent,
         GameAnswersListComponent,
         GameAnswerChoiceCardComponent,
+        HostInterfaceComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],

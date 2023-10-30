@@ -1,0 +1,20 @@
+<div id="grid-container" *ngIf='!isGameOver'>
+    <div id="flex-container">
+        <p> {{timerText}} : {{ gameService.timer }}</p>
+    </div>
+    <section id="question-field">
+        <div>
+            <h2>Question {{gameService.currentQuestionIndex + 1}}</h2>
+            <h3>Valeur : {{ gameService.question?.points }} points</h3>
+            <h4>{{ gameService.question?.text }}</h4>
+        </div>
+    </section>
+    <button (click)='nextQuestion()'>Next question</button>
+</div>
+
+<div *ngIf='isGameOver'>
+    <h2>Game is over</h2>
+    <button routerLink='/home'> Quitter </button>
+</div>
+
+
