@@ -10,7 +10,6 @@ import { Score } from '@common/interfaces/score.interface';
     templateUrl: './game-interface.component.html',
     styleUrls: ['./game-interface.component.scss'],
 })
-
 export class GameInterfaceComponent implements OnInit {
     // roomId: string | null;
     isBonus: boolean = false;
@@ -27,7 +26,6 @@ export class GameInterfaceComponent implements OnInit {
 
     ngOnInit() {
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
-        console.log(this.gameService.roomId);
         this.configureBaseSocketFeatures();
         this.socketService.send('get question', this.gameService.roomId);
     }
@@ -35,20 +33,19 @@ export class GameInterfaceComponent implements OnInit {
     nextQuestion() {
         this.gameService.validated = false;
         this.gameService.locked = false;
-        this.gameService.currentQuestionIndex++;
         this.socketService.send('start transition', this.gameService.roomId);
     }
 
     private configureBaseSocketFeatures() {
         this.socketService.on('end question', () => {
             if (this.gameService.username !== 'Organisateur') {
-                this.socketService.send('get score',{ roomId: this.gameService.roomId, username: this.gameService.username },(score : Score) => {
+                this.socketService.send('get score', { roomId: this.gameService.roomId, username: this.gameService.username }, (score: Score) => {
                     this.gameService.validated = true;
                     this.playerScore = score.points;
                     this.isBonus = score.isBonus;
                 });
             }
-        })
+        });
 
         this.socketService.on('time transition', (timeValue: number) => {
             this.gameService.timer = timeValue;
@@ -56,6 +53,7 @@ export class GameInterfaceComponent implements OnInit {
                 this.gameService.locked = false;
                 this.gameService.validated = false;
                 this.isBonus = false;
+                this.gameService.currentQuestionIndex++;
                 this.socketService.send('next question', this.gameService.roomId);
             }
         });

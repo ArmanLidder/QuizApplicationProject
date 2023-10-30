@@ -34,18 +34,17 @@ export class GameService {
 
     sendAnswer() {
         const answers = Array.from(this.answers.values());
-        this.socketService.send('submit answer',
-            {
-                roomId: this.roomId,
-                answers,
-                timer: this.timer,
-                username: this.username
-            });
+        this.socketService.send('submit answer', {
+            roomId: this.roomId,
+            answers,
+            timer: this.timer,
+            username: this.username,
+        });
         this.answers.clear();
     }
 
     configureBaseSockets() {
-        this.socketService.on('get initial question', (data: {question: QuizQuestion, username: string}) => {
+        this.socketService.on('get initial question', (data: { question: QuizQuestion; username: string }) => {
             this.question = data.question;
             this.username = data.username;
         });
@@ -56,7 +55,7 @@ export class GameService {
 
         this.socketService.on('time', (timeValue: number) => {
             this.timer = timeValue;
-            if (this.timer === 0 && !this.locked)  {
+            if (this.timer === 0 && !this.locked) {
                 this.locked = true;
                 this.sendAnswer();
             }

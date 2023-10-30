@@ -3,7 +3,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 const DELETE_NUMBER = 1;
-const START_TRANSITION_DELAY = 2; //TODO remettre a 5 quand push
+const START_TRANSITION_DELAY = 2; // TODO remettre a 5 quand push
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
@@ -118,7 +118,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             this.time = timeValue;
             if (this.time === 0) {
                 this.router.navigate(['game', this.roomId]);
-                this.socketService.send('clear timer', this.roomId);
+                // this.socketService.send('clear timer', this.roomId);
                 this.isGameStarting = true;
             }
         });

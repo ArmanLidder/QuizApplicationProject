@@ -32,13 +32,21 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
     toggleSelect() {
         if (!this.gameService.validated) {
             this.isSelected = !this.isSelected;
-            this.isSelected ? this.showSelectionFeedback() : this.reset();
+            if (this.isSelected) {
+                this.showSelectionFeedback();
+            } else {
+                this.reset();
+            }
             this.selectEvent.emit(this.index - 1);
         }
     }
 
     private showResult() {
-        this.choice.isCorrect ? this.showGoodAnswerFeedBack() : this.showBadAnswerFeedBack();
+        if (this.choice.isCorrect) {
+            this.showGoodAnswerFeedBack();
+        } else {
+            this.showBadAnswerFeedBack();
+        }
     }
 
     private showSelectionFeedback() {
