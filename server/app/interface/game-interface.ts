@@ -3,7 +3,3 @@ export interface Answers {
     time: number;
 }
 
-export interface Score {
-    points: number;
-    bonusCount: number;
-}
