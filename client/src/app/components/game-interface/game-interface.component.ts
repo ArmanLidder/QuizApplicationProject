@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
@@ -10,36 +10,30 @@ import { Score } from '@common/interfaces/score.interface';
     templateUrl: './game-interface.component.html',
     styleUrls: ['./game-interface.component.scss'],
 })
-export class GameInterfaceComponent implements OnInit {
-    // roomId: string | null;
+export class GameInterfaceComponent {
     isBonus: boolean = false;
+    isGameOver: boolean = false;
     playerScore: number = 0;
-    isTransition: boolean = false;
-    isGameLocked: boolean = false;
+    timerText: string = 'Temps restant'
     question: QuizQuestion;
 
     constructor(
         public gameService: GameService,
         private readonly socketService: SocketClientService,
         private route: ActivatedRoute,
-    ) {}
-
-    ngOnInit() {
+    ) {
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
-        this.configureBaseSocketFeatures();
-        this.socketService.send('get question', this.gameService.roomId);
-    }
-
-    nextQuestion() {
-        this.gameService.validated = false;
-        this.gameService.locked = false;
-        this.socketService.send('start transition', this.gameService.roomId);
+        if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
+        this.gameService.init()
     }
 
     private configureBaseSocketFeatures() {
         this.socketService.on('end question', () => {
             if (this.gameService.username !== 'Organisateur') {
-                this.socketService.send('get score', { roomId: this.gameService.roomId, username: this.gameService.username }, (score: Score) => {
+                this.socketService.send('get score', {
+                    roomId: this.gameService.roomId,
+                    username: this.gameService.username
+                }, (score: Score) => {
                     this.gameService.validated = true;
                     this.playerScore = score.points;
                     this.isBonus = score.isBonus;
@@ -53,9 +47,15 @@ export class GameInterfaceComponent implements OnInit {
                 this.gameService.locked = false;
                 this.gameService.validated = false;
                 this.isBonus = false;
-                this.gameService.currentQuestionIndex++;
-                this.socketService.send('next question', this.gameService.roomId);
+                this.timerText = 'Temps restant'
             }
+        });
+
+        this.socketService.on('final time transition', (timeValue: number) => {
+            this.timerText = "Les résultats finaux s'afficherons dans:"
+            this.gameService.timer = timeValue;
+            if (this.gameService.timer === 0)
+                this.isGameOver = true;
         });
     }
 
