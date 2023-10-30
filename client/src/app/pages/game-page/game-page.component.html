@@ -1,7 +1,7 @@
 <div class="container">
     <app-sidebar id="sidebar"></app-sidebar>
     <section class="play-area-container">
-<!--        <app-play-area class="play-area" tabindex="0"></app-play-area>-->
-        <app-game-interface></app-game-interface>
+        <app-host-interface *ngIf='isHost'></app-host-interface>
+        <app-game-interface *ngIf='!isHost'></app-game-interface>
     </section>
 </div>
