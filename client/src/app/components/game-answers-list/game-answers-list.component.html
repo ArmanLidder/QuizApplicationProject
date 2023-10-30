@@ -1,6 +1,6 @@
 <div id='answer-field'>
     <div class='card-container'>
-        <app-game-answer-choice-card *ngFor='let choice of gameService.question.choices; let index = index'
+        <app-game-answer-choice-card *ngFor='let choice of gameService.question?.choices; let index = index'
                                      [index]='index+1'
                                      [choice]='choice'
                                      (selectEvent)='this.selectChoice($event)'

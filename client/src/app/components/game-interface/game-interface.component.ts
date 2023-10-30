@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
@@ -9,20 +9,35 @@ import { GameService } from '@app/services/game.service';
     templateUrl: './game-interface.component.html',
     styleUrls: ['./game-interface.component.scss'],
 })
-export class GameInterfaceComponent {
-    roomId: string | null;
-    isBonus: boolean;
-    playerScore: number;
+export class GameInterfaceComponent implements OnInit {
+    // roomId: string | null;
+    isBonus: boolean = false;
+    playerScore: number = 0;
     isTransition: boolean = false;
     isGameLocked: boolean = false;
-    private route: ActivatedRoute;
+    question: QuizQuestion;
 
     constructor(
         public gameService: GameService,
         private readonly socketService: SocketClientService,
-    ) {
+        private route: ActivatedRoute,
+    ) {}
+
+    ngOnInit() {
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
+        console.log(this.gameService.roomId);
         this.configureBaseSocketFeatures();
+        this.socketService.send('get question', this.gameService.roomId);
+        // this.quizService.basicGetById('1').subscribe((quiz: Quiz) => {
+        //     this.gameService.question = quiz.questions[0];
+        //     this.gameService.timer = quiz.duration;
+        // });
+    }
+
+    nextQuestion() {
+        this.gameService.validated = false;
+        this.gameService.currentQuestionIndex++;
+        this.socketService.send('next question', this.gameService.roomId);
     }
 
     private configureBaseSocketFeatures() {

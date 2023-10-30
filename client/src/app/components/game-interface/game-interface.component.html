@@ -7,10 +7,11 @@
     <section id="question-field">
         <div>
             <h2>Question 1</h2>
-            <h3>Valeur : {{gameService.question.points}} points</h3>
+            <h3>Valeur : {{ gameService.question?.points }} points</h3>
         </div>
-        <h4>{{ gameService.question.text }}</h4>
+        <h4>{{ gameService.question?.text }}</h4>
     </section>
-    <app-game-answers-list *ngIf='gameService.question.type === questionType.QCM' id='answer-field'>
+    <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>
+    <button (click)='nextQuestion()'>Next question</button>
 </div>
