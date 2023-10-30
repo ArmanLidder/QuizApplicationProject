@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
 import { Message } from '@common/interfaces/message.interface';
+import { Game } from '@app/classes/game';
 
 type SocketId = string;
 type Username = string;
@@ -9,7 +10,9 @@ export interface RoomData {
     quizID: string;
     players: Map<Username, SocketId>;
     locked: boolean;
+    game: Game;
     timer: NodeJS.Timer;
+    timerQuestion: NodeJS.Timer;
     bannedNames: string[];
     messages?: Message[];
 }
@@ -26,12 +29,20 @@ export class RoomManagingService {
         return this.rooms;
     }
 
-    clearRoomTimer(roomId: number) {
-        clearInterval(this.getRoomById(roomId).timer);
+    clearRoomTimer(roomId: number, mode: string) {
+        if (mode === 'transition') {
+            clearInterval(this.getRoomById(roomId).timer);
+        } else {
+            clearInterval(this.getRoomById(roomId).timerQuestion);
+        }
     }
 
     getRoomById(roomId: number) {
         return this.rooms.get(roomId);
+    }
+
+    getGameByRoomId(roomId: number) {
+        return this.rooms.get(roomId).game;
     }
 
     addRoom(quizID: string): number {
@@ -41,9 +52,11 @@ export class RoomManagingService {
             quizID,
             players: new Map<Username, SocketId>(),
             locked: false,
+            game: null,
             bannedNames: [],
             messages: [],
             timer: null,
+            timerQuestion: null,
         };
         this.rooms.set(roomID, roomData);
         return roomID;

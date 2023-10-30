@@ -33,9 +33,11 @@ describe('SocketManager service tests', () => {
                 ['username2', 'socketId2'],
             ]),
             locked: false,
+            game: null,
             bannedNames: ['John', 'Alice'],
             messages: mockMessages,
             timer: null,
+            timerQuestion: null,
         };
         server = Container.get(Server);
         await server.init();

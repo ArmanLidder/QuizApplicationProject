@@ -2,13 +2,18 @@ import * as io from 'socket.io';
 import * as http from 'http';
 import { RoomManagingService } from '@app/services/room-managing.service';
 import { Message } from '@common/interfaces/message.interface';
+import { Game } from '@app/classes/game';
+import { QuizService } from '@app/services/quiz.service';
 
 const ONE_SECOND_DELAY = 1000;
 export class SocketManager {
     private sio: io.Server;
     private roomManager: RoomManagingService;
 
-    constructor(server: http.Server) {
+    constructor(
+        private quizService: QuizService,
+        server: http.Server,
+    ) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.roomManager = new RoomManagingService();
     }
@@ -80,7 +85,8 @@ export class SocketManager {
             });
 
             socket.on('host abandonment', (roomId: number) => {
-                this.roomManager.clearRoomTimer(roomId);
+                this.roomManager.clearRoomTimer(roomId, 'transition');
+                this.roomManager.clearRoomTimer(roomId, 'question');
                 this.sio.to(String(roomId)).emit('removed from game');
                 this.sio.in(String(roomId)).disconnectSockets(true);
                 this.roomManager.deleteRoom(roomId);
@@ -101,10 +107,24 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('message received', data.message);
             });
 
-            socket.on('start', (data: { roomId: number; time: number }) => {
-                this.timerFunction(data.roomId, data.time);
+            socket.on('start', async (data: { roomId: number; time: number }) => {
+                // create the game
+                const room = this.roomManager.getRoomById(data.roomId);
+                const quizId = room.quizID;
+                const usernames = this.roomManager.getUsernamesArray(data.roomId);
+                this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
+                await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
+                this.timerFunction(data.roomId, data.time, 'transition');
             });
-            
+
+            socket.on('get question', (roomId: number) => {
+                socket.emit('get question data', this.roomManager.getGameByRoomId(roomId).currentQuizQuestion);
+            });
+
+            socket.on('next question', (roomId: number) => {
+                this.roomManager.getGameByRoomId(roomId).next();
+                this.sio.to(String(roomId)).emit('get question data', this.roomManager.getGameByRoomId(roomId).currentQuizQuestion);
+            });
 
             socket.on('disconnect', (reason) => {
                 // eslint-disable-next-line no-console
@@ -115,16 +135,21 @@ export class SocketManager {
         });
     }
 
-    private timerFunction(roomId: number, timeValue: number) {
+    private timerFunction(roomId: number, timeValue: number, mode: string) {
         this.emitTime(roomId, timeValue--);
-        this.roomManager.getRoomById(roomId).timer = setInterval(() => {
+        const timer = setInterval(() => {
             if (timeValue >= 0) {
                 this.emitTime(roomId, timeValue);
                 timeValue--;
             } else {
-                this.roomManager.clearRoomTimer(roomId);
+                this.roomManager.clearRoomTimer(roomId, mode);
             }
         }, ONE_SECOND_DELAY);
+        if (mode === 'transition') {
+            this.roomManager.getRoomById(roomId).timer = timer;
+        } else {
+            this.roomManager.getRoomById(roomId).timerQuestion = timer;
+        }
     }
 
     private emitTime(roomId: number, time: number) {
