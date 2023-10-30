@@ -12,7 +12,7 @@ export interface RoomData {
     locked: boolean;
     game: Game;
     timer: NodeJS.Timer;
-    timerQuestion: NodeJS.Timer;
+    // timerQuestion: NodeJS.Timer;
     bannedNames: string[];
     messages?: Message[];
 }
@@ -29,12 +29,8 @@ export class RoomManagingService {
         return this.rooms;
     }
 
-    clearRoomTimer(roomId: number, mode?: string) {
-        if (mode === 'transition') {
-            clearInterval(this.getRoomById(roomId).timer);
-        } else {
-            clearInterval(this.getRoomById(roomId).timerQuestion);
-        }
+    clearRoomTimer(roomId: number) {
+        clearInterval(this.getRoomById(roomId).timer);
     }
 
     getRoomById(roomId: number) {
@@ -56,7 +52,7 @@ export class RoomManagingService {
             bannedNames: [],
             messages: [],
             timer: null,
-            timerQuestion: null,
+            // timerQuestion: null,
         };
         this.rooms.set(roomID, roomData);
         return roomID;
