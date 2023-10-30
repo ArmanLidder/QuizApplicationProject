@@ -19,8 +19,24 @@ export class GameService {
     currentQuestionIndex: number = 0;
 
     constructor(public socketService: SocketClientService) {
-        this.configureBaseSockets();
+        if (this.socketService.isSocketAlive()) this.configureBaseSockets();
+        console.log('constructeur game service')
     }
+
+    destroy() {
+        this.reset();
+        this.socketService.socket.offAny();
+        console.log('game service reset properties called')
+    }
+
+    init() {
+        console.log(this.roomId);
+        if (this.socketService.isSocketAlive()) this.configureBaseSockets();
+        this.socketService.send('get question', this.roomId);
+        console.log('get question');
+        console.log('fonction init game service')
+    }
+
     selectChoice(index: number) {
         if (!this.locked) {
             if (this.answers.has(index)) {
@@ -54,11 +70,27 @@ export class GameService {
         });
 
         this.socketService.on('time', (timeValue: number) => {
-            this.timer = timeValue;
-            if (this.timer === 0 && !this.locked) {
-                this.locked = true;
-                this.sendAnswer();
-            }
+            this.handleTimeEvent(timeValue)
         });
+    }
+
+    private handleTimeEvent(timeValue: number) {
+        this.timer = timeValue;
+        if (this.timer === 0 && !this.locked) {
+            this.locked = true;
+            if (this.username !== 'Organisateur') this.sendAnswer();
+        }
+    }
+
+    private reset() {
+        this.username = ''
+        this.roomId = 0;
+        this.timer = 0;
+        this.question = null;
+        this.locked = false;
+        this.validated = false;
+        this.players.clear()
+        this.answers.clear()
+        this.currentQuestionIndex = 0;
     }
 }
