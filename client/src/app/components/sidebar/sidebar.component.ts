@@ -44,9 +44,11 @@ export class SidebarComponent {
     }
 
     private setup() {
-        this.getUsername();
-        this.getRoomMessages();
-        this.configureBaseSocketFeatures();
+        if(this.socketService.isSocketAlive()) {
+            this.getUsername();
+            this.getRoomMessages();
+            this.configureBaseSocketFeatures();
+        }
     }
 
     private getRoomMessages() {
