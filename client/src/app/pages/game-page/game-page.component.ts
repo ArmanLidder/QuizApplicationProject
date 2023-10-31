@@ -23,7 +23,7 @@ export class GamePageComponent implements OnDestroy {
 
     ngOnDestroy() {
         const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
-        if(this.socketService.isSocketAlive()) {
+        if (this.socketService.isSocketAlive()) {
             this.socketService.send(messageType, this.gameService.roomId);
             this.gameService.destroy();
         }

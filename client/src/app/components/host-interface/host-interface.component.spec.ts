@@ -76,7 +76,7 @@ describe('HostInterfaceComponent', () => {
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
-            expect(component.gameService.timer).toEqual(20);
+            expect(component.gameService.timer).toEqual(TIMER_VALUE);
         }
 
         if (typeof secondAction === 'function') {

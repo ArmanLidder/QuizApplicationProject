@@ -65,11 +65,11 @@ export class GameService {
             this.username = data.username;
         });
 
-        this.socketService.on('get next question', (data: {question: QuizQuestion, index: number, isLast: boolean}) => {
+        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;
-            console.log(data.isLast);
+            // console.log(data.isLast);
             this.validated = false;
             this.locked = false;
         });
