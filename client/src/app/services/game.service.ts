@@ -13,6 +13,7 @@ export class GameService {
     roomId: number = 0;
     timer: number = 0;
     question: QuizQuestion | null;
+    isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
     players: Map<string, Score> = new Map();
@@ -64,9 +65,11 @@ export class GameService {
             this.username = data.username;
         });
 
-        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLastQuestion?: boolean }) => {
+        this.socketService.on('get next question', (data: {question: QuizQuestion, index: number, isLast: boolean}) => {
             this.question = data.question;
             this.questionNumber = data.index;
+            this.isLast = data.isLast;
+            console.log(data.isLast);
             this.validated = false;
             this.locked = false;
         });
@@ -91,6 +94,7 @@ export class GameService {
         this.question = null;
         this.locked = false;
         this.validated = false;
+        this.isLast = false;
         this.players.clear();
         this.answers.clear();
         this.questionNumber = 1;

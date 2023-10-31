@@ -21,17 +21,37 @@ export class HostInterfaceComponent {
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init();
+        console.log(this.gameService.validated)
+        console.log(this.gameService.isLast)
     }
 
-    nextQuestion() {
+    isDisabled(){
+        return !(this.gameService.locked && this.gameService.validated);
+    }
+
+    updateHostCommand() {
+        return (this.gameService.isLast) ? 'Montrer résultat': 'Prochaine question';
+    }
+
+    handleHostCommand(){
+        (this.gameService.isLast) ? this.handleLastQuestion(): this.nextQuestion();
+    }
+
+    private nextQuestion() {
         this.gameService.validated = false;
         this.gameService.locked = false;
         this.socketService.send('start transition', this.gameService.roomId);
     }
 
+    private handleLastQuestion() {
+        this.socketService.send('show result', this.gameService.roomId);
+    }
+
+
+
     private configureBaseSocketFeatures() {
         this.socketService.on('time transition', (timeValue: number) => {
-            this.timerText = 'Prochaine question dans';
+            this.timerText = 'Prochaine question dans ';
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.socketService.send('next question', this.gameService.roomId);
@@ -40,7 +60,7 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('final time transition', (timeValue: number) => {
-            this.timerText = "Les résultats finaux s'afficherons dans:";
+            this.timerText = 'Résultat disponible dans ';
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
