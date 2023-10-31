@@ -6,6 +6,11 @@
     border-style: solid;
 }
 
+.active:hover {
+    background-color: rgb(177, 172, 172);
+    cursor: pointer;
+}
+
 .card-flex{
     display: flex;
     flex-direction: column;
@@ -27,19 +32,10 @@
     font-weight: 700;
 }
 
-.normal:hover {
-    background-color: rgb(177, 172, 172);
-    cursor: pointer;
-}
 
 .selected {
     background-color: #007bff;
     color: #FFFFFF
-}
-
-.selected:hover{
-    background-color: rgb(177, 172, 172);
-    cursor: pointer;
 }
 
 .good-answer {

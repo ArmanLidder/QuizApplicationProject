@@ -29,24 +29,22 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
         if (this.gameService.validated) this.showResult();
     }
 
+    handleHoverEffect() {
+        return this.gameService.locked ? '' : 'active';
+    }
+
     toggleSelect() {
-        if (!this.gameService.validated) {
+        if (!this.gameService.locked) {
             this.isSelected = !this.isSelected;
-            if (this.isSelected) {
-                this.showSelectionFeedback();
-            } else {
-                this.reset();
-            }
+            if (this.isSelected) this.showSelectionFeedback();
+            else this.reset();
             this.selectEvent.emit(this.index - 1);
         }
     }
 
     private showResult() {
-        if (this.choice.isCorrect) {
-            this.showGoodAnswerFeedBack();
-        } else {
-            this.showBadAnswerFeedBack();
-        }
+        if (this.choice.isCorrect) this.showGoodAnswerFeedBack();
+        else this.showBadAnswerFeedBack();
     }
 
     private showSelectionFeedback() {
@@ -54,7 +52,7 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
     }
 
     private reset() {
-        this.feedbackDisplay = 'normal';
+        this.feedbackDisplay = 'active';
     }
 
     private showGoodAnswerFeedBack() {

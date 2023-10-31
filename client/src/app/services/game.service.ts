@@ -51,6 +51,7 @@ export class GameService {
             timer: this.timer,
             username: this.username,
         });
+        this.locked = true;
         this.answers.clear();
     }
 
@@ -62,6 +63,8 @@ export class GameService {
 
         this.socketService.on('get next question', (question: QuizQuestion) => {
             this.question = question;
+            this.validated = false;
+            this.locked = false;
         });
 
         this.socketService.on('time', (timeValue: number) => {
