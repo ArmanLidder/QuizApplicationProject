@@ -8,6 +8,7 @@ type Score = Map<string, number>;
     providedIn: 'root',
 })
 export class GameService {
+    isInputFocused: boolean = false;
     username: string;
     roomId: number = 0;
     timer: number = 0;

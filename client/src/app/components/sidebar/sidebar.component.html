@@ -16,6 +16,7 @@
             type="text"
             formControlName="message"
             placeholder="Envoyer un message"
+            (mousedown)="onChatFocus()" (blur)="onChatBlur()"
             (keyup.enter)="sendMessage()"
         >
     </form>

@@ -1,7 +1,6 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { GameService } from '@app/services/game.service';
 import { SocketClientService } from '@app/services/socket-client.service';
-// import { Router } from '@angular/router';
 import { HostInterfaceComponent } from '@app/components/host-interface/host-interface.component';
 import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
 

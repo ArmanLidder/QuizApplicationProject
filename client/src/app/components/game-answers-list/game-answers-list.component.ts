@@ -16,10 +16,12 @@ export class GameAnswersListComponent {
     }
 
     handleMultipleEmission() {
-        this.receptionDebounce += 1;
-        if (this.receptionDebounce === this.gameService.question?.choices?.length) {
-            this.validate();
-            this.receptionDebounce = 0;
+        if (!this.gameService.isInputFocused) {
+            this.receptionDebounce += 1;
+            if (this.receptionDebounce === this.gameService.question?.choices?.length) {
+                this.validate();
+                this.receptionDebounce = 0;
+            }
         }
     }
 

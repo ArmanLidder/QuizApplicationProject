@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Injector } from '@angular/core';
 import { Message } from '@common/interfaces/message.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { ActivatedRoute } from '@angular/router';
+import { GameService } from '@app/services/game.service';
 
 const MESSAGE_MAX_CHARACTERS = 200;
 
@@ -18,12 +19,17 @@ export class SidebarComponent {
     roomId: string;
     messageForm: FormGroup;
     messages: Message[] = [];
+    socketService: SocketClientService;
+    formBuilder: FormBuilder;
+    route: ActivatedRoute;
+    gameService: GameService;
 
-    constructor(
-        public socketService: SocketClientService,
-        private formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-    ) {
+    constructor(injector: Injector) {
+        this.socketService = injector.get<SocketClientService>(SocketClientService);
+        this.formBuilder = injector.get<FormBuilder>(FormBuilder);
+        this.route = injector.get<ActivatedRoute>(ActivatedRoute);
+        this.gameService = injector.get<GameService>(GameService);
+
         const roomId = this.route.snapshot.paramMap.get('id');
         if (roomId) {
             this.roomId = roomId;
@@ -42,6 +48,18 @@ export class SidebarComponent {
             this.messageForm.get('message')?.setValue('');
         }
     }
+
+    onChatFocus() {
+        this.gameService.isInputFocused = true;
+    }
+
+    onChatBlur() {
+        this.gameService.isInputFocused = false;
+    }
+
+    // onChatKeyup(event: KeyboardEvent) {
+    //     this.customKeyup.emit(event);
+    // }
 
     private setup() {
         if (this.socketService.isSocketAlive()) {
