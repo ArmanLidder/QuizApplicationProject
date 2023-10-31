@@ -21,12 +21,10 @@ export class HostInterfaceComponent {
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init();
-        // console.log(this.gameService.validated);
-        // console.log(this.gameService.isLast);
     }
 
     isDisabled() {
-        return !(this.gameService.locked && this.gameService.validated);
+        return !this.gameService.locked && !this.gameService.validated;
     }
 
     updateHostCommand() {
@@ -56,9 +54,16 @@ export class HostInterfaceComponent {
             this.timerText = 'Prochaine question dans ';
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) {
+                this.gameService.locked = true;
+                this.gameService.validated = true;
                 this.socketService.send('next question', this.gameService.roomId);
                 this.timerText = 'Temps restant';
             }
+        });
+
+        this.socketService.on('end question', () => {
+            this.gameService.validated = true;
+            this.gameService.locked = true;
         });
 
         this.socketService.on('final time transition', (timeValue: number) => {
