@@ -157,12 +157,12 @@ export class SocketManager {
                 const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length - 1;
                 this.roomManager.clearRoomTimer(roomId);
                 this.roomManager.getGameByRoomId(roomId).next();
-                console.log(`index ${index}`);
-                console.log(`quizSize ${quizSize}`)
+                // console.log(`index ${index}`);
+                // console.log(`quizSize ${quizSize}`);
                 const isLast = index === quizSize;
                 index++;
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
-                this.sio.to(String(roomId)).emit('get next question', {question, index, isLast });
+                this.sio.to(String(roomId)).emit('get next question', { question, index, isLast });
                 const duration = this.roomManager.getGameByRoomId(roomId).duration;
                 this.timerFunction(roomId, duration);
             });
@@ -173,7 +173,9 @@ export class SocketManager {
             });
 
             socket.on('disconnect', (reason) => {
+                // eslint-disable-next-line no-console
                 console.log(`Déconnexion par l'utilisateur avec id : ${socket.id}`);
+                // eslint-disable-next-line no-console
                 console.log(`Raison de déconnexion : ${reason}`);
             });
         });

@@ -69,7 +69,6 @@ export class GameService {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;
-            // console.log(data.isLast);
             this.validated = false;
             this.locked = false;
         });
