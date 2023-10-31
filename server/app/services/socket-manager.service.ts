@@ -123,9 +123,10 @@ export class SocketManager {
             // Game socket
             socket.on('get question', (roomId: number) => {
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
+                const index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
                 console.log(`${username} entering get question`)
-                socket.emit('get initial question', { question, username });
+                socket.emit('get initial question', { question, username, index });
                 const duration = this.roomManager.getGameByRoomId(roomId).duration;
                 if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
                     this.roomManager.clearRoomTimer(roomId);
@@ -154,13 +155,14 @@ export class SocketManager {
             });
 
             socket.on('next question', (roomId: number) => {
-                const currentQuestionIndex = this.roomManager.getGameByRoomId(roomId).currIndex;
-                const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length - 1;
+                let index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
+                const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length;
                 this.roomManager.clearRoomTimer(roomId);
-                if (currentQuestionIndex !== quizSize) {
+                if (index !== quizSize) {
                     this.roomManager.getGameByRoomId(roomId).next();
+                    index++;
                     const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
-                    this.sio.to(String(roomId)).emit('get next question', question);
+                    this.sio.to(String(roomId)).emit('get next question', {question, index});
                     const duration = this.roomManager.getGameByRoomId(roomId).duration;
                     this.timerFunction(roomId, duration);
                 } else {

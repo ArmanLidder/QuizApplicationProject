@@ -16,7 +16,7 @@ export class GameService {
     validated: boolean = false;
     players: Map<string, Score> = new Map();
     answers: Map<number, string | null> = new Map();
-    currentQuestionIndex: number = 0;
+    questionNumber: number = 1;
 
     constructor(public socketService: SocketClientService) {
         if (this.socketService.isSocketAlive()) this.configureBaseSockets();
@@ -28,8 +28,10 @@ export class GameService {
     }
 
     init() {
-        if (this.socketService.isSocketAlive()) this.configureBaseSockets();
-        this.socketService.send('get question', this.roomId);
+        if (this.socketService.isSocketAlive()) {
+            this.configureBaseSockets();
+            this.socketService.send('get question', this.roomId);
+        }
     }
 
     selectChoice(index: number) {
@@ -56,13 +58,14 @@ export class GameService {
     }
 
     configureBaseSockets() {
-        this.socketService.on('get initial question', (data: { question: QuizQuestion; username: string }) => {
+        this.socketService.on('get initial question', (data: { question: QuizQuestion, username: string,  index: number }) => {
             this.question = data.question;
             this.username = data.username;
         });
 
-        this.socketService.on('get next question', (question: QuizQuestion) => {
-            this.question = question;
+        this.socketService.on('get next question', (data: {question: QuizQuestion, index: number, isLastQuestion?: boolean}) => {
+            this.question = data.question;
+            this.questionNumber = data.index;
             this.validated = false;
             this.locked = false;
         });
@@ -89,6 +92,6 @@ export class GameService {
         this.validated = false;
         this.players.clear();
         this.answers.clear();
-        this.currentQuestionIndex = 0;
+        this.questionNumber = 1;
     }
 }
