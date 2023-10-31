@@ -9,10 +9,10 @@ type Score = Map<string, number>;
 })
 export class GameService {
     isInputFocused: boolean = false;
-    username: string;
+    username: string = '';
     roomId: number = 0;
     timer: number = 0;
-    question: QuizQuestion | null;
+    question: QuizQuestion | null = null;
     isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
