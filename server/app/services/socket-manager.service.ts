@@ -87,10 +87,10 @@ export class SocketManager {
             });
 
             socket.on('host abandonment', (roomId: number) => {
-                // this.roomManager.clearRoomTimer(roomId, 'transition');
                 this.roomManager.clearRoomTimer(roomId);
-                this.sio.to(String(roomId)).emit('removed from game');
+                socket.to(String(roomId)).emit('removed from game');
                 this.sio.in(String(roomId)).disconnectSockets(true);
+                console.log('room deleted')
                 this.roomManager.deleteRoom(roomId);
             });
 
@@ -109,9 +109,6 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('message received', data.message);
             });
 
-            // socket.on('clear timer', (roomId: number) => {
-            //     // this.roomManager.clearRoomTimer(roomId, 'transition');
-            // });
 
             socket.on('start', async (data: { roomId: number; time: number }) => {
                 const room = this.roomManager.getRoomById(data.roomId);
@@ -119,19 +116,21 @@ export class SocketManager {
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
                 this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
                 await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
+                console.log(this.roomManager.roomMap.values())
                 this.timerFunction(data.roomId, data.time);
             });
 
+            // Game socket
             socket.on('get question', (roomId: number) => {
-                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
-                    // this.roomManager.clearRoomTimer(roomId, 'transition');
-                    this.roomManager.clearRoomTimer(roomId);
-                }
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
+                console.log(`${username} entering get question`)
                 socket.emit('get initial question', { question, username });
                 const duration = this.roomManager.getGameByRoomId(roomId).duration;
-                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') this.timerFunction(roomId, duration);
+                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
+                    this.roomManager.clearRoomTimer(roomId);
+                    this.timerFunction(roomId, duration);
+                }
             });
 
             socket.on('submit answer', (data: { roomId: number; answers: string[]; timer: number; username: string }) => {
@@ -140,36 +139,33 @@ export class SocketManager {
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
-                    // this.roomManager.clearRoomTimer(data.roomId, 'transition');
                     this.sio.to(String(data.roomId)).emit('end question');
                 }
             });
 
             socket.on('start transition', (roomId: number) => {
-                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
-                    // this.roomManager.clearRoomTimer(roomId, 'transition');
-                    this.roomManager.clearRoomTimer(roomId);
-                }
+                this.roomManager.clearRoomTimer(roomId);
                 this.timerFunction(roomId, TRANSITION_QUESTIONS_DELAY, 'time transition');
             });
 
             socket.on('get score', (data: { roomId: number; username: string }, callback) => {
-                // console.log('Enter get score');
                 const playerScore = this.roomManager.getGameByRoomId(data.roomId).players.get(data.username);
                 callback(playerScore);
             });
 
             socket.on('next question', (roomId: number) => {
-                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
-                    // reset timers
-                    // this.roomManager.clearRoomTimer(roomId, 'transition');
-                    this.roomManager.clearRoomTimer(roomId);
+                const currentQuestionIndex = this.roomManager.getGameByRoomId(roomId).currIndex;
+                const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length - 1;
+                this.roomManager.clearRoomTimer(roomId);
+                if (currentQuestionIndex !== quizSize) {
                     this.roomManager.getGameByRoomId(roomId).next();
+                    const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
+                    this.sio.to(String(roomId)).emit('get next question', question);
+                    const duration = this.roomManager.getGameByRoomId(roomId).duration;
+                    this.timerFunction(roomId, duration);
+                } else {
+                    this.timerFunction(roomId, TRANSITION_QUESTIONS_DELAY, 'final time transition');
                 }
-                const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
-                this.sio.to(String(roomId)).emit('get next question', question);
-                const duration = this.roomManager.getGameByRoomId(roomId).duration;
-                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') this.timerFunction(roomId, duration);
             });
 
             socket.on('disconnect', (reason) => {
@@ -191,11 +187,6 @@ export class SocketManager {
                 this.roomManager.clearRoomTimer(roomId);
             }
         }, ONE_SECOND_DELAY);
-        // if (mode === 'transition') {
-        //     this.roomManager.getRoomById(roomId).timer = timer;
-        // } else {
-        //     this.roomManager.getRoomById(roomId).timerQuestion = timer;
-        // }
     }
 
     private emitTime(roomId: number, time: number, eventName?: string) {
