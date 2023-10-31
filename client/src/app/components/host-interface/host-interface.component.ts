@@ -34,7 +34,6 @@ export class HostInterfaceComponent {
             this.timerText = 'Prochaine question dans';
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.gameService.currentQuestionIndex++;
                 this.socketService.send('next question', this.gameService.roomId);
                 this.timerText = 'Temps restant';
             }
