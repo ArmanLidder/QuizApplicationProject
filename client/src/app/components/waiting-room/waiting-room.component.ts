@@ -34,10 +34,10 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (!this.isGameStarting) {
-           const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
-           this.socketService.send(messageType, this.roomId);
+            const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
+            this.socketService.send(messageType, this.roomId);
         }
-        this.socketService.socket.offAny()
+        this.socketService.socket.offAny();
     }
 
     connect() {

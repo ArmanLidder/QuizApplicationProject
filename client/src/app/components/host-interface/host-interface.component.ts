@@ -5,12 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service';
 
 @Component({
-  selector: 'app-host-interface',
-  templateUrl: './host-interface.component.html',
-  styleUrls: ['./host-interface.component.scss']
+    selector: 'app-host-interface',
+    templateUrl: './host-interface.component.html',
+    styleUrls: ['./host-interface.component.scss'],
 })
 export class HostInterfaceComponent {
-    timerText: string = 'Temps restant'
+    timerText: string = 'Temps restant';
     isGameOver: boolean = false;
 
     constructor(
@@ -31,20 +31,19 @@ export class HostInterfaceComponent {
 
     private configureBaseSocketFeatures() {
         this.socketService.on('time transition', (timeValue: number) => {
-            this.timerText = 'Prochaine question dans'
+            this.timerText = 'Prochaine question dans';
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.gameService.currentQuestionIndex++;
                 this.socketService.send('next question', this.gameService.roomId);
-                this.timerText = 'Temps restant'
+                this.timerText = 'Temps restant';
             }
         });
 
         this.socketService.on('final time transition', (timeValue: number) => {
-            this.timerText = "Les résultats finaux s'afficherons dans:"
+            this.timerText = "Les résultats finaux s'afficherons dans:";
             this.gameService.timer = timeValue;
-            if (this.gameService.timer === 0)
-                this.isGameOver = true;
+            if (this.gameService.timer === 0) this.isGameOver = true;
         });
     }
 
