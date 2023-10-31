@@ -34,7 +34,7 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
     }
 
     toggleSelect() {
-        if (!this.gameService.locked) {
+        if (!this.gameService.locked && !this.gameService.isInputFocused) {
             this.isSelected = !this.isSelected;
             if (this.isSelected) this.showSelectionFeedback();
             else this.reset();
