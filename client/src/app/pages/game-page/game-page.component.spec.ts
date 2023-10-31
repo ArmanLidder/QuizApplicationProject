@@ -8,7 +8,6 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { GamePageComponent } from './game-page.component';
 
-
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
     let component: GamePageComponent;
@@ -19,10 +18,7 @@ describe('GamePageComponent', () => {
         await TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
             declarations: [GamePageComponent, SidebarComponent, PlayAreaComponent],
-            providers: [
-                SocketClientService,
-                { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
-            ]
+            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         }).compileComponents();
     });
 

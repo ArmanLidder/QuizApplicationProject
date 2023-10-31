@@ -90,7 +90,7 @@ export class SocketManager {
                 this.roomManager.clearRoomTimer(roomId);
                 socket.to(String(roomId)).emit('removed from game');
                 this.sio.in(String(roomId)).disconnectSockets(true);
-                console.log('room deleted')
+                // console.log('room deleted');
                 this.roomManager.deleteRoom(roomId);
             });
 
@@ -109,14 +109,13 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('message received', data.message);
             });
 
-
             socket.on('start', async (data: { roomId: number; time: number }) => {
                 const room = this.roomManager.getRoomById(data.roomId);
                 const quizId = room.quizID;
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
                 this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
                 await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
-                console.log(this.roomManager.roomMap.values())
+                // console.log(this.roomManager.roomMap.values());
                 this.timerFunction(data.roomId, data.time);
             });
 
@@ -125,7 +124,7 @@ export class SocketManager {
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
                 const index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
-                console.log(`${username} entering get question`)
+                // console.log(`${username} entering get question`);
                 socket.emit('get initial question', { question, username, index });
                 const duration = this.roomManager.getGameByRoomId(roomId).duration;
                 if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
@@ -162,7 +161,7 @@ export class SocketManager {
                     this.roomManager.getGameByRoomId(roomId).next();
                     index++;
                     const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
-                    this.sio.to(String(roomId)).emit('get next question', {question, index});
+                    this.sio.to(String(roomId)).emit('get next question', { question, index });
                     const duration = this.roomManager.getGameByRoomId(roomId).duration;
                     this.timerFunction(roomId, duration);
                 } else {

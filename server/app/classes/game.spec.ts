@@ -212,9 +212,9 @@ describe('Game', () => {
         game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
         game.playersAnswers = new Map();
-        game.players.set('Player1', { points: 0, bonusCount: 0 });
-        game.players.set('Player2', { points: 0, bonusCount: 0 });
-        game.players.set('Player3', { points: 0, bonusCount: 0 });
+        game.players.set('Player1', { points: 0, bonusCount: 0, isBonus: false });
+        game.players.set('Player2', { points: 0, bonusCount: 0, isBonus: false });
+        game.players.set('Player3', { points: 0, bonusCount: 0, isBonus: false });
         game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
         game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
         game.storePlayerAnswer('Player3', MAX_TIME, ['London']);
@@ -235,8 +235,8 @@ describe('Game', () => {
         game.currentQuizQuestion = testQuiz.questions[1];
         game.correctChoices = [];
         game.playersAnswers = new Map();
-        game.players.set('Player1', { points: 0, bonusCount: 0 });
-        game.players.set('Player2', { points: 0, bonusCount: 0 });
+        game.players.set('Player1', { points: 0, bonusCount: 0, isBonus: false });
+        game.players.set('Player2', { points: 0, bonusCount: 0, isBonus: false });
         game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
         game.storePlayerAnswer('Player2', MIN_TIME, ['London']);
         game['updateScores']();
@@ -252,9 +252,9 @@ describe('Game', () => {
         game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
         game.playersAnswers = new Map();
-        game.players.set('Player1', { points: 0, bonusCount: 0 });
-        game.players.set('Player2', { points: 0, bonusCount: 0 });
-        game.players.set('Player3', { points: 0, bonusCount: 0 });
+        game.players.set('Player1', { points: 0, bonusCount: 0, isBonus: false });
+        game.players.set('Player2', { points: 0, bonusCount: 0, isBonus: false });
+        game.players.set('Player3', { points: 0, bonusCount: 0, isBonus: false });
         game.storePlayerAnswer('Player1', MIN_TIME, ['Paris']);
         game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
         game.storePlayerAnswer('Player3', MIN_TIME, ['Paris']);

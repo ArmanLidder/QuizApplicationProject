@@ -5,6 +5,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { HostInterfaceComponent } from './host-interface.component';
 
 const DIGIT_CONSTANT = 1;
+const TIMER_VALUE = 20;
 
 describe('HostInterfaceComponent', () => {
     let component: HostInterfaceComponent;
@@ -18,7 +19,7 @@ describe('HostInterfaceComponent', () => {
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
-            ]
+            ],
         });
         fixture = TestBed.createComponent(HostInterfaceComponent);
         component = fixture.componentInstance;
@@ -39,13 +40,13 @@ describe('HostInterfaceComponent', () => {
         expect(secondEvent).toEqual('final time transition');
 
         if (typeof firstAction === 'function') {
-            firstAction(20);
-            expect(component.gameService.timer).toEqual(20);
+            firstAction(TIMER_VALUE);
+            expect(component.gameService.timer).toEqual(TIMER_VALUE);
         }
         if (typeof secondAction === 'function') {
-            secondAction(20);
+            secondAction(TIMER_VALUE);
             expect(component.timerText).toEqual("Les résultats finaux s'afficherons dans:");
-            expect(component.gameService.timer).toEqual(20);
+            expect(component.gameService.timer).toEqual(TIMER_VALUE);
         }
     });
 
@@ -74,7 +75,7 @@ describe('HostInterfaceComponent', () => {
         expect(secondEvent).toEqual('final time transition');
 
         if (typeof firstAction === 'function') {
-            firstAction(20);
+            firstAction(TIMER_VALUE);
             expect(component.gameService.timer).toEqual(20);
         }
 
