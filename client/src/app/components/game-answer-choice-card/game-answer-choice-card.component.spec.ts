@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
 import { GameService } from '@app/services/game.service';
+import { GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameAnswerChoiceCardComponent', () => {
     let component: GameAnswerChoiceCardComponent;
