@@ -17,6 +17,14 @@
     border: 4px solid black;
 }
 
+.enter:disabled {
+    background-color: gray;
+    color: white;
+    border: 4px solid gray;
+    cursor: not-allowed;
+    opacity: 0.35;
+}
+
 .cancel {
     margin-right: 10px;
     background-color: red;
