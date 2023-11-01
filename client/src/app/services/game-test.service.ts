@@ -15,7 +15,6 @@ export class GameTestService {
     timer: Timer;
     playerScore: number = 0;
     question: QuizQuestion | null = null;
-    answers: Map<number, string | null> = new Map();
     currQuestionIndex: number = 0;
 
     constructor(
