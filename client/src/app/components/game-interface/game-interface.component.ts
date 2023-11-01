@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
 import { Score } from '@common/interfaces/score.interface';
-import { GameTestService } from '@app/services/game-test.service';
 
 @Component({
     selector: 'app-game-interface',
@@ -21,16 +20,30 @@ export class GameInterfaceComponent {
 
     constructor(
         public gameService: GameService,
-        public gameTestService: GameTestService,
         private readonly socketService: SocketClientService,
         private route: ActivatedRoute,
         private router: Router,
     ) {
-        this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
+        this.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
         if (this.socketService.isSocketAlive()) {
+            this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
             this.configureBaseSocketFeatures();
+        } else {
+            this.gameService.quizId = this.route.snapshot.paramMap.get('id') as string;
         }
         this.gameService.init();
+    }
+
+    get timer() {
+        return this.isTestMode ? this.gameService.testTimer : this.gameService.timer;
+    }
+
+    get score() {
+        return this.isTestMode ? this.gameService.testPlayerScore : this.playerScore;
+    }
+
+    get bonusStatus() {
+        return this.isTestMode ? this.gameService.testIsBonus : this.isBonus;
     }
 
     private configureBaseSocketFeatures() {
