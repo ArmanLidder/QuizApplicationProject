@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { GameAnswersListComponent } from './game-answers-list.component';
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 describe('GameAnswersListComponent', () => {
     let component: GameAnswersListComponent;
@@ -11,10 +12,7 @@ describe('GameAnswersListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [GameAnswersListComponent],
-            providers: [
-                SocketClientService,
-                { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
-            ]
+            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         });
         fixture = TestBed.createComponent(GameAnswersListComponent);
         component = fixture.componentInstance;
@@ -39,15 +37,13 @@ describe('GameAnswersListComponent', () => {
     });
 
     it('should handle multiple emission', () => {
-
         const validateSpy = spyOn<any>(component, 'validate');
         const checkIsIncremented = component['receptionDebounce'];
         component.handleMultipleEmission();
         expect(validateSpy).not.toHaveBeenCalled();
         expect(component['receptionDebounce']).toEqual(checkIsIncremented + 1);
 
-        component.gameService.question =
-        {
+        component.gameService.question = {
             type: 0,
             text: 'What is the capital of France?',
             points: 10,
@@ -65,7 +61,6 @@ describe('GameAnswersListComponent', () => {
         component.handleMultipleEmission();
         expect(component['receptionDebounce']).toEqual(0);
         expect(validateSpy).toHaveBeenCalled();
-
     });
 
     it('should select the choice properly', () => {
@@ -73,5 +68,4 @@ describe('GameAnswersListComponent', () => {
         component.selectChoice(1);
         expect(selectChoiceSpy).toHaveBeenCalled();
     });
-
 });

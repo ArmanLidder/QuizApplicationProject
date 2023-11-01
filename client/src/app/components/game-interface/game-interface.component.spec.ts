@@ -5,19 +5,18 @@ import { ActivatedRoute } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Score } from '@common/interfaces/score.interface';
 
-
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
     let fixture: ComponentFixture<GameInterfaceComponent>;
-    let socketService : SocketClientServiceTestHelper;
+    let socketService: SocketClientServiceTestHelper;
     // let gameServiceSpy : SpyObj<GameService>;
-    let onSpy : jasmine.Spy;
+    let onSpy: jasmine.Spy;
     let sendSpy: jasmine.Spy;
     const mockScore: Score = {
         points: 1,
         bonusCount: 1,
         isBonus: true,
-    }
+    };
     const mockTimeValue = 123;
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -46,12 +45,12 @@ describe('GameInterfaceComponent', () => {
     it('should configure base socket features for end question correctly', () => {
         component.gameService.username = 'test';
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] =  onSpy.calls.allArgs()[0];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[0];
         expect(socketOnText).toEqual('end question');
         socketOnFunc();
         const [sendText, sendObject, sendCallback] = sendSpy.calls.allArgs()[0];
         expect(sendText).toEqual('get score');
-        expect(sendObject).toEqual({roomId: 1, username: 'test'});
+        expect(sendObject).toEqual({ roomId: 1, username: 'test' });
         sendCallback(mockScore);
         expect(component.playerScore).toEqual(mockScore.points);
         expect(component.isBonus).toEqual(mockScore.isBonus);
@@ -59,7 +58,7 @@ describe('GameInterfaceComponent', () => {
 
     it('should configure base socket features for time transition correctly', () => {
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] =  onSpy.calls.allArgs()[1];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[1];
         expect(socketOnText).toEqual('time transition');
         socketOnFunc(mockTimeValue);
         expect(component.gameService.timer).toEqual(mockTimeValue);
@@ -71,7 +70,7 @@ describe('GameInterfaceComponent', () => {
 
     it('should configure base socket features for final time transition correctly', () => {
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] =  onSpy.calls.allArgs()[2];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[2];
         expect(socketOnText).toEqual('final time transition');
         socketOnFunc(mockTimeValue);
         expect(component.gameService.timer).toEqual(mockTimeValue);
@@ -82,11 +81,9 @@ describe('GameInterfaceComponent', () => {
     it('should configure base socket features for removed from game correctly', () => {
         const routerSpy = spyOn(component['router'], 'navigate');
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] =  onSpy.calls.allArgs()[3];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[3];
         expect(socketOnText).toEqual('removed from game');
         socketOnFunc();
         expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 });
-
-

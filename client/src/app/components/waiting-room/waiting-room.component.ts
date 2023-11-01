@@ -3,7 +3,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 const DELETE_NUMBER = 1;
-const START_TRANSITION_DELAY = 2; // TODO remettre a 5 quand push
+const START_TRANSITION_DELAY = 5;
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
