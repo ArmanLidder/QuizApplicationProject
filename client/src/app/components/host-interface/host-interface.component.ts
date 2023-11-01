@@ -1,8 +1,8 @@
-import { QuestionType } from '@common/interfaces/quiz.interface';
 import { Component } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service';
+import { SocketClientService } from '@app/services/socket-client.service';
+import { QuestionType } from '@common/interfaces/quiz.interface';
 
 @Component({
     selector: 'app-host-interface',
