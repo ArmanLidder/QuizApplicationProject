@@ -11,7 +11,7 @@ import { GameService } from '@app/services/game.service';
 
 const MESSAGE_MAX_CHARACTERS = 200;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let socketService: SocketClientServiceTestHelper;
@@ -19,9 +19,7 @@ fdescribe('SidebarComponent', () => {
     let gameService: SpyObj<GameService>;
     let longMessage: string;
     beforeEach(() => {
-        gameService = jasmine.createSpyObj('GameService', [
-            'destroy'
-        ]);
+        gameService = jasmine.createSpyObj('GameService', ['destroy']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             imports: [ReactiveFormsModule, FormsModule],
