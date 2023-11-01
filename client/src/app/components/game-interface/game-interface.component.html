@@ -1,12 +1,12 @@
 <div *ngIf='!isGameOver' id="grid-container">
     <div id="flex-container">
-        <p>Pointage: {{playerScore}}</p>
+        <p>Pointage: {{ playerScore }}</p>
         <p *ngIf = 'isBonus'> Vous avez recu des points Bonus! </p>
-        <p> {{timerText}} : {{ gameService.timer }}</p>
+        <p> {{ timerText }} : {{ gameService.timer }}</p>
     </div>
     <section id="question-field">
         <div>
-            <h2>Question {{gameService.questionNumber}}</h2>
+            <h2>Question {{ gameService.questionNumber }}</h2>
             <h3>Valeur : {{ gameService.question?.points }} points</h3>
         </div>
         <h4>{{ gameService.question?.text }}</h4>
@@ -17,6 +17,6 @@
 
 <div *ngIf='isGameOver'>
     <h2>Le jeu est terminé!</h2>
-    <p>Votre score final : {{playerScore}}</p>
+    <p>Votre score final : {{ playerScore }}</p>
     <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
