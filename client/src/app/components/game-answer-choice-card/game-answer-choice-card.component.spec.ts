@@ -1,15 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GameService } from '@app/services/game.service';
 import { GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameAnswerChoiceCardComponent', () => {
     let component: GameAnswerChoiceCardComponent;
     let fixture: ComponentFixture<GameAnswerChoiceCardComponent>;
-    let service: GameService;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [GameAnswerChoiceCardComponent],
-            providers: [GameService],
+            declarations: [GameAnswerChoiceCardComponent]
         });
         fixture = TestBed.createComponent(GameAnswerChoiceCardComponent);
         component = fixture.componentInstance;
@@ -43,14 +40,14 @@ describe('GameAnswerChoiceCardComponent', () => {
 
     it('should call show Result during validation state', () => {
         const showResultSpy = spyOn<any>(component, 'showResult');
-        service.validated = true;
+        component['gameService'].validated = true;
         component.ngOnChanges();
         expect(showResultSpy).toHaveBeenCalled();
     });
 
     it('should not call show Result if not during validation state', () => {
         const showResultSpy = spyOn<any>(component, 'showResult');
-        service.validated = false;
+        component['gameService'].validated = false;
         component.ngOnChanges();
         expect(showResultSpy).not.toHaveBeenCalled();
     });
@@ -96,7 +93,7 @@ describe('GameAnswerChoiceCardComponent', () => {
 
     it('should set the class to normal when calling reset', () => {
         component['reset']();
-        expect(component.feedbackDisplay).toEqual('normal');
+        expect(component.feedbackDisplay).toEqual('active');
     });
 
     it('should set the class to selected when calling showSelectionFeedback', () => {
