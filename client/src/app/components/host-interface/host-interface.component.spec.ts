@@ -21,9 +21,12 @@ describe('HostInterfaceComponent', () => {
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
             ],
         });
+        socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
+        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
+            return true;
+        });
         fixture = TestBed.createComponent(HostInterfaceComponent);
         component = fixture.componentInstance;
-        socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         fixture.detectChanges();
     });
 
@@ -115,6 +118,13 @@ describe('HostInterfaceComponent', () => {
         const sendSpy = spyOn(socketService, 'send');
         component['handleLastQuestion']();
         expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.roomId);
+    });
+
+    it('should update host command properly', () => {
+        component.gameService.isLast = false;
+        expect(component.updateHostCommand()).toEqual('Prochaine question');
+        component.gameService.isLast = true;
+        expect(component.updateHostCommand()).toEqual('Montrer résultat');
     });
 
     it('should handle properly the host command', () => {
