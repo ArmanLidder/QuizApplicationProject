@@ -68,6 +68,7 @@ export class GameTestService {
         this.timeService.deleteAllTimers();
         this.playerScore = 0;
         this.currQuestionIndex = 0;
+        this.isBonus = false;
     }
 
     private extractCorrectChoices(choices?: QuizChoice[]) {

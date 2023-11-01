@@ -93,22 +93,7 @@ export class GameService {
             clearTimeout(this.timeouts[0]);
             this.gameTestService.updateScore(this.answers);
             this.gameTestService.startTimer(TESTING_TRANSITION_TIMER);
-            const tick = 1000;
-            this.timeouts[1] = window.setTimeout(() => {
-                this.validated = false;
-                this.locked = false;
-                this.gameTestService.isBonus = false;
-                if (this.gameTestService.next()) {
-                    this.questionNumber++;
-                    this.question = this.gameTestService.question;
-                    this.gameTestService.startTimer(this.gameTestService.quiz.duration);
-                    this.handleQuestionTimer();
-                } else {
-                    this.isLast = true;
-                    this.validated = true;
-                    this.locked = true;
-                }
-            }, TESTING_TRANSITION_TIMER * tick);
+            this.handleTransitionTimer();
         }
         this.locked = true;
         this.answers.clear();
@@ -138,6 +123,33 @@ export class GameService {
         this.timeouts[0] = window.setTimeout(() => {
             this.sendAnswer();
         }, this.gameTestService.quiz.duration * tick);
+    }
+
+    private handleTransitionTimer() {
+        const tick = 1000;
+        this.timeouts[1] = window.setTimeout(() => {
+            this.hideFeedback();
+            if (this.gameTestService.next()) {
+                this.questionNumber++;
+                this.question = this.gameTestService.question;
+                this.gameTestService.startTimer(this.gameTestService.quiz.duration);
+                this.handleQuestionTimer();
+            } else {
+                this.showFeedBack();
+            }
+        }, TESTING_TRANSITION_TIMER * tick);
+    }
+
+    private hideFeedback() {
+        this.validated = false;
+        this.locked = false;
+        this.gameTestService.isBonus = false;
+    }
+
+    private showFeedBack() {
+        this.isLast = true;
+        this.validated = true;
+        this.locked = true;
     }
 
     private handleTimeEvent(timeValue: number) {
