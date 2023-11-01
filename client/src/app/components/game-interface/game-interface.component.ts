@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
 import { Score } from '@common/interfaces/score.interface';
+import { GameTestService } from '@app/services/game-test.service';
 
 @Component({
     selector: 'app-game-interface',
@@ -16,15 +17,19 @@ export class GameInterfaceComponent {
     playerScore: number = 0;
     timerText: string = 'Temps restant';
     question: QuizQuestion;
+    isTestMode: boolean;
 
     constructor(
         public gameService: GameService,
+        public gameTestService: GameTestService,
         private readonly socketService: SocketClientService,
         private route: ActivatedRoute,
         private router: Router,
     ) {
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
-        if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
+        if (this.socketService.isSocketAlive()) {
+            this.configureBaseSocketFeatures();
+        }
         this.gameService.init();
     }
 
