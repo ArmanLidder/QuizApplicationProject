@@ -59,6 +59,7 @@ export class RoomManagingService {
     }
 
     deleteRoom(roomID: number): void {
+        this.clearRoomTimer(roomID);
         this.rooms.delete(roomID);
     }
 
