@@ -4,11 +4,15 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { GameTestService } from '@app/services/game-test.service';
 
 type Score = Map<string, number>;
+const TESTING_TRANSITION_TIMER = 3;
 
 @Injectable({
     providedIn: 'root',
 })
 export class GameService {
+    timeouts: number[] = [0, 0];
+    quizId: string;
+
     isInputFocused: boolean = false;
     username: string = '';
     roomId: number = 0;
@@ -21,15 +25,30 @@ export class GameService {
     answers: Map<number, string | null> = new Map();
     questionNumber: number = 1;
 
-    constructor(public socketService: SocketClientService, public gameTestService: GameTestService) {
+    constructor(
+        public socketService: SocketClientService,
+        public gameTestService: GameTestService,
+    ) {
         if (this.socketService.isSocketAlive()) {
             this.configureBaseSockets();
         }
     }
 
+    get testTimer() {
+        return this.gameTestService.timer?.time;
+    }
+
+    get testPlayerScore() {
+        return this.gameTestService.playerScore;
+    }
+
+    get testIsBonus() {
+        return this.gameTestService.isBonus;
+    }
+
     destroy() {
         this.reset();
-        this.socketService.socket.offAny();
+        if (this.socketService.isSocketAlive()) this.socketService.socket.offAny();
     }
 
     init() {
@@ -37,8 +56,14 @@ export class GameService {
             this.configureBaseSockets();
             this.socketService.send('get question', this.roomId);
         } else {
-            // get the quiz
-            // this.question = this.gameTestService.
+            this.gameTestService.getQuiz(this.quizId).subscribe((quiz) => {
+                this.gameTestService.quiz = quiz;
+                this.gameTestService.question = quiz.questions[this.gameTestService.currQuestionIndex];
+                this.question = this.gameTestService.question;
+                this.gameTestService.timeService.deleteAllTimers();
+                this.gameTestService.startTimer(this.gameTestService.quiz.duration);
+                this.handleQuestionTimer();
+            });
         }
     }
 
@@ -63,9 +88,27 @@ export class GameService {
                 username: this.username,
             });
         } else {
-            this.gameTestService.updateScore();
-            // start the transition timer
-            // at the end, setup new question which starts question timer
+            this.validated = true;
+            this.locked = true;
+            clearTimeout(this.timeouts[0]);
+            this.gameTestService.updateScore(this.answers);
+            this.gameTestService.startTimer(TESTING_TRANSITION_TIMER);
+            const tick = 1000;
+            this.timeouts[1] = window.setTimeout(() => {
+                this.validated = false;
+                this.locked = false;
+                this.gameTestService.isBonus = false;
+                if (this.gameTestService.next()) {
+                    this.questionNumber++;
+                    this.question = this.gameTestService.question;
+                    this.gameTestService.startTimer(this.gameTestService.quiz.duration);
+                    this.handleQuestionTimer();
+                } else {
+                    this.isLast = true;
+                    this.validated = true;
+                    this.locked = true;
+                }
+            }, TESTING_TRANSITION_TIMER * tick);
         }
         this.locked = true;
         this.answers.clear();
@@ -90,6 +133,13 @@ export class GameService {
         });
     }
 
+    private handleQuestionTimer() {
+        const tick = 1000;
+        this.timeouts[0] = window.setTimeout(() => {
+            this.sendAnswer();
+        }, this.gameTestService.quiz.duration * tick);
+    }
+
     private handleTimeEvent(timeValue: number) {
         this.timer = timeValue;
         if (this.timer === 0 && !this.locked) {
@@ -109,5 +159,8 @@ export class GameService {
         this.players.clear();
         this.answers.clear();
         this.questionNumber = 1;
+        clearTimeout(this.timeouts[0]);
+        clearTimeout(this.timeouts[1]);
+        this.gameTestService.reset();
     }
 }
