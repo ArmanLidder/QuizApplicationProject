@@ -25,7 +25,8 @@ describe('GameAnswersListComponent', () => {
 
     it('should validate properly', () => {
         spyOn(socketService, 'send');
-        const sendAnswerSpy = spyOn<unknown>(component.gameService, 'sendAnswer');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sendAnswerSpy = spyOn<any>(component.gameService, 'sendAnswer');
         component.gameService.validated = false;
         component.validate();
         expect(sendAnswerSpy).toHaveBeenCalled();
@@ -36,7 +37,8 @@ describe('GameAnswersListComponent', () => {
     });
 
     it('should handle multiple emission', () => {
-        const validateSpy = spyOn<unknown>(component, 'validate');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const validateSpy = spyOn<any>(component, 'validate');
         const checkIsIncremented = component['receptionDebounce'];
         component.handleMultipleEmission();
         expect(validateSpy).not.toHaveBeenCalled();
@@ -63,7 +65,8 @@ describe('GameAnswersListComponent', () => {
     });
 
     it('should select the choice properly', () => {
-        const selectChoiceSpy = spyOn<unknown>(component.gameService, 'selectChoice');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const selectChoiceSpy = spyOn<any>(component.gameService, 'selectChoice');
         component.selectChoice(1);
         expect(selectChoiceSpy).toHaveBeenCalled();
     });
