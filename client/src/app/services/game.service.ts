@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
+import { GameTestService } from '@app/services/game-test.service';
 
 type Score = Map<string, number>;
 
@@ -20,8 +21,10 @@ export class GameService {
     answers: Map<number, string | null> = new Map();
     questionNumber: number = 1;
 
-    constructor(public socketService: SocketClientService) {
-        if (this.socketService.isSocketAlive()) this.configureBaseSockets();
+    constructor(public socketService: SocketClientService, public gameTestService: GameTestService) {
+        if (this.socketService.isSocketAlive()) {
+            this.configureBaseSockets();
+        }
     }
 
     destroy() {
@@ -33,6 +36,9 @@ export class GameService {
         if (this.socketService.isSocketAlive()) {
             this.configureBaseSockets();
             this.socketService.send('get question', this.roomId);
+        } else {
+            // get the quiz
+            // this.question = this.gameTestService.
         }
     }
 
@@ -49,12 +55,18 @@ export class GameService {
 
     sendAnswer() {
         const answers = Array.from(this.answers.values());
-        this.socketService.send('submit answer', {
-            roomId: this.roomId,
-            answers,
-            timer: this.timer,
-            username: this.username,
-        });
+        if (this.socketService.isSocketAlive()) {
+            this.socketService.send('submit answer', {
+                roomId: this.roomId,
+                answers,
+                timer: this.timer,
+                username: this.username,
+            });
+        } else {
+            this.gameTestService.updateScore();
+            // start the transition timer
+            // at the end, setup new question which starts question timer
+        }
         this.locked = true;
         this.answers.clear();
     }
