@@ -11,10 +11,7 @@ describe('GameAnswersListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [GameAnswersListComponent],
-            providers: [
-                SocketClientService,
-                { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
-            ]
+            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         });
         fixture = TestBed.createComponent(GameAnswersListComponent);
         component = fixture.componentInstance;
@@ -28,7 +25,7 @@ describe('GameAnswersListComponent', () => {
 
     it('should validate properly', () => {
         spyOn(socketService, 'send');
-        const sendAnswerSpy = spyOn<any>(component.gameService, 'sendAnswer');
+        const sendAnswerSpy = spyOn<unknown>(component.gameService, 'sendAnswer');
         component.gameService.validated = false;
         component.validate();
         expect(sendAnswerSpy).toHaveBeenCalled();
@@ -39,15 +36,13 @@ describe('GameAnswersListComponent', () => {
     });
 
     it('should handle multiple emission', () => {
-
-        const validateSpy = spyOn<any>(component, 'validate');
+        const validateSpy = spyOn<unknown>(component, 'validate');
         const checkIsIncremented = component['receptionDebounce'];
         component.handleMultipleEmission();
         expect(validateSpy).not.toHaveBeenCalled();
         expect(component['receptionDebounce']).toEqual(checkIsIncremented + 1);
 
-        component.gameService.question =
-        {
+        component.gameService.question = {
             type: 0,
             text: 'What is the capital of France?',
             points: 10,
@@ -65,13 +60,11 @@ describe('GameAnswersListComponent', () => {
         component.handleMultipleEmission();
         expect(component['receptionDebounce']).toEqual(0);
         expect(validateSpy).toHaveBeenCalled();
-
     });
 
     it('should select the choice properly', () => {
-        const selectChoiceSpy = spyOn<any>(component.gameService, 'selectChoice');
+        const selectChoiceSpy = spyOn<unknown>(component.gameService, 'selectChoice');
         component.selectChoice(1);
         expect(selectChoiceSpy).toHaveBeenCalled();
     });
-
 });

@@ -51,7 +51,7 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof thirdAction === 'function') {
             thirdAction(TIMER_VALUE);
-            expect(component.timerText).toEqual("Résultat disponible dans ");
+            expect(component.timerText).toEqual('Résultat disponible dans ');
             expect(component.gameService.timer).toEqual(TIMER_VALUE);
         }
     });
@@ -96,7 +96,7 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof thirdAction === 'function') {
             thirdAction(0);
-            expect(component.timerText).toEqual("Résultat disponible dans ");
+            expect(component.timerText).toEqual('Résultat disponible dans ');
             expect(component.isGameOver).toEqual(true);
         }
     });
@@ -133,13 +133,12 @@ describe('HostInterfaceComponent', () => {
     it('should return the right condition of isDisabled', () => {
         component['gameService'].roomId = DIGIT_CONSTANT;
         const functionReturn = component.isDisabled();
-        expect(functionReturn).toEqual(!component['gameService'].locked && !component['gameService'].validated)
+        expect(functionReturn).toEqual(!component['gameService'].locked && !component['gameService'].validated);
     });
 
     it('should return the right condition of updateHostCommand', () => {
         component['gameService'].roomId = DIGIT_CONSTANT;
         const functionReturn = component.updateHostCommand();
-        expect(functionReturn).toEqual(component['gameService'].isLast ? 'Montrer résultat' : 'Prochaine question')
+        expect(functionReturn).toEqual(component['gameService'].isLast ? 'Montrer résultat' : 'Prochaine question');
     });
-
 });
