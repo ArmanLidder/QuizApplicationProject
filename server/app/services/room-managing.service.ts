@@ -12,7 +12,6 @@ export interface RoomData {
     locked: boolean;
     game: Game;
     timer: NodeJS.Timer;
-    // timerQuestion: NodeJS.Timer;
     bannedNames: string[];
     messages?: Message[];
 }

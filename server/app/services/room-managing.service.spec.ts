@@ -3,15 +3,25 @@ import { expect } from 'chai';
 import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
 import * as sinon from 'sinon';
 import { Message } from '@common/interfaces/message.interface';
+import { Game } from '@app/classes/game';
+import { QuizService } from '@app/services/quiz.service';
+import { DatabaseServiceMock } from '@app/services/database.service.mock';
+import { MongoClient } from 'mongodb';
+import { DatabaseService } from '@app/services/database.service';
+const FIVE_SECOND = 5000;
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
+    let quizService: QuizService;
+    let databaseServiceMock: DatabaseServiceMock;
     const roomId = 1;
-    const FIVE_SECOND = 5000;
     const mockUsername = 'usernameOne';
     const mockSocket = 'socketOne';
     const mockBannedNames = ['Jean'];
     const mockMessages: Message[] = [{ sender: 'user 1', content: 'message 1', time: 'time 1' }];
-    beforeEach(() => {
+    beforeEach(async () => {
+        databaseServiceMock = new DatabaseServiceMock();
+        (await databaseServiceMock.start()) as MongoClient;
+        quizService = new QuizService(databaseServiceMock as unknown as DatabaseService);
         roomService = new RoomManagingService();
         roomService['rooms'].set(roomId, {
             room: roomId,
@@ -24,6 +34,7 @@ describe('Room Managing Service', () => {
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,
             timer: null,
+            game: new Game(['Organisateur', 'socket organisateur'], 'quiz123', quizService)
         });
     });
 
@@ -155,6 +166,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: [],
             timer: null,
+            game: new Game([], '', quizService),
         };
         mockRoom.players.set(mockUsername, mockSocket);
 
@@ -172,6 +184,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: [],
             timer: null,
+            game: new Game([], '', quizService),
         };
         mockRoom.players.set(mockUsername, mockSocket);
         sinon.stub(roomService, 'getRoomById').returns(mockRoom);
