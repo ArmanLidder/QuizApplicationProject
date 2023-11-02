@@ -61,12 +61,9 @@ export class HostInterfaceComponent {
             }
         });
 
-        this.socketService.on('end question', (numberOfQuestions: number) => {
+        this.socketService.on('end question', () => {
             this.gameService.validated = true;
             this.gameService.locked = true;
-            if (numberOfQuestions === 1) {
-                this.gameService.isLast = true;
-            }
         });
 
         this.socketService.on('final time transition', (timeValue: number) => {

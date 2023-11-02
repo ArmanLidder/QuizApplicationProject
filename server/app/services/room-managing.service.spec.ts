@@ -34,7 +34,7 @@ describe('Room Managing Service', () => {
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,
             timer: null,
-            game: new Game(['Organisateur', 'socket organisateur'], 'quiz123', quizService)
+            game: new Game(['Organisateur', 'socket organisateur'], 'quiz123', quizService),
         });
     });
 

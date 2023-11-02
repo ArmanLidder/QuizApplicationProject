@@ -120,10 +120,11 @@ export class SocketManager {
 
             // Game socket
             socket.on('get question', (roomId: number) => {
-                const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
-                const index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
+                const game = this.roomManager.getGameByRoomId(roomId);
+                const question = game.currentQuizQuestion;
+                const index = game.currIndex + 1;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
-                socket.emit('get initial question', { question, username, index });
+                socket.emit('get initial question', { question, username, index, numberOfQuestions: game.quiz.questions.length });
                 const duration = this.roomManager.getGameByRoomId(roomId).duration;
                 if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
                     this.roomManager.clearRoomTimer(roomId);
@@ -137,7 +138,7 @@ export class SocketManager {
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
-                    this.sio.to(String(data.roomId)).emit('end question', game.quiz.questions.length);
+                    this.sio.to(String(data.roomId)).emit('end question');
                 }
             });
 
