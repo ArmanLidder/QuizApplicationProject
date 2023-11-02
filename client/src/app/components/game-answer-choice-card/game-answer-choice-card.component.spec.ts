@@ -110,4 +110,11 @@ describe('GameAnswerChoiceCardComponent', () => {
         component['showBadAnswerFeedBack']();
         expect(component.feedbackDisplay).toEqual('bad-answer');
     });
+
+    it('should handle hover effect', ()=> {
+        component.gameService.locked = true;
+        expect(component.handleHoverEffect()).toEqual('');
+        component.gameService.locked = false;
+        expect(component.handleHoverEffect()).toEqual('active');
+    })
 });
