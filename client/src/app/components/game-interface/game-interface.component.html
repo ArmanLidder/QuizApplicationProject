@@ -2,7 +2,7 @@
     <div id="flex-container">
         <p>Pointage: {{ score }}</p>
         <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
-        <p> {{ timerText }} : {{ timer }}</p>
+        <p> {{ timerText }} : {{ gameService.timer }}</p>
     </div>
     <section id="question-field">
         <div>
