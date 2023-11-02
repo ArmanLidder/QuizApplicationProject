@@ -115,16 +115,16 @@ export class SocketManager {
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
                 this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
                 await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
-                // console.log(this.roomManager.roomMap.values());
                 this.timerFunction(data.roomId, data.time);
             });
 
             // Game socket
             socket.on('get question', (roomId: number) => {
-                const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
-                const index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
+                const game = this.roomManager.getGameByRoomId(roomId);
+                const question = game.currentQuizQuestion;
+                const index = game.currIndex + 1;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
-                socket.emit('get initial question', { question, username, index });
+                socket.emit('get initial question', { question, username, index, numberOfQuestions: game.quiz.questions.length });
                 const duration = this.roomManager.getGameByRoomId(roomId).duration;
                 if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
                     this.roomManager.clearRoomTimer(roomId);
@@ -157,8 +157,6 @@ export class SocketManager {
                 const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length - 1;
                 this.roomManager.clearRoomTimer(roomId);
                 this.roomManager.getGameByRoomId(roomId).next();
-                // console.log(`index ${index}`);
-                // console.log(`quizSize ${quizSize}`);
                 const isLast = index === quizSize;
                 index++;
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
