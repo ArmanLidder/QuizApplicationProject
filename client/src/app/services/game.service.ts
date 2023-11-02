@@ -27,10 +27,6 @@ export class GameService {
         return this.gameTestService.isBonus;
     }
 
-    get gameOver() {
-        return this.gameTestService.gameOver;
-    }
-
     get question() {
         return this.isTestMode ? this.gameTestService.question : this.gameRealService.question;
     }
