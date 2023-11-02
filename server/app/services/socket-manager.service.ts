@@ -115,7 +115,6 @@ export class SocketManager {
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
                 this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
                 await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
-                // console.log(this.roomManager.roomMap.values());
                 this.timerFunction(data.roomId, data.time);
             });
 
@@ -138,7 +137,7 @@ export class SocketManager {
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
-                    this.sio.to(String(data.roomId)).emit('end question');
+                    this.sio.to(String(data.roomId)).emit('end question', game.quiz.questions.length);
                 }
             });
 
@@ -156,10 +155,8 @@ export class SocketManager {
                 let index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
                 const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length - 1;
                 this.roomManager.clearRoomTimer(roomId);
-                this.roomManager.getGameByRoomId(roomId).next();
-                // console.log(`index ${index}`);
-                // console.log(`quizSize ${quizSize}`);
                 const isLast = index === quizSize;
+                this.roomManager.getGameByRoomId(roomId).next();
                 index++;
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
                 this.sio.to(String(roomId)).emit('get next question', { question, index, isLast });
