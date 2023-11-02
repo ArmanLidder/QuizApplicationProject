@@ -11,9 +11,9 @@ import { Game } from './game';
 import * as sinon from 'sinon';
 import { DatabaseService } from '@app/services/database.service';
 
-const MAX_TIME = 1200;
+const MAX_TIME = 800;
 const MID_TIME = 1000;
-const MIN_TIME = 800;
+const MIN_TIME = 1200;
 
 interface QuizMock {
     _id: ObjectId;
@@ -102,6 +102,11 @@ describe('Game', () => {
         expect(game['validateAnswer'](invalidAnswer)).to.equal(false);
     });
 
+    it('should return false if no answer is valid', () => {
+        game.playersAnswers = new Map();
+        expect(game['validateAnswer']([])).to.equal(false);
+    });
+
     it('should remove a player', () => {
         game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
         game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
@@ -115,9 +120,12 @@ describe('Game', () => {
     it('should handle wrong answers', () => {
         game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
-        game.storePlayerAnswer('Player1', MID_TIME, ['London']);
-        game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
-        game.storePlayerAnswer('Player3', MAX_TIME, ['Madrid']);
+        game.players = new Map([
+            ['Player1', { points: 100, bonusCount: 5, isBonus: true }],
+            ['Player2', { points: 75, bonusCount: 3, isBonus: false }],
+            ['Player3', { points: 1, bonusCount: 5, isBonus: false }],
+        ]);
+
         game['handleWrongAnswer']('Player1');
         game['handleWrongAnswer']('Player2');
         game['handleWrongAnswer']('Player3');
@@ -166,8 +174,8 @@ describe('Game', () => {
 
     it('should configure players correctly', () => {
         expect(game.players.size).to.equal(2);
-        expect(game.players.get('Player1')).to.deep.equal({ points: 0, bonusCount: 0 });
-        expect(game.players.get('Player2')).to.deep.equal({ points: 0, bonusCount: 0 });
+        expect(game.players.get('Player1')).to.deep.equal({ points: 0, isBonus: false, bonusCount: 0 });
+        expect(game.players.get('Player2')).to.deep.equal({ points: 0, isBonus: false, bonusCount: 0 });
     });
 
     it('should set values correctly', () => {
@@ -183,11 +191,13 @@ describe('Game', () => {
     });
 
     it('should correctly handle cases where there is one fastest player', () => {
+        game.duration = 2000;
         game.storePlayerAnswer('Player1', MID_TIME, ['Paris']);
         game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
         game.storePlayerAnswer('Player3', MAX_TIME, ['Paris']);
+
         const fastestPlayer = game['getFastestPlayer']();
-        expect(fastestPlayer.get('Player2').time).to.equal(MIN_TIME);
+        expect(fastestPlayer.get('Player2').time).to.equal(game.duration - MIN_TIME);
     });
 
     it('should update choicesStats correctly', () => {
@@ -211,6 +221,7 @@ describe('Game', () => {
     it('should update scores correctly for good answers', () => {
         game.currentQuizQuestion = testQuiz.questions[0];
         game.correctChoices = ['Paris'];
+        game.duration = 2000;
         game.playersAnswers = new Map();
         game.players.set('Player1', { points: 0, bonusCount: 0, isBonus: false });
         game.players.set('Player2', { points: 0, bonusCount: 0, isBonus: false });
@@ -219,12 +230,13 @@ describe('Game', () => {
         game.storePlayerAnswer('Player2', MIN_TIME, ['Paris']);
         game.storePlayerAnswer('Player3', MAX_TIME, ['London']);
         game['updateScores']();
-        const expectedScore = 12;
+        const expectedScore = 10;
+        const expectedScoreBonus = 12;
         const player1Score = game.players.get('Player1');
         expect(player1Score.points).to.equal(expectedScore);
-        expect(player1Score.bonusCount).to.equal(1);
+        expect(player1Score.bonusCount).to.equal(0);
         const player2Score = game.players.get('Player2');
-        expect(player2Score.points).to.equal(expectedScore);
+        expect(player2Score.points).to.equal(expectedScoreBonus);
         expect(player2Score.bonusCount).to.equal(1);
         const player3Score = game.players.get('Player3');
         expect(player3Score.points).to.equal(0);
