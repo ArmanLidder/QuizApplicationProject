@@ -6,7 +6,7 @@ describe('GameAnswerChoiceCardComponent', () => {
     let fixture: ComponentFixture<GameAnswerChoiceCardComponent>;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [GameAnswerChoiceCardComponent]
+            declarations: [GameAnswerChoiceCardComponent],
         });
         fixture = TestBed.createComponent(GameAnswerChoiceCardComponent);
         component = fixture.componentInstance;
@@ -109,5 +109,12 @@ describe('GameAnswerChoiceCardComponent', () => {
     it('should set the class to selected when calling showSelectionFeedback', () => {
         component['showBadAnswerFeedBack']();
         expect(component.feedbackDisplay).toEqual('bad-answer');
+    });
+
+    it('should handle hover effect', () => {
+        component.gameService.locked = true;
+        expect(component.handleHoverEffect()).toEqual('');
+        component.gameService.locked = false;
+        expect(component.handleHoverEffect()).toEqual('active');
     });
 });

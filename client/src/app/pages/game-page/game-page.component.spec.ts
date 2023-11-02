@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { GamePageComponent } from './game-page.component';
@@ -19,7 +18,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-            declarations: [GamePageComponent, SidebarComponent, PlayAreaComponent, GameInterfaceComponent],
+            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent],
             providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         });
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
