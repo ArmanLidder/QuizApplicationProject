@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GameService } from '@app/services/game.service';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
+import { GameService } from '@app/services/game.service';
 
 @Component({
     selector: 'app-host-interface',
@@ -18,21 +18,20 @@ export class HostInterfaceComponent {
         private readonly socketService: SocketClientService,
         private route: ActivatedRoute,
     ) {
-        this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
-        this.gameService.init();
+        this.gameService.init(this.route.snapshot.paramMap.get('id') as string);
     }
 
     isDisabled() {
-        return !this.gameService.locked && !this.gameService.validated;
+        return !this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated;
     }
 
     updateHostCommand() {
-        return this.gameService.isLast ? 'Montrer résultat' : 'Prochaine question';
+        return this.gameService.gameRealService.isLast ? 'Montrer résultat' : 'Prochaine question';
     }
 
     handleHostCommand() {
-        if (this.gameService.isLast) {
+        if (this.gameService.gameRealService.isLast) {
             this.handleLastQuestion();
         } else {
             this.nextQuestion();
@@ -40,35 +39,35 @@ export class HostInterfaceComponent {
     }
 
     private nextQuestion() {
-        this.gameService.validated = false;
-        this.gameService.locked = false;
-        this.socketService.send('start transition', this.gameService.roomId);
+        this.gameService.gameRealService.validated = false;
+        this.gameService.gameRealService.locked = false;
+        this.socketService.send('start transition', this.gameService.gameRealService.roomId);
     }
 
     private handleLastQuestion() {
-        this.socketService.send('show result', this.gameService.roomId);
+        this.socketService.send('show result', this.gameService.gameRealService.roomId);
     }
 
     private configureBaseSocketFeatures() {
         this.socketService.on('time transition', (timeValue: number) => {
             this.timerText = 'Prochaine question dans ';
-            this.gameService.timer = timeValue;
+            this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.gameService.locked = true;
-                this.gameService.validated = true;
-                this.socketService.send('next question', this.gameService.roomId);
+                this.gameService.gameRealService.locked = true;
+                this.gameService.gameRealService.validated = true;
+                this.socketService.send('next question', this.gameService.gameRealService.roomId);
                 this.timerText = 'Temps restant';
             }
         });
 
         this.socketService.on('end question', () => {
-            this.gameService.validated = true;
-            this.gameService.locked = true;
+            this.gameService.gameRealService.validated = true;
+            this.gameService.gameRealService.locked = true;
         });
 
         this.socketService.on('final time transition', (timeValue: number) => {
             this.timerText = 'Résultat disponible dans ';
-            this.gameService.timer = timeValue;
+            this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
     }

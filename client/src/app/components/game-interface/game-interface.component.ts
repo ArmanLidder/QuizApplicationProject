@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
 import { Score } from '@common/interfaces/score.interface';
 
@@ -15,8 +15,6 @@ export class GameInterfaceComponent {
     isGameOver: boolean = false;
     playerScore: number = 0;
     timerText: string = 'Temps restant';
-    question: QuizQuestion;
-    isTestMode: boolean;
 
     constructor(
         public gameService: GameService,
@@ -24,39 +22,33 @@ export class GameInterfaceComponent {
         private route: ActivatedRoute,
         private router: Router,
     ) {
-        this.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
-        if (this.socketService.isSocketAlive()) {
-            this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
-            this.configureBaseSocketFeatures();
-        } else {
-            this.gameService.quizId = this.route.snapshot.paramMap.get('id') as string;
-        }
-        this.gameService.init();
-    }
-
-    get timer() {
-        return this.isTestMode ? this.gameService.testTimer : this.gameService.timer;
+        this.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
+        const pathId = this.route.snapshot.paramMap.get('id') as string;
+        if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
+        this.gameService.init(pathId);
     }
 
     get score() {
-        return this.isTestMode ? this.gameService.testPlayerScore : this.playerScore;
+        this.playerScore = this.gameService.isTestMode ? this.gameService.playerScore : this.playerScore;
+        return this.playerScore;
     }
 
     get bonusStatus() {
-        return this.isTestMode ? this.gameService.testIsBonus : this.isBonus;
+        this.isBonus = this.gameService.isTestMode ? this.gameService.isBonus : this.isBonus;
+        return this.isBonus;
     }
 
     private configureBaseSocketFeatures() {
         this.socketService.on('end question', () => {
-            if (this.gameService.username !== 'Organisateur') {
+            if (this.gameService.gameRealService.username !== 'Organisateur') {
                 this.socketService.send(
                     'get score',
                     {
-                        roomId: this.gameService.roomId,
-                        username: this.gameService.username,
+                        roomId: this.gameService.gameRealService.roomId,
+                        username: this.gameService.gameRealService.username,
                     },
                     (score: Score) => {
-                        this.gameService.validated = true;
+                        this.gameService.gameRealService.validated = true;
                         this.playerScore = score.points;
                         this.isBonus = score.isBonus;
                     },
@@ -65,10 +57,10 @@ export class GameInterfaceComponent {
         });
 
         this.socketService.on('time transition', (timeValue: number) => {
-            this.gameService.timer = timeValue;
+            this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.gameService.locked = false;
-                this.gameService.validated = false;
+                this.gameService.gameRealService.locked = false;
+                this.gameService.gameRealService.validated = false;
                 this.isBonus = false;
                 this.timerText = 'Temps restant';
             }
@@ -76,12 +68,12 @@ export class GameInterfaceComponent {
 
         this.socketService.on('final time transition', (timeValue: number) => {
             this.timerText = "Les résultats finaux s'afficherons dans:";
-            this.gameService.timer = timeValue;
+            this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
 
         this.socketService.on('removed from game', () => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/']).then();
         });
     }
 
