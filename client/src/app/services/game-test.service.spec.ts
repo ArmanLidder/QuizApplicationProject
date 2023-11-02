@@ -24,7 +24,11 @@ describe('GameTestService', () => {
                 type: QuestionType.QCM,
                 text: 'What is 2 + 2?',
                 points: 20,
-                choices: [{ text: '1' }, { text: '2', isCorrect: true }, { text: '3', isCorrect: true }],
+                choices: [
+                    { text: '1', isCorrect: false },
+                    { text: '2', isCorrect: true },
+                    { text: '3', isCorrect: true },
+                ],
             },
         ],
         visible: true,
@@ -117,16 +121,19 @@ describe('GameTestService', () => {
 
     it('should start a timer from the timeService', () => {
         const DURATION = 20;
+        spyOn(gameTestService.timeService, 'deleteAllTimers');
+        spyOn(gameTestService.timeService, 'startTimer');
         gameTestService.timeService.createTimer(DURATION);
         gameTestService.startTimer(DURATION);
-        expect(gameTestService.timeService.deleteAllTimers).toHaveBeenCalled;
-        expect(gameTestService.timer).toBe(gameTestService.timeService.createTimer(DURATION));
+        expect(gameTestService.timeService.deleteAllTimers).toHaveBeenCalled();
+        expect(gameTestService.timer).toEqual(gameTestService.timeService.createTimer(DURATION));
         expect(gameTestService.timeService.startTimer).toHaveBeenCalledWith(0);
     });
 
     it('should reset the question parameters', () => {
+        spyOn(gameTestService.timeService, 'deleteAllTimers');
         gameTestService.reset();
-        expect(gameTestService.timeService.deleteAllTimers).toHaveBeenCalled;
+        expect(gameTestService.timeService.deleteAllTimers).toHaveBeenCalled();
         expect(gameTestService.playerScore).toBe(0);
         expect(gameTestService.currQuestionIndex).toBe(0);
         expect(gameTestService.isBonus).toBe(false);
@@ -134,8 +141,9 @@ describe('GameTestService', () => {
 
     it('should return the correct answers of a question choices', () => {
         gameTestService.quiz = MOCK_QUIZ;
-        extractCorrectChoicesSpy = spyOn<any>(gameTestService, 'extractCorrectChoices');
-        expect(extractCorrectChoicesSpy(MOCK_QUIZ.questions[1].choices)).toBe([
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        extractCorrectChoicesSpy = spyOn<any>(gameTestService, 'extractCorrectChoices').and.callThrough();
+        expect(extractCorrectChoicesSpy(MOCK_QUIZ.questions[1].choices)).toEqual([
             { text: '2', isCorrect: true },
             { text: '3', isCorrect: true },
         ]);
