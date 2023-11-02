@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
@@ -16,13 +16,16 @@ export class GameInterfaceComponent {
     playerScore: number = 0;
     timerText: string = 'Temps restant';
     question: QuizQuestion;
+    gameService: GameService;
+    private readonly socketService: SocketClientService;
+    private route: ActivatedRoute;
+    private router: Router;
 
-    constructor(
-        public gameService: GameService,
-        private readonly socketService: SocketClientService,
-        private route: ActivatedRoute,
-        private router: Router,
-    ) {
+    constructor(injector: Injector) {
+        this.gameService = injector.get<GameService>(GameService);
+        this.socketService = injector.get<SocketClientService>(SocketClientService);
+        this.route = injector.get<ActivatedRoute>(ActivatedRoute);
+        this.router = injector.get<Router>(Router);
         this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init();

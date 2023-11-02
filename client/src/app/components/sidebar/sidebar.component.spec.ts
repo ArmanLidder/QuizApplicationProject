@@ -6,6 +6,8 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Message } from '@common/interfaces/message.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
+import SpyObj = jasmine.SpyObj;
+import { GameService } from '@app/services/game.service';
 
 const MESSAGE_MAX_CHARACTERS = 200;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -14,8 +16,10 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
     let socketService: SocketClientServiceTestHelper;
     let formBuilder: FormBuilder;
+    let gameService: SpyObj<GameService>;
     let longMessage: string;
     beforeEach(() => {
+        gameService = jasmine.createSpyObj('GameService', ['destroy']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             imports: [ReactiveFormsModule, FormsModule],
@@ -23,12 +27,14 @@ describe('SidebarComponent', () => {
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 FormBuilder,
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
+                { provide: GameService, useValue: gameService },
             ],
         });
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         formBuilder = TestBed.inject(FormBuilder);
+        // gameService = TestBed.inject(GameService) as unknown as SpyObj<GameService>;
         fixture.detectChanges();
     });
 
@@ -55,8 +61,21 @@ describe('SidebarComponent', () => {
         expect(component.messageForm).toBeDefined();
     });
 
+    it('should set isInputFocused to true when calling onChatFocus', () => {
+        component.onChatFocus();
+        expect(gameService.isInputFocused).toBeTruthy();
+    });
+
+    it('should set isInputFocused to false when calling onChatBlur', () => {
+        component.onChatBlur();
+        expect(gameService.isInputFocused).toBeFalsy();
+    });
+
     it('should call getUsername() when setting up the chat', () => {
         const getUsernameSpy = spyOn<any>(component, 'getUsername');
+        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
+            return true;
+        });
         component['setup']();
         expect(getUsernameSpy).toHaveBeenCalled();
     });
@@ -64,6 +83,9 @@ describe('SidebarComponent', () => {
     it('should call getRoomMessages() and configureBaseSocketFeatures()', () => {
         const getRoomMessagesSpy = spyOn(component, 'getRoomMessages' as any);
         const configureSocketsSpy = spyOn(component, 'configureBaseSocketFeatures' as any);
+        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
+            return true;
+        });
         component['setup']();
         expect(getRoomMessagesSpy).toHaveBeenCalled();
         expect(configureSocketsSpy).toHaveBeenCalled();
