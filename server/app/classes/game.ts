@@ -79,7 +79,7 @@ export class Game {
         const points = this.currentQuizQuestion.points;
         let newScore: Score;
         const fastestPlayers = this.getFastestPlayer();
-        if (fastestPlayers && fastestPlayers.has(username)) {
+        if (fastestPlayers) {
             newScore = {
                 points: fastestPlayers.has(username) ? oldScore.points + this.addBonusPoint(points) : oldScore.points + points,
                 bonusCount: fastestPlayers.has(username) ? oldScore.bonusCount + 1 : oldScore.bonusCount,
