@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service';
 import { SocketClientService } from '@app/services/socket-client.service';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 
 @Component({
     selector: 'app-host-interface',
@@ -12,33 +12,9 @@ import { QuestionType } from '@common/interfaces/quiz.interface';
 export class HostInterfaceComponent {
     timerText: string = 'Temps restant';
     isGameOver: boolean = false;
-    histogramData = new Map<string, number>([
-        ['Paris', 15],
-        ['Dollar', 5],
-        ['Pound', 8],
-        ['52', 4],
-        ['50', 11],
-        ['Oxygen', 12],
-        ['Mars', 14],
-    ]);
-    histogramDatachangingResponses = new Map<string, number>([
-        ['Paris', 15],
-        ['Dollar', 5],
-        ['Pound', 8],
-        ['52', 4],
-        ['50', 11],
-        ['Oxygen', 12],
-        ['Mars', 14],
-    ]);
-    histogramDataValue = new Map<string, boolean>([
-        ['Paris', true],
-        ['Dollar', false],
-        ['Pound', true],
-        ['52', false],
-        ['50', true],
-        ['Oxygen', true],
-        ['Mars', true],
-    ]);
+    // histogramData = new Map<string, number>();
+    histogramDataChangingResponses = new Map<string, number>();
+    histogramDataValue = new Map<string, boolean>();
 
     constructor(
         public gameService: GameService,
@@ -88,7 +64,17 @@ export class HostInterfaceComponent {
             }
         });
 
+        this.socketService.on('get initial question', (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
+            this.initGraph(data.question);
+        });
+
+        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
+            console.log('next question received');
+            this.initGraph(data.question);
+        });
+
         this.socketService.on('end question', () => {
+            console.log('end question')
             this.gameService.validated = true;
             this.gameService.locked = true;
         });
@@ -98,7 +84,29 @@ export class HostInterfaceComponent {
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
+
+        this.socketService.on('refresh choices stats', (choicesStatsValue: number[]) => {
+            console.log('refresh choices');
+            this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
+        });
     }
+
+    private initGraph(question: QuizQuestion) {
+        this.histogramDataValue = new Map();
+        this.histogramDataChangingResponses = new Map();
+        question.choices?.forEach((choice: QuizChoice) => {
+            this.histogramDataValue.set(choice.text, choice.isCorrect as boolean);
+        });
+    }
+
+
+    private createChoicesStatsMap(choicesStatsValue: number[]) {
+        const choicesStats = new Map();
+        const choices = this.gameService.question?.choices;
+        choices?.forEach((choice: QuizChoice, index: number) => choicesStats.set(choice.text, choicesStatsValue[index]));
+        return choicesStats;
+    }
+
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     protected readonly questionType = QuestionType;

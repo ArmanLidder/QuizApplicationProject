@@ -14,16 +14,6 @@ describe('OrganizerHistogramComponent', () => {
     fixture = TestBed.createComponent(OrganizerHistogramComponent);
     component = fixture.componentInstance;
 
-    component.finalResponses = new Map<string, number>([
-      ['Paris', 15],
-      ['Dollar', 5],
-      ['Pound', 8],
-      ['52', 4],
-      ['50', 11],
-      ['Oxygen', 12],
-      ['Mars', 14],
-    ]);
-
     component.changingResponses = new Map<string, number>([
       ['Paris', 15],
       ['Dollar', 5],
@@ -50,15 +40,6 @@ describe('OrganizerHistogramComponent', () => {
 
   it('should change barChartData on change', () => {
     fixture.detectChanges();
-    component.finalResponses = new Map([
-      ['Paris', 20],
-      ['Dollar', 30],
-      ['Trick 1', 14],
-      ['52', 13],
-      ['50', 12],
-      ['Oxygen', 45],
-      ['Mars', 29],
-    ]);
     component.changingResponses = new Map<string, number>([
       ['Paris', 15],
       ['Dollar', 5],

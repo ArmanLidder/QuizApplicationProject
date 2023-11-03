@@ -7,7 +7,7 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
   styleUrls: ['./organizer-histogram.component.scss'],
 })
 export class OrganizerHistogramComponent implements OnChanges {
-  @Input() finalResponses: Map<string, number>;
+  // @Input() finalResponses: Map<string, number>;
   @Input() changingResponses: Map<string, number>;
   @Input() valueOfResponses: Map<string, boolean>;
   barChartOptions: ChartConfiguration['options'] = {
@@ -22,18 +22,20 @@ export class OrganizerHistogramComponent implements OnChanges {
   barChartData: ChartData<'bar'>;
 
   ngOnChanges() {
+    console.log(this.changingResponses);
+    console.log(this.valueOfResponses);
     const labels = Array.from(this.valueOfResponses.keys());
-    const finalChoicesData = [];
+    // const finalChoicesData = [];
     const changingResponsesData = [];
 
     for (const key of labels) {
-      finalChoicesData.push(this.finalResponses.get(key) || 0);
+      // finalChoicesData.push(this.finalResponses.get(key) || 0);
       changingResponsesData.push(this.changingResponses.get(key) || 0);
     }
 
-    const finalResponseColors = labels.map(
-        (label) => this.valueOfResponses.get(label) ? 'green' : 'red',
-    );
+    // const finalResponseColors = labels.map(
+    //     (label) => this.valueOfResponses.get(label) ? 'green' : 'red',
+    // );
 
     const changingResponseColors = labels.map(
         (label) => (this.valueOfResponses.get(label) ? 'lightgreen' : 'pink'), // Lighter shades for changing responses
@@ -42,10 +44,6 @@ export class OrganizerHistogramComponent implements OnChanges {
     this.barChartData = {
       labels,
       datasets: [
-        {
-          data: finalChoicesData,
-          backgroundColor: finalResponseColors,
-        },
         {
           data: changingResponsesData,
           backgroundColor: changingResponseColors,

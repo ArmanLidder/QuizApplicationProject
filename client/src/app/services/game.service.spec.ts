@@ -113,6 +113,9 @@ describe('GameService', () => {
     });
 
     it('should add choice if not already selected', () => {
+        const index = 0;
+        const isSelected= true;
+        const sendSpy = spyOn(service.socketService, 'send');
         service.locked = false;
         service.question = questionMock;
         service.question.choices = [{ text: 'test', isCorrect: true }];
@@ -124,6 +127,7 @@ describe('GameService', () => {
         service.selectChoice(1);
         expect(service.answers.size).toEqual(2);
         expect(service.answers.get(1)).toEqual(null);
+        expect(sendSpy).toHaveBeenCalledWith('update selection',{ roomId: service.roomId, isSelected, index });
     });
 
     it('should send answer', () => {
@@ -144,5 +148,13 @@ describe('GameService', () => {
         service.sendAnswer();
         expect(sendSpy).toHaveBeenCalledWith('submit answer', expectedObject);
         expect(service.answers.size).toEqual(0);
+    });
+
+    it('should send the selection properly', () => {
+        const index = 0;
+        const isSelected= true;
+        const sendSpy = spyOn(service.socketService, 'send');
+        service['sendSelection'](0,isSelected);
+        expect(sendSpy).toHaveBeenCalledWith('update selection',{ roomId: service.roomId, isSelected, index });
     });
 });
