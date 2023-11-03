@@ -34,7 +34,7 @@ describe('Room Managing Service', () => {
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,
             timer: null,
-            game: new Game(['Organisateur', 'socket organisateur'], 'quiz123', quizService),
+            game: new Game(['Organisateur', 'socket organisateur'], quizService),
         });
     });
 
@@ -170,7 +170,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: [],
             timer: null,
-            game: new Game([], '', quizService),
+            game: new Game([], quizService),
         };
         mockRoom.players.set(mockUsername, mockSocket);
 
@@ -188,7 +188,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: [],
             timer: null,
-            game: new Game([], '', quizService),
+            game: new Game([], quizService),
         };
         mockRoom.players.set(mockUsername, mockSocket);
         sinon.stub(roomService, 'getRoomById').returns(mockRoom);
