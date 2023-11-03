@@ -30,7 +30,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
         if (!this.isHost) this.gatherPlayers();
-        window.onbeforeunload = () => this.ngOnDestroy();
     }
 
     ngOnDestroy() {
@@ -38,6 +37,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
             this.socketService.send(messageType, this.roomId);
         }
+        this.socketService.socket.offAny();
     }
 
     connect() {
@@ -104,7 +104,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.on('removed from game', () => {
-            this.router.navigate(['/home']);
+            // this.router.navigate(['/home']);
         });
 
         this.socketService.on('removed player', (username: string) => {

@@ -1,39 +1,3 @@
-#button-position{
-    background-color: transparent;
-    border-radius: 10px;
-    border-color: green;
-
-
-}
-
-#button-position:hover{
-    background-color: rgb(220, 220, 220);
-    cursor: pointer;
-
-}
-
-#button-position >p{
-    margin: 12px;
-}
-
-#abondon-position {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: flex-end;
-    margin-right: 5vw;
-}
-
-#abondon-button {
-    background-color: transparent;
-    border-radius: 10px;
-    border-color: red;
-}
-
-#abondon-button:hover {
-    cursor: pointer;
-}
-
 #grid-container {
     display: flex;
     flex-direction: column;
@@ -79,24 +43,75 @@
 #answer-field {
     width: 90%;
     height: 40%;
+    text-align: center;
     display: flex;
     flex-wrap: wrap;
     justify-content:space-around;
     gap: 5%;
     padding-bottom: 2% ;
     margin-bottom: 5vh;
-
 }
 
-#answer-field > app-answer-choice-card{
-    width: 45%;
-    height: auto;
 
-}
 #flex-container {
     width: 90%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 10px ;
+}
+
+.enter {
+    margin-left: 10px;
+    background-color: #007bff;
+    color: white;
+    border: 4px solid #007bff;
+}
+
+.enter:hover {
+    background-color: white;
+    color: #007bff;
+    transition: 0.3s;
+}
+
+.enter:active {
+    background-color: #007bff;
+    color: black;
+    border: 4px solid black;
+}
+
+.enter:disabled {
+    background-color: gray;
+    color: white;
+    border: 4px solid gray;
+    cursor: not-allowed;
+    opacity: 0.35;
+}
+
+.cancel {
+    margin-right: 10px;
+    background-color: red;
+    color: white;
+    border: 4px solid red;
+}
+
+.cancel:hover {
+    background-color: white;
+    color: red;
+    transition: 0.3s;
+}
+
+.cancel:active {
+    background-color: red;
+    color: black;
+    border: 4px solid black;
+}
+
+button {
+    flex: 1;
+    margin: 5px;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 20px;
+    cursor: pointer;
 }
