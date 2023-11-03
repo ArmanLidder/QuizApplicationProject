@@ -1,9 +1,9 @@
-import * as io from 'socket.io';
-import * as http from 'http';
-import { RoomManagingService } from '@app/services/room-managing.service';
-import { Message } from '@common/interfaces/message.interface';
 import { Game } from '@app/classes/game';
 import { QuizService } from '@app/services/quiz.service';
+import { RoomManagingService } from '@app/services/room-managing.service';
+import { Message } from '@common/interfaces/message.interface';
+import * as http from 'http';
+import * as io from 'socket.io';
 
 const ONE_SECOND_DELAY = 1000;
 const TRANSITION_QUESTIONS_DELAY = 3;

@@ -1,3 +1,39 @@
+<div *ngIf='isGameOver'>
+    <h2>Le jeu est terminé!</h2>
+    <p>Votre score final : {{playerScore}}</p>
+    <div *ngIf='players'>
+        <div class="score-container">
+            <div class="player-box top-player" [style.height]="getHeight(2)">
+                <h2>Player 1</h2>
+                <p>Score: {{ players[0][1] }}</p>
+                <p>Score: {{ players[0][0] }}</p>
+            </div>
+            
+            <div class="player-box second-player" [style.height]="getHeight(1.6)">
+                <h2>Player 2</h2>
+                <p>Score: {{ players[1][1] }}</p>
+                <p>Score: {{ players[1][0] }}</p>
+            </div>
+            
+            <div class="player-box third-player" [style.height]="getHeight(1.4)">
+                <h2>Player 3</h2>
+                <p>Score: {{ players[2][1] }}</p>
+                <p>Score: {{ players[2][0] }}</p>
+            </div>
+        </div>   
+        
+        <div class="players-list">
+            <h2>Joueurs:</h2>
+            <ul>
+                <li class="player-item" *ngFor="let player of players">
+                    <span class="player-name">{{ player[0] }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <button class='cancel' routerLink='/home'>Quitter</button>
+</div>
+
 <div *ngIf='!isGameOver' id="grid-container">
     <div id="flex-container">
         <p>Pointage: {{playerScore}}</p>
@@ -15,8 +51,5 @@
     </app-game-answers-list>
 </div>
 
-<div *ngIf='isGameOver'>
-    <h2>Le jeu est terminé!</h2>
-    <p>Votre score final : {{playerScore}}</p>
-    <button class='cancel' routerLink='/home'>Quitter</button>
-</div>
+
+  

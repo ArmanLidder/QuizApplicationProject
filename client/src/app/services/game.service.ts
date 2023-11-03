@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
 
 type Score = Map<string, number>;
 
