@@ -137,7 +137,6 @@ export class SocketManager {
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
-                    console.log('emit end question');
                     this.sio.to(String(data.roomId)).emit('end question');
                 }
             });
@@ -147,7 +146,6 @@ export class SocketManager {
                 game.updateChoicesStats(data.isSelected, data.index);
                 const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
                 const choicesStatsValues = Array.from(game.choicesStats.values());
-                console.log(choicesStatsValues)
                 this.sio.to(hostSocketId).emit('refresh choices stats', choicesStatsValues);
             });
 
