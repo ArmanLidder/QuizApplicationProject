@@ -45,7 +45,7 @@ describe('GameService', () => {
         expect(thirdEvent).toEqual('time');
 
         if (typeof firstAction === 'function') {
-            firstAction({ question: questionMock, username: 'Arman', index: 0 });
+            firstAction({ question: questionMock, username: 'Arman', index: 1 });
             expect(service.question).toEqual(questionMock);
             expect(service.username).toEqual('Arman');
         }

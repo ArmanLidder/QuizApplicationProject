@@ -60,16 +60,13 @@ export class GameService {
     }
 
     configureBaseSockets() {
-        this.socketService.on(
-            'get initial question',
-            (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
-                this.question = data.question;
-                this.username = data.username;
-                if (data.numberOfQuestions === 1) {
-                    this.isLast = true;
-                }
-            },
-        );
+        this.socketService.on('get initial question', (data: { question: QuizQuestion; username: string; index: number }) => {
+            this.question = data.question;
+            this.username = data.username;
+            if (data.index === 1) {
+                this.isLast = true;
+            }
+        });
 
         this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
             this.question = data.question;
