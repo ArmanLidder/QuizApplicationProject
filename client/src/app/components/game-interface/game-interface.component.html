@@ -22,14 +22,15 @@
 <!--            </div>-->
 <!--        </div>-->
 
-<!--        <div class="players-list">-->
-<!--            <h2>Joueurs:</h2>-->
-<!--            <ul>-->
-<!--                <li class="player-item" *ngFor="let player of players">-->
-<!--                    <span class="player-name">{{ player[0] }}</span>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
+       <div class="players-list">
+           <h2>Joueurs:</h2>
+           <ul>
+               <li class="player-item" *ngFor="let player of players; let i = index">
+                    <span class="player-name"><strong>TOP {{ i + 1}}</strong>  </span>
+                    <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points</span>
+               </li>
+           </ul>
+      </div>
 <!--    </div>-->
     <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
