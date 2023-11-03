@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
+import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
@@ -10,6 +12,7 @@ describe('MainPageComponent', () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule],
             declarations: [MainPageComponent],
+            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         }).compileComponents();
     });
 
@@ -41,5 +44,12 @@ describe('MainPageComponent', () => {
     it('should contain two buttons with routerLink attributes', () => {
         const buttonsWithRouterLink = fixture.nativeElement.querySelectorAll('button[routerLink]');
         expect(buttonsWithRouterLink.length).toBe(3);
+    });
+
+    it('should disconnect socket when component is destroyed', () => {
+        spyOn(component['socketClientService'], 'isSocketAlive').and.returnValue(true);
+        const disconnectSpy = spyOn(component['socketClientService'], 'disconnect');
+        component.ngOnInit();
+        expect(disconnectSpy).toHaveBeenCalled();
     });
 });
