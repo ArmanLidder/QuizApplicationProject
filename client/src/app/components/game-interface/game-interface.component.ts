@@ -20,33 +20,6 @@ export class GameInterfaceComponent {
     question: QuizQuestion;
     gameService: GameService;
     players: PlayerArray[] = [];
-    histogramData = new Map<string, number>([
-        ['Paris', 15],
-        ['Dollar', 5],
-        ['Pound', 8],
-        ['52', 4],
-        ['50', 11],
-        ['Oxygen', 12],
-        ['Mars', 14],
-    ]);
-    histogramDatachangingResponses = new Map<string, number>([
-        ['Paris', 15],
-        ['Dollar', 5],
-        ['Pound', 8],
-        ['52', 4],
-        ['50', 11],
-        ['Oxygen', 12],
-        ['Mars', 14],
-    ]);
-    histogramDataValue = new Map<string, boolean>([
-        ['Paris', true],
-        ['Dollar', false],
-        ['Pound', true],
-        ['52', false],
-        ['50', true],
-        ['Oxygen', true],
-        ['Mars', true],
-    ]);
     private readonly socketService: SocketClientService;
     private route: ActivatedRoute;
     private router: Router;

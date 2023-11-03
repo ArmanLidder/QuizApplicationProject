@@ -19,6 +19,10 @@
     </div>
 </div>
 
+<div class="histogram">
+    <app-organizer-histogram [finalResponses]="this.histogramData" [changingResponses]="this.histogramDatachangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
+</div>
+
 <div *ngIf='isGameOver'>
     <h2>Partie terminée</h2>
     <button class='cancel' routerLink='/home'> Quitter </button>
