@@ -35,7 +35,7 @@ describe('GameInterfaceComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         onSpy = spyOn(socketService, 'on').and.callThrough();
-        sendSpy = spyOn(socketService, 'send');
+        sendSpy = spyOn(socketService, 'send').and.callThrough();
     });
 
     it('should create', () => {
@@ -85,5 +85,20 @@ describe('GameInterfaceComponent', () => {
         expect(socketOnText).toEqual('removed from game');
         socketOnFunc();
         expect(routerSpy).toHaveBeenCalledWith(['/']);
+    });
+
+    it('should get and define properly the players data', () => {
+        const mockPlayers = ['un'];
+        component.playersData();
+        const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
+        expect(sendGatherPlayers).toEqual('gather players username');
+        expect(sendGatherObject).toEqual(component.gameService.roomId);
+        expect(sendGatherCallback).toBeDefined();
+        sendGatherCallback(mockPlayers);
+        const [sendGetScore, sendGetScoreObject, sendGetScoreCallback] = sendSpy.calls.allArgs()[1];
+        expect(sendGetScore).toEqual('get score');
+        expect(sendGetScoreObject).toBeDefined();
+        expect(sendGetScoreCallback).toBeDefined();
+        sendGetScoreCallback(mockScore);
     });
 });

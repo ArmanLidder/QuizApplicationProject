@@ -106,17 +106,19 @@ button {
 
 .top-player {
   order: 2; /* Set the order to 2 to position it in the middle */
+  height: 260px;
 }
 
 .second-player {
   order: 1; /* Set the order to 1 to position it on the left */
   bottom: 20px;
+  height: 208px;
 }
 
 .third-player {
   order: 3; /* Set the order to 3 to position it on the right */
+  height: 182px;
 }
 
-  
-  
-  
+
+

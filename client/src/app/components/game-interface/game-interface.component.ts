@@ -5,7 +5,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 
-type playerArray = [string, number];
+type PlayerArray = [string, number];
 
 @Component({
     selector: 'app-game-interface',
@@ -19,11 +19,10 @@ export class GameInterfaceComponent {
     timerText: string = 'Temps restant';
     question: QuizQuestion;
     gameService: GameService;
-    players: playerArray[] = [];
+    players: PlayerArray[] = [];
     private readonly socketService: SocketClientService;
     private route: ActivatedRoute;
     private router: Router;
-
 
     constructor(injector: Injector) {
         this.gameService = injector.get<GameService>(GameService);
@@ -35,13 +34,9 @@ export class GameInterfaceComponent {
         this.gameService.init();
     }
 
-    getHeight(scaling: number): string {
-        return (scaling * 130) + 'px';
-    }
-
     playersData() {
         this.socketService.send('gather players username', this.gameService.roomId, (players: string[]) => {
-            for (let player of players) {
+            for (const player of players) {
                 this.socketService.send(
                     'get score',
                     {
