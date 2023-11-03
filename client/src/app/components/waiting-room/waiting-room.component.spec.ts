@@ -207,7 +207,7 @@ describe('WaitingRoomComponent', () => {
         }
         if (typeof secondAction === 'function') {
             secondAction(DIGIT_CONSTANT);
-            expect(routerSpy).not.toHaveBeenCalledWith(['/home']); // temporaire check .ts
+            expect(routerSpy).toHaveBeenCalledWith(['/home']);
         }
         if (typeof thirdAction === 'function') {
             thirdAction('test');

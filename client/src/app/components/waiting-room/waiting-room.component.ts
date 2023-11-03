@@ -104,7 +104,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.on('removed from game', () => {
-            // this.router.navigate(['/home']);
+            this.router.navigate(['/home']);
         });
 
         this.socketService.on('removed player', (username: string) => {
