@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 80%; /* Ensure the component takes up the full height */
+  width: 80%;
+}
+
+.chart-container {
+  flex-grow: 1; /* Allow the chart container to grow and take up remaining space */
+}
+
+.custom-legend {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+
+    .color-box {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      margin-right: 5px;
+    }
+  }
+}
