@@ -137,17 +137,15 @@ export class SocketManager {
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
-                    console.log('emit end question');
                     this.sio.to(String(data.roomId)).emit('end question');
                 }
             });
 
-            socket.on('update selection', (data: {roomId: number, isSelected: boolean, index: number}) => {
+            socket.on('update selection', (data: { roomId: number; isSelected: boolean; index: number }) => {
                 const game = this.roomManager.getGameByRoomId(data.roomId);
                 game.updateChoicesStats(data.isSelected, data.index);
                 const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
                 const choicesStatsValues = Array.from(game.choicesStats.values());
-                console.log(choicesStatsValues)
                 this.sio.to(hostSocketId).emit('refresh choices stats', choicesStatsValues);
             });
 
