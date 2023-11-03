@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
+import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { GamePageComponent } from './game-page.component';
-import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {

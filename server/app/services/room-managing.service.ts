@@ -1,6 +1,6 @@
-import { Service } from 'typedi';
-import { Message } from '@common/interfaces/message.interface';
 import { Game } from '@app/classes/game';
+import { Message } from '@common/interfaces/message.interface';
+import { Service } from 'typedi';
 
 type SocketId = string;
 type Username = string;

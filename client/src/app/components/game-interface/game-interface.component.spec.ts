@@ -1,9 +1,9 @@
-import { GameInterfaceComponent } from './game-interface.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service';
-import { ActivatedRoute } from '@angular/router';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Score } from '@common/interfaces/score.interface';
+import { GameInterfaceComponent } from './game-interface.component';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
