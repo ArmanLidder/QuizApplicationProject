@@ -70,7 +70,7 @@ describe('Game', () => {
         quizService = new QuizService(databaseService as unknown as DatabaseService);
         delete testQuiz['_id'];
         await quizService.collection.insertOne(testQuiz);
-        game = new Game(['Player1', 'Player2'], 'quiz123', quizService);
+        game = new Game(['Player1', 'Player2'], quizService);
         await game.setup(testQuiz.id);
     });
 
@@ -201,14 +201,15 @@ describe('Game', () => {
     });
 
     it('should update choicesStats correctly', () => {
+        game.currentQuizQuestion = testQuiz.questions[0];
         game.choicesStats.set('Paris', 2);
         game.choicesStats.set('London', 1);
-        const playerAnswer = ['Paris', 'London', 'Berlin', 'Test'];
-        game['updateChoicesStats'](playerAnswer);
-        expect(game.choicesStats.get('Paris')).to.equal(3);
+        const playerAnswerOne = 0;
+        const playerAnswerTwo = 1;
+        game['updateChoicesStats'](false,playerAnswerOne);
+        expect(game.choicesStats.get('Paris')).to.equal(1);
+        game['updateChoicesStats'](true,playerAnswerTwo);
         expect(game.choicesStats.get('London')).to.equal(2);
-        expect(game.choicesStats.get('Berlin')).to.equal(1);
-        expect(game.choicesStats.get('Test')).to.equal(undefined);
     });
 
     it('should correctly handle cases where there is no fastest player', () => {

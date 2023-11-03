@@ -37,13 +37,13 @@ export class GameService {
     }
 
     selectChoice(index: number) {
-        if (!this.locked) {
-            if (this.answers.has(index)) {
-                this.answers.delete(index);
-            } else {
-                const textChoice = this.question?.choices ? this.question.choices[index].text : null;
-                this.answers.set(index, textChoice);
-            }
+        if (this.answers.has(index)) {
+            this.answers.delete(index);
+            this.sendSelection(index, false);
+        } else {
+            const textChoice = this.question?.choices ? this.question.choices[index].text : null;
+            this.answers.set(index, textChoice);
+            this.sendSelection(index, true);
         }
     }
 
@@ -82,6 +82,10 @@ export class GameService {
         this.socketService.on('time', (timeValue: number) => {
             this.handleTimeEvent(timeValue);
         });
+    }
+
+    private sendSelection(index: number, isSelected: boolean) {
+        this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
     }
 
     private handleTimeEvent(timeValue: number) {

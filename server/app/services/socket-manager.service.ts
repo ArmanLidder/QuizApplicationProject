@@ -90,7 +90,6 @@ export class SocketManager {
                 this.roomManager.clearRoomTimer(roomId);
                 socket.to(String(roomId)).emit('removed from game');
                 this.sio.in(String(roomId)).disconnectSockets(true);
-                // console.log('room deleted');
                 this.roomManager.deleteRoom(roomId);
             });
 
@@ -113,7 +112,7 @@ export class SocketManager {
                 const room = this.roomManager.getRoomById(data.roomId);
                 const quizId = room.quizID;
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
-                this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
+                this.roomManager.getRoomById(data.roomId).game = new Game(usernames, this.quizService);
                 await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
                 this.timerFunction(data.roomId, data.time);
             });
@@ -140,6 +139,14 @@ export class SocketManager {
                     this.roomManager.clearRoomTimer(data.roomId);
                     this.sio.to(String(data.roomId)).emit('end question');
                 }
+            });
+
+            socket.on('update selection', (data: { roomId: number; isSelected: boolean; index: number }) => {
+                const game = this.roomManager.getGameByRoomId(data.roomId);
+                game.updateChoicesStats(data.isSelected, data.index);
+                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
+                const choicesStatsValues = Array.from(game.choicesStats.values());
+                this.sio.to(hostSocketId).emit('refresh choices stats', choicesStatsValues);
             });
 
             socket.on('start transition', (roomId: number) => {

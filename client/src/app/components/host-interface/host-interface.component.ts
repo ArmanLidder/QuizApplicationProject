@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service';
 import { SocketClientService } from '@app/services/socket-client.service';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+// import { Score } from '@common/interfaces/score.interface';
+
+type PlayerArray = [string, number, number];
 
 @Component({
     selector: 'app-host-interface',
@@ -12,6 +15,9 @@ import { QuestionType } from '@common/interfaces/quiz.interface';
 export class HostInterfaceComponent {
     timerText: string = 'Temps restant';
     isGameOver: boolean = false;
+    histogramDataChangingResponses = new Map<string, number>();
+    histogramDataValue = new Map<string, boolean>();
+    players: PlayerArray[] = [];
 
     constructor(
         public gameService: GameService,
@@ -22,6 +28,27 @@ export class HostInterfaceComponent {
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init();
     }
+
+    // playersUsername() {
+    //     if (this.players) {
+    //         this.players = [];
+    //     }
+    //     this.socketService.send('gather players username', this.gameService.roomId, (players: string[]) => {
+    //         for (const player of players) {
+    //             this.socketService.send(
+    //                 'get score',
+    //                 {
+    //                     roomId: this.gameService.roomId,
+    //                     username: player,
+    //                 },
+    //                 (score: Score) => {
+    //                     this.players.push([player, score.points, score.bonusCount]);
+    //                 },
+    //             );
+    //         }
+    //         this.players.sort((a, b) => b[1] - a[1]);
+    //     });
+    // }
 
     isDisabled() {
         return !this.gameService.locked && !this.gameService.validated;
@@ -62,6 +89,7 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('end question', () => {
+            // this.playersUsername();
             this.gameService.validated = true;
             this.gameService.locked = true;
         });
@@ -71,8 +99,38 @@ export class HostInterfaceComponent {
             this.gameService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
+
+        this.socketService.on('refresh choices stats', (choicesStatsValue: number[]) => {
+            this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
+        });
+
+        this.socketService.on(
+            'get initial question',
+            (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
+                // this.playersUsername();
+                this.initGraph(data.question);
+            },
+        );
+
+        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
+            this.initGraph(data.question);
+        });
     }
 
+    private initGraph(question: QuizQuestion) {
+        this.histogramDataValue = new Map();
+        this.histogramDataChangingResponses = new Map();
+        question.choices?.forEach((choice: QuizChoice) => {
+            this.histogramDataValue.set(choice.text, choice.isCorrect as boolean);
+        });
+    }
+
+    private createChoicesStatsMap(choicesStatsValue: number[]) {
+        const choicesStats = new Map();
+        const choices = this.gameService.question?.choices;
+        choices?.forEach((choice: QuizChoice, index: number) => choicesStats.set(choice.text, choicesStatsValue[index]));
+        return choicesStats;
+    }
     // eslint-disable-next-line @typescript-eslint/member-ordering
     protected readonly questionType = QuestionType;
 }

@@ -324,4 +324,15 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+    it('should handle update selection', (done) => {
+        roomManager.getSocketIDByUsername.returns('test');
+        gameMock.choicesStats = new Map();
+        const mockIsSelected = true;
+        const mockIndex = 1;
+        clientSocket.emit('update selection', { mockRoomId, mockIsSelected, mockIndex });
+        setTimeout(() => {
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, 'Organisateur'));
+            done();
+        }, RESPONSE_DELAY);
+    });
 });
