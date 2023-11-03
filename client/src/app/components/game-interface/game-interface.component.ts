@@ -48,8 +48,9 @@ export class GameInterfaceComponent {
                     },
                 );
             }
-            this.players.sort((a, b) => b[1] - a[1]);
         });
+        this.players.sort((a, b) => b[1] - a[1]);
+        this.players.reverse();
         this.isGameOver = true;
     }
 

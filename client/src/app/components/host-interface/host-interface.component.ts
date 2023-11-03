@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { QuestionType, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
-// import { Score } from '@common/interfaces/score.interface';
+import { Score } from '@common/interfaces/score.interface';
 
 type PlayerArray = [string, number, number];
 
@@ -29,26 +29,30 @@ export class HostInterfaceComponent {
         this.gameService.init();
     }
 
-    // playersUsername() {
-    //     if (this.players) {
-    //         this.players = [];
-    //     }
-    //     this.socketService.send('gather players username', this.gameService.roomId, (players: string[]) => {
-    //         for (const player of players) {
-    //             this.socketService.send(
-    //                 'get score',
-    //                 {
-    //                     roomId: this.gameService.roomId,
-    //                     username: player,
-    //                 },
-    //                 (score: Score) => {
-    //                     this.players.push([player, score.points, score.bonusCount]);
-    //                 },
-    //             );
-    //         }
-    //         this.players.sort((a, b) => b[1] - a[1]);
-    //     });
-    // }
+    playersUsername() {
+        if (this.players) {
+            this.players = [];
+        }
+        this.socketService.send('gather players username', this.gameService.roomId, (players: string[]) => {
+            for (const player of players) {
+                this.socketService.send(
+                    'get score',
+                    {
+                        roomId: this.gameService.roomId,
+                        username: player,
+                    },
+                    (score: Score) => {
+                        this.players.push([player, score.points, score.bonusCount]);
+                    },
+                );
+            }
+        });
+        console.log('avant sort');
+        console.log(this.players);
+        this.players.sort((a, b) => b[1] - a[1]);
+        console.log(this.players);
+        this.players.reverse();
+    }
 
     isDisabled() {
         return !this.gameService.locked && !this.gameService.validated;
@@ -89,7 +93,7 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('end question', () => {
-            // this.playersUsername();
+            this.playersUsername();
             this.gameService.validated = true;
             this.gameService.locked = true;
         });
@@ -107,7 +111,7 @@ export class HostInterfaceComponent {
         this.socketService.on(
             'get initial question',
             (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
-                // this.playersUsername();
+                this.playersUsername();
                 this.initGraph(data.question);
             },
         );
