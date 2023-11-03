@@ -29,6 +29,7 @@ import { GameInterfaceComponent } from './components/game-interface/game-interfa
 import { GameAnswersListComponent } from './components/game-answers-list/game-answers-list.component';
 import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-card/game-answer-choice-card.component';
 import { HostInterfaceComponent } from './components/host-interface/host-interface.component';
+import { OrganizerHistogramComponent } from './components/organizer-histogram/organizer-histogram.component';
 
 /**
  * Main module that is used in main.ts.
@@ -62,6 +63,7 @@ import { HostInterfaceComponent } from './components/host-interface/host-interfa
         GameAnswersListComponent,
         GameAnswerChoiceCardComponent,
         HostInterfaceComponent,
+        OrganizerHistogramComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
