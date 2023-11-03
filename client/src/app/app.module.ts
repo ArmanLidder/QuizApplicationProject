@@ -30,7 +30,7 @@ import { GameAnswersListComponent } from './components/game-answers-list/game-an
 import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-card/game-answer-choice-card.component';
 import { HostInterfaceComponent } from './components/host-interface/host-interface.component';
 import { OrganizerHistogramComponent } from './components/organizer-histogram/organizer-histogram.component';
-
+import { NgChartsModule } from 'ng2-charts';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -65,7 +65,7 @@ import { OrganizerHistogramComponent } from './components/organizer-histogram/or
         HostInterfaceComponent,
         OrganizerHistogramComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
+    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule, NgChartsModule],
     providers: [],
     bootstrap: [AppComponent],
 })
