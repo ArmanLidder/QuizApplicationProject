@@ -217,19 +217,17 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should handle "start" event', (done) => {
-        const roomId = 123;
         const mockTime = 123;
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const timerFunctionSpy = sinon.spy(service, 'timerFunction' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
-        clientSocket.emit('start', { roomId, time: mockTime });
-        gameMock.setup.resolves();
+        clientSocket.emit('start', { roomId: mockRoomId, time: mockTime });
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernamesArray.called);
-            expect(timerFunctionSpy.calledWith(roomId, mockTime));
+            expect(timerFunctionSpy.calledWith(mockRoomId, mockTime));
             done();
-        }, FIVE_SECOND);
+        }, RESPONSE_DELAY);
     });
     it('should handle "get messages" event', (done) => {
         roomManager.getRoomById.returns(mockRoom);
@@ -263,7 +261,6 @@ describe('SocketManager service tests', () => {
             expect(emitSpy.called);
             expect(emitSpy.calledWith('message received'));
             expect(roomManager.addMessage.calledWith(mockRoomId, newMessage)).to.equal(true);
-
             done();
         }, RESPONSE_DELAY);
         clientSocket.emit('new message', { roomId: mockRoomId, message: newMessage });
@@ -311,7 +308,9 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should get score and callback playerScore', (done) => {
-        const callback = () => { return;};
+        const callback = () => {
+            return;
+        };
         clientSocket.emit('get score', { roomId: mockRoomId, username: 'test' }, callback);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
