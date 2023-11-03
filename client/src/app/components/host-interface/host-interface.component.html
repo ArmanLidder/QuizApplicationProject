@@ -18,6 +18,14 @@
         <button class='cancel' routerLink='/home'> Quitter </button>
     </div>
 </div>
+<div class="players-list">
+    <h2>Joueurs:</h2>
+    <ul>
+        <li class="player-item" *ngFor="let player of players">
+            <span class="player-name">username: {{ player[0] }} score: {{player[1]}} bonuses: {{player[2]}}</span>
+        </li>
+    </ul>
+</div>
 <div class="histogram" *ngIf='!this.isGameOver'>
     <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
 </div>
