@@ -112,8 +112,8 @@ export class SocketManager {
                 const room = this.roomManager.getRoomById(data.roomId);
                 const quizId = room.quizID;
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
-                this.roomManager.getRoomById(data.roomId).game = new Game(usernames, this.quizService);
-                await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
+                room.game = new Game(usernames, this.quizService);
+                await room.game.setup(quizId);
                 this.timerFunction(data.roomId, data.time);
             });
 
