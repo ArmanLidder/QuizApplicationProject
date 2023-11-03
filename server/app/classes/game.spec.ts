@@ -206,9 +206,9 @@ describe('Game', () => {
         game.choicesStats.set('London', 1);
         const playerAnswerOne = 0;
         const playerAnswerTwo = 1;
-        game['updateChoicesStats'](false,playerAnswerOne);
+        game['updateChoicesStats'](false, playerAnswerOne);
         expect(game.choicesStats.get('Paris')).to.equal(1);
-        game['updateChoicesStats'](true,playerAnswerTwo);
+        game['updateChoicesStats'](true, playerAnswerTwo);
         expect(game.choicesStats.get('London')).to.equal(2);
     });
 
