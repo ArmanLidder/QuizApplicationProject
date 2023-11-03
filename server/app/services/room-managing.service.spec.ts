@@ -52,6 +52,10 @@ describe('Room Managing Service', () => {
         expect(roomService.getRoomById(roomId)).to.equal(undefined);
     });
 
+    it('should get game by room id', () => {
+        expect(roomService.getGameByRoomId(1)).to.equal(roomService.getRoomById(roomId).game);
+    });
+
     it('should add a user to a room', () => {
         const mockSocketId = 'socketID';
         const roomData = roomService['rooms'].get(roomId);
