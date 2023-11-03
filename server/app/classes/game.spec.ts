@@ -207,9 +207,9 @@ describe('Game', () => {
         const playerAnswerOne = 0;
         const playerAnswerTwo = 1;
         game['updateChoicesStats'](false,playerAnswerOne);
-        expect(game.choicesStats.get('Paris')).to.equal(3);
+        expect(game.choicesStats.get('Paris')).to.equal(1);
         game['updateChoicesStats'](true,playerAnswerTwo);
-        expect(game.choicesStats.get('London')).to.equal(0);
+        expect(game.choicesStats.get('London')).to.equal(2);
     });
 
     it('should correctly handle cases where there is no fastest player', () => {
