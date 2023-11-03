@@ -65,7 +65,17 @@ import { NgChartsModule } from 'ng2-charts';
         HostInterfaceComponent,
         OrganizerHistogramComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule, NgChartsModule],
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgChartsModule,
+        BrowserAnimationsModule,
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })
