@@ -39,12 +39,10 @@ export class GameService {
     selectChoice(index: number) {
         if (this.answers.has(index)) {
             this.answers.delete(index);
-            console.log('choice unselected');
             this.sendSelection(index, false);
         } else {
             const textChoice = this.question?.choices ? this.question.choices[index].text : null;
             this.answers.set(index, textChoice);
-            console.log('choice selected');
             this.sendSelection(index, true);
         }
     }
@@ -60,7 +58,6 @@ export class GameService {
         this.locked = true;
         this.answers.clear();
     }
-
 
     configureBaseSockets() {
         this.socketService.on(
@@ -88,7 +85,6 @@ export class GameService {
     }
 
     private sendSelection(index: number, isSelected: boolean) {
-        console.log('update selection');
         this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
     }
 

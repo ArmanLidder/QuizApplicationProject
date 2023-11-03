@@ -55,10 +55,7 @@ export class Game {
     }
 
     updateChoicesStats(isSelected: boolean, index: number) {
-        console.log(isSelected);
-        console.log(index);
         const answer = this.currentQuizQuestion.choices[index].text;
-        console.log(answer);
         const oldValue = this.choicesStats.get(answer);
         this.choicesStats.set(answer, isSelected ? oldValue + 1 : oldValue - 1);
     }
