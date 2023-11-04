@@ -45,12 +45,16 @@ export class GameInterfaceComponent {
                     },
                     (score: Score) => {
                         this.players.push([player, score.points]);
+                        this.players.sort((a, b) => {
+                            if (b[1] - a[1] !== 0) {
+                                return b[1] - a[1];
+                            }
+                            return a[0].localeCompare(b[0]);
+                        });
                     },
                 );
             }
         });
-        this.players.sort((a, b) => b[1] - a[1]);
-        this.players.reverse();
         this.isGameOver = true;
     }
 

@@ -43,15 +43,16 @@ export class HostInterfaceComponent {
                     },
                     (score: Score) => {
                         this.players.push([player, score.points, score.bonusCount]);
+                        this.players.sort((a, b) => {
+                            if (b[1] - a[1] !== 0) {
+                                return b[1] - a[1];
+                            }
+                            return a[0].localeCompare(b[0]);
+                        });
                     },
                 );
             }
         });
-        console.log('avant sort');
-        console.log(this.players);
-        this.players.sort((a, b) => b[1] - a[1]);
-        console.log(this.players);
-        this.players.reverse();
     }
 
     isDisabled() {
