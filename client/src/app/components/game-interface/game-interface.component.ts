@@ -44,30 +44,6 @@ export class GameInterfaceComponent {
         return this.isBonus;
     }
 
-    playersData() {
-        this.socketService.send('gather players username', this.gameService.gameRealService.roomId, (players: string[]) => {
-            for (const player of players) {
-                this.socketService.send(
-                    'get score',
-                    {
-                        roomId: this.gameService.gameRealService.roomId,
-                        username: player,
-                    },
-                    (score: Score) => {
-                        this.players.push([player, score.points]);
-                        this.players.sort((a, b) => {
-                            if (b[1] - a[1] !== 0) {
-                                return b[1] - a[1];
-                            }
-                            return a[0].localeCompare(b[0]);
-                        });
-                    },
-                );
-            }
-        });
-        this.isGameOver = true;
-    }
-
     private configureBaseSocketFeatures() {
         this.socketService.on('end question', () => {
             if (this.gameService.gameRealService.username !== 'Organisateur') {
@@ -99,7 +75,10 @@ export class GameInterfaceComponent {
         this.socketService.on('final time transition', (timeValue: number) => {
             this.timerText = "Les résultats finaux s'afficherons dans:";
             this.gameService.gameRealService.timer = timeValue;
-            if (this.gameService.timer === 0) this.playersData();
+            if (this.gameService.timer === 0) {
+                this.gameService.gameRealService.getPlayersList();
+                this.isGameOver = true;
+            }
         });
 
         this.socketService.on('removed from game', () => {

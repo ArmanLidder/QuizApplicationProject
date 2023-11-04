@@ -92,7 +92,7 @@ describe('GameInterfaceComponent', () => {
 
     it('should get and define properly the players data', () => {
         const mockPlayers = ['un'];
-        component.playersData();
+        component.gameService.gameRealService.getPlayersList();
         const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
         expect(sendGatherPlayers).toEqual('gather players username');
         expect(sendGatherObject).toEqual(component.gameService.gameRealService.roomId);

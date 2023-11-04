@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { QuestionType, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
-import { Score } from '@common/interfaces/score.interface';
 
 type PlayerArray = [string, number, number];
 
@@ -28,31 +27,31 @@ export class HostInterfaceComponent {
         this.gameService.init(this.route.snapshot.paramMap.get('id') as string);
     }
 
-    playersUsername() {
-        if (this.players) {
-            this.players = [];
-        }
-        this.socketService.send('gather players username', this.gameService.gameRealService.roomId, (players: string[]) => {
-            for (const player of players) {
-                this.socketService.send(
-                    'get score',
-                    {
-                        roomId: this.gameService.gameRealService.roomId,
-                        username: player,
-                    },
-                    (score: Score) => {
-                        this.players.push([player, score.points, score.bonusCount]);
-                        this.players.sort((a, b) => {
-                            if (b[1] - a[1] !== 0) {
-                                return b[1] - a[1];
-                            }
-                            return a[0].localeCompare(b[0]);
-                        });
-                    },
-                );
-            }
-        });
-    }
+    // playersUsername() {
+    //     if (this.players) {
+    //         this.players = [];
+    //     }
+    //     this.socketService.send('gather players username', this.gameService.gameRealService.roomId, (players: string[]) => {
+    //         for (const player of players) {
+    //             this.socketService.send(
+    //                 'get score',
+    //                 {
+    //                     roomId: this.gameService.gameRealService.roomId,
+    //                     username: player,
+    //                 },
+    //                 (score: Score) => {
+    //                     this.players.push([player, score.points, score.bonusCount]);
+    //                     this.players.sort((a, b) => {
+    //                         if (b[1] - a[1] !== 0) {
+    //                             return b[1] - a[1];
+    //                         }
+    //                         return a[0].localeCompare(b[0]);
+    //                     });
+    //                 },
+    //             );
+    //         }
+    //     });
+    // }
 
     isDisabled() {
         return !this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated;
@@ -93,7 +92,7 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('end question', () => {
-            this.playersUsername();
+            this.gameService.gameRealService.getPlayersList();
             this.gameService.gameRealService.validated = true;
             this.gameService.gameRealService.locked = true;
         });
@@ -110,7 +109,7 @@ export class HostInterfaceComponent {
         this.socketService.on(
             'get initial question',
             (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
-                this.playersUsername();
+                this.gameService.gameRealService.getPlayersList();
                 this.initGraph(data.question);
             },
         );

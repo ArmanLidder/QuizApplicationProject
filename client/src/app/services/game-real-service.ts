@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
+import { Score } from '@common/interfaces/score.interface';
 
-type Score = Map<string, number>;
+type Player = [string, number, number];
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +12,7 @@ type Score = Map<string, number>;
 export class GameRealService implements GameServiceInterface {
     username: string = '';
     roomId: number = 0;
-    players: Map<string, Score> = new Map();
+    players: Player[] = [];
     answers: Map<number, string | null> = new Map();
     questionNumber: number = 1;
     timer: number = 0;
@@ -77,6 +78,29 @@ export class GameRealService implements GameServiceInterface {
         if (this.socketService.isSocketAlive()) this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
     }
 
+    getPlayersList() {
+        this.socketService.send('gather players username', this.roomId, (players: string[]) => {
+            for (const player of players) {
+                this.socketService.send(
+                    'get score',
+                    {
+                        roomId: this.roomId,
+                        username: player,
+                    },
+                    (score: Score) => {
+                        this.players.push([player, score.points, score.bonusCount]);
+                        this.players.sort((a, b) => {
+                            if (b[1] - a[1] !== 0) {
+                                return b[1] - a[1];
+                            }
+                            return a[0].localeCompare(b[0]);
+                        });
+                    },
+                );
+            }
+        });
+    }
+
     private handleTimeEvent(timeValue: number) {
         this.timer = timeValue;
         if (this.timer === 0 && !this.locked) {
@@ -93,7 +117,7 @@ export class GameRealService implements GameServiceInterface {
         this.locked = false;
         this.validated = false;
         this.isLast = false;
-        this.players.clear();
+        this.players = [];
         this.answers.clear();
         this.questionNumber = 1;
     }
