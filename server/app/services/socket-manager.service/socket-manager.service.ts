@@ -4,9 +4,7 @@ import { RoomManagingService } from '@app/services/room-managing.service/room-ma
 import { Message } from '@common/interfaces/message.interface';
 import * as http from 'http';
 import * as io from 'socket.io';
-
-const ONE_SECOND_DELAY = 1000;
-const TRANSITION_QUESTIONS_DELAY = 3;
+import {ONE_SECOND_DELAY,TRANSITION_QUESTIONS_DELAY} from '@app/services/socket-manager.service/socket-manager.service.const';
 
 export class SocketManager {
     private sio: io.Server;
