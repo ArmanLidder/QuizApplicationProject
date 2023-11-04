@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QuizCreationService } from '@app/services/quiz-creation.service';
+import {POPUP_TIMEOUT} from '@app/components/question-list/question-list.component.const';
 
-const POPUP_TIMEOUT = 3000;
 
 @Component({
     selector: 'app-question-list',
