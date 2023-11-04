@@ -132,6 +132,7 @@ export class RoomCodePromptComponent implements OnInit {
                     this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
                 } else if (data.isLocked) {
                     this.isRoomIdValid = false;
+                    this.isUsernameValid = false;
                     this.showErrorFeedback();
                     this.error = 'La partie est vérouillée. Veuillez réessayer.';
                 } else {
