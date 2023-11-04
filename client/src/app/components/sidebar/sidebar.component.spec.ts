@@ -20,6 +20,7 @@ describe('SidebarComponent', () => {
     let longMessage: string;
     beforeEach(() => {
         gameService = jasmine.createSpyObj('GameService', ['destroy']);
+
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             imports: [ReactiveFormsModule, FormsModule],
@@ -33,8 +34,10 @@ describe('SidebarComponent', () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
+        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
+            return true;
+        });
         formBuilder = TestBed.inject(FormBuilder);
-        // gameService = TestBed.inject(GameService) as unknown as SpyObj<GameService>;
         fixture.detectChanges();
     });
 
@@ -73,9 +76,6 @@ describe('SidebarComponent', () => {
 
     it('should call getUsername() when setting up the chat', () => {
         const getUsernameSpy = spyOn<any>(component, 'getUsername');
-        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
-            return true;
-        });
         component['setup']();
         expect(getUsernameSpy).toHaveBeenCalled();
     });
@@ -83,9 +83,6 @@ describe('SidebarComponent', () => {
     it('should call getRoomMessages() and configureBaseSocketFeatures()', () => {
         const getRoomMessagesSpy = spyOn(component, 'getRoomMessages' as any);
         const configureSocketsSpy = spyOn(component, 'configureBaseSocketFeatures' as any);
-        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
-            return true;
-        });
         component['setup']();
         expect(getRoomMessagesSpy).toHaveBeenCalled();
         expect(configureSocketsSpy).toHaveBeenCalled();
