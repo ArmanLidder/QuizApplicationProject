@@ -65,11 +65,12 @@ export class GameService {
         if (!this.lockedStatus) {
             if (this.answers.has(index)) {
                 this.answers.delete(index);
+                this.gameRealService.sendSelection(index, false);
             } else {
                 const textChoice = this.question?.choices ? this.question.choices[index].text : null;
                 this.answers.set(index, textChoice);
+                this.gameRealService.sendSelection(index, true);
             }
-            // send to update chart
         }
     }
 

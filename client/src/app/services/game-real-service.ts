@@ -73,6 +73,10 @@ export class GameRealService implements GameServiceInterface {
         });
     }
 
+    sendSelection(index: number, isSelected: boolean) {
+        this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
+    }
+
     private handleTimeEvent(timeValue: number) {
         this.timer = timeValue;
         if (this.timer === 0 && !this.locked) {
