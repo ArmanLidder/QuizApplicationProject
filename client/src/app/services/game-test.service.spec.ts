@@ -2,16 +2,20 @@ import { TestBed } from '@angular/core/testing';
 import { QuizService } from '@app/services/quiz.service';
 import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
 import { GameTestService } from './game-test.service';
+import { of } from 'rxjs';
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+const TICK = 1000;
+const TRANSITION_TIMER_DELAY = 3;
 
 describe('GameTestService', () => {
     let gameTestService: GameTestService;
     let quizService: jasmine.SpyObj<QuizService>;
     let extractCorrectChoicesSpy: jasmine.Spy;
-    const MOCK_QUIZ: Quiz = {
+    const mockQuiz: Quiz = {
         id: '123',
         title: 'Math Quiz',
         description: 'its a math quiz.',
-        duration: 30,
+        duration: 1,
         lastModification: '2023-09-15',
         questions: [
             {
@@ -58,7 +62,7 @@ describe('GameTestService', () => {
         expect(gameTestService.timeService.getTimer(0)).toBe(TIMER1);
 
         gameTestService.currQuestionIndex = 1;
-        gameTestService.quiz = MOCK_QUIZ;
+        gameTestService.quiz = mockQuiz;
         expect(gameTestService.next()).toBe(false);
     });
 
@@ -66,14 +70,14 @@ describe('GameTestService', () => {
         const TIMER_VALUE = 10;
         gameTestService.timeService.createTimer(TIMER_VALUE);
         gameTestService.timeService.getTimer(0);
-        gameTestService.quiz = MOCK_QUIZ;
+        gameTestService.quiz = mockQuiz;
         gameTestService.currQuestionIndex = 0;
         gameTestService.next();
         expect(gameTestService.currQuestionIndex).toBe(1);
     });
 
     it('should set isBonus to false and return when the correct answer lenght is false', () => {
-        gameTestService.quiz = MOCK_QUIZ;
+        gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [0, 'Choice 1'],
@@ -88,7 +92,7 @@ describe('GameTestService', () => {
     });
 
     it('should set isBonus to false and return when at least 1 answer is incorrect', () => {
-        gameTestService.quiz = MOCK_QUIZ;
+        gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [0, 'Choice 1'],
@@ -104,7 +108,7 @@ describe('GameTestService', () => {
 
     it('should set isBonus to true and add the bonus to the player score', () => {
         const BONUS_MULT = 1.2;
-        gameTestService.quiz = MOCK_QUIZ;
+        gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [1, '2'],
@@ -116,7 +120,7 @@ describe('GameTestService', () => {
         gameTestService.updateScore(answers);
 
         expect(gameTestService.isBonus).toBe(true);
-        expect(gameTestService.playerScore).toBe(MOCK_QUIZ.questions[1].points * BONUS_MULT);
+        expect(gameTestService.playerScore).toBe(mockQuiz.questions[1].points * BONUS_MULT);
     });
 
     it('should start a timer from the timeService', () => {
@@ -140,12 +144,93 @@ describe('GameTestService', () => {
     });
 
     it('should return the correct answers of a question choices', () => {
-        gameTestService.quiz = MOCK_QUIZ;
+        gameTestService.quiz = mockQuiz;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         extractCorrectChoicesSpy = spyOn<any>(gameTestService, 'extractCorrectChoices').and.callThrough();
-        expect(extractCorrectChoicesSpy(MOCK_QUIZ.questions[1].choices)).toEqual([
+        expect(extractCorrectChoicesSpy(mockQuiz.questions[1].choices)).toEqual([
             { text: '2', isCorrect: true },
             { text: '3', isCorrect: true },
         ]);
+    });
+
+    it('should initialize component properly when calling init method if socket connected', () => {
+        spyOn(gameTestService, 'getQuiz').and.returnValue(of(mockQuiz));
+        const deleteTimersSpy = spyOn(gameTestService.timeService, 'deleteAllTimers');
+        const startTimersSpy = spyOn(gameTestService, 'startTimer');
+        const handleQuestionTimerSpy = spyOn<any>(gameTestService, 'handleQuestionTimerEnd');
+        gameTestService.init();
+        expect(gameTestService.getQuiz).toHaveBeenCalledWith(gameTestService.quizId);
+        expect(deleteTimersSpy).toHaveBeenCalled();
+        expect(startTimersSpy).toHaveBeenCalledWith(mockQuiz.duration);
+        expect(handleQuestionTimerSpy).toHaveBeenCalled();
+    });
+
+    it('should send answer properly if socket not connected', () => {
+        const clearTimeoutSpy = spyOn(window, 'clearTimeout');
+        const updateScoreSpy = spyOn(gameTestService, 'updateScore');
+        const startTimersSpy = spyOn(gameTestService, 'startTimer');
+        const handleTransitionTimerSpy = spyOn<any>(gameTestService, 'handleTransitionTimer');
+        gameTestService.sendAnswer();
+        expect(gameTestService.validated).toBeTruthy();
+        expect(gameTestService.locked).toBeTruthy();
+        expect(clearTimeoutSpy).toHaveBeenCalledWith(gameTestService.timeouts[0]);
+        expect(updateScoreSpy).toHaveBeenCalledWith(gameTestService.answers);
+        expect(startTimersSpy).toHaveBeenCalledWith(3);
+        expect(handleTransitionTimerSpy).toHaveBeenCalled();
+    });
+
+    it('should handle question timer end correctly', (done) => {
+        // Spy on the sendAnswer method
+        gameTestService.quiz = mockQuiz;
+        spyOn(gameTestService, 'sendAnswer');
+        gameTestService['handleQuestionTimerEnd']();
+        setTimeout(() => {
+            expect(gameTestService.sendAnswer).toHaveBeenCalled();
+            done();
+        }, mockQuiz.duration * TICK);
+    });
+
+    it('should handle transition timer end correctly if next question is not available', (done) => {
+        gameTestService.quiz = mockQuiz;
+        gameTestService.answers = new Map();
+        spyOn<any>(gameTestService, 'showFinalFeedBack');
+        spyOn(gameTestService, 'next').and.returnValue(false);
+        gameTestService['handleTransitionTimer']();
+        setTimeout(() => {
+            expect(gameTestService['showFinalFeedBack']).toHaveBeenCalled();
+            done();
+        }, TRANSITION_TIMER_DELAY * TICK);
+    });
+
+    it('should handle transition timer end correctly if next question is not available', (done) => {
+        gameTestService.quiz = mockQuiz;
+        spyOn<any>(gameTestService, 'hideFeedback');
+        spyOn(gameTestService, 'next').and.returnValue(true);
+        const startTimersSpy = spyOn(gameTestService, 'startTimer');
+        const handleQuestionTimerSpy = spyOn<any>(gameTestService, 'handleQuestionTimerEnd');
+        gameTestService['handleTransitionTimer']();
+        setTimeout(() => {
+            expect(gameTestService['hideFeedback']).toHaveBeenCalled();
+            expect(startTimersSpy).toHaveBeenCalledWith(mockQuiz.duration);
+            expect(handleQuestionTimerSpy).toHaveBeenCalled();
+            done();
+        }, TRANSITION_TIMER_DELAY * TICK);
+    });
+
+    it('should affect the correct values when hide feedback is called', () => {
+        gameTestService.answers = new Map();
+        const clearTimeoutSpy = spyOn(window, 'clearTimeout');
+        gameTestService['hideFeedback']();
+        expect(gameTestService.validated).toBeFalsy();
+        expect(gameTestService.locked).toBeFalsy();
+        expect(gameTestService.isBonus).toBeFalsy();
+        expect(clearTimeoutSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('should affect the correct values when show feedback is called', () => {
+        gameTestService['showFinalFeedBack']();
+        expect(gameTestService.validated).toBeTruthy();
+        expect(gameTestService.locked).toBeTruthy();
+        expect(gameTestService.gameOver).toBeTruthy();
     });
 });
