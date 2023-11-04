@@ -116,6 +116,10 @@ button {
     cursor: pointer;
 }
 
+.strikethrough {
+    text-decoration: line-through;
+  }
+
 .players-list {
     display: flex;
     flex-direction: column;

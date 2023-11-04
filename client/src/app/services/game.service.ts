@@ -19,6 +19,7 @@ export class GameService {
     players: Map<string, Score> = new Map();
     answers: Map<number, string | null> = new Map();
     questionNumber: number = 1;
+    playerLeft: boolean =false;
 
     constructor(public socketService: SocketClientService) {
         if (this.socketService.isSocketAlive()) this.configureBaseSockets();
@@ -58,6 +59,8 @@ export class GameService {
         this.locked = true;
         this.answers.clear();
     }
+
+
 
     configureBaseSockets() {
         this.socketService.on(
@@ -108,4 +111,6 @@ export class GameService {
         this.answers.clear();
         this.questionNumber = 1;
     }
+
+
 }

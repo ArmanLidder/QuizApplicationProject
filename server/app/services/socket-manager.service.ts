@@ -82,6 +82,7 @@ export class SocketManager {
                 const userInfo = this.roomManager.removeUserBySocketID(socket.id);
                 if (userInfo !== undefined) {
                     this.sio.to(String(roomId)).emit('removed player', userInfo.username);
+                    
                 }
                 socket.disconnect(true);
             });
@@ -140,6 +141,7 @@ export class SocketManager {
                     this.sio.to(String(data.roomId)).emit('end question');
                 }
             });
+
 
             socket.on('update selection', (data: { roomId: number; isSelected: boolean; index: number }) => {
                 const game = this.roomManager.getGameByRoomId(data.roomId);

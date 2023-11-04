@@ -99,6 +99,14 @@ export class GameInterfaceComponent {
         });
     }
 
+    leaveGame() {
+        // Emit an event to notify the host that the player is leaving
+       // this.socketService.send('playerLeft', this.gameService.username);
+
+        console.log("playerLeft in leaveGame");
+        // You can also implement additional logic here, like navigating the player back to the main page.
+    }
+
     // eslint-disable-next-line @typescript-eslint/member-ordering
     protected readonly questionType = QuestionType;
 }

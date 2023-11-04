@@ -22,7 +22,11 @@
     <h2>Joueurs:</h2>
     <ul>
         <li class="player-item" *ngFor="let player of players">
-            <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
+            <span class="player-name"><b>Joueur : </b> {{ player[0] }} <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
+
+        </li>
+        <li class="player-item" *ngFor="let player of leftPlayers">
+            <span class="player-name"><b>Joueur : </b> <b [ngClass]="{'strikethrough': playerHasLeft(player[0])}">{{ player[0] }} </b>  <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
 
         </li>
     </ul>

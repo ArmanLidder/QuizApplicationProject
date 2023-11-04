@@ -18,6 +18,8 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     players: PlayerArray[] = [];
+    leftPlayers: PlayerArray[] = [];
+
 
     constructor(
         public gameService: GameService,
@@ -53,6 +55,10 @@ export class HostInterfaceComponent {
                 );
             }
         });
+
+        
+        
+
     }
 
     isDisabled() {
@@ -75,6 +81,7 @@ export class HostInterfaceComponent {
         this.gameService.validated = false;
         this.gameService.locked = false;
         this.socketService.send('start transition', this.gameService.roomId);
+        console.log(this.players);
     }
 
     private handleLastQuestion() {
@@ -82,6 +89,8 @@ export class HostInterfaceComponent {
     }
 
     private configureBaseSocketFeatures() {
+
+
         this.socketService.on('time transition', (timeValue: number) => {
             this.timerText = 'Prochaine question dans ';
             this.gameService.timer = timeValue;
@@ -115,13 +124,30 @@ export class HostInterfaceComponent {
                 this.playersUsername();
                 this.initGraph(data.question);
             },
+
         );
 
         this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
             this.initGraph(data.question);
         });
+
+   
+
+        this.socketService.on('removed player', (username) => {
+            const playerIndex = this.players.findIndex((player) => player[0] === username);
+            if (playerIndex !== -1) {
+              this.leftPlayers.push(this.players[playerIndex]);
+              this.players.splice(playerIndex, 1);
+            }
+          });
+
     }
 
+    playerHasLeft(username: string): boolean {
+        return this.leftPlayers.some((player) => player[0] === username);
+      }
+
+      
     private initGraph(question: QuizQuestion) {
         this.histogramDataValue = new Map();
         this.histogramDataChangingResponses = new Map();
