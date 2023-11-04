@@ -1,8 +1,8 @@
 import { Component, Injector } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
+import { QuestionType } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 
 type PlayerArray = [string, number];
@@ -103,7 +103,7 @@ export class GameInterfaceComponent {
         });
 
         this.socketService.on('removed from game', () => {
-            this.router.navigate(['/']).then();
+            this.router.navigate(['/']);
         });
     }
 

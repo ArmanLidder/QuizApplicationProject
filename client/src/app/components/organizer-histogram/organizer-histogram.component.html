@@ -1,0 +1,23 @@
+<div class="chart-container">
+    <div class="custom-legend">
+        <h2> Légende: </h2>
+        <div class="legend-item">
+            <span class="color-box" style="background-color: green;"></span>
+            <span class="color-box" style="background-color: red;"></span>
+            Nombre de Réponses Finales
+        </div>
+        <div class="legend-item">
+            <span class="color-box" style="background-color: lightgreen;"></span>
+            <span class="color-box" style="background-color: pink;"></span>
+            Nombre de Réponses
+        </div>
+    </div>
+    <canvas
+        baseChart
+        class="chart"
+        [data]="barChartData"
+        [options]="barChartOptions"
+        [type]="barChartType"
+    >
+    </canvas>
+</div>

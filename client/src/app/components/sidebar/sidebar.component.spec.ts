@@ -20,7 +20,6 @@ describe('SidebarComponent', () => {
     let longMessage: string;
     beforeEach(() => {
         gameService = jasmine.createSpyObj('GameService', ['destroy']);
-
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             imports: [ReactiveFormsModule, FormsModule],
@@ -38,6 +37,7 @@ describe('SidebarComponent', () => {
             return true;
         });
         formBuilder = TestBed.inject(FormBuilder);
+        // gameService = TestBed.inject(GameService) as unknown as SpyObj<GameService>;
         fixture.detectChanges();
     });
 

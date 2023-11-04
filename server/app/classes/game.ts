@@ -1,6 +1,6 @@
-import { Quiz, QuizQuestion, QuizChoice } from '@common/interfaces/quiz.interface';
-import { QuizService } from '@app/services/quiz.service';
 import { Answers } from '@app/interface/game-interface';
+import { QuizService } from '@app/services/quiz.service';
+import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 
 type Username = string;
@@ -23,7 +23,6 @@ export class Game {
 
     constructor(
         usernames: string[],
-        quizId: string,
         private readonly quizService: QuizService,
     ) {
         this.configurePlayers(usernames);
@@ -35,12 +34,12 @@ export class Game {
 
     next() {
         this.playersAnswers.clear();
+        this.choicesStats.clear();
         this.currIndex++;
         this.setValues();
     }
 
     storePlayerAnswer(username: string, time: number, playerAnswer: string[]) {
-        this.updateChoicesStats(playerAnswer);
         this.playersAnswers.set(username, { answers: playerAnswer, time: this.duration - time });
     }
 
@@ -55,13 +54,10 @@ export class Game {
         });
     }
 
-    private updateChoicesStats(playerAnswer: string[]) {
-        playerAnswer.forEach((answer: string) => {
-            if (this.choicesStats.has(answer)) {
-                const oldValue = this.choicesStats.get(answer);
-                this.choicesStats.set(answer, oldValue + 1);
-            }
-        });
+    updateChoicesStats(isSelected: boolean, index: number) {
+        const answer = this.currentQuizQuestion.choices[index].text;
+        const oldValue = this.choicesStats.get(answer);
+        this.choicesStats.set(answer, isSelected ? oldValue + 1 : oldValue - 1);
     }
 
     private validateAnswer(playerAnswers: string[]) {

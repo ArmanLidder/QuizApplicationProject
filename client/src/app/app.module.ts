@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -30,7 +29,8 @@ import { GameInterfaceComponent } from './components/game-interface/game-interfa
 import { GameAnswersListComponent } from './components/game-answers-list/game-answers-list.component';
 import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-card/game-answer-choice-card.component';
 import { HostInterfaceComponent } from './components/host-interface/host-interface.component';
-
+import { OrganizerHistogramComponent } from './components/organizer-histogram/organizer-histogram.component';
+import { NgChartsModule } from 'ng2-charts';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -42,7 +42,6 @@ import { HostInterfaceComponent } from './components/host-interface/host-interfa
         AppComponent,
         GamePageComponent,
         MainPageComponent,
-        PlayAreaComponent,
         SidebarComponent,
         AnswerChoiceCardComponent,
         QuizCreationComponent,
@@ -64,8 +63,19 @@ import { HostInterfaceComponent } from './components/host-interface/host-interfa
         GameAnswersListComponent,
         GameAnswerChoiceCardComponent,
         HostInterfaceComponent,
+        OrganizerHistogramComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgChartsModule,
+        BrowserAnimationsModule,
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })

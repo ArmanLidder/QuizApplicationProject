@@ -3,7 +3,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 const DELETE_NUMBER = 1;
-const START_TRANSITION_DELAY = 2; // TODO remettre a 5 quand push
+const START_TRANSITION_DELAY = 5;
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
@@ -13,6 +13,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isHost: boolean;
     @Input() roomId: number;
     @Input() isActive: boolean;
+    @Input() isResult: boolean;
     isRoomLocked: boolean = false;
     isGameStarting: boolean = false;
     isTransition: boolean = false;
@@ -104,7 +105,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.on('removed from game', () => {
-            // this.router.navigate(['/home']);
+            this.router.navigate(['/home']);
         });
 
         this.socketService.on('removed player', (username: string) => {

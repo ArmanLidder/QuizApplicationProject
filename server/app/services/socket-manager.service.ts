@@ -1,9 +1,9 @@
-import * as io from 'socket.io';
-import * as http from 'http';
-import { RoomManagingService } from '@app/services/room-managing.service';
-import { Message } from '@common/interfaces/message.interface';
 import { Game } from '@app/classes/game';
 import { QuizService } from '@app/services/quiz.service';
+import { RoomManagingService } from '@app/services/room-managing.service';
+import { Message } from '@common/interfaces/message.interface';
+import * as http from 'http';
+import * as io from 'socket.io';
 
 const ONE_SECOND_DELAY = 1000;
 const TRANSITION_QUESTIONS_DELAY = 3;
@@ -90,7 +90,6 @@ export class SocketManager {
                 this.roomManager.clearRoomTimer(roomId);
                 socket.to(String(roomId)).emit('removed from game');
                 this.sio.in(String(roomId)).disconnectSockets(true);
-                // console.log('room deleted');
                 this.roomManager.deleteRoom(roomId);
             });
 
@@ -113,8 +112,8 @@ export class SocketManager {
                 const room = this.roomManager.getRoomById(data.roomId);
                 const quizId = room.quizID;
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
-                this.roomManager.getRoomById(data.roomId).game = new Game(usernames, quizId, this.quizService);
-                await this.roomManager.getRoomById(data.roomId).game.setup(quizId);
+                room.game = new Game(usernames, this.quizService);
+                await room.game.setup(quizId);
                 this.timerFunction(data.roomId, data.time);
             });
 
@@ -142,6 +141,14 @@ export class SocketManager {
                 }
             });
 
+            socket.on('update selection', (data: { roomId: number; isSelected: boolean; index: number }) => {
+                const game = this.roomManager.getGameByRoomId(data.roomId);
+                game.updateChoicesStats(data.isSelected, data.index);
+                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
+                const choicesStatsValues = Array.from(game.choicesStats.values());
+                this.sio.to(hostSocketId).emit('refresh choices stats', choicesStatsValues);
+            });
+
             socket.on('start transition', (roomId: number) => {
                 this.roomManager.clearRoomTimer(roomId);
                 this.timerFunction(roomId, TRANSITION_QUESTIONS_DELAY, 'time transition');
@@ -156,8 +163,8 @@ export class SocketManager {
                 let index = this.roomManager.getGameByRoomId(roomId).currIndex + 1;
                 const quizSize = this.roomManager.getGameByRoomId(roomId).quiz.questions.length - 1;
                 this.roomManager.clearRoomTimer(roomId);
-                this.roomManager.getGameByRoomId(roomId).next();
                 const isLast = index === quizSize;
+                this.roomManager.getGameByRoomId(roomId).next();
                 index++;
                 const question = this.roomManager.getGameByRoomId(roomId).currentQuizQuestion;
                 this.sio.to(String(roomId)).emit('get next question', { question, index, isLast });
