@@ -1,4 +1,4 @@
-import { Game } from '@app/classes/game';
+import { Game } from '@app/classes/game/game';
 import { QuizService } from '@app/services/quiz.service';
 import { RoomManagingService } from '@app/services/room-managing.service';
 import { Message } from '@common/interfaces/message.interface';

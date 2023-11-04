@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
 import * as sinon from 'sinon';
 import { Message } from '@common/interfaces/message.interface';
-import { Game } from '@app/classes/game';
+import { Game } from '@app/classes/game/game';
 import { QuizService } from '@app/services/quiz.service';
 import { DatabaseServiceMock } from '@app/services/database.service.mock';
 import { MongoClient } from 'mongodb';

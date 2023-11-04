@@ -1,4 +1,4 @@
-import { Game } from '@app/classes/game';
+import { Game } from '@app/classes/game/game';
 import { Message } from '@common/interfaces/message.interface';
 import { Service } from 'typedi';
 

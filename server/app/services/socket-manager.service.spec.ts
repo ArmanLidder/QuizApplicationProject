@@ -8,7 +8,7 @@ import { SinonStubbedInstance } from 'sinon';
 import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
 import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
-import { Game } from '@app/classes/game';
+import { Game } from '@app/classes/game/game';
 
 const RESPONSE_DELAY = 200;
 
