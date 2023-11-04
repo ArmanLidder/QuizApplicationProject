@@ -5,7 +5,8 @@ import { Quiz } from '@common/interfaces/quiz.interface';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { Router } from '@angular/router';
-const CREATED = 201;
+import {CREATED} from '@app/components/games-list/games-list.component.const';
+
 
 @Component({
     selector: 'app-games-list',
