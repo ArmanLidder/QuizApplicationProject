@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
+import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service/admin-authenticator.service';
 import { tap } from 'rxjs';
 
 export const authGuardAuthentification = () => {
