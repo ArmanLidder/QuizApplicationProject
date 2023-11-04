@@ -83,7 +83,7 @@ describe('GameRealService', () => {
         expect(service.locked).toEqual(false);
         expect(service.validated).toEqual(false);
         expect(service.isLast).toEqual(false);
-        expect(service.players.size).toEqual(0);
+        expect(service.players.length).toEqual(0);
         expect(service.answers.size).toEqual(0);
         expect(service.questionNumber).toEqual(1);
     });
