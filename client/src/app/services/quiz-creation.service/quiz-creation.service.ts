@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 const MAX_POINTS_PER_QUESTION = 100;
 const MIN_POINTS_PER_QUESTION = 10;

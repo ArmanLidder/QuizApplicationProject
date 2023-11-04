@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GamePageComponent } from './game-page.component';
 
 const DIGIT_CONSTANT = 1;

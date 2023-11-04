@@ -1,7 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '@app/services/game.service';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 

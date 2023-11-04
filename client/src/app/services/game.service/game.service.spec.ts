@@ -1,7 +1,7 @@
-import { GameService } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service/game.service';
 import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
 
 const TIMER_VALUE = 20;
