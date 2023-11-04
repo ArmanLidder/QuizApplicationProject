@@ -1,6 +1,6 @@
 import { Game } from '@app/classes/game/game';
-import { QuizService } from '@app/services/quiz.service';
-import { RoomManagingService } from '@app/services/room-managing.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
+import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import { Message } from '@common/interfaces/message.interface';
 import * as http from 'http';
 import * as io from 'socket.io';

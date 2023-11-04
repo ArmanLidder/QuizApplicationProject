@@ -1,5 +1,5 @@
 import { Answers } from '@app/interface/game-interface';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 import {BONUS_MULTIPLIER} from '@app/classes/game/game.const';

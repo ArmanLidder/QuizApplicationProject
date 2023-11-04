@@ -3,13 +3,13 @@ import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 chai.use(chaiAsPromised);
 import { MongoClient, ObjectId } from 'mongodb';
-import { DatabaseServiceMock } from '@app/services/database.service.mock';
+import { DatabaseServiceMock } from '@app/services/database.service/database.service.mock';
 import { Game } from './game';
 import * as sinon from 'sinon';
-import { DatabaseService } from '@app/services/database.service';
+import { DatabaseService } from '@app/services/database.service/database.service';
 
 const MAX_TIME = 800;
 const MID_TIME = 1000;

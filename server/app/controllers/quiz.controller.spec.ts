@@ -1,5 +1,5 @@
 import { createStubInstance, restore, SinonStubbedInstance } from 'sinon';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Application } from '@app/app';
 import { Container } from 'typedi';
 import * as supertest from 'supertest';
