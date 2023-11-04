@@ -80,9 +80,10 @@ export class SocketManager {
 
             socket.on('player abandonment', (roomId: number) => {
                 const userInfo = this.roomManager.removeUserBySocketID(socket.id);
+                const game = this.roomManager.getGameByRoomId(roomId);
+                if (game !== undefined) game.removePlayer(userInfo.username);
                 if (userInfo !== undefined) {
                     this.sio.to(String(roomId)).emit('removed player', userInfo.username);
-                    
                 }
                 socket.disconnect(true);
             });
