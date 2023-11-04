@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { NextQuestionData } from '@common/interfaces/game.interface';
 
 type Score = Map<string, number>;
 
@@ -71,7 +72,7 @@ export class GameService {
             },
         );
 
-        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
+        this.socketService.on('get next question', (data: NextQuestionData) => {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;

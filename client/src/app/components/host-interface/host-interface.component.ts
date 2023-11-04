@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 // import { Score } from '@common/interfaces/score.interface';
 
 type PlayerArray = [string, number, number];
@@ -106,13 +107,13 @@ export class HostInterfaceComponent {
 
         this.socketService.on(
             'get initial question',
-            (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
+            (data: InitialQuestionData) => {
                 // this.playersUsername();
                 this.initGraph(data.question);
             },
         );
 
-        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
+        this.socketService.on('get next question', (data: NextQuestionData) => {
             this.initGraph(data.question);
         });
     }
