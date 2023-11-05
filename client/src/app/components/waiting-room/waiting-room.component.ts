@@ -12,7 +12,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     @Input() isHost: boolean;
     @Input() roomId: number;
     @Input() isActive: boolean;
-    @Input() isResult: boolean
+    @Input() isResult: boolean;
     isRoomLocked: boolean = false;
     isGameStarting: boolean = false;
     isTransition: boolean = false;
