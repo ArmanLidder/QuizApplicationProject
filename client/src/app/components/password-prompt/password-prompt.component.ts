@@ -1,6 +1,6 @@
 import { Component, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
+import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service/admin-authenticator.service';
 
 @Component({
     selector: 'app-password-prompt',

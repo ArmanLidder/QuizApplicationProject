@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Quiz, QuizChoice, QuizQuestion, QuestionType } from '@common/interfaces/quiz.interface';
-
-const DIVIDER = 10;
-const MIN_QUESTION_POINTS = 10;
-const MAX_QUESTION_POINTS = 100;
-const MAX_DURATION = 60;
-const MIN_DURATION = 10;
-const MIN_NUMBER_OF_CHOICES = 2;
-const MAX_NUMBER_OF_CHOICES = 4;
+import {
+    DIVIDER,
+    MIN_QUESTION_POINTS,
+    MAX_QUESTION_POINTS,
+    MAX_DURATION,
+    MIN_DURATION,
+    MIN_NUMBER_OF_CHOICES,
+    MAX_NUMBER_OF_CHOICES,
+} from '@app/services/quiz-validation.service/quiz-validation.service.const';
 
 @Injectable({
     providedIn: 'root',

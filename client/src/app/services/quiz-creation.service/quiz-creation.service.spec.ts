@@ -2,7 +2,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormChoice, FormQuestion, QuizCreationService } from './quiz-creation.service';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import SpyObj = jasmine.SpyObj;
 

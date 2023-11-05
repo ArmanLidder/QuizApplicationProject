@@ -2,12 +2,11 @@ import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
-import { QuizCreationService } from '@app/services/quiz-creation.service';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizCreationService } from '@app/services/quiz-creation.service/quiz-creation.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
-
-const POPUP_TIMEOUT = 3000;
+import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
 
 export enum PageMode {
     CREATION,

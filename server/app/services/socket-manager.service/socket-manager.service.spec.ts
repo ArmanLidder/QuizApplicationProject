@@ -1,15 +1,15 @@
 /* eslint-disable max-lines */
-import { Server } from 'app/server';
+import { Server } from '@app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
-import { SocketManager } from '@app/services/socket-manager.service';
+import { SocketManager } from '@app/services/socket-manager.service/socket-manager.service';
 import { SinonStubbedInstance } from 'sinon';
-import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
+import { RoomData, RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
-import { Game } from '@app/classes/game';
+import { Game } from '@app/classes/game/game';
 import { Answers } from '@app/interface/game-interface';
 
 const RESPONSE_DELAY = 200;

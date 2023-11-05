@@ -1,5 +1,5 @@
 import { createStubInstance, restore, SinonStubbedInstance } from 'sinon';
-import { AdminAuthService } from '@app/services/admin-auth.service';
+import { AdminAuthService } from '@app/services/admin-auth.service/admin-auth.service';
 import { Application } from '@app/app';
 import { Container } from 'typedi';
 import * as supertest from 'supertest';

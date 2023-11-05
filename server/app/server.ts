@@ -2,9 +2,9 @@ import { Application } from '@app/app';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-import { DatabaseService } from '@app/services/database.service';
-import { SocketManager } from '@app/services/socket-manager.service';
-import { QuizService } from '@app/services/quiz.service';
+import { DatabaseService } from '@app/services/database.service/database.service';
+import { SocketManager } from '@app/services/socket-manager.service/socket-manager.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 
 @Service()
 export class Server {

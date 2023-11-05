@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { Score } from '@common/interfaces/score.interface';
 
