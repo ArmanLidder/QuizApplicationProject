@@ -4,7 +4,7 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { Score } from '@common/interfaces/score.interface';
 
-type Player = [string, number, number];
+export type Player = [string, number, number];
 
 @Injectable({
     providedIn: 'root',
@@ -80,25 +80,26 @@ export class GameRealService implements GameServiceInterface {
 
     getPlayersList() {
         this.socketService.send('gather players username', this.roomId, (players: string[]) => {
-            for (const player of players) {
-                this.socketService.send(
-                    'get score',
-                    {
-                        roomId: this.roomId,
-                        username: player,
-                    },
-                    (score: Score) => {
-                        this.players.push([player, score.points, score.bonusCount]);
-                        this.players.sort((a, b) => {
-                            if (b[1] - a[1] !== 0) {
-                                return b[1] - a[1];
-                            }
-                            return a[0].localeCompare(b[0]);
-                        });
-                    },
-                );
-            }
+            players.forEach((username) => {
+                this.getPlayerScoreFromServer(username);
+            });
         });
+    }
+
+    private getPlayerScoreFromServer(player: string) {
+        this.socketService.send('get score', { roomId: this.roomId, username: this.username }, (score: Score) => {
+            this.sortPlayersByScore(player, score);
+        });
+    }
+
+    private sortPlayersByScore(username: string, score: Score) {
+        this.players.push([username, score.points, score.bonusCount]);
+        this.players.sort(this.comparePlayers);
+    }
+
+    private comparePlayers(firstPlayer: Player, secondPlayer: Player) {
+        if (secondPlayer[1] - firstPlayer[1] !== 0) return secondPlayer[1] - firstPlayer[1];
+        return firstPlayer[0].localeCompare(secondPlayer[0]);
     }
 
     private handleTimeEvent(timeValue: number) {
