@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientService } from '@app/services/socket-client.service';
-import { QuestionType, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
 
 type PlayerArray = [string, number, number];
@@ -26,32 +26,6 @@ export class HostInterfaceComponent {
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init(this.route.snapshot.paramMap.get('id') as string);
     }
-
-    // playersUsername() {
-    //     if (this.players) {
-    //         this.players = [];
-    //     }
-    //     this.socketService.send('gather players username', this.gameService.gameRealService.roomId, (players: string[]) => {
-    //         for (const player of players) {
-    //             this.socketService.send(
-    //                 'get score',
-    //                 {
-    //                     roomId: this.gameService.gameRealService.roomId,
-    //                     username: player,
-    //                 },
-    //                 (score: Score) => {
-    //                     this.players.push([player, score.points, score.bonusCount]);
-    //                     this.players.sort((a, b) => {
-    //                         if (b[1] - a[1] !== 0) {
-    //                             return b[1] - a[1];
-    //                         }
-    //                         return a[0].localeCompare(b[0]);
-    //                     });
-    //                 },
-    //             );
-    //         }
-    //     });
-    // }
 
     isDisabled() {
         return !this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated;
@@ -133,7 +107,4 @@ export class HostInterfaceComponent {
         choices?.forEach((choice: QuizChoice, index: number) => choicesStats.set(choice.text, choicesStatsValue[index]));
         return choicesStats;
     }
-
-    // eslint-disable-next-line @typescript-eslint/member-ordering
-    protected readonly questionType = QuestionType;
 }
