@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
+import { HttpClientModule } from '@angular/common/http';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameAnswerChoiceCardComponent', () => {
     let component: GameAnswerChoiceCardComponent;
     let fixture: ComponentFixture<GameAnswerChoiceCardComponent>;
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [HttpClientModule],
             declarations: [GameAnswerChoiceCardComponent],
         });
         fixture = TestBed.createComponent(GameAnswerChoiceCardComponent);
@@ -40,14 +42,16 @@ describe('GameAnswerChoiceCardComponent', () => {
 
     it('should call show Result during validation state', () => {
         const showResultSpy = spyOn<any>(component, 'showResult');
-        component['gameService'].validated = true;
+        component['gameService'].isTestMode = false;
+        component['gameService'].gameRealService.validated = true;
         component.ngOnChanges();
         expect(showResultSpy).toHaveBeenCalled();
     });
 
     it('should not call show Result if not during validation state', () => {
         const showResultSpy = spyOn<any>(component, 'showResult');
-        component['gameService'].validated = false;
+        component['gameService'].isTestMode = false;
+        component['gameService'].gameRealService.validated = false;
         component.ngOnChanges();
         expect(showResultSpy).not.toHaveBeenCalled();
     });
@@ -112,9 +116,10 @@ describe('GameAnswerChoiceCardComponent', () => {
     });
 
     it('should handle hover effect', () => {
-        component.gameService.locked = true;
+        component['gameService'].isTestMode = false;
+        component['gameService'].gameRealService.locked = true;
         expect(component.handleHoverEffect()).toEqual('');
-        component.gameService.locked = false;
+        component['gameService'].gameRealService.locked = false;
         expect(component.handleHoverEffect()).toEqual('active');
     });
 });

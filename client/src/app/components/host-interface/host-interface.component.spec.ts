@@ -7,6 +7,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { HttpClientModule } from '@angular/common/http';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -47,7 +48,7 @@ describe('HostInterfaceComponent', () => {
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
             ],
-            imports: [NgChartsModule],
+            imports: [NgChartsModule, HttpClientModule],
         }).compileComponents();
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         fixture = TestBed.createComponent(HostInterfaceComponent);
@@ -73,7 +74,7 @@ describe('HostInterfaceComponent', () => {
     });
 
     it('should configure the right socket event listener', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         spyOn<any>(component, 'initGraph');
@@ -100,8 +101,8 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof secondAction === 'function') {
             secondAction(0);
-            expect(component.gameService.validated).toEqual(true);
-            expect(component.gameService.locked).toEqual(true);
+            expect(component.gameService.validatedStatus).toEqual(true);
+            expect(component.gameService.lockedStatus).toEqual(true);
         }
 
         if (typeof thirdAction === 'function') {
@@ -124,7 +125,7 @@ describe('HostInterfaceComponent', () => {
     });
 
     it('should go to next question when timer is 0', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
@@ -133,17 +134,17 @@ describe('HostInterfaceComponent', () => {
 
         if (typeof firstAction === 'function') {
             firstAction(0);
-            expect(sendSpy).toHaveBeenCalledWith('next question', component.gameService.roomId);
+            expect(sendSpy).toHaveBeenCalledWith('next question', component.gameService.gameRealService.roomId);
             expect(component.gameService.timer).toEqual(0);
             expect(component.gameService.questionNumber).toEqual(1);
-            expect(component.gameService.validated).toEqual(true);
-            expect(component.gameService.locked).toEqual(true);
+            expect(component.gameService.validatedStatus).toEqual(true);
+            expect(component.gameService.lockedStatus).toEqual(true);
             expect(component.timerText).toEqual('Temps restant');
         }
     });
 
     it('should go to the final result when timer is 0', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
@@ -158,8 +159,8 @@ describe('HostInterfaceComponent', () => {
 
         if (typeof secondAction === 'function') {
             secondAction(0);
-            expect(component.gameService.validated).toEqual(true);
-            expect(component.gameService.locked).toEqual(true);
+            expect(component.gameService.validatedStatus).toEqual(true);
+            expect(component.gameService.lockedStatus).toEqual(true);
         }
         if (typeof thirdAction === 'function') {
             thirdAction(0);
@@ -169,45 +170,45 @@ describe('HostInterfaceComponent', () => {
     });
 
     it('should go to the next question', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['nextQuestion']();
-        expect(component.gameService.validated).toEqual(false);
-        expect(component.gameService.locked).toEqual(false);
-        expect(sendSpy).toHaveBeenCalledWith('start transition', component.gameService.roomId);
+        expect(component.gameService.validatedStatus).toEqual(false);
+        expect(component.gameService.lockedStatus).toEqual(false);
+        expect(sendSpy).toHaveBeenCalledWith('start transition', component.gameService.gameRealService.roomId);
     });
 
     it('should handle properly the last question', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['handleLastQuestion']();
-        expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.gameRealService.roomId);
     });
 
     it('should update host command properly', () => {
-        component.gameService.isLast = false;
+        component.gameService.gameRealService.isLast = false;
         expect(component.updateHostCommand()).toEqual('Prochaine question');
-        component.gameService.isLast = true;
+        component.gameService.gameRealService.isLast = true;
         expect(component.updateHostCommand()).toEqual('Montrer résultat');
     });
 
     it('should handle properly the host command', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
-        component['gameService'].isLast = false;
+        component['gameService'].gameRealService.isLast = false;
         component.handleHostCommand();
-        expect(component.gameService.validated).toEqual(false);
-        expect(component.gameService.locked).toEqual(false);
-        expect(sendSpy).toHaveBeenCalledWith('start transition', component.gameService.roomId);
-        component['gameService'].isLast = true;
+        expect(component.gameService.validatedStatus).toEqual(false);
+        expect(component.gameService.lockedStatus).toEqual(false);
+        expect(sendSpy).toHaveBeenCalledWith('start transition', component.gameService.gameRealService.roomId);
+        component['gameService'].gameRealService.isLast = true;
         component.handleHostCommand();
-        expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.gameRealService.roomId);
     });
 
     it('should return the right condition of isDisabled', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const functionReturn = component.isDisabled();
-        expect(functionReturn).toEqual(!component['gameService'].locked && !component['gameService'].validated);
+        expect(functionReturn).toEqual(!component['gameService'].lockedStatus && !component['gameService'].validatedStatus);
     });
 
     it('should initialize correctly histogram data when initGraph is called', () => {
@@ -218,8 +219,8 @@ describe('HostInterfaceComponent', () => {
     });
 
     it('should return the right condition of updateHostCommand', () => {
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const functionReturn = component.updateHostCommand();
-        expect(functionReturn).toEqual(component['gameService'].isLast ? 'Montrer résultat' : 'Prochaine question');
+        expect(functionReturn).toEqual(component['gameService'].gameRealService.isLast ? 'Montrer résultat' : 'Prochaine question');
     });
 });

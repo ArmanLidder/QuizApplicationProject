@@ -44,6 +44,7 @@ export class Game {
 
     removePlayer(username: string) {
         this.playersAnswers.delete(username);
+        this.players.delete(username);
     }
 
     updateScores() {

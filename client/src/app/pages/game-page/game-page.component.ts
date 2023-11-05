@@ -1,8 +1,7 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy} from '@angular/core';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { HostInterfaceComponent } from '@app/components/host-interface/host-interface.component';
-import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
+
 
 @Component({
     selector: 'app-game-page',
@@ -10,8 +9,6 @@ import { GameInterfaceComponent } from '@app/components/game-interface/game-inte
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnDestroy {
-    @ViewChild('app-game-interface') hostComponent: HostInterfaceComponent;
-    @ViewChild('app-host-interface') playerComponent: GameInterfaceComponent;
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
@@ -24,8 +21,8 @@ export class GamePageComponent implements OnDestroy {
     ngOnDestroy() {
         const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
         if (this.socketService.isSocketAlive()) {
-            this.socketService.send(messageType, this.gameService.roomId);
-            this.gameService.destroy();
+            this.socketService.send(messageType, this.gameService.gameRealService.roomId);
         }
+        this.gameService.destroy();
     }
 }

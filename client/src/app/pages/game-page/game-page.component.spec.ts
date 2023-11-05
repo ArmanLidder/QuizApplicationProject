@@ -7,6 +7,7 @@ import { GameInterfaceComponent } from '@app/components/game-interface/game-inte
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GamePageComponent } from './game-page.component';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
@@ -15,19 +16,37 @@ describe('GamePageComponent', () => {
     let socketService: SocketClientServiceTestHelper;
     let sendSpy: jasmine.Spy;
 
+    const mockActivatedRoute = {
+        snapshot: {
+            url: [
+                {
+                    path: 'url-path',
+                },
+            ],
+            paramMap: convertToParamMap({ key: 'value' }),
+        },
+    };
+
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
             declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent],
-            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+            providers: [
+                SocketClientService,
+                { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
+                {
+                    provide: ActivatedRoute,
+                    useValue: mockActivatedRoute,
+                },
+            ],
         });
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
-        fixture = TestBed.createComponent(GamePageComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
+        fixture = TestBed.createComponent(GamePageComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     });
 
     it('should create', () => {
@@ -36,9 +55,19 @@ describe('GamePageComponent', () => {
 
     it('should send host abandonment event on component destruction if game is starting', () => {
         sendSpy = spyOn(socketService, 'send');
-        component['gameService'].username = 'Organisateur';
-        component['gameService'].roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.username = 'Organisateur';
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
         expect(sendSpy).toHaveBeenCalledWith('host abandonment', DIGIT_CONSTANT);
+    });
+
+    it('should send player abandonment event on component destruction if game is starting', () => {
+        sendSpy = spyOn(socketService, 'send');
+        component['gameService'].gameRealService.username = 'Player';
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        spyOn(component['gameService'], 'destroy');
+        component.ngOnDestroy();
+        expect(sendSpy).toHaveBeenCalledWith('player abandonment', DIGIT_CONSTANT);
     });
 });
