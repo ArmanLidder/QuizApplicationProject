@@ -7,8 +7,6 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { Message } from '@common/interfaces/message.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 
-
-
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',

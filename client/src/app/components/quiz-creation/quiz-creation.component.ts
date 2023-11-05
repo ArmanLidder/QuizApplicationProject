@@ -6,8 +6,7 @@ import { QuizCreationService } from '@app/services/quiz-creation.service/quiz-cr
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
-import {POPUP_TIMEOUT} from '@app/components/quiz-creation/quiz-creation.component.const';
-
+import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
 
 export enum PageMode {
     CREATION,

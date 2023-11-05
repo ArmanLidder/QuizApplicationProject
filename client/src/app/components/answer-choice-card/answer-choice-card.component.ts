@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import {intervalTime} from '@app/components/answer-choice-card/answer-choice-card.component.const'
-
+import { intervalTime } from '@app/components/answer-choice-card/answer-choice-card.component.const';
 
 @Component({
     selector: 'app-answer-choice-card',

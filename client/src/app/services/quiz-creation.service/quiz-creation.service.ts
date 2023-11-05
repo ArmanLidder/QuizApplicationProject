@@ -2,8 +2,16 @@ import { Injectable } from '@angular/core';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
-import {MAX_POINTS_PER_QUESTION,MIN_POINTS_PER_QUESTION,MAX_QCM_DURATION,MIN_QCM_DURATION,MAX_NUMBER_OF_CHOICES_PER_QUESTION,MIN_NUMBER_OF_CHOICES_PER_QUESTION,MIN_NUMBER_OF_QUESTIONS,NON_EXISTANT_INDEX} from '@app/services/quiz-creation.service/quiz-creation.service.const';
-
+import {
+    MAX_POINTS_PER_QUESTION,
+    MIN_POINTS_PER_QUESTION,
+    MAX_QCM_DURATION,
+    MIN_QCM_DURATION,
+    MAX_NUMBER_OF_CHOICES_PER_QUESTION,
+    MIN_NUMBER_OF_CHOICES_PER_QUESTION,
+    MIN_NUMBER_OF_QUESTIONS,
+    NON_EXISTANT_INDEX,
+} from '@app/services/quiz-creation.service/quiz-creation.service.const';
 
 export interface FormChoice {
     text: string;

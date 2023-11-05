@@ -82,12 +82,9 @@ export class HostInterfaceComponent {
             this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
         });
 
-        this.socketService.on(
-            'get initial question',
-            (data: InitialQuestionData) => {
-                this.initGraph(data.question);
-            },
-        );
+        this.socketService.on('get initial question', (data: InitialQuestionData) => {
+            this.initGraph(data.question);
+        });
 
         this.socketService.on('get next question', (data: NextQuestionData) => {
             this.initGraph(data.question);
