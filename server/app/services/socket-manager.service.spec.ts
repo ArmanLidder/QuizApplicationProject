@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Server } from 'app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -9,6 +10,7 @@ import { RoomData, RoomManagingService } from '@app/services/room-managing.servi
 import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { Game } from '@app/classes/game';
+import { Answers } from '@app/interface/game-interface';
 
 const RESPONSE_DELAY = 200;
 
@@ -193,6 +195,8 @@ describe('SocketManager service tests', () => {
     });
     it('should handle "player abandonment" event when defined', (done) => {
         roomManager.removeUserBySocketID.returns({ roomId: mockRoomId, username: 'username1' });
+        const answer: Answers = { answers: ['1'], time: 10 };
+        gameMock.playersAnswers.set('test', answer);
         const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
         clientSocket.emit('player abandonment', mockRoomId);
@@ -202,6 +206,21 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should call final time transition when every player abandoned', (done) => {
+        gameMock.players.clear();
+        roomManager.removeUserBySocketID.returns({ roomId: mockRoomId, username: 'username1' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const startTimerSpy = sinon.spy(service, 'startTimer' as any);
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit('player abandonment', mockRoomId);
+        setTimeout(() => {
+            expect(startTimerSpy.called);
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should handle "host abandonment" event when defined', (done) => {
         roomManager.deleteRoom.callsFake((roomId) => {
             roomManager['rooms'].delete(roomId);
