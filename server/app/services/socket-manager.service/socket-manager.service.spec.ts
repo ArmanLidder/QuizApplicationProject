@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Server } from '@app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';

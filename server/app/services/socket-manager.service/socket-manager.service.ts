@@ -3,10 +3,11 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as http from 'http';
 import * as io from 'socket.io';
-import {ONE_SECOND_DELAY,TRANSITION_QUESTIONS_DELAY} from '@app/services/socket-manager.service/socket-manager.service.const';
+import { ONE_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
 import {
     roomIdAndAnswers,
-    roomIdAndMessage, roomIdAndSelection,
+    roomIdAndMessage,
+    roomIdAndSelection,
     roomIdAndTime,
     roomIdAndUsername,
 } from '@common/interfaces/socket-manager.interface';
