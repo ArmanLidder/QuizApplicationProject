@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameAnswersListComponent } from './game-answers-list.component';
+import { HttpClientModule } from '@angular/common/http';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 describe('GameAnswersListComponent', () => {
@@ -11,6 +12,7 @@ describe('GameAnswersListComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [HttpClientModule],
             declarations: [GameAnswersListComponent],
             providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         });
@@ -26,12 +28,14 @@ describe('GameAnswersListComponent', () => {
 
     it('should validate properly', () => {
         spyOn(socketService, 'send');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sendAnswerSpy = spyOn<any>(component.gameService, 'sendAnswer');
-        component.gameService.validated = false;
+        component['gameService'].isTestMode = false;
+        component['gameService'].gameRealService.validated = false;
         component.validate();
         expect(sendAnswerSpy).toHaveBeenCalled();
         sendAnswerSpy.calls.reset();
-        component.gameService.validated = true;
+        component['gameService'].gameRealService.validated = true;
         component.validate();
         expect(sendAnswerSpy).not.toHaveBeenCalled();
     });
@@ -42,8 +46,7 @@ describe('GameAnswersListComponent', () => {
         component.handleMultipleEmission();
         expect(validateSpy).not.toHaveBeenCalled();
         expect(component['receptionDebounce']).toEqual(checkIsIncremented + 1);
-
-        component.gameService.question = {
+        spyOnProperty(component['gameService'], 'question', 'get').and.returnValue({
             type: 0,
             text: 'What is the capital of France?',
             points: 10,
@@ -52,12 +55,12 @@ describe('GameAnswersListComponent', () => {
                 { text: 'Berlin', isCorrect: false },
                 { text: 'Madrid', isCorrect: false },
             ],
-        };
-        let checkTheLenght = 0;
+        });
+        let checkTheLength = 0;
         if (component.gameService.question?.choices?.length) {
-            checkTheLenght = component.gameService.question?.choices?.length - 1;
+            checkTheLength = component.gameService.question?.choices?.length - 1;
         }
-        component['receptionDebounce'] = checkTheLenght;
+        component['receptionDebounce'] = checkTheLength;
         component.handleMultipleEmission();
         expect(component['receptionDebounce']).toEqual(0);
         expect(validateSpy).toHaveBeenCalled();

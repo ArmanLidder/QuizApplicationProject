@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoClient, ObjectId } from 'mongodb';
-import { DatabaseServiceMock } from './database.service.mock';
+import { DatabaseServiceMock } from '@app/services/database.service/database.service.mock';
 import { QuizService } from './quiz.service';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '@app/services/database.service/database.service';
 import { restore } from 'sinon';
 chai.use(chaiAsPromised);
 

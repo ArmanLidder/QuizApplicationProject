@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angul
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestionType } from '@common/interfaces/quiz.interface';
-import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service';
+import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service/quiz-creation.service';
 import { QuestionListComponent } from './question-list.component';
 import SpyObj = jasmine.SpyObj;
 

@@ -1,8 +1,8 @@
 import { Component, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '@app/services/game.service';
-import { SocketClientService } from '@app/services/socket-client.service';
-import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { QuestionType } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 
 type PlayerArray = [string, number];
@@ -17,9 +17,8 @@ export class GameInterfaceComponent {
     isGameOver: boolean = false;
     playerScore: number = 0;
     timerText: string = 'Temps restant';
-    question: QuizQuestion;
-    gameService: GameService;
     players: PlayerArray[] = [];
+    gameService: GameService;
     private readonly socketService: SocketClientService;
     private route: ActivatedRoute;
     private router: Router;
@@ -29,46 +28,33 @@ export class GameInterfaceComponent {
         this.socketService = injector.get<SocketClientService>(SocketClientService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.router = injector.get<Router>(Router);
-        this.gameService.roomId = Number(this.route.snapshot.paramMap.get('id'));
+        this.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
+        const pathId = this.route.snapshot.paramMap.get('id') as string;
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
-        this.gameService.init();
+        this.gameService.init(pathId);
     }
 
-    playersData() {
-        this.socketService.send('gather players username', this.gameService.roomId, (players: string[]) => {
-            for (const player of players) {
-                this.socketService.send(
-                    'get score',
-                    {
-                        roomId: this.gameService.roomId,
-                        username: player,
-                    },
-                    (score: Score) => {
-                        this.players.push([player, score.points]);
-                        this.players.sort((a, b) => {
-                            if (b[1] - a[1] !== 0) {
-                                return b[1] - a[1];
-                            }
-                            return a[0].localeCompare(b[0]);
-                        });
-                    },
-                );
-            }
-        });
-        this.isGameOver = true;
+    get score() {
+        this.playerScore = this.gameService.isTestMode ? this.gameService.playerScore : this.playerScore;
+        return this.playerScore;
+    }
+
+    get bonusStatus() {
+        this.isBonus = this.gameService.isTestMode ? this.gameService.isBonus : this.isBonus;
+        return this.isBonus;
     }
 
     private configureBaseSocketFeatures() {
         this.socketService.on('end question', () => {
-            if (this.gameService.username !== 'Organisateur') {
+            if (this.gameService.gameRealService.username !== 'Organisateur') {
                 this.socketService.send(
                     'get score',
                     {
-                        roomId: this.gameService.roomId,
-                        username: this.gameService.username,
+                        roomId: this.gameService.gameRealService.roomId,
+                        username: this.gameService.gameRealService.username,
                     },
                     (score: Score) => {
-                        this.gameService.validated = true;
+                        this.gameService.gameRealService.validated = true;
                         this.playerScore = score.points;
                         this.isBonus = score.isBonus;
                     },
@@ -77,10 +63,10 @@ export class GameInterfaceComponent {
         });
 
         this.socketService.on('time transition', (timeValue: number) => {
-            this.gameService.timer = timeValue;
+            this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.gameService.locked = false;
-                this.gameService.validated = false;
+                this.gameService.gameRealService.locked = false;
+                this.gameService.gameRealService.validated = false;
                 this.isBonus = false;
                 this.timerText = 'Temps restant';
             }
@@ -88,9 +74,10 @@ export class GameInterfaceComponent {
 
         this.socketService.on('final time transition', (timeValue: number) => {
             this.timerText = "Les résultats finaux s'afficherons dans:";
-            this.gameService.timer = timeValue;
+            this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.playersData();
+                this.gameService.gameRealService.getPlayersList();
+                this.isGameOver = true;
             }
         });
 

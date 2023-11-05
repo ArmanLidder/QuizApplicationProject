@@ -10,20 +10,24 @@
 }
 
 .custom-legend {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-
-  .legend-item {
     display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 5px;
-
-    .color-box {
-      display: inline-block;
-      width: 15px;
-      height: 15px;
-      margin-right: 5px;
-    }
-  }
+    text-align: center;
 }
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.color-box {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+

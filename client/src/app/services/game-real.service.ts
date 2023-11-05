@@ -1,51 +1,40 @@
 import { Injectable } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
+import { Score } from '@common/interfaces/score.interface';
 
-type Score = Map<string, number>;
+export type Player = [string, number, number];
 
 @Injectable({
     providedIn: 'root',
 })
-export class GameService {
-    isInputFocused: boolean = false;
+export class GameRealService implements GameServiceInterface {
     username: string = '';
     roomId: number = 0;
+    players: Player[] = [];
+    answers: Map<number, string | null> = new Map();
+    questionNumber: number = 1;
     timer: number = 0;
     question: QuizQuestion | null = null;
     isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
-    players: Map<string, Score> = new Map();
-    answers: Map<number, string | null> = new Map();
-    questionNumber: number = 1;
-    playerLeft: boolean =false;
 
     constructor(public socketService: SocketClientService) {
-        if (this.socketService.isSocketAlive()) this.configureBaseSockets();
+        if (this.socketService.isSocketAlive()) {
+            this.configureBaseSockets();
+        }
+    }
+
+    init() {
+        this.configureBaseSockets();
+        this.socketService.send('get question', this.roomId);
     }
 
     destroy() {
         this.reset();
-        this.socketService.socket.offAny();
-    }
-
-    init() {
-        if (this.socketService.isSocketAlive()) {
-            this.configureBaseSockets();
-            this.socketService.send('get question', this.roomId);
-        }
-    }
-
-    selectChoice(index: number) {
-        if (this.answers.has(index)) {
-            this.answers.delete(index);
-            this.sendSelection(index, false);
-        } else {
-            const textChoice = this.question?.choices ? this.question.choices[index].text : null;
-            this.answers.set(index, textChoice);
-            this.sendSelection(index, true);
-        }
+        if (this.socketService.isSocketAlive()) this.socketService.socket.offAny();
     }
 
     sendAnswer() {
@@ -87,8 +76,33 @@ export class GameService {
         });
     }
 
-    private sendSelection(index: number, isSelected: boolean) {
-        this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
+    sendSelection(index: number, isSelected: boolean) {
+        if (this.socketService.isSocketAlive()) this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
+    }
+
+    getPlayersList() {
+        this.socketService.send('gather players username', this.roomId, (players: string[]) => {
+            this.players = [];
+            players.forEach((username) => {
+                this.getPlayerScoreFromServer(username);
+            });
+        });
+    }
+
+    private getPlayerScoreFromServer(username: string) {
+        this.socketService.send('get score', { roomId: this.roomId, username }, (score: Score) => {
+            this.sortPlayersByScore(username, score);
+        });
+    }
+
+    private sortPlayersByScore(username: string, score: Score) {
+        this.players.push([username, score.points, score.bonusCount]);
+        this.players.sort(this.comparePlayers);
+    }
+
+    private comparePlayers(firstPlayer: Player, secondPlayer: Player) {
+        if (secondPlayer[1] - firstPlayer[1] !== 0) return secondPlayer[1] - firstPlayer[1];
+        return firstPlayer[0].localeCompare(secondPlayer[0]);
     }
 
     private handleTimeEvent(timeValue: number) {
@@ -107,7 +121,7 @@ export class GameService {
         this.locked = false;
         this.validated = false;
         this.isLast = false;
-        this.players.clear();
+        this.players = [];
         this.answers.clear();
         this.questionNumber = 1;
     }

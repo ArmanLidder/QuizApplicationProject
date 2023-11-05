@@ -1,13 +1,13 @@
-import { GameService } from '@app/services/game.service';
 import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
+import { GameRealService, Player } from '@app/services/game-real.service';
 
 const TIMER_VALUE = 20;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-describe('GameService', () => {
-    let service: GameService;
+describe('GameRealService', () => {
+    let service: GameRealService;
     let socketService: SocketClientServiceTestHelper;
     const questionMock = {
         type: QuestionType.QCM,
@@ -25,13 +25,14 @@ describe('GameService', () => {
             providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         });
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
-        service = TestBed.inject(GameService);
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
+        service = TestBed.inject(GameRealService);
     });
 
     it('should create', () => {
+        spyOn(service, 'configureBaseSockets');
         expect(service).toBeTruthy();
     });
 
@@ -82,7 +83,7 @@ describe('GameService', () => {
         expect(service.locked).toEqual(false);
         expect(service.validated).toEqual(false);
         expect(service.isLast).toEqual(false);
-        expect(service.players.size).toEqual(0);
+        expect(service.players.length).toEqual(0);
         expect(service.answers.size).toEqual(0);
         expect(service.questionNumber).toEqual(1);
     });
@@ -104,32 +105,6 @@ describe('GameService', () => {
         expect(sendSpy).toHaveBeenCalledWith('get question', 1);
     });
 
-    it('should remove choice if already selected', () => {
-        service.locked = false;
-        service.answers = new Map();
-        service.answers.set(1, 'test');
-        service.selectChoice(1);
-        expect(service.answers.size).toEqual(0);
-    });
-
-    it('should add choice if not already selected', () => {
-        const index = 0;
-        const isSelected = true;
-        const sendSpy = spyOn(service.socketService, 'send');
-        service.locked = false;
-        service.question = questionMock;
-        service.question.choices = [{ text: 'test', isCorrect: true }];
-        service.answers = new Map();
-        service.selectChoice(0);
-        expect(service.answers.size).toEqual(1);
-        expect(service.answers.get(0)).toEqual('test');
-        service.question.choices = undefined;
-        service.selectChoice(1);
-        expect(service.answers.size).toEqual(2);
-        expect(service.answers.get(1)).toEqual(null);
-        expect(sendSpy).toHaveBeenCalledWith('update selection', { roomId: service.roomId, isSelected, index });
-    });
-
     it('should send answer', () => {
         service.roomId = 1;
         service.timer = 0;
@@ -148,6 +123,20 @@ describe('GameService', () => {
         service.sendAnswer();
         expect(sendSpy).toHaveBeenCalledWith('submit answer', expectedObject);
         expect(service.answers.size).toEqual(0);
+    });
+
+    it('should compare Players', () => {
+        const player1: Player = ['player1', 0, 0];
+        const player2: Player = ['karim', 1, 1];
+        const scoreSubtract = service['comparePlayers'](player1, player2);
+        expect(scoreSubtract).toEqual(player2[1] - player1[1]);
+    });
+
+    it('should compare Players', () => {
+        const player1: Player = ['player1', 0, 0];
+        const player2: Player = ['karim', 0, 0];
+        const scoreSubtract = service['comparePlayers'](player1, player2);
+        expect(scoreSubtract).toEqual(player1[0].localeCompare(player2[0]));
     });
 
     it('should send the selection properly', () => {

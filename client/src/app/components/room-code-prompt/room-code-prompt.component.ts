@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 
 @Component({
     selector: 'app-room-code-prompt',
@@ -126,13 +126,10 @@ export class RoomCodePromptComponent implements OnInit {
         return new Promise<void>((resolve) => {
             this.socketService.send('validate roomID', Number(this.roomId), (data: { isRoom: boolean; isLocked: boolean }) => {
                 if (!data.isRoom) {
-                    this.isRoomIdValid = false;
-                    this.isUsernameValid = false;
-                    this.showErrorFeedback();
+                    this.handleErrors();
                     this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
                 } else if (data.isLocked) {
-                    this.isRoomIdValid = false;
-                    this.showErrorFeedback();
+                    this.handleErrors();
                     this.error = 'La partie est vérouillée. Veuillez réessayer.';
                 } else {
                     this.isRoomIdValid = true;
@@ -141,6 +138,12 @@ export class RoomCodePromptComponent implements OnInit {
                 resolve();
             });
         });
+    }
+
+    private handleErrors() {
+        this.isRoomIdValid = false;
+        this.isUsernameValid = false;
+        this.showErrorFeedback();
     }
 
     private reset() {

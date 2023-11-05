@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service';
+import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service/admin-authenticator.service';
 import { of } from 'rxjs';
 import { authGuardAuthentification } from './auth.guard';
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameService } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service/game.service';
 
 @Component({
     selector: 'app-game-answers-list',
@@ -26,7 +26,7 @@ export class GameAnswersListComponent {
     }
 
     validate() {
-        if (!this.gameService.validated) this.gameService.sendAnswer();
+        if (!this.gameService.validatedStatus) this.gameService.sendAnswer();
     }
 
  

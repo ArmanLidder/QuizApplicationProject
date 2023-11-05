@@ -2,7 +2,7 @@
     class="card card-flex"
     [ngClass]='handleHoverEffect()'
     (click)='toggleSelect()'
-    [class]='gameService.validated ? choice.isCorrect ? "good-answer" : "bad-answer" : feedbackDisplay'>
+    [class]='gameService.validatedStatus ? choice.isCorrect ? "good-answer" : "bad-answer" : feedbackDisplay'>
     <div  class="card-number">
         <p>{{ index }}</p>
     </div>

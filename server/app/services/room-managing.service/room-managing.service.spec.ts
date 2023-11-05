@@ -1,13 +1,13 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
-import { RoomData, RoomManagingService } from '@app/services/room-managing.service';
+import { RoomData, RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as sinon from 'sinon';
 import { Message } from '@common/interfaces/message.interface';
-import { Game } from '@app/classes/game';
-import { QuizService } from '@app/services/quiz.service';
-import { DatabaseServiceMock } from '@app/services/database.service.mock';
+import { Game } from '@app/classes/game/game';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
+import { DatabaseServiceMock } from '@app/services/database.service/database.service.mock';
 import { MongoClient } from 'mongodb';
-import { DatabaseService } from '@app/services/database.service';
+import { DatabaseService } from '@app/services/database.service/database.service';
 const FIVE_SECOND = 5000;
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;

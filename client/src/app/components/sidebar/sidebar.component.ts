@@ -1,12 +1,11 @@
-import { Component, Input, Injector } from '@angular/core';
-import { Message } from '@common/interfaces/message.interface';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { Component, Injector, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { getCurrentDateService } from 'src/utils/current-date-format';
 import { ActivatedRoute } from '@angular/router';
-import { GameService } from '@app/services/game.service';
-
-const MESSAGE_MAX_CHARACTERS = 200;
+import { MESSAGE_MAX_CHARACTERS } from '@app/components/sidebar/sidebar.component.const';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { Message } from '@common/interfaces/message.interface';
+import { getCurrentDateService } from 'src/utils/current-date-format';
 
 @Component({
     selector: 'app-sidebar',
@@ -42,10 +41,12 @@ export class SidebarComponent {
 
     sendMessage() {
         const newMessageContent: string = this.messageForm.get('message')?.value;
-        if (this.messageForm.get('message')?.valid && newMessageContent.trim()) {
-            const newMessage: Message = { sender: this.myName, content: newMessageContent, time: getCurrentDateService() };
-            this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
-            this.messageForm.get('message')?.setValue('');
+        if (this.socketService.isSocketAlive()) {
+            if (this.messageForm.get('message')?.valid && newMessageContent.trim()) {
+                const newMessage: Message = { sender: this.myName, content: newMessageContent, time: getCurrentDateService() };
+                this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
+                this.messageForm.get('message')?.setValue('');
+            }
         }
     }
 
@@ -56,10 +57,6 @@ export class SidebarComponent {
     onChatBlur() {
         this.gameService.isInputFocused = false;
     }
-
-    // onChatKeyup(event: KeyboardEvent) {
-    //     this.customKeyup.emit(event);
-    // }
 
     private setup() {
         if (this.socketService.isSocketAlive()) {

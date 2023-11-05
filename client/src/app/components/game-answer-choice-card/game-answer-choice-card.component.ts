@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, HostListener } from '@angular/core';
 import { QuizChoice } from '@common/interfaces/quiz.interface';
-import { GameService } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service/game.service';
 
 @Component({
     selector: 'app-game-answer-choice-card',
@@ -26,15 +26,15 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
     }
 
     ngOnChanges() {
-        if (this.gameService.validated) this.showResult();
+        if (this.gameService.validatedStatus) this.showResult();
     }
 
     handleHoverEffect() {
-        return this.gameService.locked ? '' : 'active';
+        return this.gameService.lockedStatus ? '' : 'active';
     }
 
     toggleSelect() {
-        if (!this.gameService.locked && !this.gameService.isInputFocused) {
+        if (!this.gameService.lockedStatus && !this.gameService.isInputFocused) {
             this.isSelected = !this.isSelected;
             if (this.isSelected) this.showSelectionFeedback();
             else this.reset();

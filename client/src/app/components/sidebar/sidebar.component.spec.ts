@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { ActivatedRoute } from '@angular/router';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Message } from '@common/interfaces/message.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import SpyObj = jasmine.SpyObj;
-import { GameService } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service/game.service';
 
 const MESSAGE_MAX_CHARACTERS = 200;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -33,6 +33,9 @@ describe('SidebarComponent', () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
+        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
+            return true;
+        });
         formBuilder = TestBed.inject(FormBuilder);
         // gameService = TestBed.inject(GameService) as unknown as SpyObj<GameService>;
         fixture.detectChanges();
@@ -73,9 +76,6 @@ describe('SidebarComponent', () => {
 
     it('should call getUsername() when setting up the chat', () => {
         const getUsernameSpy = spyOn<any>(component, 'getUsername');
-        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
-            return true;
-        });
         component['setup']();
         expect(getUsernameSpy).toHaveBeenCalled();
     });
@@ -83,9 +83,6 @@ describe('SidebarComponent', () => {
     it('should call getRoomMessages() and configureBaseSocketFeatures()', () => {
         const getRoomMessagesSpy = spyOn(component, 'getRoomMessages' as any);
         const configureSocketsSpy = spyOn(component, 'configureBaseSocketFeatures' as any);
-        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
-            return true;
-        });
         component['setup']();
         expect(getRoomMessagesSpy).toHaveBeenCalled();
         expect(configureSocketsSpy).toHaveBeenCalled();

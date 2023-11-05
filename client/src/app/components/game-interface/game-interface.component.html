@@ -1,49 +1,26 @@
 <div *ngIf='isGameOver'>
     <h2>Le jeu est terminé!</h2>
-    <p>Votre score final : {{playerScore}}</p>
-<!--    <div *ngIf='players'>-->
-<!--        <div class="score-container">-->
-<!--            <div class="player-box top-player">-->
-<!--                <h2>Player 1</h2>-->
-<!--                <p>Score: {{ players[0][1] }}</p>-->
-<!--                <p>Score: {{ players[0][0] }}</p>-->
-<!--            </div>-->
-
-<!--            <div class="player-box second-player">-->
-<!--                <h2>Player 2</h2>-->
-<!--                <p>Score: {{ players[1][1] }}</p>-->
-<!--                <p>Score: {{ players[1][0] }}</p>-->
-<!--            </div>-->
-
-<!--            <div class="player-box third-player">-->
-<!--                <h2>Player 3</h2>-->
-<!--                <p>Score: {{ players[2][1] }}</p>-->
-<!--                <p>Score: {{ players[2][0] }}</p>-->
-<!--            </div>-->
-<!--        </div>-->
-
-       <div class="players-list">
-           <h2>Joueurs:</h2>
-           <ul>
-               <li class="player-item" *ngFor="let player of players; let i = index">
-                    <span class="player-name"><strong>TOP {{ i + 1}}</strong>  </span>
-                    <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points</span>
-               </li>
-           </ul>
-      </div>
-<!--    </div>-->
-    <button  class='cancel' routerLink='/home'>Quitter</button>
+    <p>Votre score final : {{ playerScore }}</p>
+    <div class="players-list">
+        <h2>Joueurs:</h2>
+        <ul>
+            <li class="player-item" *ngFor="let player of gameService.gameRealService.players; let i = index">
+                <span class="player-name"><strong>TOP {{ i + 1 }}</strong>  </span>
+                <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{ player[1] }} points</span>
+            </li>
+        </ul>
+    </div>
+    <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
-
 <div *ngIf='!isGameOver' id="grid-container">
     <div id="flex-container">
-        <p>Pointage: {{playerScore}}</p>
-        <p *ngIf = 'isBonus'> Vous avez recu des points Bonus! </p>
-        <p> {{timerText}} : {{ gameService.timer }}</p>
+        <p>Pointage: {{ score }}</p>
+        <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
+        <p> {{ timerText }} : {{ gameService.timer }}</p>
     </div>
     <section id="question-field">
         <div>
-            <h2>Question {{gameService.questionNumber}}</h2>
+            <h2>Question {{ gameService.questionNumber }}</h2>
             <h3>Valeur : {{ gameService.question?.points }} points</h3>
         </div>
         <h4>{{ gameService.question?.text }}</h4>
@@ -51,5 +28,4 @@
     <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>
 </div>
-
 

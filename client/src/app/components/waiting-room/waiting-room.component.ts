@@ -1,9 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DELETE_NUMBER, START_TRANSITION_DELAY } from '@app/components/waiting-room/waiting-room.component.const';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 
-const DELETE_NUMBER = 1;
-const START_TRANSITION_DELAY = 5;
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
