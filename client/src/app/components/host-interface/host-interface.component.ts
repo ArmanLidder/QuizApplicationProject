@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 
 type PlayerArray = [string, number, number];
 
@@ -12,6 +13,7 @@ type PlayerArray = [string, number, number];
     styleUrls: ['./host-interface.component.scss'],
 })
 export class HostInterfaceComponent {
+    @ViewChild('playerListChild') playerListComponent: PlayerListComponent;
     timerText: string = 'Temps restant';
     isGameOver: boolean = false;
     histogramDataChangingResponses = new Map<string, number>();
@@ -66,9 +68,9 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('end question', () => {
-            this.gameService.gameRealService.getPlayersList();
             this.gameService.gameRealService.validated = true;
             this.gameService.gameRealService.locked = true;
+            this.playerListComponent.getPlayersList();
         });
 
         this.socketService.on('final time transition', (timeValue: number) => {
@@ -83,7 +85,8 @@ export class HostInterfaceComponent {
         this.socketService.on(
             'get initial question',
             (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
-                this.gameService.gameRealService.getPlayersList();
+                // this.gameService.gameRealService.getPlayersList();
+                this.playerListComponent.getPlayersList();
                 this.initGraph(data.question);
             },
         );

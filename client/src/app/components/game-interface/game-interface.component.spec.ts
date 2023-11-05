@@ -5,6 +5,8 @@ import { SocketClientService } from '@app/services/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
 import { GameInterfaceComponent } from './game-interface.component';
 import { HttpClientModule } from '@angular/common/http';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { By } from '@angular/platform-browser';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -21,7 +23,7 @@ describe('GameInterfaceComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            declarations: [GameInterfaceComponent],
+            declarations: [GameInterfaceComponent, PlayerListComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
@@ -32,6 +34,7 @@ describe('GameInterfaceComponent', () => {
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
+
         fixture = TestBed.createComponent(GameInterfaceComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -71,6 +74,10 @@ describe('GameInterfaceComponent', () => {
     });
 
     it('should configure base socket features for final time transition correctly', () => {
+        component.isGameOver = true;
+        fixture.detectChanges();
+        const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
+        spyOn(childComponent, 'getPlayersList');
         component['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[2];
         expect(socketOnText).toEqual('final time transition');
@@ -109,20 +116,5 @@ describe('GameInterfaceComponent', () => {
         component.gameService.isTestMode = true;
         spyOnProperty(component.gameService, 'isBonus', 'get').and.returnValue(true);
         expect(component.bonusStatus).toBeTruthy();
-    });
-
-    it('should get and define properly the players data', () => {
-        const mockPlayers = ['un'];
-        component.gameService.gameRealService.getPlayersList();
-        const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
-        expect(sendGatherPlayers).toEqual('gather players username');
-        expect(sendGatherObject).toEqual(component.gameService.gameRealService.roomId);
-        expect(sendGatherCallback).toBeDefined();
-        sendGatherCallback(mockPlayers);
-        const [sendGetScore, sendGetScoreObject, sendGetScoreCallback] = sendSpy.calls.allArgs()[1];
-        expect(sendGetScore).toEqual('get score');
-        expect(sendGetScoreObject).toBeDefined();
-        expect(sendGetScoreCallback).toBeDefined();
-        sendGetScoreCallback(mockScore);
     });
 });

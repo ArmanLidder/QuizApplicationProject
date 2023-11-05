@@ -31,6 +31,7 @@ import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-c
 import { HostInterfaceComponent } from './components/host-interface/host-interface.component';
 import { OrganizerHistogramComponent } from './components/organizer-histogram/organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
+import { PlayerListComponent } from './components/player-list/player-list.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -64,6 +65,7 @@ import { NgChartsModule } from 'ng2-charts';
         GameAnswerChoiceCardComponent,
         HostInterfaceComponent,
         OrganizerHistogramComponent,
+        PlayerListComponent,
     ],
     imports: [
         AppMaterialModule,

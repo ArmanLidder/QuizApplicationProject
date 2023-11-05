@@ -8,6 +8,8 @@ import { OrganizerHistogramComponent } from '@app/components/organizer-histogram
 import { NgChartsModule } from 'ng2-charts';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { HttpClientModule } from '@angular/common/http';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { By } from '@angular/platform-browser';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -41,7 +43,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent],
+            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent],
             providers: [
                 SocketClientService,
                 GameService,
@@ -57,7 +59,10 @@ describe('HostInterfaceComponent', () => {
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
+        const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
+
         component = fixture.componentInstance;
+        spyOn(childComponent, 'getPlayersList');
         fixture.detectChanges();
     });
 
