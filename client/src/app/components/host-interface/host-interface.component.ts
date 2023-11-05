@@ -97,10 +97,10 @@ export class HostInterfaceComponent {
    
 
         this.socketService.on('removed player', (username) => {
-            const playerIndex = this.players.findIndex((player) => player[0] === username);
+            const playerIndex = this.gameService.gameRealService.players.findIndex((player) => player[0] === username);
             if (playerIndex !== -1) {
-              this.leftPlayers.push(this.players[playerIndex]);
-              this.players.splice(playerIndex, 1);
+              this.leftPlayers.push(this.gameService.gameRealService.players[playerIndex]);
+              this.gameService.gameRealService.players.splice(playerIndex, 1);
             }
           });
 
