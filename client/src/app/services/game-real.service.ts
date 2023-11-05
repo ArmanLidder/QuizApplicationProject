@@ -80,16 +80,18 @@ export class GameRealService implements GameServiceInterface {
 
     getPlayersList() {
         this.socketService.send('gather players username', this.roomId, (players: string[]) => {
+            this.players = [];
             players.forEach((username) => {
                 this.getPlayerScoreFromServer(username);
             });
         });
     }
 
-    private getPlayerScoreFromServer(player: string) {
-        this.socketService.send('get score', { roomId: this.roomId, username: this.username }, (score: Score) => {
-            this.sortPlayersByScore(player, score);
+    private getPlayerScoreFromServer(username: string) {
+        this.socketService.send('get score', { roomId: this.roomId, username: username }, (score: Score) => {
+            this.sortPlayersByScore(username, score);
         });
+
     }
 
     private sortPlayersByScore(username: string, score: Score) {
