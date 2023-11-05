@@ -88,10 +88,9 @@ export class GameRealService implements GameServiceInterface {
     }
 
     private getPlayerScoreFromServer(username: string) {
-        this.socketService.send('get score', { roomId: this.roomId, username: username }, (score: Score) => {
+        this.socketService.send('get score', { roomId: this.roomId, username }, (score: Score) => {
             this.sortPlayersByScore(username, score);
         });
-
     }
 
     private sortPlayersByScore(username: string, score: Score) {
