@@ -4,12 +4,12 @@ import { SocketClientServiceTestHelper } from '@app/classes/socket-client-servic
 import { SocketClientService } from '@app/services/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
 import { GameInterfaceComponent } from './game-interface.component';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
     let fixture: ComponentFixture<GameInterfaceComponent>;
     let socketService: SocketClientServiceTestHelper;
-    // let gameServiceSpy : SpyObj<GameService>;
     let onSpy: jasmine.Spy;
     let sendSpy: jasmine.Spy;
     const mockScore: Score = {
@@ -20,11 +20,12 @@ describe('GameInterfaceComponent', () => {
     const mockTimeValue = 123;
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [HttpClientModule],
             declarations: [GameInterfaceComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
-                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
+                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' }, url: [{ path: 'url-path' }] } } },
             ],
         });
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
@@ -43,7 +44,8 @@ describe('GameInterfaceComponent', () => {
     });
 
     it('should configure base socket features for end question correctly', () => {
-        component.gameService.username = 'test';
+        component.gameService.gameRealService.username = 'test';
+        spyOnProperty(component.gameService, 'username', 'get').and.returnValue('test');
         component['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[0];
         expect(socketOnText).toEqual('end question');
@@ -63,8 +65,8 @@ describe('GameInterfaceComponent', () => {
         socketOnFunc(mockTimeValue);
         expect(component.gameService.timer).toEqual(mockTimeValue);
         socketOnFunc(0);
-        expect(component.gameService.locked).toEqual(false);
-        expect(component.gameService.validated).toEqual(false);
+        expect(component.gameService.lockedStatus).toEqual(false);
+        expect(component.gameService.validatedStatus).toEqual(false);
         expect(component.isBonus).toEqual(false);
     });
 
@@ -87,12 +89,34 @@ describe('GameInterfaceComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
+    it('should get correct player score', () => {
+        component.gameService.isTestMode = false;
+        expect(component.score).toEqual(0);
+    });
+
+    it('should get correct player score', () => {
+        component.gameService.isTestMode = true;
+        spyOnProperty(component.gameService, 'playerScore', 'get').and.returnValue(1);
+        expect(component.score).toEqual(component.playerScore);
+    });
+
+    it('should get correct player bonus', () => {
+        component.gameService.isTestMode = false;
+        expect(component.bonusStatus).toBeFalsy();
+    });
+
+    it('should get correct bonus player score', () => {
+        component.gameService.isTestMode = true;
+        spyOnProperty(component.gameService, 'isBonus', 'get').and.returnValue(true);
+        expect(component.bonusStatus).toBeTruthy();
+    });
+
     it('should get and define properly the players data', () => {
         const mockPlayers = ['un'];
-        component.playersData();
+        component.gameService.gameRealService.getPlayersList();
         const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
         expect(sendGatherPlayers).toEqual('gather players username');
-        expect(sendGatherObject).toEqual(component.gameService.roomId);
+        expect(sendGatherObject).toEqual(component.gameService.gameRealService.roomId);
         expect(sendGatherCallback).toBeDefined();
         sendGatherCallback(mockPlayers);
         const [sendGetScore, sendGetScoreObject, sendGetScoreCallback] = sendSpy.calls.allArgs()[1];

@@ -21,8 +21,8 @@
 <div class="players-list">
     <h2>Joueurs:</h2>
     <ul>
-        <li class="player-item" *ngFor="let player of players">
-            <span class="player-name">username: {{ player[0] }} score: {{player[1]}} bonuses: {{player[2]}}</span>
+        <li class="player-item" *ngFor="let player of gameService.gameRealService.players">
+            <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
         </li>
     </ul>
 </div>
@@ -32,8 +32,6 @@
 <div *ngIf='isGameOver'>
     <h2>Partie terminée</h2>
     <button class='cancel' routerLink='/home'> Quitter </button>
-<!--    <div>Liste des joueurs</div>-->
-<!--    <div>Liste des histogrammes (je pense pour sprint3)</div> -->
 </div>
 
 

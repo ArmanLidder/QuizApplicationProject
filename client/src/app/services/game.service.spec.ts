@@ -1,15 +1,17 @@
 import { GameService } from '@app/services/game.service';
 import { TestBed } from '@angular/core/testing';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
+import { GameTestService } from '@app/services/game-test.service';
+import { GameRealService } from '@app/services/game-real.service';
+import { TimeService } from '@app/services/time.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-const TIMER_VALUE = 20;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameService', () => {
+    const timeService: TimeService = new TimeService();
     let service: GameService;
-    let socketService: SocketClientServiceTestHelper;
-    const questionMock = {
+
+    const firstQuestionMock = {
         type: QuestionType.QCM,
         text: 'What is 2 + 2?',
         points: 50,
@@ -20,141 +22,182 @@ describe('GameService', () => {
         ],
     };
 
+    const secondQuestionMock = {
+        type: QuestionType.QCM,
+        text: 'What is 3 + 2?',
+        points: 30,
+        choices: [
+            { text: '4', isCorrect: true },
+            { text: '5', isCorrect: false },
+        ],
+    };
+
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+            providers: [GameTestService, GameRealService],
+            imports: [HttpClientTestingModule],
         });
-        socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         service = TestBed.inject(GameService);
-        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
-            return true;
-        });
     });
 
     it('should create', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should configure base sockets properly', () => {
-        const onSpy = spyOn(socketService, 'on').and.callThrough();
-        const handleTimeSpy = spyOn<any>(service, 'handleTimeEvent');
-        service['configureBaseSockets']();
-        const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual('get initial question');
-        expect(secondEvent).toEqual('get next question');
-        expect(thirdEvent).toEqual('time');
+    it('should provide the correct timer based on isTestMode', () => {
+        service.isTestMode = true;
+        service.gameTestService.timer = timeService.createTimer(1);
+        service.gameRealService.timer = 4;
 
-        if (typeof firstAction === 'function') {
-            firstAction({ question: questionMock, username: 'Arman', index: 1, numberOfQuestions: 1 });
-            expect(service.question).toEqual(questionMock);
-            expect(service.username).toEqual('Arman');
-        }
-        if (typeof secondAction === 'function') {
-            secondAction({ question: questionMock, username: 'Arman', isLast: true });
-            expect(service.question).toEqual(questionMock);
-            expect(service.username).toEqual('Arman');
-            expect(service.isLast).toEqual(true);
-            expect(service.validated).toEqual(false);
-            expect(service.locked).toEqual(false);
-        }
-        if (typeof thirdAction === 'function') {
-            thirdAction(TIMER_VALUE);
-            expect(handleTimeSpy).toHaveBeenCalled();
-        }
+        expect(service.timer).toBe(service.gameTestService.timer.time);
+
+        service.isTestMode = false;
+        expect(service.timer).toBe(service.gameRealService.timer);
     });
 
-    it('should handle time event properly', () => {
-        const sendAnswerSpy = spyOn<any>(service, 'sendAnswer');
-        service.locked = false;
-        service.username = 'Joueur';
-        service['handleTimeEvent'](0);
-        expect(service.timer).toEqual(0);
-        expect(service.locked).toBeTruthy();
-        expect(sendAnswerSpy).toHaveBeenCalled();
+    it('should provide the correct player score', () => {
+        service.isTestMode = true;
+        service.gameTestService.playerScore = 100;
+        expect(service.playerScore).toBe(service.gameTestService.playerScore);
     });
 
-    it('should reset properly', () => {
-        service['reset']();
-        expect(service.username).toEqual('');
-        expect(service.timer).toEqual(0);
-        expect(service.roomId).toEqual(0);
-        expect(service.question).toEqual(null);
-        expect(service.locked).toEqual(false);
-        expect(service.validated).toEqual(false);
-        expect(service.isLast).toEqual(false);
-        expect(service.players.size).toEqual(0);
-        expect(service.answers.size).toEqual(0);
-        expect(service.questionNumber).toEqual(1);
+    it('should provide the correct isBonus status', () => {
+        service.isTestMode = true;
+        service.gameTestService.isBonus = true;
+        expect(service.isBonus).toBe(service.gameTestService.isBonus);
     });
 
-    it('should destroy the component correctly', () => {
-        const resetSpy = spyOn<any>(service, 'reset');
-        const offAnySpy = spyOn<any>(socketService.socket, 'offAny');
+    it('should provide the correct question based on isTestMode', () => {
+        service.isTestMode = true;
+        service.gameTestService.question = firstQuestionMock;
+        service.gameRealService.question = secondQuestionMock;
+
+        expect(service.question).toBe(firstQuestionMock);
+
+        service.isTestMode = false;
+        expect(service.question).toBe(secondQuestionMock);
+    });
+
+    it('should provide the correct question number based on isTestMode', () => {
+        service.isTestMode = true;
+        service.gameTestService.currQuestionIndex = 2;
+        service.gameRealService.questionNumber = 1;
+
+        expect(service.questionNumber).toBe(3);
+
+        service.isTestMode = false;
+        expect(service.questionNumber).toBe(1);
+    });
+
+    it('should provide the correct username', () => {
+        const testUsername = 'TestUser';
+        service.gameRealService.username = testUsername;
+
+        expect(service.username).toBe(testUsername);
+    });
+
+    it('should return the correct locked status based on isTestMode', () => {
+        service.isTestMode = true;
+        service.gameTestService.locked = true;
+        service.gameRealService.locked = false;
+
+        expect(service.lockedStatus).toBe(true);
+
+        service.isTestMode = false;
+        expect(service.lockedStatus).toBe(false);
+    });
+
+    it('should return the correct validated status based on isTestMode', () => {
+        service.isTestMode = true;
+        service.gameTestService.validated = true;
+        service.gameRealService.validated = false;
+
+        expect(service.validatedStatus).toBe(true);
+
+        service.isTestMode = false;
+        expect(service.validatedStatus).toBe(false);
+    });
+
+    it('should call reset when destroy is invoked', () => {
+        spyOn<any>(service, 'reset');
         service.destroy();
-        expect(resetSpy).toHaveBeenCalled();
-        expect(offAnySpy).toHaveBeenCalled();
+        expect(service['reset']).toHaveBeenCalled();
     });
 
-    it('shoud initialize component properly when calling init method', () => {
-        const configureBaseSocketsSpy = spyOn<any>(service, 'configureBaseSockets');
-        const sendSpy = spyOn(service.socketService, 'send');
-        service.roomId = 1;
-        service.init();
-        expect(configureBaseSocketsSpy).toHaveBeenCalled();
-        expect(sendSpy).toHaveBeenCalledWith('get question', 1);
+    it('should initialize the services based on isTestMode in init', () => {
+        service.isTestMode = true;
+        const quizId = 'testQuizId';
+        spyOn(service.gameTestService, 'init');
+        service.init(quizId);
+        expect(service.gameTestService.init).toHaveBeenCalled();
+        expect(service.gameTestService.quizId).toBe(quizId);
+        service.isTestMode = false;
+        spyOn(service.gameRealService, 'init');
+        const roomId = '123';
+        service.init(roomId);
+        expect(service.gameRealService.init).toHaveBeenCalled();
+        expect(service.gameRealService.roomId).toBe(Number(roomId));
     });
 
-    it('should remove choice if already selected', () => {
-        service.locked = false;
-        service.answers = new Map();
-        service.answers.set(1, 'test');
-        service.selectChoice(1);
-        expect(service.answers.size).toEqual(0);
-    });
-
-    it('should add choice if not already selected', () => {
-        const index = 0;
-        const isSelected = true;
-        const sendSpy = spyOn(service.socketService, 'send');
-        service.locked = false;
-        service.question = questionMock;
-        service.question.choices = [{ text: 'test', isCorrect: true }];
-        service.answers = new Map();
-        service.selectChoice(0);
-        expect(service.answers.size).toEqual(1);
-        expect(service.answers.get(0)).toEqual('test');
-        service.question.choices = undefined;
-        service.selectChoice(1);
-        expect(service.answers.size).toEqual(2);
-        expect(service.answers.get(1)).toEqual(null);
-        expect(sendSpy).toHaveBeenCalledWith('update selection', { roomId: service.roomId, isSelected, index });
-    });
-
-    it('should send answer', () => {
-        service.roomId = 1;
-        service.timer = 0;
-        service.username = 'test';
-        service.locked = false;
-        service.question = questionMock;
-        service.answers = new Map();
-        service.answers.set(1, 'test');
-        const sendSpy = spyOn(service.socketService, 'send');
-        const expectedObject = {
-            roomId: 1,
-            answers: ['test'],
-            timer: 0,
-            username: 'test',
-        };
+    it('should send answers and clear them in sendAnswer', () => {
+        service.isTestMode = true;
+        const testAnswers = new Map<number, string | null>();
+        testAnswers.set(0, 'Answer1');
+        testAnswers.set(1, 'Answer2');
+        service.answers = testAnswers;
+        spyOn(service.gameTestService, 'sendAnswer');
         service.sendAnswer();
-        expect(sendSpy).toHaveBeenCalledWith('submit answer', expectedObject);
-        expect(service.answers.size).toEqual(0);
+        expect(service.gameTestService.sendAnswer).toHaveBeenCalled();
+        expect(service.answers.size).toBe(0);
+        service.isTestMode = false;
+        spyOn(service.gameRealService, 'sendAnswer');
+        service.sendAnswer();
+        expect(service.gameRealService.sendAnswer).toHaveBeenCalled();
+        expect(service.answers.size).toBe(0);
     });
 
-    it('should send the selection properly', () => {
-        const index = 0;
-        const isSelected = true;
-        const sendSpy = spyOn(service.socketService, 'send');
-        service['sendSelection'](0, isSelected);
-        expect(sendSpy).toHaveBeenCalledWith('update selection', { roomId: service.roomId, isSelected, index });
+    it('should reset services in reset method', () => {
+        spyOn(service.gameRealService, 'destroy');
+        spyOn(service.gameTestService, 'reset');
+        service['reset']();
+        expect(service.gameRealService.destroy).toHaveBeenCalled();
+        expect(service.gameTestService.reset).toHaveBeenCalled();
+    });
+
+    it('should select and send the choice to gameRealService when not locked', () => {
+        service.isTestMode = false;
+        service.gameRealService.locked = false;
+        const testIndex = 0;
+        const testTextChoice = '3';
+        service.gameRealService.question = firstQuestionMock;
+        service.answers = new Map<number, string | null>();
+        spyOn(service.gameRealService, 'sendSelection');
+
+        service.selectChoice(testIndex);
+
+        expect(service.gameRealService.sendSelection).toHaveBeenCalledWith(testIndex, true);
+        expect(service.answers.get(testIndex)).toBe(testTextChoice);
+
+        service.selectChoice(testIndex);
+
+        expect(service.gameRealService.sendSelection).toHaveBeenCalledWith(testIndex, false);
+        expect(service.answers.get(testIndex)).toBeUndefined();
+    });
+
+    it('should not select and send the choice to gameRealService when locked', () => {
+        service.isTestMode = false;
+        service.gameRealService.locked = true;
+        const testIndex = 1;
+        service.answers = new Map<number, string | null>();
+        spyOn(service.gameRealService, 'sendSelection');
+        service.selectChoice(testIndex);
+        expect(service.gameRealService.sendSelection).not.toHaveBeenCalled();
+        expect(service.answers.size).toBe(0);
+
+        service.gameRealService.locked = false;
+        service.answers = new Map<number, string | null>();
+        service.gameRealService.question = null;
+        service.selectChoice(testIndex);
+        expect(service.answers.get(testIndex)).toBeNull();
     });
 });

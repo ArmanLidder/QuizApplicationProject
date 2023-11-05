@@ -42,10 +42,12 @@ export class SidebarComponent {
 
     sendMessage() {
         const newMessageContent: string = this.messageForm.get('message')?.value;
-        if (this.messageForm.get('message')?.valid && newMessageContent.trim()) {
-            const newMessage: Message = { sender: this.myName, content: newMessageContent, time: getCurrentDateService() };
-            this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
-            this.messageForm.get('message')?.setValue('');
+        if (this.socketService.isSocketAlive()) {
+            if (this.messageForm.get('message')?.valid && newMessageContent.trim()) {
+                const newMessage: Message = { sender: this.myName, content: newMessageContent, time: getCurrentDateService() };
+                this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
+                this.messageForm.get('message')?.setValue('');
+            }
         }
     }
 
@@ -56,10 +58,6 @@ export class SidebarComponent {
     onChatBlur() {
         this.gameService.isInputFocused = false;
     }
-
-    // onChatKeyup(event: KeyboardEvent) {
-    //     this.customKeyup.emit(event);
-    // }
 
     private setup() {
         if (this.socketService.isSocketAlive()) {
