@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
-import { GameRealService } from '@app/services/game-real-service';
+import { GameRealService } from '@app/services/game-real.service';
 
 const TIMER_VALUE = 20;
 /* eslint-disable  @typescript-eslint/no-explicit-any */

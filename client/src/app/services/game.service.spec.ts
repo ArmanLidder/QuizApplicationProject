@@ -2,7 +2,7 @@ import { GameService } from '@app/services/game.service';
 import { TestBed } from '@angular/core/testing';
 import { QuestionType } from '@common/interfaces/quiz.interface';
 import { GameTestService } from '@app/services/game-test.service';
-import { GameRealService } from '@app/services/game-real-service';
+import { GameRealService } from '@app/services/game-real.service';
 import { TimeService } from '@app/services/time.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
