@@ -21,9 +21,8 @@
 <div class="players-list">
     <h2>Joueurs:</h2>
     <ul>
-        <li class="player-item" *ngFor="let player of players">
+        <li class="player-item" *ngFor="let player of gameService.gameRealService.players">
             <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
-
         </li>
     </ul>
 </div>
