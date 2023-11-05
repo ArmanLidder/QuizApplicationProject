@@ -9,6 +9,7 @@ import { RoomData, RoomManagingService } from '@app/services/room-managing.servi
 import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { Game } from '@app/classes/game';
+import { Answers } from '@app/interface/game-interface';
 
 const RESPONSE_DELAY = 200;
 
@@ -193,6 +194,8 @@ describe('SocketManager service tests', () => {
     });
     it('should handle "player abandonment" event when defined', (done) => {
         roomManager.removeUserBySocketID.returns({ roomId: mockRoomId, username: 'username1' });
+        const answer: Answers = { answers: ['1'], time: 10 };
+        gameMock.playersAnswers.set('test', answer);
         const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
         clientSocket.emit('player abandonment', mockRoomId);
