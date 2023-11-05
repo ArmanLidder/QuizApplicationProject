@@ -10,7 +10,6 @@ describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
     let fixture: ComponentFixture<GameInterfaceComponent>;
     let socketService: SocketClientServiceTestHelper;
-    // let gameServiceSpy : SpyObj<GameService>;
     let onSpy: jasmine.Spy;
     let sendSpy: jasmine.Spy;
     const mockScore: Score = {
@@ -88,6 +87,28 @@ describe('GameInterfaceComponent', () => {
         expect(socketOnText).toEqual('removed from game');
         socketOnFunc();
         expect(routerSpy).toHaveBeenCalledWith(['/']);
+    });
+
+    it('should get correct player score', () => {
+        component.gameService.isTestMode = false;
+        expect(component.score).toEqual(0);
+    });
+
+    it('should get correct player score', () => {
+        component.gameService.isTestMode = true;
+        spyOnProperty(component.gameService, 'playerScore', 'get').and.returnValue(1);
+        expect(component.score).toEqual(component.playerScore);
+    });
+
+    it('should get correct player bonus', () => {
+        component.gameService.isTestMode = false;
+        expect(component.bonusStatus).toBeFalsy();
+    });
+
+    it('should get correct bonus player score', () => {
+        component.gameService.isTestMode = true;
+        spyOnProperty(component.gameService, 'isBonus', 'get').and.returnValue(true);
+        expect(component.bonusStatus).toBeTruthy();
     });
 
     it('should get and define properly the players data', () => {
