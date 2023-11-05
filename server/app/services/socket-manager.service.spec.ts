@@ -219,13 +219,13 @@ describe('SocketManager service tests', () => {
     it('should handle "start" event', (done) => {
         const mockTime = 123;
         /* eslint-disable  @typescript-eslint/no-explicit-any */
-        const timerFunctionSpy = sinon.spy(service, 'timerFunction' as any);
+        const startTimerSpy = sinon.spy(service, 'startTimer' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
         clientSocket.emit('start', { roomId: mockRoomId, time: mockTime });
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernamesArray.called);
-            expect(timerFunctionSpy.calledWith(mockRoomId, mockTime));
+            expect(startTimerSpy.calledWith(mockRoomId, mockTime));
             done();
         }, RESPONSE_DELAY);
     });
@@ -270,7 +270,7 @@ describe('SocketManager service tests', () => {
         const emitSpy = sinon.spy(service, 'emitTime' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
         const setIntervalSpy = sinon.spy(setInterval);
-        service['timerFunction'](mockRoomId, TIME_VALUE);
+        service['startTimer'](mockRoomId, TIME_VALUE);
         setTimeout(() => {
             expect(emitSpy.callCount).to.equal(TIME_VALUE);
             expect(roomManager.clearRoomTimer.called);
@@ -285,7 +285,6 @@ describe('SocketManager service tests', () => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernameBySocketId.called);
             expect(roomManager.clearRoomTimer.called);
-            // expect(service['timerFunction'].called);
             done();
         }, RESPONSE_DELAY);
     });
