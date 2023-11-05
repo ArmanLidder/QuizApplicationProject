@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Server } from 'app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -205,6 +206,21 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should call final time transition when every player abandoned', (done) => {
+        gameMock.players.clear();
+        roomManager.removeUserBySocketID.returns({ roomId: mockRoomId, username: 'username1' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const startTimerSpy = sinon.spy(service, 'startTimer' as any);
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit('player abandonment', mockRoomId);
+        setTimeout(() => {
+            expect(startTimerSpy.called);
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should handle "host abandonment" event when defined', (done) => {
         roomManager.deleteRoom.callsFake((roomId) => {
             roomManager['rooms'].delete(roomId);

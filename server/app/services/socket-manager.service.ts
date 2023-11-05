@@ -81,7 +81,10 @@ export class SocketManager {
                     const game = this.roomManager.getGameByRoomId(roomId);
                     if (game) {
                         game.removePlayer(userInfo.username);
-                        if (game.playersAnswers.size === game.players.size) {
+                        if (game.players.size === 0) {
+                            this.roomManager.clearRoomTimer(roomId);
+                            this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, 'final time transition');
+                        } else if (game.playersAnswers.size === game.players.size) {
                             this.roomManager.getGameByRoomId(roomId).updateScores();
                             this.roomManager.clearRoomTimer(roomId);
                             this.sio.to(String(roomId)).emit('end question');
