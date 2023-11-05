@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
 import { GameRealService, Player } from '@app/services/game-real.service';
 
