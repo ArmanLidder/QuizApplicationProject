@@ -8,10 +8,9 @@ import { OrganizerHistogramComponent } from '@app/components/organizer-histogram
 import { NgChartsModule } from 'ng2-charts';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { HttpClientModule } from '@angular/common/http';
-
+import { Player } from '@app/services/game-real.service';
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
-
 
 describe('HostInterfaceComponent', () => {
     let component: HostInterfaceComponent;
@@ -66,6 +65,15 @@ describe('HostInterfaceComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should return false when a player is not in the list', () => {
+        expect(component.playerHasLeft('Alice')).toBeFalsy();
+    });
+
+    it('should return false when a player is in the list', () => {
+        component.leftPlayers = [['player1', 0, 0]];
+        expect(component.playerHasLeft('player1')).toBeTruthy();
+    });
+
     it('should configure sockets if socket is alive', () => {
         const initSpy = spyOn(component.gameService, 'init');
         fixture = TestBed.createComponent(HostInterfaceComponent);
@@ -77,7 +85,6 @@ describe('HostInterfaceComponent', () => {
     it('should configure the right socket event listener', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
-        const leftPlayersSpy = spyOn(component.leftPlayers, 'push').and.callThrough();
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         spyOn<any>(component, 'initGraph');
         /* eslint-enable  @typescript-eslint/no-explicit-any */
@@ -127,18 +134,10 @@ describe('HostInterfaceComponent', () => {
             expect(component['initGraph']).toHaveBeenCalled();
         }
         if (typeof seventhAction === 'function') {
-            // seventhAction({ USERNAME });
-            // const mockPlayerIndex = 1;
-
-            // expect(leftPlayersSpy).toHaveBeenCalledWith(
-            //     component.gameService.gameRealService.players[mockPlayerIndex]
-            // );
-            // expect(component.gameService.gameRealService.players.splice).toHaveBeenCalledWith(
-            //     mockPlayerIndex,
-            //     1
-            // );
-
-
+            component.gameService.gameRealService.players = [['player1', 1, 0], ['player2', 1, 0], ['player3', 1, 0]];
+            seventhAction('player2');
+            expect(component.gameService.gameRealService.players).toEqual([['player1', 1, 0], ['player3', 1, 0]]);
+            expect(component.leftPlayers).toEqual([['player2', 1, 0]]);
         }
     });
 

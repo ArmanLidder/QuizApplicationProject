@@ -1,1 +1,1 @@
-export const PLAYER_INDEX_CONDITION = -1;
+export const PLAYER_NOT_FOUND_INDEX = -1;

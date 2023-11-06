@@ -4,7 +4,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
-import { PLAYER_INDEX_CONDITION } from '@app/components/host-interface/host-interface.component.const';
+import { PLAYER_NOT_FOUND_INDEX } from '@app/components/host-interface/host-interface.component.const';
 
 type PlayerArray = [string, number, number];
 
@@ -93,10 +93,10 @@ export class HostInterfaceComponent {
         this.socketService.on('get next question', (data: NextQuestionData) => {
             this.initGraph(data.question);
         });
-        
+
         this.socketService.on('removed player', (username) => {
             const playerIndex = this.gameService.gameRealService.players.findIndex((player) => player[0] === username);
-            if (playerIndex !== PLAYER_INDEX_CONDITION) {
+            if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.gameService.gameRealService.players[playerIndex]);
                 this.gameService.gameRealService.players.splice(playerIndex, 1);
             }
