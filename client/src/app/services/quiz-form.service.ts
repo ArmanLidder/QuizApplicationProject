@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { FormQuestion } from '@common/interfaces/quiz-form.interface';
+import { getCurrentDateService } from 'src/utils/current-date-format';
 
 const MAX_POINTS_PER_QUESTION = 100;
 const MIN_POINTS_PER_QUESTION = 10;
@@ -97,5 +99,46 @@ export class QuizFormService {
             text: [choice?.text, Validators.required],
             isCorrect: [choice?.isCorrect ? 'true' : 'false'],
         });
+    }
+
+    extractQuizFromForm(quizForm: FormGroup, questionsArray: FormArray) {
+        const now = getCurrentDateService();
+        const questions: QuizQuestion[] = [];
+        questionsArray.controls.forEach((questionForm) => {
+            const question: QuizQuestion = this.extractQuestionFromForm(questionForm as FormArray);
+            questions.push(question);
+        });
+
+        const quiz: Quiz = {
+            id: this.quiz?.id,
+            title: quizForm.value.title,
+            description: quizForm.value.description,
+            duration: quizForm.value.duration,
+            lastModification: now,
+            questions,
+            visible: quizForm.value.visible,
+        };
+        return quiz;
+    }
+
+    private extractQuestionFromForm(questionForm: FormArray): QuizQuestion {
+        const question: QuizQuestion = {
+            type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
+            text: questionForm.get('text')?.value,
+            points: questionForm.get('points')?.value,
+            choices: [],
+        };
+        (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
+            const choice = this.extractChoiceFromForm(choiceForm as FormArray);
+            question.choices?.push(choice);
+        });
+        return question;
+    }
+
+    private extractChoiceFromForm(choiceForm: FormArray): QuizChoice {
+        return {
+            text: choiceForm.get('text')?.value,
+            isCorrect: choiceForm.get('isCorrect')?.value === 'true',
+        };
     }
 }
