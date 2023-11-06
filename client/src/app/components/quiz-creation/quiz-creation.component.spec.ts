@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageMode, QuizCreationComponent } from './quiz-creation.component';
-import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service';
+import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { QuizService } from '@app/services/quiz.service';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { QuestionListComponent } from '@app/components/question-list/question-list.component';
@@ -10,6 +10,8 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { of } from 'rxjs';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import SpyObj = jasmine.SpyObj;
+import { QuizFormService } from '@app/services/quiz-form.service';
+import { QuizValidationService } from '@app/services/quiz-validation.service';
 
 const createFormQuestionFormGroup = (question: FormQuestion, fb: FormBuilder): FormGroup => {
     return fb.group({
@@ -30,7 +32,8 @@ const createFormQuestionFormGroup = (question: FormQuestion, fb: FormBuilder): F
 describe('QuizCreationComponent', () => {
     let component: QuizCreationComponent;
     let fixture: ComponentFixture<QuizCreationComponent>;
-    let quizCreationServiceMock: SpyObj<QuizCreationService>;
+    let quizFormServiceMock: SpyObj<QuizFormService>;
+    let quizValidationServiceMock: SpyObj<QuizValidationService>;
     let quizServiceMock: SpyObj<QuizService>;
     let activatedRoute: ActivatedRoute;
     let routerMock: SpyObj<Router>;
@@ -40,7 +43,8 @@ describe('QuizCreationComponent', () => {
     let formBuilder: FormBuilder;
     const POPUP_DELAY = 3000;
     beforeEach(() => {
-        quizCreationServiceMock = jasmine.createSpyObj('QuizCreationService', ['fillForm', 'validateQuiz']);
+        quizFormServiceMock = jasmine.createSpyObj('QuizFormService', ['fillForm']);
+        quizValidationServiceMock = jasmine.createSpyObj('quizValidationService', ['validateQuiz']);
         quizServiceMock = jasmine.createSpyObj('QuizService', ['basicGetById', 'basicPut', 'basicPost', 'checkTitleUniqueness']);
         routerMock = jasmine.createSpyObj('Router', ['navigate']);
         mockQuiz = {
@@ -120,7 +124,8 @@ describe('QuizCreationComponent', () => {
                     useValue: routerMock,
                 },
                 FormBuilder,
-                { provide: QuizCreationService, useValue: quizCreationServiceMock },
+                { provide: QuizFormService, useValue: quizFormServiceMock },
+                { provide: QuizValidationService, useValue: quizValidationServiceMock },
                 {
                     provide: QuizService,
                     useValue: quizServiceMock,
@@ -158,7 +163,7 @@ describe('QuizCreationComponent', () => {
         spyOn(activatedRoute.snapshot.paramMap, 'get').and.callFake(customGet);
         fixture = TestBed.createComponent(QuizCreationComponent);
         component = fixture.componentInstance;
-        expect(component.quizCreationService.fillForm).toHaveBeenCalledWith();
+        expect(component.quizFormService.fillForm).toHaveBeenCalledWith();
         expect(component.mode).toBe(PageMode.CREATION);
     });
 
@@ -173,7 +178,7 @@ describe('QuizCreationComponent', () => {
         fixture = TestBed.createComponent(QuizCreationComponent);
         component = fixture.componentInstance;
         expect(component['quizService'].basicGetById).toHaveBeenCalledWith(customGet('id') as string);
-        expect(component.quizCreationService.fillForm).toHaveBeenCalledWith(mockQuiz);
+        expect(component.quizFormService.fillForm).toHaveBeenCalledWith(mockQuiz);
         expect(component.mode).toBe(PageMode.MODIFICATION);
     });
 
@@ -200,17 +205,16 @@ describe('QuizCreationComponent', () => {
     });
 
     it('should extract quiz data from form', () => {
-        // Act
         const extractedQuiz: Quiz = component.extractQuizFromForm();
-        // Assert
+
         expect(extractedQuiz.title).toEqual(component.quizForm.get('title')?.value);
         expect(extractedQuiz.description).toEqual(component.quizForm.get('description')?.value);
         expect(extractedQuiz.duration).toEqual(component.quizForm.get('duration')?.value);
         expect(extractedQuiz.visible).toEqual(component.quizForm.get('visible')?.value);
-        // Check the questions
+
         const questionsArray = component.quizForm.get('questions') as FormArray;
         expect(extractedQuiz.questions.length).toEqual(questionsArray.length);
-        // Check the first question
+
         const firstQuestion: QuizQuestion = extractedQuiz.questions[0];
         expect(firstQuestion.type).toEqual(questionsArray.at(0).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
         expect(firstQuestion.text).toEqual(questionsArray.at(0).get('text')?.value);
@@ -221,7 +225,6 @@ describe('QuizCreationComponent', () => {
         expect(firstChoiceFirstChoice[1].text).toEqual(questionsArray.at(0).get('choices')?.value[1].text);
         expect(firstChoiceFirstChoice[1].isCorrect).toEqual(questionsArray.at(0).get('choices')?.value[1].isCorrect === 'true');
 
-        // Check the second question
         const secondQuestion: QuizQuestion = extractedQuiz.questions[1];
         expect(secondQuestion.type).toEqual(questionsArray.at(1).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
         expect(secondQuestion.text).toEqual(questionsArray.at(1).get('text')?.value);
@@ -240,7 +243,7 @@ describe('QuizCreationComponent', () => {
         expect(mockQuiz.id).toBeDefined();
         expect(quizServiceMock.basicPost).toHaveBeenCalledWith(mockQuiz);
         expect(quizServiceMock.basicPut).not.toHaveBeenCalled();
-        tick(); // This assumes that the observable completes immediately
+        tick();
         expect(routerMock.navigate).toHaveBeenCalledWith(['/game-admin-page']);
     }));
 
@@ -251,16 +254,14 @@ describe('QuizCreationComponent', () => {
         expect(mockQuiz.id).toBeDefined();
         expect(quizServiceMock.basicPut).toHaveBeenCalledWith(mockQuiz);
         expect(quizServiceMock.basicPost).not.toHaveBeenCalled();
-        tick(); // This assumes that the observable completes immediately
+        tick();
         expect(routerMock.navigate).toHaveBeenCalledWith(['/game-admin-page']);
     }));
 
     it('should call addOrUpdateQuiz when form is valid and title is unique', () => {
         component.mode = PageMode.CREATION;
         const title = component.quizForm.value['title'];
-        // Spy on addOrUpdateQuiz before calling onSubmit
         spyOn(component, 'addOrUpdateQuiz');
-        // Mock the checkTitleUniqueness response
         quizServiceMock.checkTitleUniqueness.and.returnValue(of(new HttpResponse({ body: { isUnique: true } })));
         component.onSubmit();
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledWith(title);
@@ -269,32 +270,25 @@ describe('QuizCreationComponent', () => {
     });
 
     it('should show an alert when form is valid but title is not unique', () => {
-        // Arrange
         component.mode = PageMode.CREATION;
         const title = component.quizForm.value['title'];
         // Mock a response with a non-unique title
         quizServiceMock.checkTitleUniqueness.and.returnValue(of(new HttpResponse({ body: { isUnique: false } })));
         const windowAlertSpy = spyOn(window, 'alert');
 
-        // Act
         component.onSubmit();
 
-        // Assert
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledWith(title);
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledTimes(1);
-        // Ensure that an alert is shown
         expect(windowAlertSpy).toHaveBeenCalledWith('Un quiz ayant le même titre existe déjà');
     });
 
     it('should set form errors and show a popup when form is not valid', () => {
-        // Arrange
         const showPopupIfFormConditionMetSpy = spyOn(component, 'showPopupIfFormConditionMet');
         // make the quizForm invalid by giving an empty title
         component.quizForm.get('title')?.patchValue('');
         component.onSubmit();
-        // Assert
-        expect(quizCreationServiceMock.validateQuiz).toHaveBeenCalled();
-        // Ensure that showPopupIfFormConditionMet is called
+        expect(quizValidationServiceMock.validateQuiz).toHaveBeenCalled();
         expect(showPopupIfFormConditionMetSpy).toHaveBeenCalledWith(true);
     });
 });
