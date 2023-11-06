@@ -9,7 +9,6 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { GamePageComponent } from './game-page.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
-// import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
