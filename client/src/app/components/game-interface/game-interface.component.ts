@@ -1,10 +1,10 @@
 import { Component, Injector, ViewChild } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '@app/services/game.service';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
-import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 
 type PlayerArray = [string, number];
 

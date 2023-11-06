@@ -1,5 +1,5 @@
 import { Quiz } from '@common/interfaces/quiz.interface';
-import { DatabaseService } from '@app/services/database.service';
+import { DatabaseService } from '@app/services/database.service/database.service';
 import * as process from 'process';
 import { Service } from 'typedi';
 

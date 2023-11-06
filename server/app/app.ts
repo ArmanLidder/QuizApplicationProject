@@ -1,4 +1,4 @@
-import { HttpException } from '@app/classes/http.exception';
+import { HttpException } from '@app/classes/http.exception/http.exception';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';

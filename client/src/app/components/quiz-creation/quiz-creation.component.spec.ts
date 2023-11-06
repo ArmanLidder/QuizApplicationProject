@@ -2,8 +2,8 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageMode, QuizCreationComponent } from './quiz-creation.component';
-import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service';
-import { QuizService } from '@app/services/quiz.service';
+import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service/quiz-creation.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { QuestionListComponent } from '@app/components/question-list/question-list.component';
 import { AppMaterialModule } from '@app/modules/material.module';

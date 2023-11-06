@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, HostListener } from '@angular/core';
 import { QuizChoice } from '@common/interfaces/quiz.interface';
-import { GameService } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service/game.service';
 
 @Component({
     selector: 'app-game-answer-choice-card',

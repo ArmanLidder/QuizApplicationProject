@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
 import { GameTestService } from './game-test.service';
 import { of } from 'rxjs';

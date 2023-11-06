@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
 import { StatusCodes } from 'http-status-codes';
-import { AdminAuthService } from '@app/services/admin-auth.service';
+import { AdminAuthService } from '@app/services/admin-auth.service/admin-auth.service';
 
 @Service()
 export class AdminAuthController {

@@ -1,5 +1,5 @@
 import { RoomCodePromptComponent } from './room-code-prompt.component';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
