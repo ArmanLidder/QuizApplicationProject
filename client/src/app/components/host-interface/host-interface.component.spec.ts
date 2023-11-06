@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
 
+
 describe('HostInterfaceComponent', () => {
     let component: HostInterfaceComponent;
     let fixture: ComponentFixture<HostInterfaceComponent>;
@@ -76,6 +77,7 @@ describe('HostInterfaceComponent', () => {
     it('should configure the right socket event listener', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
+        const leftPlayersSpy = spyOn(component.leftPlayers, 'push').and.callThrough();
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         spyOn<any>(component, 'initGraph');
         /* eslint-enable  @typescript-eslint/no-explicit-any */
@@ -87,6 +89,7 @@ describe('HostInterfaceComponent', () => {
             [fourthEvent, fourthAction],
             [fifthEvent, fifthAction],
             [sixthEvent, sixthAction],
+            [seventhEvent, seventhAction],
         ] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual('time transition');
         expect(secondEvent).toEqual('end question');
@@ -94,6 +97,7 @@ describe('HostInterfaceComponent', () => {
         expect(fourthEvent).toEqual('refresh choices stats');
         expect(fifthEvent).toEqual('get initial question');
         expect(sixthEvent).toEqual('get next question');
+        expect(seventhEvent).toEqual('removed player');
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
@@ -121,6 +125,20 @@ describe('HostInterfaceComponent', () => {
         if (typeof sixthAction === 'function') {
             sixthAction({ question: {}, index: 0, isLast: false });
             expect(component['initGraph']).toHaveBeenCalled();
+        }
+        if (typeof seventhAction === 'function') {
+            // seventhAction({ USERNAME });
+            // const mockPlayerIndex = 1;
+
+            // expect(leftPlayersSpy).toHaveBeenCalledWith(
+            //     component.gameService.gameRealService.players[mockPlayerIndex]
+            // );
+            // expect(component.gameService.gameRealService.players.splice).toHaveBeenCalledWith(
+            //     mockPlayerIndex,
+            //     1
+            // );
+
+
         }
     });
 

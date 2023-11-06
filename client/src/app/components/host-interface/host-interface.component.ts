@@ -4,7 +4,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
-// import { Score } from '@common/interfaces/score.interface';
+import { PLAYER_INDEX_CONDITION } from '@app/components/host-interface/host-interface.component.const';
 
 type PlayerArray = [string, number, number];
 
@@ -20,7 +20,6 @@ export class HostInterfaceComponent {
     histogramDataValue = new Map<string, boolean>();
     players: PlayerArray[] = [];
     leftPlayers: PlayerArray[] = [];
-
 
     constructor(
         public gameService: GameService,
@@ -47,6 +46,9 @@ export class HostInterfaceComponent {
         }
     }
 
+    playerHasLeft(username: string): boolean {
+        return this.leftPlayers.some((player) => player[0] === username);
+    }
     private nextQuestion() {
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;
@@ -58,8 +60,6 @@ export class HostInterfaceComponent {
     }
 
     private configureBaseSocketFeatures() {
-
-
         this.socketService.on('time transition', (timeValue: number) => {
             this.timerText = 'Prochaine question dans ';
             this.gameService.gameRealService.timer = timeValue;
@@ -93,24 +93,16 @@ export class HostInterfaceComponent {
         this.socketService.on('get next question', (data: NextQuestionData) => {
             this.initGraph(data.question);
         });
-
-   
-
+        
         this.socketService.on('removed player', (username) => {
             const playerIndex = this.gameService.gameRealService.players.findIndex((player) => player[0] === username);
-            if (playerIndex !== -1) {
-              this.leftPlayers.push(this.gameService.gameRealService.players[playerIndex]);
-              this.gameService.gameRealService.players.splice(playerIndex, 1);
+            if (playerIndex !== PLAYER_INDEX_CONDITION) {
+                this.leftPlayers.push(this.gameService.gameRealService.players[playerIndex]);
+                this.gameService.gameRealService.players.splice(playerIndex, 1);
             }
-          });
-
+        });
     }
 
-    playerHasLeft(username: string): boolean {
-        return this.leftPlayers.some((player) => player[0] === username);
-      }
-
-      
     private initGraph(question: QuizQuestion) {
         this.histogramDataValue = new Map();
         this.histogramDataChangingResponses = new Map();

@@ -28,6 +28,4 @@ export class GameAnswersListComponent {
     validate() {
         if (!this.gameService.validatedStatus) this.gameService.sendAnswer();
     }
-
- 
 }

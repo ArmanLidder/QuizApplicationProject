@@ -49,8 +49,6 @@ export class GameRealService implements GameServiceInterface {
         this.answers.clear();
     }
 
-
-
     configureBaseSockets() {
         this.socketService.on(
             'get initial question',
@@ -125,6 +123,4 @@ export class GameRealService implements GameServiceInterface {
         this.answers.clear();
         this.questionNumber = 1;
     }
-
-
 }
