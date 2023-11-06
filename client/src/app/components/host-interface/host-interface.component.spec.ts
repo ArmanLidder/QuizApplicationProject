@@ -8,7 +8,7 @@ import { OrganizerHistogramComponent } from '@app/components/organizer-histogram
 import { NgChartsModule } from 'ng2-charts';
 import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { HttpClientModule } from '@angular/common/http';
-import { Player } from '@app/services/game-real.service';
+
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
 
