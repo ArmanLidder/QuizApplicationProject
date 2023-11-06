@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { QuizValidationService } from './quiz-validation.service';
-import { Quiz, QuestionType, QuizChoice } from '@common/interfaces/quiz.interface';
+import { Quiz, QuizChoice } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 describe('QuizValidationService', () => {
     let service: QuizValidationService;
@@ -266,13 +267,14 @@ describe('QuizValidationService', () => {
             ],
         };
         const errorsMin = service.validateQuestion(stubQuestion, 0);
-        expect(errorsMin).toContain('Question 1 : les points doivent être entre 10 et 100 et être divisible par 10');
+        expect(errorsMin).toContain('Question 1 : les points doivent être entre 10 et 100');
         stubQuestion.points = overMax;
         const errorsMax = service.validateQuestion(stubQuestion, 0);
-        expect(errorsMax).toContain('Question 1 : les points doivent être entre 10 et 100 et être divisible par 10');
+        expect(errorsMax).toContain('Question 1 : les points doivent être entre 10 et 100');
         stubQuestion.points = notFactorTen;
         const errorsTen = service.validateQuestion(stubQuestion, 0);
-        expect(errorsTen).toContain('Question 1 : les points doivent être entre 10 et 100 et être divisible par 10');
+        expect(errorsTen).toContain('Question 1 : les points de la question doivent être divisible par 10');
+        expect(errorsTen).toContain('Question 1 : les points de la question doivent être divisible par 10');
     });
 
     it('validateQuestionChoices should return empty array if valid question choices', () => {
