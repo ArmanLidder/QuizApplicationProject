@@ -98,10 +98,12 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('removed player', (username) => {
-            this.playerListComponent.getPlayersList();
+            console.log("removed player");
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
+            console.log(playerIndex);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
+                this.playerListComponent.getPlayersList();
             }
         });
     }
