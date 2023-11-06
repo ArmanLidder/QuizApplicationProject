@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 import { QuizFormService } from '@app/services/quiz-form.service';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
@@ -16,6 +17,7 @@ describe('QuizFormService', () => {
     let firstChoice: QuizChoice;
     let secondChoice: QuizChoice;
     let validQuiz: Quiz;
+    let mockQuizForm: FormGroup;
 
     const fb: FormBuilder = new FormBuilder();
 
@@ -72,12 +74,20 @@ describe('QuizFormService', () => {
         };
 
         const question3: FormQuestion = {
-            type: QuestionType.QCM,
+            type: QuestionType.QLR,
             text: 'Question 3',
             points: 15,
             choices: [choice1, choice2],
             beingModified: false,
         };
+
+        // const qlrQuestion: FormQuestion = {
+        //     type: QuestionType.QLR,
+        //     text: 'Question 3',
+        //     choices: [choice1, choice2],
+        //     points: 15,
+        //     beingModified: false,
+        // };
 
         formQuestionsArrayAllSaved = fb.array([createFormQuestionFormGroup(question1), createFormQuestionFormGroup(question3)]);
 
@@ -114,6 +124,14 @@ describe('QuizFormService', () => {
             ],
             visible: false,
         };
+
+        mockQuizForm = fb.group({
+            title: ['titre', Validators.required],
+            duration: [0, Validators.required],
+            description: ['description', Validators.required],
+            questions: fb.array([createFormQuestionFormGroup(question1), createFormQuestionFormGroup(question3)], Validators.required),
+            visible: [false, Validators.required],
+        });
     });
 
     it('should be created', () => {
@@ -244,5 +262,37 @@ describe('QuizFormService', () => {
             points: 0,
             choices: [],
         });
+    });
+
+    it('should extract quiz data from form', () => {
+        const questionsArray = mockQuizForm.get('questions') as FormArray;
+        const extractedQuiz: Quiz = service.extractQuizFromForm(mockQuizForm, questionsArray);
+
+        expect(extractedQuiz.title).toEqual(mockQuizForm.get('title')?.value);
+        expect(extractedQuiz.description).toEqual(mockQuizForm.get('description')?.value);
+        expect(extractedQuiz.duration).toEqual(mockQuizForm.get('duration')?.value);
+        expect(extractedQuiz.visible).toEqual(mockQuizForm.get('visible')?.value);
+
+        expect(extractedQuiz.questions.length).toEqual(questionsArray.length);
+
+        const firstExtractedQuestion: QuizQuestion = extractedQuiz.questions[0];
+        expect(firstExtractedQuestion.type).toEqual(questionsArray.at(0).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
+        expect(firstExtractedQuestion.text).toEqual(questionsArray.at(0).get('text')?.value);
+        expect(firstExtractedQuestion.points).toEqual(questionsArray.at(0).get('points')?.value);
+        const firstChoiceFirstChoice: QuizChoice[] = firstExtractedQuestion.choices as QuizChoice[];
+        expect(firstChoiceFirstChoice[0].text).toEqual(questionsArray.at(0).get('choices')?.value[0].text);
+        expect(firstChoiceFirstChoice[0].isCorrect).toEqual(questionsArray.at(0).get('choices')?.value[0].isCorrect === 'true');
+        expect(firstChoiceFirstChoice[1].text).toEqual(questionsArray.at(0).get('choices')?.value[1].text);
+        expect(firstChoiceFirstChoice[1].isCorrect).toEqual(questionsArray.at(0).get('choices')?.value[1].isCorrect === 'true');
+
+        const secondExtractedQuestion: QuizQuestion = extractedQuiz.questions[1];
+        expect(secondExtractedQuestion.type).toEqual(questionsArray.at(1).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
+        expect(secondExtractedQuestion.text).toEqual(questionsArray.at(1).get('text')?.value);
+        expect(secondExtractedQuestion.points).toEqual(questionsArray.at(1).get('points')?.value);
+        const firstChoiceSecondChoice: QuizChoice[] = secondExtractedQuestion.choices as QuizChoice[];
+        expect(firstChoiceSecondChoice[0].text).toEqual(questionsArray.at(1).get('choices')?.value[0].text);
+        expect(firstChoiceSecondChoice[0].isCorrect).toEqual(questionsArray.at(1).get('choices')?.value[0].isCorrect === 'true');
+        expect(firstChoiceSecondChoice[1].text).toEqual(questionsArray.at(1).get('choices')?.value[1].text);
+        expect(firstChoiceSecondChoice[1].isCorrect).toEqual(questionsArray.at(1).get('choices')?.value[1].isCorrect === 'true');
     });
 });
