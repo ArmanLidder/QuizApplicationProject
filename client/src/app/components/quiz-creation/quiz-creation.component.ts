@@ -2,10 +2,11 @@ import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
-import { QuizCreationService } from '@app/services/quiz-creation.service';
 import { QuizService } from '@app/services/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
+import { QuizFormService } from '@app/services/quiz-form.service';
+import { QuizValidationService } from '@app/services/quiz-validation.service';
 
 const POPUP_TIMEOUT = 3000;
 
@@ -25,31 +26,33 @@ export class QuizCreationComponent {
     isPopupVisibleDuration: boolean;
     isPopupVisibleForm: boolean;
     formErrors: string[];
-    quizCreationService: QuizCreationService;
+    quizFormService: QuizFormService;
+    quizValidationService: QuizValidationService;
     protected readonly pageModel = PageMode;
     private quizService: QuizService;
     private route: ActivatedRoute;
     private navigateRoute: Router;
 
     constructor(injector: Injector) {
-        this.quizCreationService = injector.get<QuizCreationService>(QuizCreationService);
+        this.quizFormService = injector.get<QuizFormService>(QuizFormService);
+        this.quizValidationService = injector.get<QuizValidationService>(QuizValidationService);
         this.quizService = injector.get<QuizService>(QuizService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.navigateRoute = injector.get<Router>(Router);
         this.isPopupVisibleDuration = false;
         this.isPopupVisibleForm = false;
         this.formErrors = [];
-        this.quizForm = this.quizCreationService.fillForm();
+        this.quizForm = this.quizFormService.fillForm();
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.mode = PageMode.MODIFICATION;
             this.quizService.basicGetById(id).subscribe((quiz: Quiz) => {
                 this.quiz = quiz;
-                this.quizForm = this.quizCreationService.fillForm(quiz);
+                this.quizForm = this.quizFormService.fillForm(quiz);
             });
         } else {
             this.mode = PageMode.CREATION;
-            this.quizForm = this.quizCreationService.fillForm();
+            this.quizForm = this.quizFormService.fillForm();
         }
     }
 
@@ -123,7 +126,7 @@ export class QuizCreationComponent {
                 }
             });
         } else {
-            this.formErrors = this.quizCreationService.validateQuiz(quiz);
+            this.formErrors = this.quizValidationService.validateQuiz(quiz);
             this.showPopupIfFormConditionMet(true);
         }
     }
