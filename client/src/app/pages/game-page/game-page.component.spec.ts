@@ -8,6 +8,7 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GamePageComponent } from './game-page.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
@@ -30,7 +31,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent],
+            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
