@@ -40,6 +40,12 @@ describe('GameInterfaceComponent', () => {
         fixture.detectChanges();
         onSpy = spyOn(socketService, 'on').and.callThrough();
         sendSpy = spyOn(socketService, 'send').and.callThrough();
+        component.isGameOver = true;
+        fixture.detectChanges();
+        const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
+        spyOn(childComponent, 'getPlayersList');
+        component.isGameOver = false;
+        fixture.detectChanges();
     });
 
     it('should create', () => {
@@ -74,10 +80,6 @@ describe('GameInterfaceComponent', () => {
     });
 
     it('should configure base socket features for final time transition correctly', () => {
-        component.isGameOver = true;
-        fixture.detectChanges();
-        const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
-        spyOn(childComponent, 'getPlayersList');
         component['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[2];
         expect(socketOnText).toEqual('final time transition');
