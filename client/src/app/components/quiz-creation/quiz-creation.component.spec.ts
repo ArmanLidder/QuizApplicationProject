@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
-import { QuizFormService } from '@app/services/quiz-form.service';
+import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';

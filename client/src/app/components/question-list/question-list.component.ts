@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { QuestionService } from '@app/services/question.service';
-import { ChoiceService } from '@app/services/choice.service';
+import { QuestionService } from '@app/services/question-service/question.service';
+import { ChoiceService } from '@app/services/choice-service/choice.service';
 
 const POPUP_TIMEOUT = 3000;
 

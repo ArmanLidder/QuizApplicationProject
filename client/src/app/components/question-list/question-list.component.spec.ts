@@ -6,8 +6,8 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { QuestionListComponent } from './question-list.component';
 import SpyObj = jasmine.SpyObj;
-import { QuestionService } from '@app/services/question.service';
-import { ChoiceService } from '@app/services/choice.service';
+import { QuestionService } from '@app/services/question-service/question.service';
+import { ChoiceService } from '@app/services/choice-service/choice.service';
 
 const fb = new FormBuilder();
 const POPUP_DELAY = 3200;

@@ -5,8 +5,8 @@ import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
-import { QuizFormService } from '@app/services/quiz-form.service';
-import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
+import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
+import { createFormQuestionFormGroup } from '../../../utils/create-form-question';
 
 describe('QuizFormService', () => {
     let service: QuizFormService;

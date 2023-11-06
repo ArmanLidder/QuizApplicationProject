@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { QuizFormService } from '@app/services/quiz-form.service';
+import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 
 const MAX_NUMBER_OF_CHOICES = 4;
 const MIN_NUMBER_OF_CHOICES = 2;
