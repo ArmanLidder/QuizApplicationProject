@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Player } from '@app/services/game-real.service';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
 
 @Component({
@@ -9,6 +9,7 @@ import { Score } from '@common/interfaces/score.interface';
     styleUrls: ['./player-list.component.scss'],
 })
 export class PlayerListComponent {
+    @Input() leftPlayers: Player[];
     @Input() roomId: number;
     players: Player[];
 

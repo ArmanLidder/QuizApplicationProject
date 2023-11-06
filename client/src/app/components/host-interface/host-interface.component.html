@@ -18,27 +18,10 @@
         <button class='cancel' routerLink='/home'> Quitter </button>
     </div>
 </div>
-<!-- <div class="players-list">
-    <h2>Joueurs:</h2>
-    <ul>
-
-        <li class="player-item" *ngFor="let player of gameService.gameRealService.players">
-            <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
-        </li>
-        <li class="player-item" *ngFor="let player of leftPlayers">
-            <span class="player-name"><b>Joueur : </b> <b [ngClass]="{'strikethrough': playerHasLeft(player[0])}">{{ player[0] }} </b>  <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
-        </li>
-    </ul>
-</div> -->
 <div class="histogram" *ngIf='!this.isGameOver'>
     <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
 </div>
-<app-player-list #playerListChild [roomId]='this.gameService.gameRealService.roomId'></app-player-list>
-<ul>
-<li class="player-item" *ngFor="let player of leftPlayers">
-    <span class="player-name"><b>Joueur : </b> <b [ngClass]="{'strikethrough': playerHasLeft(player[0])}">{{ player[0] }} </b>  <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
-</li>
-</ul>
+<app-player-list #playerListChild [roomId]='this.gameService.gameRealService.roomId' [leftPlayers]='this.leftPlayers'></app-player-list>
 
 <div *ngIf='isGameOver'>
     <h2>Partie terminée</h2>

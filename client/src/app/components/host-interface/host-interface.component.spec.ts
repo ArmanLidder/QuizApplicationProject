@@ -139,9 +139,12 @@ describe('HostInterfaceComponent', () => {
             expect(component['initGraph']).toHaveBeenCalled();
         }
         if (typeof seventhAction === 'function') {
-            component.gameService.gameRealService.players = [['player1', 1, 0], ['player2', 1, 0], ['player3', 1, 0]];
+            component.playerListComponent.players = [
+                ['player1', 1, 0],
+                ['player2', 1, 0],
+                ['player3', 1, 0],
+            ];
             seventhAction('player2');
-            expect(component.gameService.gameRealService.players).toEqual([['player1', 1, 0], ['player3', 1, 0]]);
             expect(component.leftPlayers).toEqual([['player2', 1, 0]]);
         }
     });

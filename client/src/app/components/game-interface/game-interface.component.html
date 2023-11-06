@@ -1,9 +1,10 @@
 <div *ngIf='isGameOver'>
     <h2>Le jeu est terminé!</h2>
     <p>Votre score final : {{ playerScore }}</p>
-    <app-player-list #playerListChild  [roomId]='gameService.gameRealService.roomId'></app-player-list>
+
     <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
+<app-player-list [hidden]='!isGameOver' #playerListChild  [roomId]='gameService.gameRealService.roomId' [leftPlayers]='[]'></app-player-list>
 <div *ngIf='!isGameOver' id="grid-container">
     <div id="flex-container">
         <p>Pointage: {{ score }}</p>
