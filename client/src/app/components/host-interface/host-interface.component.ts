@@ -85,7 +85,6 @@ export class HostInterfaceComponent {
         this.socketService.on(
             'get initial question',
             (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
-                // this.gameService.gameRealService.getPlayersList();
                 this.playerListComponent.getPlayersList();
                 this.initGraph(data.question);
             },

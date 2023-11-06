@@ -12,12 +12,7 @@ export class PlayerListComponent {
     @Input() roomId: number;
     players: Player[];
 
-    constructor(public socketService: SocketClientService) {
-        this.getPlayersList();
-    }
-    // ngOnInit() {
-    //     this.getPlayersList();
-    // }
+    constructor(public socketService: SocketClientService) {}
 
     getPlayersList() {
         this.socketService.send('gather players username', this.roomId, (players: string[]) => {
