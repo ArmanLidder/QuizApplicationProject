@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { ChoiceService } from '@app/services/choice.service';
 import { QuizFormService } from '@app/services/quiz-form.service';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';

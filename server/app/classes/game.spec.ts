@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';

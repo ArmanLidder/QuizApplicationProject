@@ -2,7 +2,7 @@ import { Component, Injector } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '@app/services/game.service';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 
 type PlayerArray = [string, number];

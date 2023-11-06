@@ -1,7 +1,7 @@
 import { FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { FormArray, FormGroup } from '@angular/forms';
 import { createFormQuestionFormGroup } from './create-form-question';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 const QUESTION_POINTS = 10;
 
@@ -20,7 +20,7 @@ describe('createFormQuestionFormGroup', () => {
 
         const formGroup: FormGroup = createFormQuestionFormGroup(question);
 
-        expect(formGroup.get('type')?.value).toEqual(QuestionType.QCM);
+        expect(formGroup.get('type')?.value).toEqual('QCM');
         expect(formGroup.get('text')?.value).toEqual('What is 2 + 2?');
         expect(formGroup.get('points')?.value).toEqual(QUESTION_POINTS);
 

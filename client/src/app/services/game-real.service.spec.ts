@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { GameRealService, Player } from '@app/services/game-real.service';
 
 const TIMER_VALUE = 20;

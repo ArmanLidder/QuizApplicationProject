@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { QuizService } from '@app/services/quiz.service';
-import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { GameTestService } from './game-test.service';
 import { of } from 'rxjs';
 /* eslint-disable  @typescript-eslint/no-explicit-any */

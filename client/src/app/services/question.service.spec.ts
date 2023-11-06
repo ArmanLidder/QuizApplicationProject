@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { QuizValidationService } from '@app/services/quiz-validation.service';
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 import { QuestionService } from '@app/services/question.service';
 import { QuizFormService } from '@app/services/quiz-form.service';
