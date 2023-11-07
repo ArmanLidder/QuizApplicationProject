@@ -1,4 +1,4 @@
-import { QuestionType } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 export const fillerQuizzes = [
     {

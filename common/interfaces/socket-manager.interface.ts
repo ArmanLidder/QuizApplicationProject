@@ -26,3 +26,8 @@ export interface PlayerSelection {
     isSelected: boolean;
     index: number;
 }
+
+export interface RoomValidationResult {
+    isRoom: boolean;
+    isLocked: boolean;
+}

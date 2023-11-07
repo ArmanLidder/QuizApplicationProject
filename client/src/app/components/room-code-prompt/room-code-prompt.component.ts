@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { RoomValidationResult } from '@common/interfaces/socket-manager.interface';
 
 @Component({
     selector: 'app-room-code-prompt',
@@ -126,7 +127,7 @@ export class RoomCodePromptComponent implements OnInit {
 
     private async sendRoomId() {
         return new Promise<void>((resolve) => {
-            this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: { isRoom: boolean; isLocked: boolean }) => {
+            this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: RoomValidationResult) => {
                 if (!data.isRoom) {
                     this.handleErrors();
                     this.error = errorDictionary.roomCodeExpired;

@@ -1,8 +1,0 @@
-export const MAX_POINTS_PER_QUESTION = 100;
-export const MIN_POINTS_PER_QUESTION = 10;
-export const MAX_QCM_DURATION = 60;
-export const MIN_QCM_DURATION = 10;
-export const MAX_NUMBER_OF_CHOICES_PER_QUESTION = 4;
-export const MIN_NUMBER_OF_CHOICES_PER_QUESTION = 2;
-export const MIN_NUMBER_OF_QUESTIONS = 1;
-export const NON_EXISTANT_INDEX = -1;

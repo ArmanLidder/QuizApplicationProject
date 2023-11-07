@@ -1,7 +1,4 @@
-export enum QuestionType {
-    QCM,
-    QLR,
-}
+import { QuestionType } from '../enums/question-type.enum';
 
 export interface Quiz {
     id: string;
