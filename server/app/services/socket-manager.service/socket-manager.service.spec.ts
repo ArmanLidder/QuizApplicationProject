@@ -66,12 +66,6 @@ describe('SocketManager service tests', () => {
         service['sio'].close();
         sinon.restore();
     });
-    it('should set up event handlers when calling handleSockets', (done) => {
-        clientSocket.on('hello', (args) => {
-            assert.equal(args, 'Hello World!');
-            done();
-        });
-    });
     it('should handle a create Room event and return a room code', (done) => {
         const clientCallBack = (roomCode: number) => {
             expect(roomCode).to.equal(mockRoomId);

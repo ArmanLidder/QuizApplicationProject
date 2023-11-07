@@ -6,6 +6,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Message } from '@common/interfaces/message.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-sidebar',
@@ -44,7 +45,7 @@ export class SidebarComponent {
         if (this.socketService.isSocketAlive()) {
             if (this.messageForm.get('message')?.valid && newMessageContent.trim()) {
                 const newMessage: Message = { sender: this.myName, content: newMessageContent, time: getCurrentDateService() };
-                this.socketService.send('new message', { roomId: Number(this.roomId), message: newMessage });
+                this.socketService.send(socketEvent.newMessage, { roomId: Number(this.roomId), message: newMessage });
                 this.messageForm.get('message')?.setValue('');
             }
         }
@@ -67,19 +68,19 @@ export class SidebarComponent {
     }
 
     private getRoomMessages() {
-        this.socketService.send('get messages', Number(this.roomId), (messages: Message[]) => {
+        this.socketService.send(socketEvent.getMessage, Number(this.roomId), (messages: Message[]) => {
             this.messages = messages ?? [];
         });
     }
 
     private getUsername() {
-        this.socketService.send('get username', Number(this.roomId), (name: string) => {
+        this.socketService.send(socketEvent.getUsername, Number(this.roomId), (name: string) => {
             this.myName = name;
         });
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on('message received', (message: Message) => {
+        this.socketService.on(socketEvent.receivedMessage, (message: Message) => {
             this.messages.push(message);
         });
     }

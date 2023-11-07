@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-game-page',
@@ -18,7 +19,7 @@ export class GamePageComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
-        const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
+        const messageType = this.isHost ? socketEvent.hostLeft : socketEvent.playerLeft;
         if (this.socketService.isSocketAlive()) {
             this.socketService.send(messageType, this.gameService.gameRealService.roomId);
         }

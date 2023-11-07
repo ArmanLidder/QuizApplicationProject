@@ -6,6 +6,7 @@ import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { Router } from '@angular/router';
 import { CREATED } from '@app/components/games-list/games-list.component.const';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 @Component({
     selector: 'app-games-list',
@@ -136,12 +137,12 @@ export class GamesListComponent implements OnInit {
     setValidatorError(errors: string[]) {
         let index = 0;
         const isPlural = errors.length > 1;
-        const endSentence = isPlural ? 'les problèmes suivants' : 'le problème suivant';
-        let errorMessage = `Le fichier que vous tenter d'importer contient ${endSentence} :\n\n `;
+        const endSentence = isPlural ? errorDictionary.issues : errorDictionary.issue;
+        let errorMessage = errorDictionary.fileContains + `${endSentence} :\n\n `;
         errors.forEach((error) => {
             errorMessage += `\n${(index += 1)}- ${error}\n`;
         });
-        errorMessage += '\n\n Veuillez corriger cela avant de réessayer.';
+        errorMessage += errorDictionary.solution;
         return errorMessage;
     }
 
@@ -175,11 +176,11 @@ export class GamesListComponent implements OnInit {
             this.selectedQuiz = null;
 
             if (res === null) {
-                window.alert('Ce quiz a été supprimé, veuillez choisir un autre.');
+                window.alert(errorDictionary.quizDeleted);
             } else if (res.visible) {
                 this.router.navigate([route, res.id]);
             } else {
-                window.alert('Ce quiz est maintenant caché, veuillez choisir un autre.');
+                window.alert(errorDictionary.quizInvisible);
             }
         });
     }

@@ -7,6 +7,7 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 export enum PageMode {
     CREATION,
@@ -118,7 +119,7 @@ export class QuizCreationComponent {
                 if (response.body?.isUnique || this.mode === PageMode.MODIFICATION) {
                     this.addOrUpdateQuiz(quiz);
                 } else {
-                    window.alert('Un quiz ayant le même titre existe déjà');
+                    window.alert(errorDictionary.quizAlreadyExist);
                 }
             });
         } else {

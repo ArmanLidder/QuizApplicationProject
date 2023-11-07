@@ -1,4 +1,5 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 @Component({
     selector: 'app-unique-quiz-error-feedback',
@@ -17,7 +18,7 @@ export class UniqueQuizErrorFeedbackComponent {
 
     emitQuizName() {
         if (this.newQuizName === undefined) {
-            this.error = 'Le nom ne doit pas être vide!';
+            this.error = errorDictionary.nameEmpty;
             this.showErrorFeedback();
         } else {
             this.sendNewQuizName.emit(this.newQuizName);

@@ -5,6 +5,8 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 
 type PlayerArray = [string, number];
 
@@ -19,7 +21,7 @@ export class GameInterfaceComponent {
     isBonus: boolean = false;
     isGameOver: boolean = false;
     playerScore: number = 0;
-    timerText: string = 'Temps restant';
+    timerText: string = timerMessage.timeLeft;
     players: PlayerArray[] = [];
     gameService: GameService;
     private readonly socketService: SocketClientService;
@@ -48,10 +50,10 @@ export class GameInterfaceComponent {
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on('end question', () => {
+        this.socketService.on(socketEvent.endQuestion, () => {
             if (this.gameService.gameRealService.username !== 'Organisateur') {
                 this.socketService.send(
-                    'get score',
+                    socketEvent.getScore,
                     {
                         roomId: this.gameService.gameRealService.roomId,
                         username: this.gameService.gameRealService.username,
@@ -65,18 +67,18 @@ export class GameInterfaceComponent {
             }
         });
 
-        this.socketService.on('time transition', (timeValue: number) => {
+        this.socketService.on(socketEvent.timeTransition, (timeValue: number) => {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.gameService.gameRealService.locked = false;
                 this.gameService.gameRealService.validated = false;
                 this.isBonus = false;
-                this.timerText = 'Temps restant';
+                this.timerText = timerMessage.timeLeft;
             }
         });
 
-        this.socketService.on('final time transition', (timeValue: number) => {
-            this.timerText = "Les résultats finaux s'afficherons dans:";
+        this.socketService.on(socketEvent.finalTimeTransition, (timeValue: number) => {
+            this.timerText = timerMessage.finalResult;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
@@ -84,7 +86,7 @@ export class GameInterfaceComponent {
             }
         });
 
-        this.socketService.on('removed from game', () => {
+        this.socketService.on(socketEvent.removedFromGame, () => {
             this.router.navigate(['/']);
         });
     }

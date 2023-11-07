@@ -1,5 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-room-code-prompt',
@@ -52,10 +54,10 @@ export class RoomCodePromptComponent implements OnInit {
     async validateUsername() {
         const whitespacePattern = /^\s*$/;
         if (this.username === undefined || whitespacePattern.test(this.username)) {
-            this.error = "Le nom de l'utilisateur doit contenir au moins un caractère!";
+            this.error = errorDictionary.charNumError;
             this.showErrorFeedback();
         } else if (this.username?.toLowerCase() === 'organisateur') {
-            this.error = "Le nom de l'utilisateur ne peut pas être Organisateur!";
+            this.error = errorDictionary.organiserNameError;
             this.showErrorFeedback();
         } else {
             await this.sendUsername();
@@ -74,7 +76,7 @@ export class RoomCodePromptComponent implements OnInit {
 
     private roomIdClientValidation() {
         if (!this.isOnlyDigit()) {
-            this.error = 'Votre code doit contenir seulement 4 chiffres (ex: 1234)';
+            this.error = errorDictionary.validationCodeError;
             this.showErrorFeedback();
         } else {
             this.reset();
@@ -89,7 +91,7 @@ export class RoomCodePromptComponent implements OnInit {
         await this.sendRoomId();
         if (this.isRoomIdValid) {
             return new Promise<void>((resolve) => {
-                this.socketService.send('player join', { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
+                this.socketService.send(socketEvent.joinGame, { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
                     if (isLocked) {
                         this.isLocked = true;
                         this.showErrorFeedback();
@@ -107,7 +109,7 @@ export class RoomCodePromptComponent implements OnInit {
         await this.sendRoomId();
         if (this.isRoomIdValid) {
             this.socketService.send(
-                'validate username',
+                socketEvent.validateUsername,
                 { roomId: Number(this.roomId), username: this.username },
                 (data: { isValid: boolean; error: string }) => {
                     if (!data.isValid) {
@@ -124,13 +126,13 @@ export class RoomCodePromptComponent implements OnInit {
 
     private async sendRoomId() {
         return new Promise<void>((resolve) => {
-            this.socketService.send('validate roomID', Number(this.roomId), (data: { isRoom: boolean; isLocked: boolean }) => {
+            this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: { isRoom: boolean; isLocked: boolean }) => {
                 if (!data.isRoom) {
                     this.handleErrors();
-                    this.error = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
+                    this.error = errorDictionary.roomCodeExpired;
                 } else if (data.isLocked) {
                     this.handleErrors();
-                    this.error = 'La partie est vérouillée. Veuillez réessayer.';
+                    this.error = errorDictionary.roomLocked;
                 } else {
                     this.isRoomIdValid = true;
                     this.reset();
