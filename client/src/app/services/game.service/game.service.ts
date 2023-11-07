@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { GameTestService } from '@app/services/game-test.service';
-import { GameRealService } from '@app/services/game-real.service';
+import { GameTestService } from '@app/services/game-test.service/game-test.service';
+import { GameRealService } from '@app/services/game-real.service/game-real.service';
 
 @Injectable({
     providedIn: 'root',

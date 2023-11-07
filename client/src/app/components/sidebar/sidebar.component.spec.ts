@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';

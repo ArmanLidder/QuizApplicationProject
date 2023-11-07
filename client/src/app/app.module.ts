@@ -10,27 +10,27 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { QuestionListComponent } from '@app/components/question-list/question-list.component';
-import { GameAdministrationPageComponent } from './pages/game-administration-page/game-administration-page.component';
-import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
+import { GameAdministrationPageComponent } from '@app/pages/game-administration-page/game-administration-page.component';
+import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-creation-page.component';
 import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-creation-page.component';
 import { QuizCreationComponent } from '@app/components/quiz-creation/quiz-creation.component';
 import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
 import { GameItemComponent } from '@app/components/game-item/game-item.component';
-import { GamesListComponent } from './components/games-list/games-list.component';
-import { QuizInfoComponent } from './components/quiz-info/quiz-info.component';
-import { AnswerChoiceCardComponent } from './components/answer-choice-card/answer-choice-card.component';
-import { UniqueQuizErrorFeedbackComponent } from './components/unique-quiz-error-feedback/unique-quiz-error-feedback.component';
-import { ValidationQuizErrorFeedbackComponent } from './components/validation-quiz-error-feedback/validation-quiz-error-feedback.component';
-import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
-import { WaitingRoomHostPageComponent } from './pages/waiting-room-host-page/waiting-room-host-page.component';
-import { WaitingRoomPlayerPageComponent } from './pages/waiting-room-player-page/waiting-room-player-page.component';
-import { RoomCodePromptComponent } from './components/room-code-prompt/room-code-prompt.component';
-import { GameInterfaceComponent } from './components/game-interface/game-interface.component';
-import { GameAnswersListComponent } from './components/game-answers-list/game-answers-list.component';
-import { GameAnswerChoiceCardComponent } from './components/game-answer-choice-card/game-answer-choice-card.component';
-import { HostInterfaceComponent } from './components/host-interface/host-interface.component';
-import { OrganizerHistogramComponent } from './components/organizer-histogram/organizer-histogram.component';
+import { GamesListComponent } from '@app/components/games-list/games-list.component';
+import { QuizInfoComponent } from '@app/components/quiz-info/quiz-info.component';
+import { UniqueQuizErrorFeedbackComponent } from '@app/components/unique-quiz-error-feedback/unique-quiz-error-feedback.component';
+import { ValidationQuizErrorFeedbackComponent } from '@app/components/validation-quiz-error-feedback/validation-quiz-error-feedback.component';
+import { WaitingRoomComponent } from '@app/components/waiting-room/waiting-room.component';
+import { WaitingRoomHostPageComponent } from '@app/pages/waiting-room-host-page/waiting-room-host-page.component';
+import { WaitingRoomPlayerPageComponent } from '@app/pages/waiting-room-player-page/waiting-room-player-page.component';
+import { RoomCodePromptComponent } from '@app/components/room-code-prompt/room-code-prompt.component';
+import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
+import { GameAnswersListComponent } from '@app/components/game-answers-list/game-answers-list.component';
+import { GameAnswerChoiceCardComponent } from '@app/components/game-answer-choice-card/game-answer-choice-card.component';
+import { HostInterfaceComponent } from '@app/components/host-interface/host-interface.component';
+import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -43,7 +43,6 @@ import { NgChartsModule } from 'ng2-charts';
         GamePageComponent,
         MainPageComponent,
         SidebarComponent,
-        AnswerChoiceCardComponent,
         QuizCreationComponent,
         QuizCreationPageComponent,
         QuestionListComponent,
@@ -64,6 +63,7 @@ import { NgChartsModule } from 'ng2-charts';
         GameAnswerChoiceCardComponent,
         HostInterfaceComponent,
         OrganizerHistogramComponent,
+        PlayerListComponent,
     ],
     imports: [
         AppMaterialModule,

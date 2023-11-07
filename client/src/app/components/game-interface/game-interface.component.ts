@@ -1,5 +1,6 @@
-import { Component, Injector } from '@angular/core';
+import { Component, Injector, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
@@ -13,6 +14,8 @@ type PlayerArray = [string, number];
     styleUrls: ['./game-interface.component.scss'],
 })
 export class GameInterfaceComponent {
+    @ViewChild('playerListChild') playerListComponent: PlayerListComponent;
+
     isBonus: boolean = false;
     isGameOver: boolean = false;
     playerScore: number = 0;
@@ -76,8 +79,8 @@ export class GameInterfaceComponent {
             this.timerText = "Les résultats finaux s'afficherons dans:";
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.gameService.gameRealService.getPlayersList();
                 this.isGameOver = true;
+                this.playerListComponent.getPlayersList();
             }
         });
 

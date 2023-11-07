@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/interfaces/quiz.interface';
-import { GameRealService, Player } from '@app/services/game-real.service';
+import { GameRealService } from '@app/services/game-real.service/game-real.service';
 
 const TIMER_VALUE = 20;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -90,13 +90,13 @@ describe('GameRealService', () => {
 
     it('should destroy the component correctly', () => {
         const resetSpy = spyOn<any>(service, 'reset');
-        const offAnySpy = spyOn<any>(socketService.socket, 'offAny');
+        const removeAllListenersSpy = spyOn<any>(socketService.socket, 'removeAllListeners');
         service.destroy();
         expect(resetSpy).toHaveBeenCalled();
-        expect(offAnySpy).toHaveBeenCalled();
+        expect(removeAllListenersSpy).toHaveBeenCalled();
     });
 
-    it('shoud initialize component properly when calling init method', () => {
+    it('shouLd initialize component properly when calling init method', () => {
         const configureBaseSocketsSpy = spyOn<any>(service, 'configureBaseSockets');
         const sendSpy = spyOn(service.socketService, 'send');
         service.roomId = 1;
@@ -123,20 +123,6 @@ describe('GameRealService', () => {
         service.sendAnswer();
         expect(sendSpy).toHaveBeenCalledWith('submit answer', expectedObject);
         expect(service.answers.size).toEqual(0);
-    });
-
-    it('should compare Players', () => {
-        const player1: Player = ['player1', 0, 0];
-        const player2: Player = ['karim', 1, 1];
-        const scoreSubtract = service['comparePlayers'](player1, player2);
-        expect(scoreSubtract).toEqual(player2[1] - player1[1]);
-    });
-
-    it('should compare Players', () => {
-        const player1: Player = ['player1', 0, 0];
-        const player2: Player = ['karim', 0, 0];
-        const scoreSubtract = service['comparePlayers'](player1, player2);
-        expect(scoreSubtract).toEqual(player1[0].localeCompare(player2[0]));
     });
 
     it('should send the selection properly', () => {

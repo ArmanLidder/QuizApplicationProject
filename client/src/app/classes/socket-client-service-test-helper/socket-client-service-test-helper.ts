@@ -1,6 +1,6 @@
 export class SocketClientServiceTestHelper {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    socket = { offAny: () => {} };
+    socket = { removeAllListeners: () => {} };
 
     isSocketAlive() {
         return;

@@ -1,4 +1,8 @@
-<div id="grid-container" *ngIf='!isGameOver'>
+<div class="grid-container" *ngIf='isGameOver'>
+    <h2>Partie terminée</h2>
+    <button class='cancel' routerLink='/home'> Quitter </button>
+</div>
+<div class="grid-container" *ngIf='!isGameOver'>
     <div id="flex-container">
         <p> {{timerText}} : {{ gameService.timer }}</p>
     </div>
@@ -18,20 +22,10 @@
         <button class='cancel' routerLink='/home'> Quitter </button>
     </div>
 </div>
-<div class="players-list">
-    <h2>Joueurs:</h2>
-    <ul>
-        <li class="player-item" *ngFor="let player of gameService.gameRealService.players">
-            <span class="player-name"><b>Joueur : </b>{{ player[0] }}   <b>Score :</b> {{player[1]}} points <b>Bonuses :</b> {{player[2]}}</span>
-        </li>
-    </ul>
-</div>
 <div class="histogram" *ngIf='!this.isGameOver'>
     <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
 </div>
-<div *ngIf='isGameOver'>
-    <h2>Partie terminée</h2>
-    <button class='cancel' routerLink='/home'> Quitter </button>
-</div>
+<app-player-list #playerListChild [roomId]='this.gameService.gameRealService.roomId' [leftPlayers]='this.leftPlayers'></app-player-list>
+
 
 
