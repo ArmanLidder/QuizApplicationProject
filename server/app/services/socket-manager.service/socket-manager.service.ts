@@ -95,9 +95,8 @@ export class SocketManager {
             });
 
             socket.on(socketEvent.hostLeft, (roomId: number) => {
-                this.roomManager.clearRoomTimer(roomId);
-                socket.to(String(roomId)).emit(socketEvent.removedFromGame);
                 this.roomManager.deleteRoom(roomId);
+                socket.to(String(roomId)).emit(socketEvent.removedFromGame);
             });
 
             socket.on(socketEvent.getMessages, (data: number, callback) => {
