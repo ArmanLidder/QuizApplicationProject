@@ -6,7 +6,7 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { MatDialog } from '@angular/material/dialog';
-import { QuizExistsDialogComponent } from '@app/components/quiz-exists-dialog/quiz-exists-dialog.component';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { PageMode } from 'src/enums/page-mode.enum';
 import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
@@ -102,7 +102,7 @@ export class QuizCreationComponent {
     }
 
     private openQuizExistsDialog() {
-        this.dialog.open(QuizExistsDialogComponent, {
+        this.dialog.open(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
                 content: errorDictionary.quizAlreadyExist,
