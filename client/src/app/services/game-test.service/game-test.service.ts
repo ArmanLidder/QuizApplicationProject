@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Timer } from '@app/classes/timer/timer';
-import { TimeService } from '@app/services/time.service/time.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
+import { TimeService } from '@app/services/time.service/time.service';
 
 const BONUS_MULTIPLIER = 1.2;
 const TESTING_TRANSITION_TIMER = 3;
