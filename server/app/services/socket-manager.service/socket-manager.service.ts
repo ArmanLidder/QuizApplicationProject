@@ -81,7 +81,7 @@ export class SocketManager {
 
             socket.on('player abandonment', (roomId: number) => {
                 const userInfo = this.roomManager.removeUserBySocketID(socket.id);
-                if (userInfo !== undefined) {
+                if (userInfo) {
                     const game = this.roomManager.getGameByRoomId(roomId);
                     if (game) {
                         game.removePlayer(userInfo.username);
@@ -91,7 +91,7 @@ export class SocketManager {
                         } else if (game.playersAnswers.size === game.players.size) {
                             this.roomManager.getGameByRoomId(roomId).updateScores();
                             this.roomManager.clearRoomTimer(roomId);
-                            this.sio.to(String(roomId)).emit('end question');
+                            this.sio.to(String(roomId)).emit('end question from removal');
                         }
                     }
                     this.sio.to(String(roomId)).emit('removed player', userInfo.username);

@@ -51,6 +51,7 @@ export class HostInterfaceComponent {
     playerHasLeft(username: string): boolean {
         return this.leftPlayers.some((player) => player[0] === username);
     }
+
     private nextQuestion() {
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;
@@ -66,16 +67,14 @@ export class HostInterfaceComponent {
             this.timerText = 'Prochaine question dans ';
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
-                this.gameService.gameRealService.locked = true;
-                this.gameService.gameRealService.validated = true;
+                this.resetInterface();
                 this.socketService.send('next question', this.gameService.gameRealService.roomId);
                 this.timerText = 'Temps restant';
             }
         });
 
         this.socketService.on('end question', () => {
-            this.gameService.gameRealService.validated = true;
-            this.gameService.gameRealService.locked = true;
+            this.resetInterface();
             this.playerListComponent.getPlayersList();
         });
 
@@ -84,6 +83,7 @@ export class HostInterfaceComponent {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
+
         this.socketService.on('refresh choices stats', (choicesStatsValue: number[]) => {
             this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
         });
@@ -98,14 +98,21 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on('removed player', (username) => {
-            console.log("removed player");
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
-            console.log(playerIndex);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
                 this.playerListComponent.getPlayersList();
             }
         });
+
+        this.socketService.on('end question from removal', () => {
+            this.resetInterface();
+        });
+    }
+
+    private resetInterface() {
+        this.gameService.gameRealService.validated = true;
+        this.gameService.gameRealService.locked = true;
     }
 
     private initGraph(question: QuizQuestion) {
