@@ -1,27 +1,27 @@
 import { Message } from './message.interface';
 
-export interface roomIdAndUsername {
+export interface PlayerUsername {
     roomId: number;
     username: string;
 }
 
-export interface roomIdAndMessage {
+export interface PlayerMessage {
     roomId: number;
     message: Message;
 }
 
-export interface roomIdAndTime {
+export interface RemainingTime {
     roomId: number;
     time: number;
 }
-export interface roomIdAndAnswers {
+export interface PlayerAnswerData {
     roomId: number;
     answers: string[];
     timer: number;
     username: string;
 }
 
-export interface roomIdAndSelection {
+export interface PlayerSelection {
     roomId: number;
     isSelected: boolean;
     index: number;
