@@ -18,7 +18,6 @@ import { PasswordPromptComponent } from '@app/components/password-prompt/passwor
 import { GameItemComponent } from '@app/components/game-item/game-item.component';
 import { GamesListComponent } from '@app/components/games-list/games-list.component';
 import { QuizInfoComponent } from '@app/components/quiz-info/quiz-info.component';
-import { AnswerChoiceCardComponent } from '@app/components/answer-choice-card/answer-choice-card.component';
 import { UniqueQuizErrorFeedbackComponent } from '@app/components/unique-quiz-error-feedback/unique-quiz-error-feedback.component';
 import { ValidationQuizErrorFeedbackComponent } from '@app/components/validation-quiz-error-feedback/validation-quiz-error-feedback.component';
 import { WaitingRoomComponent } from '@app/components/waiting-room/waiting-room.component';
@@ -44,7 +43,6 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
         GamePageComponent,
         MainPageComponent,
         SidebarComponent,
-        AnswerChoiceCardComponent,
         QuizCreationComponent,
         QuizCreationPageComponent,
         QuestionListComponent,
