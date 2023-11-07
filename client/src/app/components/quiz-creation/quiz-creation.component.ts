@@ -93,6 +93,7 @@ export class QuizCreationComponent {
             this.navigateRoute.navigate(['/game-admin-page']);
         };
         if (this.mode === PageMode.MODIFICATION) {
+            quiz.id = this.quiz.id;
             this.quizService.basicPut(quiz).subscribe(navigateToAdminCallBack);
         } else {
             quiz.id = generateRandomId();
