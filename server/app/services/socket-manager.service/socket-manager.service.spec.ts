@@ -48,6 +48,7 @@ describe('SocketManager service tests', () => {
             messages: mockMessages,
             timer: null,
         };
+        sinon.stub(console, 'log');
         server = Container.get(Server);
         await server.init();
         service = server['socketManager'];
@@ -58,7 +59,6 @@ describe('SocketManager service tests', () => {
         roomManager.getRoomById.returns(mockRoom);
         roomManager.getGameByRoomId.returns(gameMock);
         service['roomManager'] = roomManager;
-        sinon.stub(console, 'log');
     });
     afterEach(() => {
         clientSocket.disconnect();
