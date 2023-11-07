@@ -12,6 +12,12 @@ export class MainPageComponent implements OnInit {
     constructor(private socketClientService: SocketClientService) {}
 
     ngOnInit() {
-        if (this.socketClientService.isSocketAlive()) this.socketClientService.disconnect();
+        // eslint-disable-next-line no-console
+        console.log('home page ngOnInit called');
+        if (this.socketClientService.isSocketAlive()) {
+            // eslint-disable-next-line no-console
+            console.log(`socket ${this.socketClientService.socket.id} calling disconnection`);
+            this.socketClientService.disconnect();
+        }
     }
 }
