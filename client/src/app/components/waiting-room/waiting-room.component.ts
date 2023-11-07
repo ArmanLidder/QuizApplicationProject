@@ -37,7 +37,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
             this.socketService.send(messageType, this.roomId);
         }
-        this.socketService.socket.offAny();
+        this.socketService.socket.removeAllListeners();
     }
 
     connect() {
@@ -119,6 +119,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             if (this.time === 0) {
                 this.router.navigate(['game', this.roomId]);
                 this.isGameStarting = true;
+            }
+        });
+
+        this.socketService.on('final time transition', () => {
+            if (this.isTransition) {
+                this.router.navigate(['/']);
             }
         });
     }

@@ -33,7 +33,7 @@ export class GameRealService implements GameServiceInterface {
 
     destroy() {
         this.reset();
-        if (this.socketService.isSocketAlive()) this.socketService.socket.offAny();
+        if (this.socketService.isSocketAlive()) this.socketService.socket.removeAllListeners();
     }
 
     sendAnswer() {
