@@ -89,7 +89,7 @@ export class RoomCodePromptComponent implements OnInit {
     }
 
     private async sendJoinRoomRequest() {
-        await this.sendRoomId();
+        await this.sendUsername();
         if (this.isRoomIdValid) {
             return new Promise<void>((resolve) => {
                 this.socketService.send(socketEvent.joinGame, { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
