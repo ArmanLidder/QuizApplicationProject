@@ -155,7 +155,7 @@ export class SocketManager {
 
             socket.on(socketEvent.startTransition, (roomId: number) => {
                 this.roomManager.clearRoomTimer(roomId);
-                this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, 'time transition');
+                this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.timeTransition);
             });
 
             socket.on(socketEvent.getScore, (data: PlayerUsername, callback) => {
@@ -191,7 +191,8 @@ export class SocketManager {
     }
 
     private startTimer(roomId: number, timeValue: number, eventName?: string) {
-        this.emitTime(roomId, timeValue--, eventName);
+        this.emitTime(roomId, timeValue, eventName);
+        timeValue--;
         this.roomManager.getRoomById(roomId).timer = setInterval(() => {
             if (timeValue >= 0) {
                 this.emitTime(roomId, timeValue, eventName);
@@ -203,7 +204,7 @@ export class SocketManager {
     }
 
     private emitTime(roomId: number, time: number, eventName?: string) {
-        const event = eventName ?? 'time';
+        const event = eventName ?? socketEvent.time;
         this.sio.to(String(roomId)).emit(event, time);
     }
 }
