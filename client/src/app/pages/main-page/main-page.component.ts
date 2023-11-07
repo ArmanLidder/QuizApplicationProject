@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { GameService } from '@app/services/game.service/game.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-main-page',
@@ -11,20 +9,15 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 export class MainPageComponent implements OnInit {
     readonly title: string = 'OnlyQuiz';
 
-    constructor(
-        private socketClientService: SocketClientService,
-        private gameService: GameService,
-    ) {}
+    constructor(private socketClientService: SocketClientService) {}
 
     ngOnInit() {
-        if (this.socketClientService.isSocketAlive()) this.handleDisconnect();
-    }
-    private handleDisconnect() {
-        const roomId = this.gameService.gameRealService.roomId;
-        const isHost = this.gameService.gameRealService.username === 'Organisateur';
-        const eventType = isHost ? socketEvent.hostLeft : socketEvent.playerLeft;
-        this.socketClientService.send(eventType, roomId);
-        this.gameService.destroy();
-        this.socketClientService.disconnect();
+        // eslint-disable-next-line no-console
+        console.log('home page ngOnInit called');
+        if (this.socketClientService.isSocketAlive()) {
+            // eslint-disable-next-line no-console
+            console.log(`socket ${this.socketClientService.socket.id} calling disconnection`);
+            // this.socketClientService.disconnect();
+        }
     }
 }

@@ -34,6 +34,14 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        // eslint-disable-next-line no-console
+        console.log('ngOnDestroy waiting-room');
+        if (!this.isGameStarting) {
+            const messageType = this.isHost ? socketEvent.hostLeft : socketEvent.playerLeft;
+            // eslint-disable-next-line no-console
+            console.log(`sent event ${messageType}`);
+            this.socketService.send(messageType, this.roomId);
+        }
         this.socketService.socket.removeAllListeners();
     }
 

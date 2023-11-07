@@ -9,10 +9,14 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { GamePageComponent } from './game-page.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+
+const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
     let component: GamePageComponent;
     let fixture: ComponentFixture<GamePageComponent>;
     let socketService: SocketClientServiceTestHelper;
+    let sendSpy: jasmine.Spy;
 
     const mockActivatedRoute = {
         snapshot: {
@@ -49,5 +53,23 @@ describe('GamePageComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should send host abandonment event on component destruction if game is starting', () => {
+        sendSpy = spyOn(socketService, 'send');
+        component['gameService'].gameRealService.username = 'Organisateur';
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        spyOn(component['gameService'], 'destroy');
+        component.ngOnDestroy();
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.hostLeft, DIGIT_CONSTANT);
+    });
+
+    it('should send player abandonment event on component destruction if game is starting', () => {
+        sendSpy = spyOn(socketService, 'send');
+        component['gameService'].gameRealService.username = 'Player';
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        spyOn(component['gameService'], 'destroy');
+        component.ngOnDestroy();
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
     });
 });
