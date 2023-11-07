@@ -7,7 +7,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 import { QuestionService } from '@app/services/question-service/question.service';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
-import { createFormQuestionFormGroup } from '../../../utils/create-form-question';
+import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
 
 describe('QuestionService', () => {
     let service: QuestionService;
