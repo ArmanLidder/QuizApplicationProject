@@ -189,11 +189,9 @@ describe('SocketManager service tests', () => {
     });
     it('should handle "player abandonment" event when undefined', (done) => {
         roomManager.removeUserBySocketID.returns(undefined);
-        const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
         clientSocket.emit(socketEvent.playerLeft, mockRoomId);
         setTimeout(() => {
-            expect(disconnectSpy.called);
             expect(emitSpy.notCalled);
             done();
         }, RESPONSE_DELAY);

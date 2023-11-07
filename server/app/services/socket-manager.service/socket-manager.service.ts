@@ -91,7 +91,7 @@ export class SocketManager {
                     }
                     this.sio.to(String(roomId)).emit(socketEvent.removedPlayer, userInfo.username);
                 }
-                socket.disconnect(true);
+                // socket.disconnect(true);
             });
 
             socket.on(socketEvent.hostLeft, (roomId: number) => {
