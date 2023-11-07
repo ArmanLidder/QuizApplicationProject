@@ -14,7 +14,6 @@ export class QuestionListComponent {
     @Input() parentGroup: FormGroup;
 
     isPopupVisible: boolean = false;
-    isButtonNotToggled: boolean = true;
     questionErrors: string[] = [];
 
     constructor(

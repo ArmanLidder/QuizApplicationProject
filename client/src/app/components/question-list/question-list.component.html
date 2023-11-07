@@ -32,8 +32,8 @@
                             Le nombre de points d'une QCM doit être entre 10 et 100 et doit être un multiple de 10
                         </div>
                         <p>Choix:</p>
-                        <button type="button" [disabled]="!isButtonNotToggled && getChoicesArray(i).controls.length !== 0"
-                                [ngClass]="{'hidden-button': !isButtonNotToggled && getChoicesArray(i).controls.length !== 0}"
+                        <button type="button" [disabled]="getChoicesArray(i).controls.length !== 0"
+                                [ngClass]="{'hidden-button': getChoicesArray(i).controls.length !== 0}"
                                 (click)="addChoice(i, getChoicesArray(i).controls.length - 1)">Ajouter choix
                         </button><br>
                     </div>
@@ -82,6 +82,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class='button-container'>
                     <button class="buttonOption" type="button" (click)="removeQuestion(i)">
                         Supprimer
@@ -92,7 +94,7 @@
                     <button class="buttonOption" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)">Valider</button><br><br>
                     <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)">Modifier</button><br><br>
                 </div>
-                <button *ngIf='i !== (questionsArray?.length ?? 0) - 1' type="button" (click)="moveQuestionDown(i)">
+                <button *ngIf='i + 1 !== questionsArray?.length' type="button" (click)="moveQuestionDown(i)">
                     <mat-icon>keyboard_arrow_down</mat-icon>
                 </button><br><br>
             </div>
