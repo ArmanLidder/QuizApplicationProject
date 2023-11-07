@@ -5,6 +5,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { Score } from '@common/interfaces/score.interface';
 import { GameInterfaceComponent } from './game-interface.component';
 import { HttpClientModule } from '@angular/common/http';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -21,7 +22,7 @@ describe('GameInterfaceComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            declarations: [GameInterfaceComponent],
+            declarations: [GameInterfaceComponent, PlayerListComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
@@ -113,7 +114,7 @@ describe('GameInterfaceComponent', () => {
 
     it('should get and define properly the players data', () => {
         const mockPlayers = ['un'];
-        component.gameService.gameRealService.getPlayersList();
+        component.playerListComponent.getPlayersList();
         const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
         expect(sendGatherPlayers).toEqual('gather players username');
         expect(sendGatherObject).toEqual(component.gameService.gameRealService.roomId);

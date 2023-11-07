@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PlayerListComponent } from './player-list.component';
-import { Player } from '@app/services/game-real.service';
+import { Player } from '@app/services/game-real.service/game-real.service';
 import { Score } from '@common/interfaces/score.interface';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 
 describe('PlayerListComponent', () => {
     let component: PlayerListComponent;
