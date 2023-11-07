@@ -34,6 +34,7 @@ export class GameInterfaceComponent {
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.router = injector.get<Router>(Router);
         this.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
+        if (this.gameService.isTestMode) this.socketService.disconnect();
         const pathId = this.route.snapshot.paramMap.get('id') as string;
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init(pathId);
@@ -87,8 +88,6 @@ export class GameInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.removedFromGame, () => {
-            // eslint-disable-next-line no-console
-            console.log(`${this.socketService.socket.id} removed from game ${this.gameService.username}`);
             this.router.navigate(['/']);
         });
     }

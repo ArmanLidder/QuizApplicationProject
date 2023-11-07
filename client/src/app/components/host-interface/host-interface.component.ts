@@ -100,13 +100,9 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.removedPlayer, (username) => {
-            // eslint-disable-next-line no-console
-            console.log(`event : ${socketEvent.removedPlayer}, ${username} has left.`);
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
-                // eslint-disable-next-line no-console
-                console.log(`leftPlayers are : ${this.leftPlayers}`);
                 this.playerListComponent.getPlayersList();
             }
         });

@@ -27,7 +27,7 @@ describe('SidebarComponent', () => {
             providers: [
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 FormBuilder,
-                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
+                { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' }, url: [{ path: 'url-path' }] } } },
                 { provide: GameService, useValue: gameService },
             ],
         });
@@ -50,6 +50,14 @@ describe('SidebarComponent', () => {
         component.messageForm = formBuilder.group({
             message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
         });
+    });
+
+    it('should create in test mode if active route is quiz-testing-page', () => {
+        component['route'].snapshot.url[0].path = 'quiz-testing-page';
+        fixture = TestBed.createComponent(SidebarComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+        expect(component).toBeTruthy();
     });
 
     it('should create', () => {

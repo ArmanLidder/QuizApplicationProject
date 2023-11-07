@@ -29,8 +29,9 @@ export class SidebarComponent {
         this.formBuilder = injector.get<FormBuilder>(FormBuilder);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.gameService = injector.get<GameService>(GameService);
-
         const roomId = this.route.snapshot.paramMap.get('id');
+        const isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
+        if (isTestMode) this.socketService.disconnect();
         if (roomId) {
             this.roomId = roomId;
             this.setup();

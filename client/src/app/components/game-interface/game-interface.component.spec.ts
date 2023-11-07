@@ -91,6 +91,14 @@ describe('GameInterfaceComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
+    it('should create in test mode if active route is quiz-testing-page', () => {
+        component['route'].snapshot.url[0].path = 'quiz-testing-page';
+        fixture = TestBed.createComponent(GameInterfaceComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+        expect(component).toBeTruthy();
+    });
+
     it('should get correct player score', () => {
         component.gameService.isTestMode = false;
         expect(component.score).toEqual(0);
