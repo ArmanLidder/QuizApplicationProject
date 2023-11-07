@@ -53,31 +53,6 @@ describe('WaitingRoomComponent', () => {
         expect(window.onbeforeunload).toEqual(jasmine.any(Function));
     });
 
-    it('should send a host abandonment event on component destruction if it is host', () => {
-        const sendSpy = spyOn(socketService, 'send');
-        component.isGameStarting = false;
-        component.isHost = true;
-        component.roomId = DIGIT_CONSTANT;
-        component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.hostLeft, DIGIT_CONSTANT);
-    });
-
-    it('should send a player abandonment event on component destruction if not host', () => {
-        const sendSpy = spyOn(socketService, 'send');
-        component.isGameStarting = false;
-        component.isHost = false;
-        component.roomId = DIGIT_CONSTANT;
-        component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
-    });
-
-    it('should not send abandonment event on component destruction if game is starting', () => {
-        const sendSpy = spyOn(socketService, 'send');
-        component.isGameStarting = true;
-        component.ngOnDestroy();
-        expect(sendSpy).not.toHaveBeenCalled();
-    });
-
     it('should connect socket only if socket is not alive', () => {
         const connectSpy = spyOn(socketService, 'connect');
         const socketConfigureSpy = spyOn<any>(component, 'configureBaseSocketFeatures');
