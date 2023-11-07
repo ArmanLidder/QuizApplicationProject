@@ -257,10 +257,8 @@ describe('SocketManager service tests', () => {
             roomManager['rooms'].delete(roomId);
         });
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        const disconnectSpy = sinon.spy(service['sio'].sockets, 'disconnectSockets');
         clientSocket.emit(socketEvent.hostLeft, mockRoomId);
         setTimeout(() => {
-            expect(disconnectSpy.called);
             expect(emitSpy.called);
             expect(roomManager['rooms'].has(mockRoomId)).to.equal(false);
             done();

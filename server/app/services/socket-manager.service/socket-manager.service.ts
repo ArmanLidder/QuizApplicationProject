@@ -97,7 +97,6 @@ export class SocketManager {
             socket.on(socketEvent.hostLeft, (roomId: number) => {
                 this.roomManager.clearRoomTimer(roomId);
                 socket.to(String(roomId)).emit(socketEvent.removedFromGame);
-                this.sio.in(String(roomId)).disconnectSockets(true);
                 this.roomManager.deleteRoom(roomId);
             });
 
