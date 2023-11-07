@@ -59,7 +59,7 @@ describe('WaitingRoomComponent', () => {
         component.isHost = true;
         component.roomId = DIGIT_CONSTANT;
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith('host abandonment', DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.hostLeft, DIGIT_CONSTANT);
     });
 
     it('should send a player abandonment event on component destruction if not host', () => {
@@ -68,7 +68,7 @@ describe('WaitingRoomComponent', () => {
         component.isHost = false;
         component.roomId = DIGIT_CONSTANT;
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith('player abandonment', DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
     });
 
     it('should not send abandonment event on component destruction if game is starting', () => {
