@@ -87,6 +87,8 @@ export class GameInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.removedFromGame, () => {
+            // eslint-disable-next-line no-console
+            console.log(`${this.socketService.socket.id} removed from game ${this.gameService.username}`);
             this.router.navigate(['/']);
         });
     }
