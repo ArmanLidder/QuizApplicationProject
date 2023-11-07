@@ -1,6 +1,10 @@
-#grid-container {
+.grid-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+.histogram {
     align-items: center;
 }
 
