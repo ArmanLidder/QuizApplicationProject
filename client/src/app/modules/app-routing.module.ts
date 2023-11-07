@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
-import { authGuardAuthentification } from '@app/guard/auth.guard';
+import { authGuardAuthentification } from '@app/guard/auth.guard/auth.guard';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-creation-page.component';
 import { GameAdministrationPageComponent } from '@app/pages/game-administration-page/game-administration-page.component';

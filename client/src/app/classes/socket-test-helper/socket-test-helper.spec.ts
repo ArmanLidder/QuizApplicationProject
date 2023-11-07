@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SocketTestHelper, CallbackSignature } from '@app/classes/socket-test-helper';
+import { SocketTestHelper, CallbackSignature } from '@app/classes/socket-test-helper/socket-test-helper';
 
 describe('SocketTestHelper', () => {
     let service: SocketTestHelper;

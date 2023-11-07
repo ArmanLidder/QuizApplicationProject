@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Player } from '@app/services/game-real.service';
+import { Player } from '@app/services/game-real.service/game-real.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
 

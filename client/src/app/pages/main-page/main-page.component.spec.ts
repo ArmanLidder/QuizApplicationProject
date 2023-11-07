@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
