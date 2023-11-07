@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
+import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 
 export type Player = [string, number, number];
 
@@ -49,18 +50,15 @@ export class GameRealService implements GameServiceInterface {
     }
 
     configureBaseSockets() {
-        this.socketService.on(
-            'get initial question',
-            (data: { question: QuizQuestion; username: string; index: number; numberOfQuestions: number }) => {
-                this.question = data.question;
-                this.username = data.username;
-                if (data.numberOfQuestions === 1) {
-                    this.isLast = true;
-                }
-            },
-        );
+        this.socketService.on('get initial question', (data: InitialQuestionData) => {
+            this.question = data.question;
+            this.username = data.username;
+            if (data.numberOfQuestions === 1) {
+                this.isLast = true;
+            }
+        });
 
-        this.socketService.on('get next question', (data: { question: QuizQuestion; index: number; isLast: boolean }) => {
+        this.socketService.on('get next question', (data: NextQuestionData) => {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;
