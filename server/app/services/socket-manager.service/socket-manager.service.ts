@@ -22,7 +22,6 @@ export class SocketManager {
 
     handleSockets(): void {
         this.sio.on(socketEvent.connection, (socket) => {
-            // eslint-disable-next-line no-console
             socket.on(socketEvent.createRoom, (quizID: string, callback) => {
                 const roomCode = this.roomManager.addRoom(quizID);
                 this.roomManager.addUser(roomCode, 'Organisateur', socket.id);
@@ -91,7 +90,6 @@ export class SocketManager {
                     }
                     this.sio.to(String(roomId)).emit(socketEvent.removedPlayer, userInfo.username);
                 }
-                // socket.disconnect(true);
             });
 
             socket.on(socketEvent.hostLeft, (roomId: number) => {

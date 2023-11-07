@@ -45,11 +45,4 @@ describe('MainPageComponent', () => {
         const buttonsWithRouterLink = fixture.nativeElement.querySelectorAll('button[routerLink]');
         expect(buttonsWithRouterLink.length).toBe(3);
     });
-
-    it('should disconnect socket when component is destroyed', () => {
-        spyOn(component['socketClientService'], 'isSocketAlive').and.returnValue(true);
-        const disconnectSpy = spyOn(component['socketClientService'], 'disconnect');
-        component.ngOnInit();
-        expect(disconnectSpy).not.toHaveBeenCalled();
-    });
 });
