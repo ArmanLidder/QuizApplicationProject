@@ -50,6 +50,6 @@ describe('MainPageComponent', () => {
         spyOn(component['socketClientService'], 'isSocketAlive').and.returnValue(true);
         const disconnectSpy = spyOn(component['socketClientService'], 'disconnect');
         component.ngOnInit();
-        expect(disconnectSpy).toHaveBeenCalled();
+        expect(disconnectSpy).not.toHaveBeenCalled();
     });
 });

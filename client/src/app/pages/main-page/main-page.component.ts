@@ -17,7 +17,7 @@ export class MainPageComponent implements OnInit {
         if (this.socketClientService.isSocketAlive()) {
             // eslint-disable-next-line no-console
             console.log(`socket ${this.socketClientService.socket.id} calling disconnection`);
-            this.socketClientService.disconnect();
+            // this.socketClientService.disconnect();
         }
     }
 }
