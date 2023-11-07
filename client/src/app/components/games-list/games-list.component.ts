@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
-import { QuizService } from '@app/services/quiz.service';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { Router } from '@angular/router';
-const CREATED = 201;
+import { CREATED } from '@app/components/games-list/games-list.component.const';
 
 @Component({
     selector: 'app-games-list',

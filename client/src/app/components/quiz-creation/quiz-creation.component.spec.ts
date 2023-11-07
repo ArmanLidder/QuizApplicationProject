@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuizCreationComponent } from './quiz-creation.component';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { QuestionListComponent } from '@app/components/question-list/question-list.component';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -12,11 +12,11 @@ import { Quiz } from '@common/interfaces/quiz.interface';
 import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
 import { QuizExistsDialogComponent } from '@app/components/quiz-exists-dialog/quiz-exists-dialog.component';
 import { PageMode } from 'src/enums/page-mode.enum';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 describe('QuizCreationComponent', () => {
     let component: QuizCreationComponent;
@@ -218,8 +218,6 @@ describe('QuizCreationComponent', () => {
         const title = component.quizForm.value['title'];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn(component, 'addOrUpdateQuiz' as any);
-        // const extractQuizFromFormSpy = spyOn(component.quizFormService, 'extractQuizFromForm');
-
         quizServiceMock.checkTitleUniqueness.and.returnValue(of(new HttpResponse({ body: { isUnique: true } })));
         component.onSubmit();
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledWith(title);

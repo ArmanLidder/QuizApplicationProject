@@ -1,12 +1,19 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 80%; /* Ensure the component takes up the full height */
+  height: 80%;
   width: 80%;
 }
 
 .chart-container {
-  flex-grow: 1; /* Allow the chart container to grow and take up remaining space */
+  flex-grow: 1;
+}
+
+.graph {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .custom-legend {

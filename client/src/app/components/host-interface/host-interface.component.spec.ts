@@ -1,14 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { HostInterfaceComponent } from './host-interface.component';
-import { GameService } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service/game.service';
 import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { HttpClientModule } from '@angular/common/http';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { By } from '@angular/platform-browser';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -42,7 +44,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent],
+            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent],
             providers: [
                 SocketClientService,
                 GameService,
@@ -58,12 +60,24 @@ describe('HostInterfaceComponent', () => {
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
+        const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
+
         component = fixture.componentInstance;
+        spyOn(childComponent, 'getPlayersList');
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should return false when a player is not in the list', () => {
+        expect(component.playerHasLeft('Alice')).toBeFalsy();
+    });
+
+    it('should return false when a player is in the list', () => {
+        component.leftPlayers = [['player1', 0, 0]];
+        expect(component.playerHasLeft('player1')).toBeTruthy();
     });
 
     it('should configure sockets if socket is alive', () => {
@@ -88,6 +102,8 @@ describe('HostInterfaceComponent', () => {
             [fourthEvent, fourthAction],
             [fifthEvent, fifthAction],
             [sixthEvent, sixthAction],
+            [seventhEvent, seventhAction],
+            [eighthEvent, eightAction],
         ] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual('time transition');
         expect(secondEvent).toEqual('end question');
@@ -95,11 +111,14 @@ describe('HostInterfaceComponent', () => {
         expect(fourthEvent).toEqual('refresh choices stats');
         expect(fifthEvent).toEqual('get initial question');
         expect(sixthEvent).toEqual('get next question');
+        expect(seventhEvent).toEqual('removed player');
+        expect(eighthEvent).toEqual('end question from removal');
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
             expect(component.gameService.timer).toEqual(TIMER_VALUE);
         }
+
         if (typeof secondAction === 'function') {
             secondAction(0);
             expect(component.gameService.validatedStatus).toEqual(true);
@@ -122,6 +141,20 @@ describe('HostInterfaceComponent', () => {
         if (typeof sixthAction === 'function') {
             sixthAction({ question: {}, index: 0, isLast: false });
             expect(component['initGraph']).toHaveBeenCalled();
+        }
+        if (typeof seventhAction === 'function') {
+            component.playerListComponent.players = [
+                ['player1', 1, 0],
+                ['player2', 1, 0],
+                ['player3', 1, 0],
+            ];
+            seventhAction('player2');
+            expect(component.leftPlayers).toEqual([['player2', 1, 0]]);
+        }
+        if (typeof eightAction === 'function') {
+            eightAction(TIMER_VALUE);
+            expect(component.gameService.gameRealService.validated).toBeTruthy();
+            expect(component.gameService.gameRealService.locked).toBeTruthy();
         }
     });
 

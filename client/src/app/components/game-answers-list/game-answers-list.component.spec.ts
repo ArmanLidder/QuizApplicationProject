@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameAnswersListComponent } from './game-answers-list.component';
 import { HttpClientModule } from '@angular/common/http';
 /* eslint-disable  @typescript-eslint/no-explicit-any */

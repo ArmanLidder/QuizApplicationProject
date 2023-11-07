@@ -1,6 +1,6 @@
 import { RoomCodePromptComponent } from './room-code-prompt.component';
-import { SocketClientService } from '@app/services/socket-client.service';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 // Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix

@@ -2,8 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QuestionService } from '@app/services/question-service/question.service';
 import { ChoiceService } from '@app/services/choice-service/choice.service';
-
-const POPUP_TIMEOUT = 3000;
+import { POPUP_TIMEOUT } from '@app/components/question-list/question-list.component.const';
 
 @Component({
     selector: 'app-question-list',

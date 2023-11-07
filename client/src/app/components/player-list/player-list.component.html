@@ -1,0 +1,35 @@
+<h2> Résultats </h2>
+<div class="players-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Top</th>
+            <th>Pseudo</th>
+            <th>Score</th>
+            <th>Bonuses</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let player of players; let i = index">
+            <td>
+                #{{i + 1}}
+            </td>
+            <td>
+                {{player[0]}}
+            </td>
+            <td>
+                {{player[1]}}
+            </td>
+            <td>
+                {{player[2]}}
+            </td>
+        </tr>
+        <tr *ngFor='let player of leftPlayers; let i = index'>
+            <td> abandon </td>
+            <td class='strikethrough'>{{ player[0] }} </td>
+            <td> {{player[1]}} </td>
+            <td> {{player[2]}} </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

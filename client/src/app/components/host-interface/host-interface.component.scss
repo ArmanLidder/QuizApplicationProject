@@ -1,6 +1,10 @@
-#grid-container {
+.grid-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+.histogram {
     align-items: center;
 }
 
@@ -115,6 +119,10 @@ button {
     font-size: 20px;
     cursor: pointer;
 }
+
+.strikethrough {
+    text-decoration: line-through;
+  }
 
 .players-list {
     display: flex;

@@ -2,15 +2,14 @@ import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Quiz } from '@common/interfaces/quiz.interface';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuizExistsDialogComponent } from '@app/components/quiz-exists-dialog/quiz-exists-dialog.component';
 import { PageMode } from 'src/enums/page-mode.enum';
-
-const POPUP_TIMEOUT = 3000;
+import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 @Component({
     selector: 'app-quiz-creation',

@@ -1,9 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { SocketClientService } from '@app/services/socket-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DELETE_NUMBER, START_TRANSITION_DELAY } from '@app/components/waiting-room/waiting-room.component.const';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 
-const DELETE_NUMBER = 1;
-const START_TRANSITION_DELAY = 5;
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
@@ -38,7 +37,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             const messageType = this.isHost ? 'host abandonment' : 'player abandonment';
             this.socketService.send(messageType, this.roomId);
         }
-        this.socketService.socket.offAny();
+        this.socketService.socket.removeAllListeners();
     }
 
     connect() {
@@ -120,6 +119,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             if (this.time === 0) {
                 this.router.navigate(['game', this.roomId]);
                 this.isGameStarting = true;
+            }
+        });
+
+        this.socketService.on('final time transition', () => {
+            if (this.isTransition) {
+                this.router.navigate(['/']);
             }
         });
     }

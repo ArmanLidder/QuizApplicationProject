@@ -28,10 +28,6 @@ export class OrganizerHistogramComponent implements OnChanges {
             changingResponsesData.push(this.changingResponses.get(key) ?? 0);
         }
 
-        // const finalResponseColors = labels.map(
-        //     (label) => this.valueOfResponses.get(label) ? 'green' : 'red',
-        // );
-
         const changingResponseColors = labels.map((label) => (this.valueOfResponses.get(label) ? 'lightgreen' : 'red'));
 
         this.barChartData = {

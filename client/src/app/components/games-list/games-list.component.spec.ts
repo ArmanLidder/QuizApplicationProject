@@ -2,7 +2,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { GamesListComponent } from './games-list.component';
-import { QuizService } from '@app/services/quiz.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { getCurrentDateService } from 'src/utils/current-date-format';
