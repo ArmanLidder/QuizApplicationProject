@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 describe('QuizFormService', () => {
     let service: QuizFormService;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 const NON_EXISTANT_INDEX = -1;
 

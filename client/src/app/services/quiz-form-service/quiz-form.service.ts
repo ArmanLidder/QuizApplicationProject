@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { QuizValidationService } from '@app/services/quiz-validation.service';
 import { FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 const MAX_POINTS_PER_QUESTION = 100;
 const MIN_POINTS_PER_QUESTION = 10;
