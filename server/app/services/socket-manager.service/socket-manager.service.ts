@@ -6,7 +6,7 @@ import * as io from 'socket.io';
 import { ONE_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
 import { PlayerAnswerData, PlayerMessage, PlayerSelection, RemainingTime, PlayerUsername } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { banMessage, errorDictionary, nameAlreadyUsed } from '@common/browser-message/error-message/error-message';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 export class SocketManager {
     private sio: io.Server;
@@ -98,7 +98,7 @@ export class SocketManager {
                 this.roomManager.deleteRoom(roomId);
             });
 
-            socket.on(socketEvent.getMessage, (data: number, callback) => {
+            socket.on(socketEvent.getMessages, (data: number, callback) => {
                 const messages = this.roomManager.getRoomById(data)?.messages;
                 callback(messages);
             });

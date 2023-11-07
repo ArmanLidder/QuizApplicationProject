@@ -183,7 +183,7 @@ describe('GamesListComponent Admin view', () => {
             '\n1- Error 1\n' +
             '\n2- Error 2\n' +
             '\n3- Error 3\n' +
-            '\n\n Veuillez corriger cela avant de réessayer.';
+            '\n\n Veuillez corriger cela avant de réessayer. ';
         const errorMessage = component.setValidatorError(errors);
         expect(errorMessage).toEqual(expectedErrorMessage);
     });
@@ -192,7 +192,7 @@ describe('GamesListComponent Admin view', () => {
         const expectedErrorMessage =
             "Le fichier que vous tenter d'importer contient le problème suivant :\n\n " +
             '\n1- Error 1\n' +
-            '\n\n Veuillez corriger cela avant de réessayer.';
+            '\n\n Veuillez corriger cela avant de réessayer. ';
         const errorMessage = component.setValidatorError(errors);
         expect(errorMessage).toEqual(expectedErrorMessage);
     });

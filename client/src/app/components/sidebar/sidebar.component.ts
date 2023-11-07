@@ -68,7 +68,7 @@ export class SidebarComponent {
     }
 
     private getRoomMessages() {
-        this.socketService.send(socketEvent.getMessage, Number(this.roomId), (messages: Message[]) => {
+        this.socketService.send(socketEvent.getMessages, Number(this.roomId), (messages: Message[]) => {
             this.messages = messages ?? [];
         });
     }

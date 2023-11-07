@@ -8,6 +8,7 @@ import { Message } from '@common/interfaces/message.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import SpyObj = jasmine.SpyObj;
 import { GameService } from '@app/services/game.service/game.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 const MESSAGE_MAX_CHARACTERS = 200;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -104,7 +105,7 @@ describe('SidebarComponent', () => {
             content: newValidMessageContent,
             time: getCurrentDateService(),
         };
-        expect(socketService.send).toHaveBeenCalledWith('new message', {
+        expect(socketService.send).toHaveBeenCalledWith(socketEvent.newMessage, {
             roomId: Number(component.roomId),
             message: expectedMessage,
         });
@@ -139,7 +140,7 @@ describe('SidebarComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component['getUsername']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('get username');
+        expect(event).toEqual(socketEvent.getUsername);
         expect(roomId).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback(username);
@@ -155,7 +156,7 @@ describe('SidebarComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component['getRoomMessages']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('get messages');
+        expect(event).toEqual(socketEvent.getMessages);
         expect(roomId).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback(roomMessages);
@@ -174,7 +175,7 @@ describe('SidebarComponent', () => {
         component['messages'] = [{ sender: 'user 1', content: 'message content 1', time: 'time 1' }];
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual('message received');
+        expect(firstEvent).toEqual(socketEvent.receivedMessage);
 
         if (typeof firstAction === 'function') {
             firstAction(newMessage);

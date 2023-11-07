@@ -2,6 +2,7 @@ import { RoomCodePromptComponent } from './room-code-prompt.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 // Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix
 // Because some spies are on private method
@@ -197,7 +198,7 @@ describe('RoomCodePromptComponent', () => {
         component['sendJoinRoomRequest']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('player join');
+        expect(event).toEqual(socketEvent.joinGame);
         expect(data).toEqual({ roomId: Number(component.roomId), username: component.username });
         if (typeof callback === 'function') {
             callback(true);
@@ -219,7 +220,7 @@ describe('RoomCodePromptComponent', () => {
         component['sendJoinRoomRequest']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('player join');
+        expect(event).toEqual(socketEvent.joinGame);
         expect(data).toEqual({ roomId: Number(component.roomId), username: component.username });
         if (typeof callback === 'function') {
             callback(false);
@@ -240,7 +241,7 @@ describe('RoomCodePromptComponent', () => {
         component.isRoomIdValid = true;
         await component['sendUsername']();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('validate username');
+        expect(event).toEqual(socketEvent.validateUsername);
         expect(data).toEqual({ roomId: Number(component.roomId), username: component.username });
         if (typeof callback === 'function') {
             callback({ isValid: false, error: 'server error' });
@@ -262,7 +263,7 @@ describe('RoomCodePromptComponent', () => {
         component.isRoomIdValid = true;
         await component['sendUsername']();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('validate username');
+        expect(event).toEqual(socketEvent.validateUsername);
         expect(data).toEqual({ roomId: Number(component.roomId), username: component.username });
         if (typeof callback === 'function') {
             callback({ isValid: true, error: 'server error' });
@@ -280,7 +281,7 @@ describe('RoomCodePromptComponent', () => {
         component.username = 'test';
         component['sendRoomId']();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('validate roomID');
+        expect(event).toEqual(socketEvent.validateRoomId);
         expect(data).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback({ isRoom: true, isLocked: true });
@@ -300,7 +301,7 @@ describe('RoomCodePromptComponent', () => {
         component.isRoomIdValid = false;
         component['sendRoomId']();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('validate roomID');
+        expect(event).toEqual(socketEvent.validateRoomId);
         expect(data).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback({ isRoom: true, isLocked: false });
@@ -319,7 +320,7 @@ describe('RoomCodePromptComponent', () => {
         component.isRoomIdValid = false;
         component['sendRoomId']();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual('validate roomID');
+        expect(event).toEqual(socketEvent.validateRoomId);
         expect(data).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback({ isRoom: false, isLocked: false });

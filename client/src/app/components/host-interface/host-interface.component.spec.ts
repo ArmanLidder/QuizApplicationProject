@@ -10,6 +10,7 @@ import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { HttpClientModule } from '@angular/common/http';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { By } from '@angular/platform-browser';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -104,14 +105,14 @@ describe('HostInterfaceComponent', () => {
             [seventhEvent, seventhAction],
             [eighthEvent, eightAction],
         ] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual('time transition');
-        expect(secondEvent).toEqual('end question');
-        expect(thirdEvent).toEqual('final time transition');
-        expect(fourthEvent).toEqual('refresh choices stats');
-        expect(fifthEvent).toEqual('get initial question');
-        expect(sixthEvent).toEqual('get next question');
-        expect(seventhEvent).toEqual('removed player');
-        expect(eighthEvent).toEqual('end question from removal');
+        expect(firstEvent).toEqual(socketEvent.timeTransition);
+        expect(secondEvent).toEqual(socketEvent.endQuestion);
+        expect(thirdEvent).toEqual(socketEvent.finalTimeTransition);
+        expect(fourthEvent).toEqual(socketEvent.refreshChoicesStats);
+        expect(fifthEvent).toEqual(socketEvent.getInitialQuestion);
+        expect(sixthEvent).toEqual(socketEvent.getNextQuestion);
+        expect(seventhEvent).toEqual(socketEvent.removedPlayer);
+        expect(eighthEvent).toEqual(socketEvent.endQuestionAfterRemoval);
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
@@ -163,16 +164,16 @@ describe('HostInterfaceComponent', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual('time transition');
+        expect(firstEvent).toEqual(socketEvent.timeTransition);
 
         if (typeof firstAction === 'function') {
             firstAction(0);
-            expect(sendSpy).toHaveBeenCalledWith('next question', component.gameService.gameRealService.roomId);
+            expect(sendSpy).toHaveBeenCalledWith(socketEvent.nextQuestion, component.gameService.gameRealService.roomId);
             expect(component.gameService.timer).toEqual(0);
             expect(component.gameService.questionNumber).toEqual(1);
             expect(component.gameService.validatedStatus).toEqual(true);
             expect(component.gameService.lockedStatus).toEqual(true);
-            expect(component.timerText).toEqual('Temps restant');
+            expect(component.timerText).toEqual('Temps restant ');
         }
     });
 
@@ -181,9 +182,9 @@ describe('HostInterfaceComponent', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual('time transition');
-        expect(secondEvent).toEqual('end question');
-        expect(thirdEvent).toEqual('final time transition');
+        expect(firstEvent).toEqual(socketEvent.timeTransition);
+        expect(secondEvent).toEqual(socketEvent.endQuestion);
+        expect(thirdEvent).toEqual(socketEvent.finalTimeTransition);
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
@@ -208,14 +209,14 @@ describe('HostInterfaceComponent', () => {
         component['nextQuestion']();
         expect(component.gameService.validatedStatus).toEqual(false);
         expect(component.gameService.lockedStatus).toEqual(false);
-        expect(sendSpy).toHaveBeenCalledWith('start transition', component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.startTransition, component.gameService.gameRealService.roomId);
     });
 
     it('should handle properly the last question', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['handleLastQuestion']();
-        expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.showResult, component.gameService.gameRealService.roomId);
     });
 
     it('should update host command properly', () => {
@@ -232,10 +233,10 @@ describe('HostInterfaceComponent', () => {
         component.handleHostCommand();
         expect(component.gameService.validatedStatus).toEqual(false);
         expect(component.gameService.lockedStatus).toEqual(false);
-        expect(sendSpy).toHaveBeenCalledWith('start transition', component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.startTransition, component.gameService.gameRealService.roomId);
         component['gameService'].gameRealService.isLast = true;
         component.handleHostCommand();
-        expect(sendSpy).toHaveBeenCalledWith('show result', component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.showResult, component.gameService.gameRealService.roomId);
     });
 
     it('should return the right condition of isDisabled', () => {

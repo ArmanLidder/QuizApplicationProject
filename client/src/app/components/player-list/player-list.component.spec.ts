@@ -4,6 +4,7 @@ import { Player } from '@app/services/game-real.service/game-real.service';
 import { Score } from '@common/interfaces/score.interface';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 describe('PlayerListComponent', () => {
     let component: PlayerListComponent;
@@ -40,12 +41,12 @@ describe('PlayerListComponent', () => {
         sendSpy = spyOn(socketService, 'send').and.callThrough();
         component.getPlayersList();
         const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
-        expect(sendGatherPlayers).toEqual('gather players username');
+        expect(sendGatherPlayers).toEqual(socketEvent.gatherPlayersUsername);
         expect(sendGatherObject).toEqual(component.roomId);
         expect(sendGatherCallback).toBeDefined();
         sendGatherCallback(mockPlayers);
         const [sendGetScore, sendGetScoreObject, sendGetScoreCallback] = sendSpy.calls.allArgs()[1];
-        expect(sendGetScore).toEqual('get score');
+        expect(sendGetScore).toEqual(socketEvent.getScore);
         expect(sendGetScoreObject).toBeDefined();
         expect(sendGetScoreCallback).toBeDefined();
         sendGetScoreCallback(mockScore);

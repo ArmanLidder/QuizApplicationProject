@@ -16,7 +16,7 @@ export namespace socketEvent {
     export const joinGame = 'playerJoin';
     export const validateUsername = 'validateUsername';
     export const validateRoomId = 'validateRoomId';
-    export const getMessage = 'getMessage';
+    export const getMessages = 'getMessages';
     export const getUsername = 'getUsername';
     export const receivedMessage = 'messageReceived';
     export const hostLeft = 'hostAbandonnement';
