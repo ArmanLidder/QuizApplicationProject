@@ -9,6 +9,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { GamePageComponent } from './game-page.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
@@ -60,7 +61,7 @@ describe('GamePageComponent', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith('host abandonment', DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.hostLeft, DIGIT_CONSTANT);
     });
 
     it('should send player abandonment event on component destruction if game is starting', () => {
@@ -69,6 +70,6 @@ describe('GamePageComponent', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith('player abandonment', DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
     });
 });

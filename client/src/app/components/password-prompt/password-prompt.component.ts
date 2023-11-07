@@ -1,6 +1,7 @@
 import { Component, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service/admin-authenticator.service';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 @Component({
     selector: 'app-password-prompt',
@@ -10,7 +11,7 @@ import { AdminAuthenticatorService } from '@app/services/admin-authenticator.ser
 export class PasswordPromptComponent {
     @ViewChild('enterButton', { static: false }) enterButton: ElementRef;
     loginStatus: string | null = null;
-    errorMessage: string = 'Mot de passe incorrect. Veuillez réessayer!';
+    errorMessage: string = errorDictionary.wrongPassword;
     inputBorderColor: string = '';
     textColor: string = '';
 

@@ -51,7 +51,6 @@ export class RoomManagingService {
             bannedNames: [],
             messages: [],
             timer: null,
-            // timerQuestion: null,
         };
         this.rooms.set(roomID, roomData);
         return roomID;

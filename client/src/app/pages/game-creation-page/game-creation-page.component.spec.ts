@@ -5,6 +5,8 @@ import { GamesListComponent } from '@app/components/games-list/games-list.compon
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
 
 describe('GameCreationPageComponent', () => {
     let component: GameCreationPageComponent;
@@ -12,8 +14,9 @@ describe('GameCreationPageComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [HttpClientModule, FormsModule, RouterTestingModule],
+            imports: [HttpClientModule, FormsModule, RouterTestingModule, AppMaterialModule],
             declarations: [GameCreationPageComponent, SidebarComponent, GameCreationPageComponent, GamesListComponent],
+            providers: [MatDialog],
         }).compileComponents();
     });
 

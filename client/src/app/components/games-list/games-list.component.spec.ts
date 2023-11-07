@@ -9,6 +9,11 @@ import { getCurrentDateService } from 'src/utils/current-date-format';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
+import { AppMaterialModule } from '@app/modules/material.module';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
+
 describe('GamesListComponent Admin view', () => {
     let quizServiceSpy: SpyObj<QuizService>;
     let component: GamesListComponent;
@@ -80,8 +85,8 @@ describe('GamesListComponent Admin view', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GamesListComponent],
-            imports: [HttpClientModule, FormsModule],
-            providers: [{ provide: QuizService, useValue: quizServiceSpy }],
+            imports: [HttpClientModule, FormsModule, AppMaterialModule],
+            providers: [MatDialog, { provide: QuizService, useValue: quizServiceSpy }],
         }).compileComponents();
     }));
 
@@ -184,7 +189,7 @@ describe('GamesListComponent Admin view', () => {
             '\n1- Error 1\n' +
             '\n2- Error 2\n' +
             '\n3- Error 3\n' +
-            '\n\n Veuillez corriger cela avant de réessayer.';
+            '\n\n Veuillez corriger cela avant de réessayer. ';
         const errorMessage = component.setValidatorError(errors);
         expect(errorMessage).toEqual(expectedErrorMessage);
     });
@@ -193,7 +198,7 @@ describe('GamesListComponent Admin view', () => {
         const expectedErrorMessage =
             "Le fichier que vous tenter d'importer contient le problème suivant :\n\n " +
             '\n1- Error 1\n' +
-            '\n\n Veuillez corriger cela avant de réessayer.';
+            '\n\n Veuillez corriger cela avant de réessayer. ';
         const errorMessage = component.setValidatorError(errors);
         expect(errorMessage).toEqual(expectedErrorMessage);
     });
@@ -352,7 +357,8 @@ describe('GamesListComponent Admin view', () => {
     }));
     it('should handle deleted and invisible quizzes', fakeAsync(() => {
         component.selectedQuiz = { id: '1', visible: true } as Quiz;
-        const alertSpy = spyOn(window, 'alert');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const alertSpy = spyOn(component, 'showError' as any);
         quizServiceSpy.basicGetById.and.returnValue(of(null as unknown as Quiz));
         component.testGame();
         tick();
@@ -360,7 +366,8 @@ describe('GamesListComponent Admin view', () => {
     }));
     it('should handle invisible quizzes', fakeAsync(() => {
         component.selectedQuiz = { id: '1', visible: false } as Quiz;
-        const alertSpy = spyOn(window, 'alert');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const alertSpy = spyOn(component, 'showError' as any);
         quizServiceSpy.basicGetById.and.returnValue(of(component.selectedQuiz));
         component.testGame();
         tick();
@@ -368,10 +375,21 @@ describe('GamesListComponent Admin view', () => {
     }));
     it('should not handle when no quiz is selected', fakeAsync(() => {
         component.selectedQuiz = null;
-        const alertSpy = spyOn(window, 'alert');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const alertSpy = spyOn(component, 'showError' as any);
         quizServiceSpy.basicGetById.and.returnValue(of());
         component.handleQuizAction('');
         tick();
         expect(alertSpy).not.toHaveBeenCalled();
     }));
+    it('should call dialog open function when calling openQuizExistsDialog', () => {
+        const dialogOpenSpy = spyOn(component['dialog'], 'open');
+        component['showError'](errorDictionary.issue);
+        expect(dialogOpenSpy).toHaveBeenCalledWith(AlertDialogComponent, {
+            data: {
+                title: "Erreur lors de l'importation",
+                content: errorDictionary.issue,
+            },
+        });
+    });
 });

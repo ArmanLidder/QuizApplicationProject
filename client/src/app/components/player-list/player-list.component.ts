@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Player } from '@app/services/game-real.service/game-real.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-player-list',
@@ -16,7 +17,7 @@ export class PlayerListComponent {
     constructor(public socketService: SocketClientService) {}
 
     getPlayersList() {
-        this.socketService.send('gather players username', this.roomId, (players: string[]) => {
+        this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
             this.players = [];
             players.forEach((username) => {
                 this.getPlayerScoreFromServer(username);
@@ -25,7 +26,7 @@ export class PlayerListComponent {
     }
 
     private getPlayerScoreFromServer(username: string) {
-        this.socketService.send('get score', { roomId: this.roomId, username }, (score: Score) => {
+        this.socketService.send(socketEvent.getScore, { roomId: this.roomId, username }, (score: Score) => {
             this.sortPlayersByScore(username, score);
         });
     }

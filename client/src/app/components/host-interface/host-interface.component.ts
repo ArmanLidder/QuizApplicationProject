@@ -6,6 +6,8 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 type PlayerArray = [string, number, number];
 
@@ -16,7 +18,7 @@ type PlayerArray = [string, number, number];
 })
 export class HostInterfaceComponent {
     @ViewChild('playerListChild') playerListComponent: PlayerListComponent;
-    timerText: string = 'Temps restant';
+    timerText: string = timerMessage.timeLeft;
     isGameOver: boolean = false;
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
@@ -55,49 +57,49 @@ export class HostInterfaceComponent {
     private nextQuestion() {
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;
-        this.socketService.send('start transition', this.gameService.gameRealService.roomId);
+        this.socketService.send(socketEvent.startTransition, this.gameService.gameRealService.roomId);
     }
 
     private handleLastQuestion() {
-        this.socketService.send('show result', this.gameService.gameRealService.roomId);
+        this.socketService.send(socketEvent.showResult, this.gameService.gameRealService.roomId);
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on('time transition', (timeValue: number) => {
-            this.timerText = 'Prochaine question dans ';
+        this.socketService.on(socketEvent.timeTransition, (timeValue: number) => {
+            this.timerText = timerMessage.next;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.resetInterface();
-                this.socketService.send('next question', this.gameService.gameRealService.roomId);
-                this.timerText = 'Temps restant';
+                this.socketService.send(socketEvent.nextQuestion, this.gameService.gameRealService.roomId);
+                this.timerText = timerMessage.timeLeft;
             }
         });
 
-        this.socketService.on('end question', () => {
+        this.socketService.on(socketEvent.endQuestion, () => {
             this.resetInterface();
             this.playerListComponent.getPlayersList();
         });
 
-        this.socketService.on('final time transition', (timeValue: number) => {
-            this.timerText = 'Résultat disponible dans ';
+        this.socketService.on(socketEvent.finalTimeTransition, (timeValue: number) => {
+            this.timerText = timerMessage.resultAvailableIn;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) this.isGameOver = true;
         });
 
-        this.socketService.on('refresh choices stats', (choicesStatsValue: number[]) => {
+        this.socketService.on(socketEvent.refreshChoicesStats, (choicesStatsValue: number[]) => {
             this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
         });
 
-        this.socketService.on('get initial question', (data: InitialQuestionData) => {
+        this.socketService.on(socketEvent.getInitialQuestion, (data: InitialQuestionData) => {
             this.playerListComponent.getPlayersList();
             this.initGraph(data.question);
         });
 
-        this.socketService.on('get next question', (data: NextQuestionData) => {
+        this.socketService.on(socketEvent.getNextQuestion, (data: NextQuestionData) => {
             this.initGraph(data.question);
         });
 
-        this.socketService.on('removed player', (username) => {
+        this.socketService.on(socketEvent.removedPlayer, (username) => {
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
@@ -105,7 +107,7 @@ export class HostInterfaceComponent {
             }
         });
 
-        this.socketService.on('end question from removal', () => {
+        this.socketService.on(socketEvent.endQuestionAfterRemoval, () => {
             this.resetInterface();
         });
     }

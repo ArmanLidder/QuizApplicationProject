@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { QuestionType } from '@common/enums/question-type.enum';
 
 const TIMER_VALUE = 20;
@@ -41,9 +42,9 @@ describe('GameRealService', () => {
         const handleTimeSpy = spyOn<any>(service, 'handleTimeEvent');
         service['configureBaseSockets']();
         const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual('get initial question');
-        expect(secondEvent).toEqual('get next question');
-        expect(thirdEvent).toEqual('time');
+        expect(firstEvent).toEqual(socketEvent.getInitialQuestion);
+        expect(secondEvent).toEqual(socketEvent.getNextQuestion);
+        expect(thirdEvent).toEqual(socketEvent.time);
 
         if (typeof firstAction === 'function') {
             firstAction({ question: questionMock, username: 'Arman', index: 1, numberOfQuestions: 1 });
@@ -102,7 +103,7 @@ describe('GameRealService', () => {
         service.roomId = 1;
         service.init();
         expect(configureBaseSocketsSpy).toHaveBeenCalled();
-        expect(sendSpy).toHaveBeenCalledWith('get question', 1);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.getQuestion, 1);
     });
 
     it('should send answer', () => {
@@ -121,7 +122,7 @@ describe('GameRealService', () => {
             username: 'test',
         };
         service.sendAnswer();
-        expect(sendSpy).toHaveBeenCalledWith('submit answer', expectedObject);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.submitAnswer, expectedObject);
         expect(service.answers.size).toEqual(0);
     });
 
@@ -130,6 +131,6 @@ describe('GameRealService', () => {
         const isSelected = true;
         const sendSpy = spyOn(service.socketService, 'send');
         service['sendSelection'](0, isSelected);
-        expect(sendSpy).toHaveBeenCalledWith('update selection', { roomId: service.roomId, isSelected, index });
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.updateSelection, { roomId: service.roomId, isSelected, index });
     });
 });

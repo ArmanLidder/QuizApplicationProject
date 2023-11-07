@@ -14,9 +14,10 @@ import SpyObj = jasmine.SpyObj;
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { MatDialog } from '@angular/material/dialog';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
-import { QuizExistsDialogComponent } from '@app/components/quiz-exists-dialog/quiz-exists-dialog.component';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { PageMode } from 'src/enums/page-mode.enum';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 describe('QuizCreationComponent', () => {
     let component: QuizCreationComponent;
@@ -253,10 +254,10 @@ describe('QuizCreationComponent', () => {
     it('should call dialog open function when calling openQuizExistsDialog', () => {
         const dialogOpenSpy = spyOn(component['dialog'], 'open');
         component['openQuizExistsDialog']();
-        expect(dialogOpenSpy).toHaveBeenCalledWith(QuizExistsDialogComponent, {
+        expect(dialogOpenSpy).toHaveBeenCalledWith(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
-                content: 'Un quiz ayant le même titre existe déjà.',
+                content: errorDictionary.quizAlreadyExist,
             },
         });
     });

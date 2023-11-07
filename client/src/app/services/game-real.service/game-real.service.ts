@@ -3,6 +3,7 @@ import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 export type Player = [string, number, number];
 
@@ -29,7 +30,7 @@ export class GameRealService implements GameServiceInterface {
 
     init() {
         this.configureBaseSockets();
-        this.socketService.send('get question', this.roomId);
+        this.socketService.send(socketEvent.getQuestion, this.roomId);
     }
 
     destroy() {
@@ -39,7 +40,7 @@ export class GameRealService implements GameServiceInterface {
 
     sendAnswer() {
         const answers = Array.from(this.answers.values());
-        this.socketService.send('submit answer', {
+        this.socketService.send(socketEvent.submitAnswer, {
             roomId: this.roomId,
             answers,
             timer: this.timer,
@@ -50,7 +51,7 @@ export class GameRealService implements GameServiceInterface {
     }
 
     configureBaseSockets() {
-        this.socketService.on('get initial question', (data: InitialQuestionData) => {
+        this.socketService.on(socketEvent.getInitialQuestion, (data: InitialQuestionData) => {
             this.question = data.question;
             this.username = data.username;
             if (data.numberOfQuestions === 1) {
@@ -58,7 +59,7 @@ export class GameRealService implements GameServiceInterface {
             }
         });
 
-        this.socketService.on('get next question', (data: NextQuestionData) => {
+        this.socketService.on(socketEvent.getNextQuestion, (data: NextQuestionData) => {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;
@@ -66,13 +67,13 @@ export class GameRealService implements GameServiceInterface {
             this.locked = false;
         });
 
-        this.socketService.on('time', (timeValue: number) => {
+        this.socketService.on(socketEvent.time, (timeValue: number) => {
             this.handleTimeEvent(timeValue);
         });
     }
 
     sendSelection(index: number, isSelected: boolean) {
-        if (this.socketService.isSocketAlive()) this.socketService.send('update selection', { roomId: this.roomId, isSelected, index });
+        if (this.socketService.isSocketAlive()) this.socketService.send(socketEvent.updateSelection, { roomId: this.roomId, isSelected, index });
     }
 
     private handleTimeEvent(timeValue: number) {
