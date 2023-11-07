@@ -7,6 +7,8 @@ import { getCurrentDateService } from 'src/utils/current-date-format';
 import { Router } from '@angular/router';
 import { CREATED } from '@app/components/games-list/games-list.component.const';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-games-list',
@@ -32,6 +34,7 @@ export class GamesListComponent implements OnInit {
     constructor(
         public quizServices: QuizService,
         public quizValidator: QuizValidationService,
+        private dialog: MatDialog,
     ) {}
 
     ngOnInit() {
@@ -176,11 +179,11 @@ export class GamesListComponent implements OnInit {
             this.selectedQuiz = null;
 
             if (res === null) {
-                window.alert(errorDictionary.quizDeleted);
+                this.showError(errorDictionary.quizDeleted);
             } else if (res.visible) {
                 this.router.navigate([route, res.id]);
             } else {
-                window.alert(errorDictionary.quizInvisible);
+                this.showError(errorDictionary.quizInvisible);
             }
         });
     }
@@ -191,5 +194,14 @@ export class GamesListComponent implements OnInit {
 
     playGame() {
         this.handleQuizAction('/waiting-room-host-page/');
+    }
+
+    private showError(errorMessage: string) {
+        this.dialog.open(AlertDialogComponent, {
+            data: {
+                title: "Erreur lors de l'importation",
+                content: errorMessage,
+            },
+        });
     }
 }
