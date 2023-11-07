@@ -20,6 +20,7 @@ export class SocketManager {
 
     handleSockets(): void {
         this.sio.on('connection', (socket) => {
+            // we are disabling linting for this line so that we can see in the console when a new client connects
             // eslint-disable-next-line no-console
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             socket.emit('hello', 'Hello World!');
@@ -85,6 +86,9 @@ export class SocketManager {
                         } else if (game.playersAnswers.size === game.players.size) {
                             this.roomManager.getGameByRoomId(roomId).updateScores();
                             this.roomManager.clearRoomTimer(roomId);
+                            this.roomManager.getRoomById(roomId).players.forEach((socketId, username) => {
+                                if (username !== 'Organisateur') this.sio.to(socketId).emit('end question');
+                            });
                             this.sio.to(String(roomId)).emit('end question from removal');
                         }
                     }
@@ -185,6 +189,7 @@ export class SocketManager {
             });
 
             socket.on('disconnect', (reason) => {
+                // we are disabling linting for this line so that we can see in the console when a new client disconnects
                 // eslint-disable-next-line no-console
                 console.log(`Déconnexion par l'utilisateur avec id : ${socket.id}`);
                 // eslint-disable-next-line no-console

@@ -6,8 +6,9 @@ import { HostInterfaceComponent } from './host-interface.component';
 import { GameService } from '@app/services/game.service/game.service';
 import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
-import { QuestionType, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { HttpClientModule } from '@angular/common/http';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { By } from '@angular/platform-browser';
 

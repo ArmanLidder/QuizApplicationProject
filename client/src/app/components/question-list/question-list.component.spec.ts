@@ -2,10 +2,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { QuestionType } from '@common/interfaces/quiz.interface';
-import { FormChoice, FormQuestion, QuizCreationService } from '@app/services/quiz-creation.service/quiz-creation.service';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { QuestionListComponent } from './question-list.component';
 import SpyObj = jasmine.SpyObj;
+import { QuestionService } from '@app/services/question-service/question.service';
+import { ChoiceService } from '@app/services/choice-service/choice.service';
 
 const fb = new FormBuilder();
 const POPUP_DELAY = 3200;
@@ -28,7 +30,8 @@ const createFormQuestionFormGroup = (question: FormQuestion): FormGroup => {
 
 describe('QuestionListComponent', () => {
     let formBuilder: FormBuilder;
-    let quizCreationServiceMock: SpyObj<QuizCreationService>;
+    let questionServiceMock: SpyObj<QuestionService>;
+    let choiceServiceMock: SpyObj<ChoiceService>;
     let component: QuestionListComponent;
     let fixture: ComponentFixture<QuestionListComponent>;
     let formQuestionsArrayAllSaved: FormArray;
@@ -36,13 +39,16 @@ describe('QuestionListComponent', () => {
     let question3: FormQuestion;
 
     beforeEach(() => {
-        quizCreationServiceMock = jasmine.createSpyObj('QuizCreationService', [
+        questionServiceMock = jasmine.createSpyObj('QuestionService', [
             'addQuestion',
             'removeQuestion',
             'modifyQuestion',
             'saveQuestion',
             'moveQuestionUp',
             'moveQuestionDown',
+        ]);
+
+        choiceServiceMock = jasmine.createSpyObj('ChoiceService', [
             'moveChoiceUp',
             'moveChoiceDown',
             'addChoice',
@@ -86,7 +92,10 @@ describe('QuestionListComponent', () => {
         TestBed.configureTestingModule({
             declarations: [QuestionListComponent],
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-            providers: [{ provide: QuizCreationService, useValue: quizCreationServiceMock }],
+            providers: [
+                { provide: QuestionService, useValue: questionServiceMock },
+                { provide: ChoiceService, useValue: choiceServiceMock },
+            ],
         }).compileComponents();
     }));
 
@@ -125,64 +134,64 @@ describe('QuestionListComponent', () => {
     });
 
     it('should add a question-list', () => {
-        quizCreationServiceMock.addQuestion.and.returnValue([]);
+        questionServiceMock.addQuestion.and.returnValue([]);
         component.addQuestion(0);
-        expect(quizCreationServiceMock.addQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
+        expect(questionServiceMock.addQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
         expect(component.questionErrors).toEqual([]);
     });
 
     it('should remove a question-list', () => {
         component.questionsArray = formQuestionsArrayAllSaved;
         component.removeQuestion(0);
-        expect(quizCreationServiceMock.removeQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
+        expect(questionServiceMock.removeQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
     });
 
     it('should modify a question-list', () => {
-        quizCreationServiceMock.modifyQuestion.and.returnValue([]);
+        questionServiceMock.modifyQuestion.and.returnValue([]);
         component.modifyQuestion(0);
-        expect(quizCreationServiceMock.modifyQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
+        expect(questionServiceMock.modifyQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
         expect(component.questionErrors).toEqual([]);
     });
 
     it('should save a question-list', () => {
-        quizCreationServiceMock.saveQuestion.and.returnValue([]);
+        questionServiceMock.saveQuestion.and.returnValue([]);
         component.saveQuestion(0);
-        expect(quizCreationServiceMock.saveQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
+        expect(questionServiceMock.saveQuestion).toHaveBeenCalledOnceWith(0, component.questionsArray);
         expect(component.questionErrors).toEqual([]);
     });
 
     it('should move a question-list up', () => {
         component.moveQuestionUp(0);
-        expect(quizCreationServiceMock.moveQuestionUp).toHaveBeenCalledOnceWith(0, component.questionsArray);
+        expect(questionServiceMock.moveQuestionUp).toHaveBeenCalledOnceWith(0, component.questionsArray);
     });
 
     it('should move a question-list down', () => {
         component.moveQuestionDown(0);
-        expect(quizCreationServiceMock.moveQuestionDown).toHaveBeenCalledOnceWith(0, component.questionsArray);
+        expect(questionServiceMock.moveQuestionDown).toHaveBeenCalledOnceWith(0, component.questionsArray);
     });
 
     it('should move a choice up', () => {
         component.moveChoiceUp(0, 0);
-        expect(quizCreationServiceMock.moveChoiceUp).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
+        expect(choiceServiceMock.moveChoiceUp).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
     });
 
     it('should move a choice down', () => {
         component.moveChoiceDown(0, 0);
-        expect(quizCreationServiceMock.moveChoiceDown).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
+        expect(choiceServiceMock.moveChoiceDown).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
     });
 
     it('should add a choice', () => {
         component.addChoice(0, 0);
-        expect(quizCreationServiceMock.addChoice).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
+        expect(choiceServiceMock.addChoice).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
     });
 
     it('should remove a choice', () => {
         component.removeChoice(0, 0);
-        expect(quizCreationServiceMock.removeChoice).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
+        expect(choiceServiceMock.removeChoice).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
     });
 
     it('should get choices array', () => {
-        quizCreationServiceMock.getChoicesArray.and.returnValue(
+        choiceServiceMock.getChoicesArray.and.returnValue(
             fb.array([
                 fb.group({
                     text: ['', Validators.required],
@@ -216,9 +225,9 @@ describe('QuestionListComponent', () => {
     });
 
     it('shouldn t add a question-list when the validator is not valid', () => {
-        quizCreationServiceMock.addQuestion.and.returnValue([]);
+        questionServiceMock.addQuestion.and.returnValue([]);
         component.addQuestion(1);
-        expect(quizCreationServiceMock.addQuestion).toHaveBeenCalledOnceWith(1, component.questionsArray);
+        expect(questionServiceMock.addQuestion).toHaveBeenCalledOnceWith(1, component.questionsArray);
         component.questionErrors?.push('Question 1 : les points doivent être entre 10 et 60 et être divisible par 10');
         component.showPopupIfConditionMet(component.questionErrors.length !== 0);
         expect(component.isPopupVisible).toBeTrue();

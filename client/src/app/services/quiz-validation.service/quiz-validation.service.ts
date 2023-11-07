@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Quiz, QuizChoice, QuizQuestion, QuestionType } from '@common/interfaces/quiz.interface';
+import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import {
     DIVIDER,
     MIN_QUESTION_POINTS,
@@ -10,6 +10,19 @@ import {
     MIN_NUMBER_OF_CHOICES,
     MAX_NUMBER_OF_CHOICES,
 } from '@app/services/quiz-validation.service/quiz-validation.service.const';
+import { QuestionType } from '@common/enums/question-type.enum';
+
+const TITLE_REQUIRED = 'Le titre est requis';
+const DESCRIPTION_REQUIRED = 'La description est requise';
+const INVALID_DURATION = 'La durée doit être comprise entre 10 et 60 secondes';
+const MINIMUM_NUMBER_OF_QUESTIONS_REQUIRED = 'Le quiz devrait contenir au moins une question';
+const TEXT_REQUIRED = 'le texte est requis';
+const QUESTION_POINTS_REQUIRED = "les points d'une question sont requis";
+const INVALID_POINTS = 'les points doivent être entre 10 et 100';
+const NON_DIVISIBLE_BY_TEN = 'les points de la question doivent être divisible par 10';
+const INVALID_NUMBER_OF_CHOICES = 'doit avoir au moins deux choix et au plus quatre choix';
+const INVALID_CHOICE = 'un choix doit être soit vrai soit faux';
+const INVALID_QUESTION_CHOICES = 'on doit au moins avoir une bonne réponse et une mauvaise réponse';
 
 @Injectable({
     providedIn: 'root',
@@ -41,30 +54,26 @@ export class QuizValidationService {
 
     divisibleByTen(control: AbstractControl): { [key: string]: boolean } | null {
         const value = control.value;
-        if (value % DIVIDER === 0) {
-            return null;
-        } else {
-            return { notDivisibleByTen: true };
-        }
+        return value % DIVIDER === 0 ? null : { notDivisibleByTen: true };
     }
 
     validateQuiz(quiz: Quiz): string[] {
         const errors: string[] = [];
 
-        if (!quiz.title || quiz.title.trim() === '') {
-            errors.push('Le titre est requis');
+        if (!quiz.title || !quiz.title.trim()) {
+            errors.push(TITLE_REQUIRED);
         }
 
-        if (!quiz.description || quiz.description.trim() === '') {
-            errors.push('La description est requise');
+        if (!quiz.description || !quiz.description.trim()) {
+            errors.push(DESCRIPTION_REQUIRED);
         }
 
         if (isNaN(quiz.duration) || quiz.duration <= MIN_DURATION || quiz.duration >= MAX_DURATION) {
-            errors.push('La durée doit être comprise entre 10 et 60 secondes');
+            errors.push(INVALID_DURATION);
         }
 
         if (!quiz.questions || quiz.questions.length === 0) {
-            errors.push('Le quiz devrait contenir au moins une question');
+            errors.push(MINIMUM_NUMBER_OF_QUESTIONS_REQUIRED);
         } else {
             quiz.questions.forEach((question, index) => {
                 const questionErrors = this.validateQuestion(question, index);
@@ -78,16 +87,20 @@ export class QuizValidationService {
     validateQuestion(question: QuizQuestion, index: number): string[] {
         const errors: string[] = [];
 
-        if (!question.text || question.text.trim() === '') {
-            errors.push(`Question ${index + 1} : le texte est requis.`);
+        if (!question.text || !question.text.trim()) {
+            errors.push(`Question ${index + 1} : ${TEXT_REQUIRED}.`);
         }
 
         if (!question.points) {
-            errors.push(`Question ${index + 1} : les points d'une question sont requis`);
+            errors.push(`Question ${index + 1} : ${QUESTION_POINTS_REQUIRED}`);
         }
 
-        if (question.points < MIN_QUESTION_POINTS || question.points > MAX_QUESTION_POINTS || question.points % DIVIDER !== 0) {
-            errors.push(`Question ${index + 1} : les points doivent être entre 10 et 100 et être divisible par 10`);
+        if (question.points < MIN_QUESTION_POINTS || question.points > MAX_QUESTION_POINTS) {
+            errors.push(`Question ${index + 1} : ${INVALID_POINTS}`);
+        }
+
+        if (question.points % DIVIDER !== 0) {
+            errors.push(`Question ${index + 1} : ${NON_DIVISIBLE_BY_TEN}`);
         }
 
         if (question.type === QuestionType.QCM) {
@@ -102,23 +115,23 @@ export class QuizValidationService {
         const errors: string[] = [];
 
         if (!choices || choices.length < MIN_NUMBER_OF_CHOICES || choices.length > MAX_NUMBER_OF_CHOICES) {
-            errors.push(`Question ${questionIndex + 1} : doit avoir au moins deux choix et au plus quatre choix`);
+            errors.push(`Question ${questionIndex + 1} : ${INVALID_NUMBER_OF_CHOICES}`);
         } else {
             choices.forEach((choice, choiceIndex) => {
-                if (!choice.text || choice.text.trim() === '') {
-                    errors.push(`Question ${questionIndex + 1}, Choice ${choiceIndex + 1} : le texte est requis`);
+                if (!choice.text || !choice.text.trim()) {
+                    errors.push(`Question ${questionIndex + 1}, Choice ${choiceIndex + 1} : ${TEXT_REQUIRED}`);
                 }
 
                 if (choice.isCorrect === null || choice.isCorrect === undefined) {
-                    errors.push(`Question ${questionIndex + 1}, Choice ${choiceIndex + 1} : un choix doit être soit vrai soit faux`);
+                    errors.push(`Question ${questionIndex + 1}, Choice ${choiceIndex + 1} : ${INVALID_CHOICE}`);
                 }
             });
 
-            const hasCorrectChoice = choices.some((choice) => choice.isCorrect === true);
-            const hasIncorrectChoice = choices.some((choice) => choice.isCorrect === false);
+            const hasCorrectChoice = choices.some((choice) => choice.isCorrect);
+            const hasIncorrectChoice = choices.some((choice) => !choice.isCorrect);
 
             if (!hasCorrectChoice || !hasIncorrectChoice) {
-                errors.push(`Question ${questionIndex + 1} : on doit au moins avoir une bonne réponse et une mauvaise réponse`);
+                errors.push(`Question ${questionIndex + 1} : ${INVALID_QUESTION_CHOICES}`);
             }
         }
         return errors;

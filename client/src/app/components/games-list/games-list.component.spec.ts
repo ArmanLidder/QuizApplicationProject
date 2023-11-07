@@ -6,7 +6,8 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { getCurrentDateService } from 'src/utils/current-date-format';
-import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 describe('GamesListComponent Admin view', () => {
     let quizServiceSpy: SpyObj<QuizService>;
@@ -243,11 +244,14 @@ describe('GamesListComponent Admin view', () => {
     });
     it('should update the error message if quiz is not valid', () => {
         const setValidatorErrorSpy = spyOn(component, 'setValidatorError');
-        const expectedError = 'Question 1 : les points doivent être entre 10 et 100 et être divisible par 10';
+        const expectedError = [
+            'Question 1 : les points doivent être entre 10 et 100',
+            'Question 1 : les points de la question doivent être divisible par 10',
+        ];
         component.importedQuiz = quizzesMock[0];
         component.validateFileData();
         expect(component.errors).not.toBeNull();
-        expect(setValidatorErrorSpy).toHaveBeenCalledWith([expectedError]);
+        expect(setValidatorErrorSpy).toHaveBeenCalledWith(expectedError);
     });
 
     it('should change component isQuizUnique to false if quiz is not unique', () => {

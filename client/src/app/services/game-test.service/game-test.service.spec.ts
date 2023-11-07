@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { QuestionType, Quiz } from '@common/interfaces/quiz.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
 import { GameTestService } from './game-test.service';
 import { of } from 'rxjs';
+import { QuestionType } from '@common/enums/question-type.enum';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const TICK = 1000;
 const TRANSITION_TIMER_DELAY = 3;

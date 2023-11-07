@@ -1,17 +1,16 @@
 import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType, Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
-import { QuizCreationService } from '@app/services/quiz-creation.service/quiz-creation.service';
+import { Quiz } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { generateRandomId } from 'src/utils/random-id-generator';
-import { getCurrentDateService } from 'src/utils/current-date-format';
+import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
+import { MatDialog } from '@angular/material/dialog';
+import { QuizExistsDialogComponent } from '@app/components/quiz-exists-dialog/quiz-exists-dialog.component';
+import { PageMode } from 'src/enums/page-mode.enum';
 import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
-export enum PageMode {
-    CREATION,
-    MODIFICATION,
-}
 @Component({
     selector: 'app-quiz-creation',
     templateUrl: './quiz-creation.component.html',
@@ -24,31 +23,36 @@ export class QuizCreationComponent {
     isPopupVisibleDuration: boolean;
     isPopupVisibleForm: boolean;
     formErrors: string[];
-    quizCreationService: QuizCreationService;
+    quizFormService: QuizFormService;
+    quizValidationService: QuizValidationService;
     protected readonly pageModel = PageMode;
     private quizService: QuizService;
     private route: ActivatedRoute;
     private navigateRoute: Router;
 
-    constructor(injector: Injector) {
-        this.quizCreationService = injector.get<QuizCreationService>(QuizCreationService);
+    constructor(
+        injector: Injector,
+        private dialog: MatDialog,
+    ) {
+        this.quizFormService = injector.get<QuizFormService>(QuizFormService);
+        this.quizValidationService = injector.get<QuizValidationService>(QuizValidationService);
         this.quizService = injector.get<QuizService>(QuizService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.navigateRoute = injector.get<Router>(Router);
         this.isPopupVisibleDuration = false;
         this.isPopupVisibleForm = false;
         this.formErrors = [];
-        this.quizForm = this.quizCreationService.fillForm();
+        this.quizForm = this.quizFormService.fillForm();
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.mode = PageMode.MODIFICATION;
             this.quizService.basicGetById(id).subscribe((quiz: Quiz) => {
                 this.quiz = quiz;
-                this.quizForm = this.quizCreationService.fillForm(quiz);
+                this.quizForm = this.quizFormService.fillForm(quiz);
             });
         } else {
             this.mode = PageMode.CREATION;
-            this.quizForm = this.quizCreationService.fillForm();
+            this.quizForm = this.quizFormService.fillForm();
         }
     }
 
@@ -66,43 +70,29 @@ export class QuizCreationComponent {
         return condition;
     }
 
-    extractQuizFromForm() {
-        const now = getCurrentDateService();
-        const questions: QuizQuestion[] = [];
-        this.questionsArray.controls.forEach((questionForm) => {
-            const question: QuizQuestion = {
-                type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
-                text: questionForm.get('text')?.value,
-                points: questionForm.get('points')?.value,
-                choices: [],
-            };
-            (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
-                const choice: QuizChoice = {
-                    text: choiceForm.get('text')?.value,
-                    isCorrect: choiceForm.get('isCorrect')?.value === 'true',
-                };
-                question.choices?.push(choice);
+    onSubmit() {
+        const quiz = this.quizFormService.extractQuizFromForm(this.quizForm, this.questionsArray);
+        if (this.quizForm?.valid) {
+            const title = this.quizForm.get('title')?.value;
+            this.quizService.checkTitleUniqueness(title).subscribe((response) => {
+                if (response.body?.isUnique || this.mode === PageMode.MODIFICATION) {
+                    this.addOrUpdateQuiz(quiz);
+                } else {
+                    this.openQuizExistsDialog();
+                }
             });
-            questions.push(question);
-        });
-
-        const quiz: Quiz = {
-            id: this.quiz?.id,
-            title: this.quizForm.value.title,
-            description: this.quizForm.value.description,
-            duration: this.quizForm.value.duration,
-            lastModification: now,
-            questions,
-            visible: this.quizForm.value.visible,
-        };
-        return quiz;
+        } else {
+            this.formErrors = this.quizValidationService.validateQuiz(quiz);
+            this.showPopupIfFormConditionMet(true);
+        }
     }
 
-    addOrUpdateQuiz(quiz: Quiz) {
+    private addOrUpdateQuiz(quiz: Quiz) {
         const navigateToAdminCallBack = () => {
             this.navigateRoute.navigate(['/game-admin-page']);
         };
         if (this.mode === PageMode.MODIFICATION) {
+            quiz.id = this.quiz.id;
             this.quizService.basicPut(quiz).subscribe(navigateToAdminCallBack);
         } else {
             quiz.id = generateRandomId();
@@ -110,20 +100,12 @@ export class QuizCreationComponent {
         }
     }
 
-    onSubmit() {
-        const quiz = this.extractQuizFromForm();
-        if (this.quizForm?.valid) {
-            const title = this.quizForm.get('title')?.value;
-            this.quizService.checkTitleUniqueness(title).subscribe((response) => {
-                if (response.body?.isUnique || this.mode === PageMode.MODIFICATION) {
-                    this.addOrUpdateQuiz(quiz);
-                } else {
-                    window.alert('Un quiz ayant le même titre existe déjà');
-                }
-            });
-        } else {
-            this.formErrors = this.quizCreationService.validateQuiz(quiz);
-            this.showPopupIfFormConditionMet(true);
-        }
+    private openQuizExistsDialog() {
+        this.dialog.open(QuizExistsDialogComponent, {
+            data: {
+                title: 'Le titre existe déjà',
+                content: 'Un quiz ayant le même titre existe déjà.',
+            },
+        });
     }
 }

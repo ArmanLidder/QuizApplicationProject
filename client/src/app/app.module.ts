@@ -30,6 +30,7 @@ import { GameAnswerChoiceCardComponent } from '@app/components/game-answer-choic
 import { HostInterfaceComponent } from '@app/components/host-interface/host-interface.component';
 import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
+import { QuizExistsDialogComponent } from '@app/components/quiz-exists-dialog/quiz-exists-dialog.component';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 /**
  * Main module that is used in main.ts.
@@ -63,6 +64,7 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
         GameAnswerChoiceCardComponent,
         HostInterfaceComponent,
         OrganizerHistogramComponent,
+        QuizExistsDialogComponent,
         PlayerListComponent,
     ],
     imports: [
