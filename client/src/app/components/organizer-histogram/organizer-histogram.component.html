@@ -2,19 +2,17 @@
     <div class="custom-legend">
         <h2> Légende: </h2>
         <div class="legend-item">
-<!--            <span class="color-box" style="background-color: green;"></span>-->
             <span class="color-box" style="background-color: red;"></span>
             Mauvaises Réponses
         </div>
         <div class="legend-item">
             <span class="color-box" style="background-color: lightgreen;"></span>
-<!--            <span class="color-box" style="background-color: pink;"></span>-->
             Bonnes Réponses
         </div>
     </div>
     <canvas
         baseChart
-        class="chart"
+        class="graph"
         [data]="barChartData"
         [options]="barChartOptions"
         [type]="barChartType"
