@@ -86,6 +86,9 @@ export class SocketManager {
                         } else if (game.playersAnswers.size === game.players.size) {
                             this.roomManager.getGameByRoomId(roomId).updateScores();
                             this.roomManager.clearRoomTimer(roomId);
+                            this.roomManager.getRoomById(roomId).players.forEach((socketId, username) => {
+                                if (username !== 'Organisateur') this.sio.to(socketId).emit('end question');
+                            });
                             this.sio.to(String(roomId)).emit('end question from removal');
                         }
                     }
