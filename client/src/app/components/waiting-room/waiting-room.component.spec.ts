@@ -195,11 +195,18 @@ describe('WaitingRoomComponent', () => {
         const removePlayerSpy = spyOn<any>(component, 'removePlayer');
         component.players = ['1', '2', '3', '4'];
         component['configureBaseSocketFeatures']();
-        const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction], [lastEvent, lastAction]] = onSpy.calls.allArgs();
+        const [
+            [firstEvent, firstAction],
+            [secondEvent, secondAction],
+            [thirdEvent, thirdAction],
+            [fourthEvent, fourthAction],
+            [lastEvent, lastAction],
+        ] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual('new player');
         expect(secondEvent).toEqual('removed from game');
         expect(thirdEvent).toEqual('removed player');
-        expect(lastEvent).toEqual('time');
+        expect(fourthEvent).toEqual('time');
+        expect(lastEvent).toEqual('final time transition');
 
         if (typeof firstAction === 'function') {
             firstAction(['1', '2', '3', '4', '5']);
@@ -215,11 +222,17 @@ describe('WaitingRoomComponent', () => {
             thirdAction('1');
             expect(removePlayerSpy).toHaveBeenCalledWith('1');
         }
-        if (typeof lastAction === 'function') {
+        if (typeof fourthAction === 'function') {
             routerSpy.calls.reset();
-            lastAction(0);
+            fourthAction(0);
             expect(component.isGameStarting).toBeTruthy();
             expect(routerSpy).toHaveBeenCalledWith(['game', DIGIT_CONSTANT]);
+        }
+        if (typeof lastAction === 'function') {
+            routerSpy.calls.reset();
+            lastAction(DIGIT_CONSTANT);
+            expect(component.isTransition).toBeTruthy();
+            expect(routerSpy).toHaveBeenCalledWith(['/']);
         }
     });
 

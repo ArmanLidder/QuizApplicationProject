@@ -102,6 +102,7 @@ describe('HostInterfaceComponent', () => {
             [fifthEvent, fifthAction],
             [sixthEvent, sixthAction],
             [seventhEvent, seventhAction],
+            [eighthEvent, eightAction],
         ] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual('time transition');
         expect(secondEvent).toEqual('end question');
@@ -110,11 +111,13 @@ describe('HostInterfaceComponent', () => {
         expect(fifthEvent).toEqual('get initial question');
         expect(sixthEvent).toEqual('get next question');
         expect(seventhEvent).toEqual('removed player');
+        expect(eighthEvent).toEqual('end question from removal');
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
             expect(component.gameService.timer).toEqual(TIMER_VALUE);
         }
+
         if (typeof secondAction === 'function') {
             secondAction(0);
             expect(component.gameService.validatedStatus).toEqual(true);
@@ -146,6 +149,11 @@ describe('HostInterfaceComponent', () => {
             ];
             seventhAction('player2');
             expect(component.leftPlayers).toEqual([['player2', 1, 0]]);
+        }
+        if (typeof eightAction === 'function') {
+            eightAction(TIMER_VALUE);
+            expect(component.gameService.gameRealService.validated).toBeTruthy();
+            expect(component.gameService.gameRealService.locked).toBeTruthy();
         }
     });
 
