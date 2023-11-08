@@ -72,6 +72,9 @@ export class RoomCodePromptComponent implements OnInit {
             this.sendUsernameToWaitingRoom();
             this.isActive = false;
             this.sendValidationDone();
+        } else if (!this.isUsernameValid) {
+            this.error = errorDictionary.nameAlreadyUsed;
+            this.showErrorFeedback();
         }
     }
 
@@ -92,8 +95,16 @@ export class RoomCodePromptComponent implements OnInit {
         await this.sendUsername();
         if (this.isRoomIdValid && this.isUsernameValid) {
             return new Promise<void>((resolve) => {
-                this.handleJoinRoomValidation();
-                resolve();
+                this.socketService.send(socketEvent.joinGame, { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
+                    if (isLocked) {
+                        this.isLocked = true;
+                        this.showErrorFeedback();
+                    } else {
+                        this.isLocked = false;
+                        this.reset();
+                    }
+                    resolve();
+                });
             });
         }
     }
@@ -102,7 +113,20 @@ export class RoomCodePromptComponent implements OnInit {
         await this.sendRoomId();
         if (this.isRoomIdValid) {
             return new Promise<void>((resolve) => {
-                this.handleUsernameValidation();
+                this.socketService.send(
+                    socketEvent.validateUsername,
+                    { roomId: Number(this.roomId), username: this.username },
+                    (data: { isValid: boolean; error: string }) => {
+                        if (!data.isValid) {
+                            this.isUsernameValid = false;
+                            this.showErrorFeedback();
+                            this.error = data.error;
+                        } else {
+                            this.isUsernameValid = true;
+                            this.reset();
+                        }
+                    },
+                );
                 resolve();
             });
         }
@@ -110,52 +134,19 @@ export class RoomCodePromptComponent implements OnInit {
 
     private async sendRoomId() {
         return new Promise<void>((resolve) => {
-            this.handleRoomIdValidation();
-            resolve();
-        });
-    }
-
-    private handleUsernameValidation() {
-        this.socketService.send(
-            socketEvent.validateUsername,
-            { roomId: Number(this.roomId), username: this.username },
-            (data: { isValid: boolean; error: string }) => {
-                if (!data.isValid) {
-                    this.isUsernameValid = data.isValid;
-                    this.showErrorFeedback();
-                    this.error = data.error;
+            this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: RoomValidationResult) => {
+                if (!data.isRoom) {
+                    this.handleErrors();
+                    this.error = errorDictionary.roomCodeExpired;
+                } else if (data.isLocked) {
+                    this.handleErrors();
+                    this.error = errorDictionary.roomLocked;
                 } else {
-                    this.isUsernameValid = data.isValid;
+                    this.isRoomIdValid = true;
                     this.reset();
                 }
-            },
-        );
-    }
-
-    private handleRoomIdValidation() {
-        this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: RoomValidationResult) => {
-            if (!data.isRoom) {
-                this.handleErrors();
-                this.error = errorDictionary.roomCodeExpired;
-            } else if (data.isLocked) {
-                this.handleErrors();
-                this.error = errorDictionary.roomLocked;
-            } else {
-                this.isRoomIdValid = true;
-                this.reset();
-            }
-        });
-    }
-
-    private handleJoinRoomValidation() {
-        this.socketService.send(socketEvent.joinGame, { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
-            if (isLocked) {
-                this.isLocked = true;
-                this.showErrorFeedback();
-            } else {
-                this.isLocked = false;
-                this.reset();
-            }
+                resolve();
+            });
         });
     }
 
