@@ -54,6 +54,7 @@ describe('Room Managing Service', () => {
 
     it('should get game by room id', () => {
         expect(roomService.getGameByRoomId(1)).to.equal(roomService.getRoomById(roomId).game);
+        expect(roomService.getGameByRoomId(0)).to.equal(undefined);
     });
 
     it('should add a user to a room', () => {
