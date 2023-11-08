@@ -29,7 +29,8 @@ export class RoomManagingService {
     }
 
     clearRoomTimer(roomId: number) {
-        if (this.getRoomById(roomId)) clearInterval(this.getRoomById(roomId).timer);
+        const room = this.getRoomById(roomId);
+        if (room) clearInterval(room.timer);
     }
 
     getRoomById(roomId: number) {
@@ -37,7 +38,7 @@ export class RoomManagingService {
     }
 
     getGameByRoomId(roomId: number) {
-        return this.rooms.get(roomId).game;
+        return this.rooms.get(roomId)?.game;
     }
 
     addRoom(quizID: string): number {
