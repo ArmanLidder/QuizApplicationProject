@@ -8,7 +8,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class ValidationQuizErrorFeedbackComponent {
     @Input() errors: string | null;
     @Output() cancelOperation: EventEmitter<boolean> = new EventEmitter<boolean>();
-    error: string;
+    error: string = '';
 
     get errorsWithLineBreaks(): string {
         if (this.errors) {

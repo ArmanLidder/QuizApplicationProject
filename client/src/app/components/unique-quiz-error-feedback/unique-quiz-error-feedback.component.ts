@@ -11,10 +11,10 @@ export class UniqueQuizErrorFeedbackComponent {
     @Output() sendNewQuizName: EventEmitter<string> = new EventEmitter<string>();
     @Output() cancelOperation: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    newQuizName: string | undefined;
-    inputBorderColor: string;
-    textColor: string;
-    error: string;
+    newQuizName: string | undefined = '';
+    inputBorderColor: string = '';
+    textColor: string = '';
+    error: string = '';
 
     emitQuizName() {
         if (this.newQuizName === undefined) {

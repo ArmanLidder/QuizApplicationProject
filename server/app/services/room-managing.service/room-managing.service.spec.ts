@@ -137,6 +137,15 @@ describe('Room Managing Service', () => {
         expect(clearIntervalSpy.calledWith(roomService.getRoomById(roomId).timer));
     });
 
+    it('should not clear timer if room non existant', () => {
+        const clearIntervalSpy = sinon.spy(clearInterval);
+        roomService.getRoomById(roomId).timer = setInterval(() => {
+            return;
+        }, FIVE_SECOND);
+        roomService.clearRoomTimer(0);
+        expect(clearIntervalSpy.notCalled);
+    });
+
     it('should generate a uniqueRoomID between 1000 and 9999', () => {
         const maxLoop = 10000;
         const lowerBound = 1000;

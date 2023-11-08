@@ -12,7 +12,7 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 export class PlayerListComponent {
     @Input() leftPlayers: Player[];
     @Input() roomId: number;
-    players: Player[];
+    players: Player[] = [];
 
     constructor(public socketService: SocketClientService) {}
 

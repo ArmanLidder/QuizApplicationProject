@@ -17,7 +17,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     isRoomLocked: boolean = false;
     isGameStarting: boolean = false;
     isTransition: boolean = false;
-    players: string[];
+    players: string[] = [];
     time: number;
 
     constructor(
@@ -31,6 +31,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     ngOnInit() {
         if (this.isHost) this.sendRoomCreation();
         if (!this.isHost) this.gatherPlayers();
+        window.onbeforeunload = () => this.ngOnDestroy();
     }
 
     ngOnDestroy() {

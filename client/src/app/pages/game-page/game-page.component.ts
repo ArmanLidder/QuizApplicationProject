@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
@@ -8,7 +8,7 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements OnDestroy {
+export class GamePageComponent implements OnDestroy, OnInit {
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
@@ -16,6 +16,10 @@ export class GamePageComponent implements OnDestroy {
 
     get isHost(): boolean {
         return this.gameService.username === 'Organisateur';
+    }
+
+    ngOnInit() {
+        window.onbeforeunload = () => this.ngOnDestroy();
     }
 
     ngOnDestroy() {

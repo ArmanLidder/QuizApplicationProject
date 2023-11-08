@@ -18,7 +18,7 @@ export class SidebarComponent {
     myName: string;
     roomId: string;
     messageForm: FormGroup;
-    messages: Message[] = [];
+    messages: Message[];
     socketService: SocketClientService;
     formBuilder: FormBuilder;
     route: ActivatedRoute;
@@ -29,9 +29,14 @@ export class SidebarComponent {
         this.formBuilder = injector.get<FormBuilder>(FormBuilder);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.gameService = injector.get<GameService>(GameService);
+        this.myName = '';
+        this.roomId = '';
+        this.messages = [];
         const roomId = this.route.snapshot.paramMap.get('id');
         const isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
-        if (isTestMode) this.socketService.disconnect();
+        if (isTestMode) {
+            if (this.socketService.isSocketAlive()) this.socketService.disconnect();
+        }
         if (roomId) {
             this.roomId = roomId;
             this.setup();

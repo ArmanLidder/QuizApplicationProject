@@ -72,4 +72,8 @@ describe('GamePageComponent', () => {
         component.ngOnDestroy();
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
     });
+    it('should send room creation event if it is the host of the game', () => {
+        component.ngOnInit();
+        expect(window.onbeforeunload).toEqual(jasmine.any(Function));
+    });
 });

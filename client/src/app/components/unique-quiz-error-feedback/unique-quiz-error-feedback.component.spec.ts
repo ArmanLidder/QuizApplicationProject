@@ -49,7 +49,7 @@ describe('UniqueQuizErrorFeedbackComponent', () => {
         component.newQuizName = 'New Quiz Name';
         component.emitQuizName();
         expect(component.newQuizName).toBe('');
-        expect(component.error).toBeUndefined();
+        expect(component.error).toBe('');
         expect(component.textColor).toBe('');
         expect(component.inputBorderColor).toBe('');
     });

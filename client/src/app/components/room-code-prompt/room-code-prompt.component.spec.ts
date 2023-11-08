@@ -132,6 +132,7 @@ describe('RoomCodePromptComponent', () => {
         const sendRoomIdToWaitingRoomSpy = spyOn(component, 'sendRoomIdToWaitingRoom');
         const sendValidationDoneSpy = spyOn(component, 'sendValidationDone');
         component.isLocked = false;
+        component.isUsernameValid = true;
         component.isRoomIdValid = true;
         await component.joinRoom();
         expect(sendJoinRoomRequestSpy).toHaveBeenCalled();
@@ -159,7 +160,7 @@ describe('RoomCodePromptComponent', () => {
             return true;
         });
         component['roomIdClientValidation']();
-        expect(component.error).toBeUndefined();
+        expect(component.error).toBe('');
         expect(resetSpy).toHaveBeenCalled();
         expect(showErrorFeedbackSpy).not.toHaveBeenCalled();
     });
@@ -195,6 +196,7 @@ describe('RoomCodePromptComponent', () => {
         component.username = 'test';
         component.isLocked = false;
         component.isRoomIdValid = true;
+        component.isUsernameValid = true;
         component['sendJoinRoomRequest']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
@@ -217,6 +219,7 @@ describe('RoomCodePromptComponent', () => {
         component.username = 'test';
         component.isLocked = false;
         component.isRoomIdValid = true;
+        component.isUsernameValid = true;
         component['sendJoinRoomRequest']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
@@ -308,7 +311,7 @@ describe('RoomCodePromptComponent', () => {
             expect(component.isRoomIdValid).toBeTruthy();
             expect(showErrorFeedbackSpy).not.toHaveBeenCalled();
             expect(resetSpy).toHaveBeenCalled();
-            expect(component.error).toBeUndefined();
+            expect(component.error).toBe('');
         }
     }));
 

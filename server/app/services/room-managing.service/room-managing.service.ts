@@ -29,7 +29,7 @@ export class RoomManagingService {
     }
 
     clearRoomTimer(roomId: number) {
-        clearInterval(this.getRoomById(roomId).timer);
+        if (this.getRoomById(roomId)) clearInterval(this.getRoomById(roomId).timer);
     }
 
     getRoomById(roomId: number) {
