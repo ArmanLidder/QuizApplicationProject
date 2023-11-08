@@ -75,5 +75,6 @@ describe('GamePageComponent', () => {
     it('should send room creation event if it is the host of the game', () => {
         component.ngOnInit();
         expect(window.onbeforeunload).toEqual(jasmine.any(Function));
+        expect(window.onload).toEqual(jasmine.any(Function));
     });
 });
