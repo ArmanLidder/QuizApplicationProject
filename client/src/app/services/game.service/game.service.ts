@@ -49,6 +49,7 @@ export class GameService {
 
     destroy() {
         this.reset();
+        this.answers.clear();
     }
 
     init(pathId: string) {
