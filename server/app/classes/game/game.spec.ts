@@ -32,7 +32,7 @@ describe('Game', () => {
     let game: Game;
     let databaseService: DatabaseServiceMock;
     let quizService: QuizService;
-    let historyService : HistoryService;
+    let historyService: HistoryService;
     const testQuiz: QuizMock = {
         _id: new ObjectId(),
         id: 'quiz123',
@@ -71,7 +71,7 @@ describe('Game', () => {
         databaseService = new DatabaseServiceMock();
         (await databaseService.start()) as MongoClient;
         quizService = new QuizService(databaseService as unknown as DatabaseService);
-        historyService = new HistoryService(databaseService as unknown as DatabaseService)
+        historyService = new HistoryService(databaseService as unknown as DatabaseService);
         delete testQuiz['_id'];
         await quizService.collection.insertOne(testQuiz);
         game = new Game(['Player1', 'Player2'], quizService, historyService);

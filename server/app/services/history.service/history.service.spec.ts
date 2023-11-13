@@ -18,7 +18,6 @@ interface GameInfoMock {
     bestScore?: number;
 }
 
-
 describe('History Service', () => {
     let historyService: HistoryService;
     let databaseService: DatabaseServiceMock;
@@ -42,7 +41,7 @@ describe('History Service', () => {
         (await databaseService.start()) as MongoClient;
         historyService = new HistoryService(databaseService as unknown as DatabaseService);
         for (const gameInfo of infoMocks) {
-            delete gameInfo['_id']
+            delete gameInfo['_id'];
             await historyService.collection.insertOne(gameInfo);
         }
     });
@@ -70,7 +69,7 @@ describe('History Service', () => {
     });
 
     it('should delete all quizzes', async () => {
-        await historyService.deleteAll()
+        await historyService.deleteAll();
         const finalArray = await historyService.collection.find({}).toArray();
         expect(finalArray).to.deep.equal([]);
     });

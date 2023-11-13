@@ -13,7 +13,7 @@ const FIVE_SECOND = 5000;
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
     let quizService: QuizService;
-    let historyService : HistoryService;
+    let historyService: HistoryService;
     let databaseServiceMock: DatabaseServiceMock;
     const roomId = 1;
     const mockUsername = 'usernameOne';

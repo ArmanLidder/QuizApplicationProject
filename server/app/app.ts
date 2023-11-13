@@ -19,7 +19,7 @@ export class Application {
     constructor(
         private readonly quizController: QuizController,
         private readonly adminAuthController: AdminAuthController,
-        private readonly historyController : GameHistoryController,
+        private readonly historyController: GameHistoryController,
     ) {
         this.app = express();
 
