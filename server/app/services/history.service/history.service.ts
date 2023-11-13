@@ -11,6 +11,10 @@ export class HistoryService {
         return this.dbService.database.collection(process.env.DATABASE_COLLECTION_GAMES);
     }
 
+    async getAll() {
+        return (await this.collection.find({}, { projection: { _id: 0 } }).toArray()) as unknown[] as GameInfo[];
+    }
+
     async add(gameInfo: GameInfo) {
         await this.collection.insertOne(gameInfo);
     }
