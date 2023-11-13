@@ -14,6 +14,7 @@
                         <label for="type{{i}}">Type de la question:</label>
                         <select formControlName="type" name="type{{i}}">
                             <option value="QCM">QCM</option>
+                            <option value="QLR">QLR</option>
                         </select><br>
                         <div *ngIf="question.get('type')?.hasError('required') && question.get('type')?.touched" class="error-message">
                             Le type de question est requis
@@ -31,10 +32,12 @@
                         <div *ngIf="question.get('points')?.invalid && question.get('points')?.touched" class="error-message">
                             Le nombre de points d'une QCM doit être entre 10 et 100 et doit être un multiple de 10
                         </div>
-                        <p>Choix:</p>
-                        <button type="button" [disabled]="getChoicesArray(i).controls.length !== 0"
+                        <p *ngIf="question.get('type')?.value === 'QCM'">Choix:</p>
+                        <button *ngIf="question.get('type')?.value === 'QCM'"
+                                type="button" [disabled]="getChoicesArray(i).controls.length !== 0"
                                 [ngClass]="{'hidden-button': getChoicesArray(i).controls.length !== 0}"
-                                (click)="addChoice(i, getChoicesArray(i).controls.length - 1)">Ajouter choix
+                                (click)="addChoice(i, getChoicesArray(i).controls.length - 1)">
+                            Ajouter choix
                         </button><br>
                     </div>
 
@@ -70,8 +73,7 @@
                     <p>Type de la question: {{question.get('type')?.value}}</p>
                     <p class='truncate'>Contenu de la question : {{question.get('text')?.value}}</p>
                     <p>Le nombre de points de la question: {{question.get('points')?.value}} </p>
-                    <p>Le nombre de points de la question: {{question.get('points')?.value}} </p>
-                    <p>Choix:</p>
+                    <p *ngIf="question.get('type')?.value === 'QCM'">Choix:</p>
                     <div class="choicesList">
                         <div class="choice" *ngFor="let choice of getChoicesArray(i).controls; index as j">
                             <p>le choix {{j + 1}}: </p>
