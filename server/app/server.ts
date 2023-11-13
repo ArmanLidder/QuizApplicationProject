@@ -6,7 +6,7 @@ import { DatabaseService } from '@app/services/database.service/database.service
 import { SocketManager } from '@app/services/socket-manager.service/socket-manager.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { HistoryService } from '@app/services/history.service/history.service';
-
+/* eslint-disable max-params */
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');

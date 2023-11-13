@@ -68,6 +68,16 @@ export class Game {
         this.choicesStats.set(answer, isSelected ? oldValue + 1 : oldValue - 1);
     }
 
+    async updateGameHistory() {
+        this.gameHistoryInfo.gameName = this.quiz.title;
+        let maxPts = 0;
+        for (const score of this.players.values()) {
+            maxPts = Math.max(maxPts, score.points);
+        }
+        this.gameHistoryInfo.bestScore = maxPts;
+        await this.historyService.add(this.gameHistoryInfo);
+    }
+
     private validateAnswer(playerAnswers: string[]) {
         if (playerAnswers.length === 0) return false;
         for (const answer of playerAnswers) {
@@ -159,16 +169,5 @@ export class Game {
     private async getQuiz(quizId: string) {
         this.quiz = await this.quizService.getById(quizId);
         this.setValues();
-    }
-
-    async updateGameHistory() {
-        this.gameHistoryInfo.gameName = this.quiz.title;
-        let maxPts = 0;
-        for (const score of this.players.values()) {
-            maxPts = Math.max(maxPts,score.points);
-        }
-        this.gameHistoryInfo.bestScore = maxPts;
-        console.log(this.gameHistoryInfo);
-        await this.historyService.add(this.gameHistoryInfo);
     }
 }
