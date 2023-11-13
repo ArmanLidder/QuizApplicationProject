@@ -8,10 +8,12 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { DatabaseServiceMock } from '@app/services/database.service/database.service.mock';
 import { MongoClient } from 'mongodb';
 import { DatabaseService } from '@app/services/database.service/database.service';
+import { HistoryService } from '@app/services/history.service/history.service';
 const FIVE_SECOND = 5000;
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
     let quizService: QuizService;
+    let historyService : HistoryService;
     let databaseServiceMock: DatabaseServiceMock;
     const roomId = 1;
     const mockUsername = 'usernameOne';
@@ -22,6 +24,7 @@ describe('Room Managing Service', () => {
         databaseServiceMock = new DatabaseServiceMock();
         (await databaseServiceMock.start()) as MongoClient;
         quizService = new QuizService(databaseServiceMock as unknown as DatabaseService);
+        historyService = new HistoryService(databaseServiceMock as unknown as DatabaseService);
         roomService = new RoomManagingService();
         roomService['rooms'].set(roomId, {
             room: roomId,
@@ -34,7 +37,7 @@ describe('Room Managing Service', () => {
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,
             timer: null,
-            game: new Game(['Organisateur', 'socket organisateur'], quizService),
+            game: new Game(['Organisateur', 'socket organisateur'], quizService, historyService),
         });
     });
 
@@ -180,7 +183,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: [],
             timer: null,
-            game: new Game([], quizService),
+            game: new Game([], quizService, historyService),
         };
         mockRoom.players.set(mockUsername, mockSocket);
 
@@ -198,7 +201,7 @@ describe('Room Managing Service', () => {
             locked: false,
             bannedNames: [],
             timer: null,
-            game: new Game([], quizService),
+            game: new Game([], quizService, historyService),
         };
         mockRoom.players.set(mockUsername, mockSocket);
         sinon.stub(roomService, 'getRoomById').returns(mockRoom);

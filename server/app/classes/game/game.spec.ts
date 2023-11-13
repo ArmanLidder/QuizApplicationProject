@@ -11,6 +11,7 @@ import { DatabaseServiceMock } from '@app/services/database.service/database.ser
 import { Game } from './game';
 import * as sinon from 'sinon';
 import { DatabaseService } from '@app/services/database.service/database.service';
+import { HistoryService } from '@app/services/history.service/history.service';
 
 const MAX_TIME = 800;
 const MID_TIME = 1000;
@@ -31,6 +32,7 @@ describe('Game', () => {
     let game: Game;
     let databaseService: DatabaseServiceMock;
     let quizService: QuizService;
+    let historyService : HistoryService;
     const testQuiz: QuizMock = {
         _id: new ObjectId(),
         id: 'quiz123',
@@ -69,9 +71,10 @@ describe('Game', () => {
         databaseService = new DatabaseServiceMock();
         (await databaseService.start()) as MongoClient;
         quizService = new QuizService(databaseService as unknown as DatabaseService);
+        historyService = new HistoryService(databaseService as unknown as DatabaseService)
         delete testQuiz['_id'];
         await quizService.collection.insertOne(testQuiz);
-        game = new Game(['Player1', 'Player2'], quizService);
+        game = new Game(['Player1', 'Player2'], quizService, historyService);
         await game.setup(testQuiz.id);
     });
 
@@ -211,6 +214,14 @@ describe('Game', () => {
         expect(game.choicesStats.get('Paris')).to.equal(1);
         game['updateChoicesStats'](true, playerAnswerTwo);
         expect(game.choicesStats.get('London')).to.equal(2);
+    });
+
+    it('should update game history correctly', async () => {
+        const addSpy = sinon.spy(game['historyService'], 'add');
+        await game.updateGameHistory();
+        expect(game.gameHistoryInfo.gameName).to.equal(testQuiz.title);
+        expect(game.gameHistoryInfo.bestScore).to.equal(0);
+        expect(addSpy.calledWith(game.gameHistoryInfo));
     });
 
     it('should correctly handle cases where there is no fastest player', () => {
