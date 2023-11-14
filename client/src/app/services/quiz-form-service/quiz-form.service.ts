@@ -69,21 +69,7 @@ export class QuizFormService {
             ),
             beingModified: question === undefined,
         });
-        questionForm.get('type')?.valueChanges.subscribe((type: string | null) => {
-            const choicesControl = questionForm.get('choices') as FormArray;
-            if (type === 'QCM') {
-                choicesControl.setValidators([
-                    Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
-                    Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
-                    this.validationService.validateChoicesForm,
-                ]);
-            } else {
-                choicesControl.clearValidators();
-                choicesControl.clear();
-            }
-            choicesControl?.updateValueAndValidity();
-        });
-
+        this.attachListenerToQuestionType(questionForm);
         this.fillChoices(questionForm.get('choices') as FormArray, question?.choices);
         return questionForm;
     }
@@ -157,5 +143,22 @@ export class QuizFormService {
             text: choiceForm.get('text')?.value,
             isCorrect: choiceForm.get('isCorrect')?.value === 'true',
         };
+    }
+
+    private attachListenerToQuestionType(questionForm: FormGroup) {
+        questionForm.get('type')?.valueChanges.subscribe((type: string | null) => {
+            const choicesControl = questionForm.get('choices') as FormArray;
+            if (type === 'QCM') {
+                choicesControl.setValidators([
+                    Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
+                    Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
+                    this.validationService.validateChoicesForm,
+                ]);
+            } else {
+                choicesControl.clearValidators();
+                choicesControl.clear();
+            }
+            choicesControl?.updateValueAndValidity();
+        });
     }
 }
