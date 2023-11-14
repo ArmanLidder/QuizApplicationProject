@@ -77,17 +77,9 @@ describe('QuizFormService', () => {
             type: QuestionType.QLR,
             text: 'Question 3',
             points: 15,
-            choices: [choice1, choice2],
+            choices: [],
             beingModified: false,
         };
-
-        // const qlrQuestion: FormQuestion = {
-        //     type: QuestionType.QLR,
-        //     text: 'Question 3',
-        //     choices: [choice1, choice2],
-        //     points: 15,
-        //     beingModified: false,
-        // };
 
         formQuestionsArrayAllSaved = fb.array([createFormQuestionFormGroup(question1), createFormQuestionFormGroup(question3)]);
 
@@ -260,7 +252,7 @@ describe('QuizFormService', () => {
             type: QuestionType.QLR,
             text: '',
             points: 0,
-            choices: [],
+            choices: undefined,
         });
     });
 
@@ -289,10 +281,31 @@ describe('QuizFormService', () => {
         expect(secondExtractedQuestion.type).toEqual(questionsArray.at(1).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
         expect(secondExtractedQuestion.text).toEqual(questionsArray.at(1).get('text')?.value);
         expect(secondExtractedQuestion.points).toEqual(questionsArray.at(1).get('points')?.value);
-        const firstChoiceSecondChoice: QuizChoice[] = secondExtractedQuestion.choices as QuizChoice[];
-        expect(firstChoiceSecondChoice[0].text).toEqual(questionsArray.at(1).get('choices')?.value[0].text);
-        expect(firstChoiceSecondChoice[0].isCorrect).toEqual(questionsArray.at(1).get('choices')?.value[0].isCorrect === 'true');
-        expect(firstChoiceSecondChoice[1].text).toEqual(questionsArray.at(1).get('choices')?.value[1].text);
-        expect(firstChoiceSecondChoice[1].isCorrect).toEqual(questionsArray.at(1).get('choices')?.value[1].isCorrect === 'true');
+    });
+
+    it('should set validators for choices control when type is QCM', () => {
+        const questionForm = (mockQuizForm.get('questions') as FormArray).at(0) as FormGroup;
+        spyOn(questionForm.get('choices') as FormArray, 'setValidators');
+        spyOn(questionForm.get('choices') as FormArray, 'updateValueAndValidity');
+        service['attachListenerToQuestionType'](questionForm);
+        questionForm.get('type')?.setValue('QCM');
+        expect(questionForm.get('choices')?.setValidators).toHaveBeenCalled();
+        expect(questionForm.get('choices')?.updateValueAndValidity).toHaveBeenCalled();
+    });
+
+    it('should clear validators and values for choices control when type is not QCM', () => {
+        const questionForm = (mockQuizForm.get('questions') as FormArray).at(0) as FormGroup;
+
+        spyOn(questionForm.get('choices') as FormArray, 'clearValidators').and.callThrough();
+        spyOn(questionForm.get('choices') as FormArray, 'clear').and.callThrough();
+        spyOn(questionForm.get('choices') as FormArray, 'updateValueAndValidity');
+
+        service['attachListenerToQuestionType'](questionForm);
+
+        questionForm.get('type')?.setValue('QLR');
+
+        expect(questionForm.get('choices')?.clearValidators).toHaveBeenCalled();
+        expect((questionForm.get('choices') as FormArray)?.clear).toHaveBeenCalled();
+        expect(questionForm.get('choices')?.updateValueAndValidity).toHaveBeenCalled();
     });
 });
