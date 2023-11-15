@@ -145,6 +145,25 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-.strikethrough {
+.left {
+    color: black;
     text-decoration: line-through;
 }
+
+.no-interaction {
+    color: red;
+}
+
+.interaction {
+    color: #007bff;
+}
+
+.validation {
+    color: green;
+}
+
+.endGame {
+    color: black;
+}
+
+
