@@ -1,0 +1,36 @@
+<div class="quizzes-container" >
+    <table>
+        <thead>
+            <tr>
+                <th>Nom du Jeu</th>
+                <th >Date</th>
+                <th >Nombre de Joueurs</th>
+                <th >Meilleur score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let game of games">
+                <td>
+                    <p>{{ game.gameName }}</p>
+                </td>
+                <td>
+                    <p>{{ game.startTime }}</p>
+                </td>
+                <td>
+                    <p>{{ game.playersCount }}</p>
+                </td>
+                <td>
+                    <p>{{ game.bestScore }}</p>
+                </td>
+                
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="button-container">
+                    <button (click) = "deleteAllGames()" class="cancel">Supprimer</button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
