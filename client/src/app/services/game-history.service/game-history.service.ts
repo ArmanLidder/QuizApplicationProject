@@ -8,7 +8,7 @@ import { GameInfo } from '@common/interfaces/game-info.interface';
   providedIn: 'root'
 })
 export class GameHistoryService {
-  private readonly baseUrl = environment.serverUrl; 
+  readonly baseUrl = environment.serverUrl; 
 
   constructor(private readonly http: HttpClient) {}
 
