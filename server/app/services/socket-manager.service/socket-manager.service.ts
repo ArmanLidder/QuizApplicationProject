@@ -138,6 +138,8 @@ export class SocketManager {
             socket.on(socketEvent.submitAnswer, (data: PlayerAnswerData) => {
                 const game = this.roomManager.getGameByRoomId(data.roomId);
                 this.roomManager.getGameByRoomId(data.roomId).storePlayerAnswer(data.username, data.timer, data.answers);
+                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
+                if (data.timer !== 0) this.sio.to(hostSocketId).emit(socketEvent.submitAnswer, data.username);
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
@@ -149,8 +151,10 @@ export class SocketManager {
                 const game = this.roomManager.getGameByRoomId(data.roomId);
                 game.updateChoicesStats(data.isSelected, data.index);
                 const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
+                const username = this.roomManager.getUsernameBySocketId(data.roomId, socket.id);
                 const choicesStatsValues = Array.from(game.choicesStats.values());
                 this.sio.to(hostSocketId).emit(socketEvent.refreshChoicesStats, choicesStatsValues);
+                this.sio.to(hostSocketId).emit(socketEvent.updateSelection, username);
             });
 
             socket.on(socketEvent.startTransition, (roomId: number) => {
