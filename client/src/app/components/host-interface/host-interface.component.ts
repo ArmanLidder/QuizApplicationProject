@@ -9,7 +9,7 @@ import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
-type PlayerArray = [string, number, number];
+type PlayerArray = [string, number, number, string];
 
 @Component({
     selector: 'app-host-interface',
@@ -22,7 +22,6 @@ export class HostInterfaceComponent {
     isGameOver: boolean = false;
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
-    players: PlayerArray[] = [];
     leftPlayers: PlayerArray[] = [];
 
     constructor(
@@ -77,13 +76,16 @@ export class HostInterfaceComponent {
 
         this.socketService.on(socketEvent.endQuestion, () => {
             this.resetInterface();
-            this.playerListComponent.getPlayersList();
+            this.playerListComponent.getPlayersList(false);
         });
 
         this.socketService.on(socketEvent.finalTimeTransition, (timeValue: number) => {
             this.timerText = timerMessage.resultAvailableIn;
             this.gameService.gameRealService.timer = timeValue;
-            if (this.gameService.timer === 0) this.isGameOver = true;
+            if (this.gameService.timer === 0) {
+                this.isGameOver = true;
+                this.playerListComponent.getPlayersList();
+            }
         });
 
         this.socketService.on(socketEvent.refreshChoicesStats, (choicesStatsValue: number[]) => {
@@ -96,6 +98,7 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.getNextQuestion, (data: NextQuestionData) => {
+            this.playerListComponent.getPlayersList();
             this.initGraph(data.question);
         });
 
