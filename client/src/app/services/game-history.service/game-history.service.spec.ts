@@ -4,49 +4,49 @@ import { GameHistoryService } from '@app/services/game-history.service/game-hist
 import { GameInfo } from '@common/interfaces/game-info.interface';
 
 describe('GameHistoryService', () => {
-  let service: GameHistoryService;
-  let httpMock: HttpTestingController;
-  const MOCK_GAMES: GameInfo[] = [
-    {
-        gameName: 'Quiz 1',
-        startTime: '2023-11-13 15:30:00',
-        playersCount: 4,
-        bestScore: 30,
-    },
-    {
-        gameName: 'Quiz 2',
-        startTime: '2023-11-14 10:45:00',
-        playersCount: 2,
-        bestScore: 25,
-    },
-    {
-        gameName: 'Quiz 3',
-        startTime: '2023-11-15 20:00:00',
-        playersCount: 3,
-        bestScore: 40,
-    },
-];
+    let service: GameHistoryService;
+    let httpMock: HttpTestingController;
+    const MOCK_GAMES: GameInfo[] = [
+        {
+            gameName: 'Quiz 1',
+            startTime: '2023-11-13 15:30:00',
+            playersCount: 4,
+            bestScore: 30,
+        },
+        {
+            gameName: 'Quiz 2',
+            startTime: '2023-11-14 10:45:00',
+            playersCount: 2,
+            bestScore: 25,
+        },
+        {
+            gameName: 'Quiz 3',
+            startTime: '2023-11-15 20:00:00',
+            playersCount: 3,
+            bestScore: 40,
+        },
+    ];
 
-  const putAndPatchResponse = { status: 200, statusText: 'Game history updated successfully' };
+    const putAndPatchResponse = { status: 200, statusText: 'Game history updated successfully' };
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [GameHistoryService]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [GameHistoryService],
+        });
+
+        service = TestBed.inject(GameHistoryService);
+        httpMock = TestBed.inject(HttpTestingController);
     });
 
-    service = TestBed.inject(GameHistoryService);
-    httpMock = TestBed.inject(HttpTestingController);
-  });
+    afterEach(() => {
+        httpMock.verify();
+    });
 
-  afterEach(() => {
-    httpMock.verify();
-  });
-
-  const expectRequestTypeAndFlush = <T>(url: string, method: string, response: T extends object ? T : never) => {
-    const req = httpMock.expectOne(`${service.baseUrl}${url}`);
-    expect(req.request.method).toBe(method);
-    req.flush(response);
+    const expectRequestTypeAndFlush = <T>(url: string, method: string, response: T extends object ? T : never) => {
+        const req = httpMock.expectOne(`${service.baseUrl}${url}`);
+        expect(req.request.method).toBe(method);
+        req.flush(response);
     };
 
     it('should get all games in the game history', () => {
@@ -58,6 +58,6 @@ describe('GameHistoryService', () => {
 
     it('should delete the game history', () => {
         service.deleteAll().subscribe();
-        expectRequestTypeAndFlush(`/history`, 'DELETE', putAndPatchResponse);
+        expectRequestTypeAndFlush('/history', 'DELETE', putAndPatchResponse);
     });
 });
