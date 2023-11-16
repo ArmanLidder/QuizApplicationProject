@@ -28,14 +28,12 @@ export class PlayerListComponent {
         ['byScore', false],
         ['byStatus', false],
     ]);
-    // private sortFunction: (arg1: Player, arg2: Player) => number;
 
     constructor(
         public socketService: SocketClientService,
         public sortListService: SortListService,
     ) {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
-        // this.sortFunction = this.sortListService.sortByName;
     }
     changeOrder() {
         this.order *= -1;
