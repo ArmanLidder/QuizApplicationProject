@@ -8,11 +8,10 @@ const STATUS = 3;
 })
 export class SortListService {
     readonly mapStatus = new Map([
-        [playerStatus.noInteraction, 0],
-        [playerStatus.interaction, 1],
-        [playerStatus.validation, 2],
-        [playerStatus.endGame, 3],
-        [playerStatus.left, 4],
+        [playerStatus.noInteraction, 3],
+        [playerStatus.interaction, 2],
+        [playerStatus.validation, 1],
+        [playerStatus.left, 0],
     ]);
     sortWithName(firstPlayer: Player, secondPlayer: Player) {
         return firstPlayer[0].localeCompare(secondPlayer[0]);
@@ -26,7 +25,7 @@ export class SortListService {
 
     // @ts-ignore
     sortWithStatus(firstPlayer: Player, secondPlayer: Player) {
-        if (firstPlayer[STATUS].localeCompare(secondPlayer[STATUS]) === 0) return this.sortWithScore(firstPlayer, secondPlayer);
+        if (firstPlayer[STATUS].localeCompare(secondPlayer[STATUS]) === 0) return this.sortWithName(firstPlayer, secondPlayer);
         // @ts-ignore
         return this.mapStatus.get(secondPlayer[STATUS]) - this.mapStatus.get(firstPlayer[STATUS]);
     }

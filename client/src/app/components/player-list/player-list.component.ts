@@ -21,6 +21,7 @@ export class PlayerListComponent {
     @Input() isFinal: boolean;
     players: Player[] = [];
     actualStatus: Player[] = [];
+    order = 1;
     private sortFunction: (arg1: Player, arg2: Player) => number;
 
     constructor(
@@ -30,7 +31,10 @@ export class PlayerListComponent {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.sortFunction = this.sortListService.sortWithName;
     }
-
+    changeOrder() {
+        this.order *= -1;
+        this.getPlayersList(false);
+    }
     sortByStatus() {
         this.sortFunction = this.sortListService.sortWithStatus.bind(this.sortListService);
         this.getPlayersList(false);
@@ -64,7 +68,7 @@ export class PlayerListComponent {
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         this.players.push([username, score.points, score.bonusCount, status]);
-        this.players.sort(this.sortFunction);
+        this.players.sort((first: Player, second: Player) => this.order * this.sortFunction(first, second));
     }
 
     private appendLeftPlayersToActivePlayers() {
