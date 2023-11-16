@@ -6,7 +6,7 @@ import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 
 export type Player = [string, number, number, string];
-type PlayerAbandonnement = [string, number, number, string];
+type PlayerAbandonment = [string, number, number, string];
 
 const STATUS = 3;
 
@@ -16,12 +16,18 @@ const STATUS = 3;
     styleUrls: ['./player-list.component.scss'],
 })
 export class PlayerListComponent {
-    @Input() leftPlayers: PlayerAbandonnement[] = [];
+    @Input() leftPlayers: PlayerAbandonment[] = [];
     @Input() roomId: number;
     @Input() isFinal: boolean;
     players: Player[] = [];
     actualStatus: Player[] = [];
     order = 1;
+    orderIcon = 'fa-solid fa-up-long';
+    optionSelections = new Map([
+        ['byName', true],
+        ['byScore', false],
+        ['byStatus', false],
+    ]);
     private sortFunction: (arg1: Player, arg2: Player) => number;
 
     constructor(
@@ -33,19 +39,23 @@ export class PlayerListComponent {
     }
     changeOrder() {
         this.order *= -1;
+        this.orderIcon = this.order > 0 ? 'fa-solid fa-up-long' : 'fa-solid fa-down-long';
         this.getPlayersList(false);
     }
     sortByStatus() {
+        this.updateOptionSelections('byStatus');
         this.sortFunction = this.sortListService.sortWithStatus.bind(this.sortListService);
         this.getPlayersList(false);
     }
 
     sortByScore() {
+        this.updateOptionSelections('byScore');
         this.sortFunction = this.sortListService.sortWithScore.bind(this.sortListService);
         this.getPlayersList(false);
     }
 
     sortByName() {
+        this.updateOptionSelections('byName');
         this.sortFunction = this.sortListService.sortWithName;
         this.getPlayersList(false);
     }
@@ -56,6 +66,12 @@ export class PlayerListComponent {
             players.forEach((username) => {
                 this.getPlayerScoreFromServer(username, resetPlayerStatus);
             });
+        });
+    }
+    private updateOptionSelections(selectedMethod: string){
+        this.optionSelections.forEach((isSelected, methodName) => {
+            if (isSelected && methodName !== selectedMethod) this.optionSelections.set(methodName, false);
+            else if (selectedMethod === methodName) this.optionSelections.set(methodName, true);
         });
     }
 
