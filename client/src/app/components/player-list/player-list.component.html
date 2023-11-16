@@ -1,26 +1,31 @@
-<h2> Résultats </h2>
 <div class='sort-buttons'>
-    <button (click)="this.sortByName()">Trier par Nom</button>
-    <button (click)="this.sortByScore()">Trier par Score</button>
-    <button (click)="this.sortByStatus()">Trier par Statut</button>
-    <button (click)="this.changeOrder()">Changer l'ordre</button>
+    <p>Trier la liste par : </p>
+    <button (click)="this.sortByName()"   [class]='(optionSelections.get("byName")  ) ? "selected": "add"'>Nom</button>
+    <button (click)="this.sortByScore()"  [class]='(optionSelections.get("byScore") ) ? "selected": "add"'>Point</button>
+    <button (click)="this.sortByStatus()" [class]='(optionSelections.get("byStatus")) ? "selected": "add"'>Statut</button>
+    <button (click)="this.changeOrder()"  class='add'><i [class]='orderIcon'></i></button>
 </div>
 <div class="players-container">
     <table>
         <thead>
         <tr>
-            <th>Top</th>
-            <th>Pseudo</th>
-            <th>Score</th>
-            <th>Bonuses</th>
+            <th>Nom</th>
+            <th>Points</th>
+            <th>Bonus</th>
+            <th>Chat</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let player of players; let i = index" [class]='player[3]'>
-            <td> #{{i + 1}} </td>
+        <tr *ngFor="let player of players" [class]='player[3]'>
             <td> {{player[0]}} </td>
             <td> {{player[1]}} </td>
             <td> {{player[2]}} </td>
+            <td>
+                <label class="switch-btn">
+                    <input type="checkbox"/>
+                    <span class="slider round"></span>
+                </label>
+            </td>
         </tr>
         </tbody>
     </table>
