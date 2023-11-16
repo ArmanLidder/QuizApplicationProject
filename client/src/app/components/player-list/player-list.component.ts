@@ -68,7 +68,15 @@ export class PlayerListComponent {
             });
         });
     }
-    private updateOptionSelections(selectedMethod: string){
+
+    toggleChatPermission(username: string) {
+        this.socketService.send(socketEvent.toggleChatPermission, { roomId: this.roomId, username });
+    }
+    isPlayerGone(username: string) {
+        const foundPlayer = this.leftPlayers.find((player) => player[0] === username);
+        return foundPlayer !== undefined;
+    }
+    private updateOptionSelections(selectedMethod: string) {
         this.optionSelections.forEach((isSelected, methodName) => {
             if (isSelected && methodName !== selectedMethod) this.optionSelections.set(methodName, false);
             else if (selectedMethod === methodName) this.optionSelections.set(methodName, true);
@@ -96,10 +104,6 @@ export class PlayerListComponent {
         this.appendLeftPlayersToActivePlayers();
     }
 
-    private isPlayerGone(username: string) {
-        const foundPlayer = this.leftPlayers.find((player) => player[0] === username);
-        return foundPlayer !== undefined;
-    }
 
     private findPlayer(username: string, players: Player[]) {
         return players.findIndex((player) => player[0] === username);
