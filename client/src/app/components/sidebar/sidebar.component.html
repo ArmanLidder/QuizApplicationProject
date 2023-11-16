@@ -13,12 +13,14 @@
 
     <form class="message-input" [formGroup]="messageForm" (ngSubmit)="sendMessage()">
         <input
+            *ngIf='canChat'
             type="text"
             formControlName="message"
             placeholder="Envoyer un message"
             (mousedown)="onChatFocus()" (blur)="onChatBlur()"
             (keyup.enter)="sendMessage()"
         >
+        <p *ngIf='!canChat'> Vous n'avez plus le droit de parole!</p>
     </form>
     <div class="error-message" *ngIf="messageForm.get('message')?.hasError('maxlength')">Votre message dépasse 200 caractères</div>
 </div>
