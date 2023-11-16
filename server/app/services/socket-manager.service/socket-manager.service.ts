@@ -138,8 +138,10 @@ export class SocketManager {
             socket.on(socketEvent.submitAnswer, (data: PlayerAnswerData) => {
                 const game = this.roomManager.getGameByRoomId(data.roomId);
                 this.roomManager.getGameByRoomId(data.roomId).storePlayerAnswer(data.username, data.timer, data.answers);
-                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
-                if (data.timer !== 0) this.sio.to(hostSocketId).emit(socketEvent.submitAnswer, data.username);
+                if (data.timer !== 0) {
+                    const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
+                    this.sio.to(hostSocketId).emit(socketEvent.submitAnswer, data.username);
+                }
                 if (game.playersAnswers.size === game.players.size) {
                     this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
