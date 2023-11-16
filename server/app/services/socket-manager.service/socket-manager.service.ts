@@ -181,7 +181,7 @@ export class SocketManager {
             socket.on(socketEvent.showResult, (roomId: number) => {
                 this.roomManager.clearRoomTimer(roomId);
                 this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.finalTimeTransition);
-                this.roomManager.getGameByRoomId(roomId).updateGameHistory().then();
+                this.roomManager.getGameByRoomId(roomId).updateGameHistory();
             });
 
             socket.on(socketEvent.disconnect, (reason) => {

@@ -12,10 +12,10 @@ chai.use(chaiAsPromised);
 
 interface GameInfoMock {
     _id: ObjectId;
-    gameName?: string;
-    startTime?: string;
-    playersCount?: number;
-    bestScore?: number;
+    gameName: string;
+    startTime: string;
+    playersCount: number;
+    bestScore: number;
 }
 
 describe('History Service', () => {

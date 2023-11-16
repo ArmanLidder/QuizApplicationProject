@@ -23,7 +23,7 @@ export class Game {
     duration: number;
     playersAnswers: PlayerAnswers = new Map();
 
-    gameHistoryInfo: GameInfo = {};
+    gameHistoryInfo: GameInfo = { gameName: '', startTime: '', playersCount: 0, bestScore: 0 };
 
     constructor(
         usernames: string[],
