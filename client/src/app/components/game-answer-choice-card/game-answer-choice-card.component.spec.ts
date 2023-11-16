@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { DEBOUNCE_TIMER, GameAnswerChoiceCardComponent } from './game-answer-choice-card.component';
 import { HttpClientModule } from '@angular/common/http';
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameAnswerChoiceCardComponent', () => {
     let component: GameAnswerChoiceCardComponent;
@@ -56,29 +57,41 @@ describe('GameAnswerChoiceCardComponent', () => {
         expect(showResultSpy).not.toHaveBeenCalled();
     });
 
-    it('should change isSelected value to true and show the appropriate feedback and emit the right number', () => {
+    it('should change isSelected value to true and show the appropriate feedback and emit the right number', fakeAsync(() => {
         const showSelectionFeedbackSpy = spyOn<any>(component, 'showSelectionFeedback');
         const resetSpy = spyOn<any>(component, 'reset');
         const emitSpy = spyOn(component.selectEvent, 'emit');
         component.isSelected = false;
         component.index = 1;
         component.toggleSelect();
+        tick(DEBOUNCE_TIMER);
         expect(showSelectionFeedbackSpy).toHaveBeenCalled();
         expect(resetSpy).not.toHaveBeenCalled();
         expect(emitSpy).toHaveBeenCalledWith(0);
-    });
+    }));
 
-    it('should change isSelected value to false and show the appropriate feedback and emit the right number', () => {
+    it('should change isSelected value to false and show the appropriate feedback and emit the right number', fakeAsync(() => {
         const showSelectionFeedbackSpy = spyOn<any>(component, 'showSelectionFeedback');
         const resetSpy = spyOn<any>(component, 'reset');
         const emitSpy = spyOn(component.selectEvent, 'emit');
         component.isSelected = true;
         component.index = 1;
         component.toggleSelect();
+        tick(DEBOUNCE_TIMER);
         expect(showSelectionFeedbackSpy).not.toHaveBeenCalled();
         expect(resetSpy).toHaveBeenCalled();
         expect(emitSpy).toHaveBeenCalledWith(0);
-    });
+    }));
+
+    it('should change isSelected value to false and show the appropriate feedback and emit the right number', fakeAsync(() => {
+        const toggleSpy = spyOn<any>(component, 'toggleSelect');
+        component.isSelected = false;
+        component.index = 1;
+        component.toggleSelect();
+        component.isSelected = true;
+        tick(DEBOUNCE_TIMER);
+        expect(toggleSpy).toHaveBeenCalled();
+    }));
 
     it('should show the appropriate feedback according to choice correctness value', () => {
         const showGoodAnswerFeedBackSpy = spyOn<any>(component, 'showGoodAnswerFeedBack');

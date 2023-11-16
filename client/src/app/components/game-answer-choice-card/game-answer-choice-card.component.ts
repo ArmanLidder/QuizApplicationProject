@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, Output, HostListener } from 
 import { QuizChoice } from '@common/interfaces/quiz.interface';
 import { GameService } from '@app/services/game.service/game.service';
 
+export const DEBOUNCE_TIMER = 50;
+
 @Component({
     selector: 'app-game-answer-choice-card',
     templateUrl: './game-answer-choice-card.component.html',
@@ -34,12 +36,17 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
     }
 
     toggleSelect() {
-        if (!this.gameService.lockedStatus && !this.gameService.isInputFocused) {
-            this.isSelected = !this.isSelected;
-            if (this.isSelected) this.showSelectionFeedback();
-            else this.reset();
-            this.selectEvent.emit(this.index - 1);
-        }
+        const isSelected = this.isSelected;
+        setTimeout(() => {
+            if (isSelected === this.isSelected) {
+                if (!this.gameService.lockedStatus && !this.gameService.isInputFocused) {
+                    this.isSelected = !this.isSelected;
+                    if (this.isSelected) this.showSelectionFeedback();
+                    else this.reset();
+                    this.selectEvent.emit(this.index - 1);
+                }
+            } else this.toggleSelect();
+        }, DEBOUNCE_TIMER);
     }
 
     private showResult() {

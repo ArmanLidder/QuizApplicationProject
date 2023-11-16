@@ -15,7 +15,7 @@ export class GameTestService implements GameServiceInterface {
     timeouts: number[] = [0, 0];
     validated: boolean = false;
     gameOver: boolean = false;
-    answers: Map<number, string | null>;
+    answers: Map<number, string | null> = new Map();
     locked: boolean = false;
     quiz: Quiz;
     quizId: string = '';
