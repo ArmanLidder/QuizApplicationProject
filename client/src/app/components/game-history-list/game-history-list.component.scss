@@ -108,3 +108,19 @@ button {
   cursor: pointer;
 }
 
+th {
+    mat-icon {
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    mat-icon:hover {
+        color: lightgray;
+    }
+}
+
+.clicked {
+    color: #61dc9f;
+}
+
+
