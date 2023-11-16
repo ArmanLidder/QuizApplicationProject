@@ -28,14 +28,14 @@ export class PlayerListComponent {
         ['byScore', false],
         ['byStatus', false],
     ]);
-    private sortFunction: (arg1: Player, arg2: Player) => number;
+    // private sortFunction: (arg1: Player, arg2: Player) => number;
 
     constructor(
         public socketService: SocketClientService,
         public sortListService: SortListService,
     ) {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
-        this.sortFunction = this.sortListService.sortWithName;
+        // this.sortFunction = this.sortListService.sortByName;
     }
     changeOrder() {
         this.order *= -1;
@@ -44,19 +44,19 @@ export class PlayerListComponent {
     }
     sortByStatus() {
         this.updateOptionSelections('byStatus');
-        this.sortFunction = this.sortListService.sortWithStatus.bind(this.sortListService);
+        this.sortListService.sortByStatus();
         this.getPlayersList(false);
     }
 
     sortByScore() {
         this.updateOptionSelections('byScore');
-        this.sortFunction = this.sortListService.sortWithScore.bind(this.sortListService);
+        this.sortListService.sortByScore();
         this.getPlayersList(false);
     }
 
     sortByName() {
         this.updateOptionSelections('byName');
-        this.sortFunction = this.sortListService.sortWithName;
+        this.sortListService.sortByName();
         this.getPlayersList(false);
     }
 
@@ -92,7 +92,7 @@ export class PlayerListComponent {
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         this.players.push([username, score.points, score.bonusCount, status]);
-        this.players.sort((first: Player, second: Player) => this.order * this.sortFunction(first, second));
+        this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
 
     private appendLeftPlayersToActivePlayers() {
@@ -103,7 +103,6 @@ export class PlayerListComponent {
         this.players = [];
         this.appendLeftPlayersToActivePlayers();
     }
-
 
     private findPlayer(username: string, players: Player[]) {
         return players.findIndex((player) => player[0] === username);
