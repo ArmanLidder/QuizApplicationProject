@@ -3,6 +3,9 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
 import { BONUS_MULTIPLIER } from '@app/classes/game/game.const';
+import { format } from 'date-fns-tz';
+import { GameInfo } from '@common/interfaces/game-info.interface';
+import { HistoryService } from '@app/services/history.service/history.service';
 
 type Username = string;
 type Players = Map<Username, Score>;
@@ -20,11 +23,16 @@ export class Game {
     duration: number;
     playersAnswers: PlayerAnswers = new Map();
 
+    gameHistoryInfo: GameInfo = { gameName: '', startTime: '', playersCount: 0, bestScore: 0 };
+
     constructor(
         usernames: string[],
         private readonly quizService: QuizService,
+        private readonly historyService: HistoryService,
     ) {
         this.configurePlayers(usernames);
+        this.gameHistoryInfo.playersCount = usernames.length;
+        this.gameHistoryInfo.startTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss', { timeZone: 'America/Montreal' });
     }
 
     async setup(id: string) {
@@ -58,6 +66,16 @@ export class Game {
         const answer = this.currentQuizQuestion.choices[index].text;
         const oldValue = this.choicesStats.get(answer);
         this.choicesStats.set(answer, isSelected ? oldValue + 1 : oldValue - 1);
+    }
+
+    async updateGameHistory() {
+        this.gameHistoryInfo.gameName = this.quiz.title;
+        let maxPts = 0;
+        for (const score of this.players.values()) {
+            maxPts = Math.max(maxPts, score.points);
+        }
+        this.gameHistoryInfo.bestScore = maxPts;
+        await this.historyService.add(this.gameHistoryInfo);
     }
 
     private validateAnswer(playerAnswers: string[]) {

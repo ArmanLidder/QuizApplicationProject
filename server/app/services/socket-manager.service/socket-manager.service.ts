@@ -7,6 +7,7 @@ import { ONE_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/sock
 import { PlayerAnswerData, PlayerMessage, PlayerSelection, RemainingTime, PlayerUsername } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { HistoryService } from '@app/services/history.service/history.service';
 
 export class SocketManager {
     private sio: io.Server;
@@ -14,6 +15,7 @@ export class SocketManager {
 
     constructor(
         private quizService: QuizService,
+        private historyService: HistoryService,
         server: http.Server,
     ) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
@@ -117,7 +119,7 @@ export class SocketManager {
                 const room = this.roomManager.getRoomById(data.roomId);
                 const quizId = room.quizID;
                 const usernames = this.roomManager.getUsernamesArray(data.roomId);
-                room.game = new Game(usernames, this.quizService);
+                room.game = new Game(usernames, this.quizService, this.historyService);
                 await room.game.setup(quizId);
                 this.startTimer(data.roomId, data.time);
             });
@@ -179,6 +181,7 @@ export class SocketManager {
             socket.on(socketEvent.showResult, (roomId: number) => {
                 this.roomManager.clearRoomTimer(roomId);
                 this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.finalTimeTransition);
+                this.roomManager.getGameByRoomId(roomId).updateGameHistory();
             });
 
             socket.on(socketEvent.disconnect, (reason) => {
