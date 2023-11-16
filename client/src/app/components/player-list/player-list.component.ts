@@ -3,8 +3,9 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
+import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 
-type Player = [string, number, number, string];
+export type Player = [string, number, number, string];
 type PlayerAbandonnement = [string, number, number, string];
 
 const STATUS = 3;
@@ -20,13 +21,32 @@ export class PlayerListComponent {
     @Input() isFinal: boolean;
     players: Player[] = [];
     actualStatus: Player[] = [];
+    private sortFunction: (arg1: Player, arg2: Player) => number;
 
-    constructor(public socketService: SocketClientService) {
+    constructor(
+        public socketService: SocketClientService,
+        public sortListService: SortListService,
+    ) {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
+        this.sortFunction = this.sortListService.sortWithName;
+    }
+
+    sortByStatus() {
+        this.sortFunction = this.sortListService.sortWithStatus.bind(this.sortListService);
+        this.getPlayersList(false);
+    }
+
+    sortByScore() {
+        this.sortFunction = this.sortListService.sortWithScore.bind(this.sortListService);
+        this.getPlayersList(false);
+    }
+
+    sortByName() {
+        this.sortFunction = this.sortListService.sortWithName;
+        this.getPlayersList(false);
     }
 
     getPlayersList(resetPlayerStatus: boolean = true) {
-        console.log(`getPlayersList with isNextQuestion = ${resetPlayerStatus}`);
         this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
             this.setupPlayerList();
             players.forEach((username) => {
@@ -44,7 +64,7 @@ export class PlayerListComponent {
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         this.players.push([username, score.points, score.bonusCount, status]);
-        this.players.sort(this.comparePlayers);
+        this.players.sort(this.sortFunction);
     }
 
     private appendLeftPlayersToActivePlayers() {
@@ -89,10 +109,5 @@ export class PlayerListComponent {
     private getActualStatus(username: string) {
         const playerIndex = this.findPlayer(username, this.actualStatus);
         return this.actualStatus[playerIndex][STATUS];
-    }
-
-    private comparePlayers(firstPlayer: Player, secondPlayer: Player) {
-        if (secondPlayer[1] - firstPlayer[1] !== 0) return secondPlayer[1] - firstPlayer[1];
-        return firstPlayer[0].localeCompare(secondPlayer[0]);
     }
 }

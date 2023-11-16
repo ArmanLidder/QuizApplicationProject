@@ -106,7 +106,7 @@ export class HostInterfaceComponent {
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
-                this.playerListComponent.getPlayersList();
+                this.playerListComponent.getPlayersList(false);
             }
         });
 
