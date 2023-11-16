@@ -13,20 +13,33 @@ export class SortListService {
         [playerStatus.validation, 1],
         [playerStatus.left, 0],
     ]);
-    sortWithName(firstPlayer: Player, secondPlayer: Player) {
+    sortFunction: (arg1: Player, arg2: Player) => number;
+
+    sortByName() {
+        this.sortFunction = this.sortComparaisonByName;
+    }
+
+    sortByScore() {
+        this.sortFunction = this.sortComparaisonByScore.bind(this);
+    }
+
+    sortByStatus() {
+        this.sortFunction = this.sortComparaisonByStatus.bind(this);
+    }
+
+    private sortComparaisonByName(firstPlayer: Player, secondPlayer: Player) {
         return firstPlayer[0].localeCompare(secondPlayer[0]);
     }
 
-    sortWithScore(firstPlayer: Player, secondPlayer: Player) {
+    private sortComparaisonByScore(firstPlayer: Player, secondPlayer: Player) {
         const scoreComparaison = secondPlayer[1] - firstPlayer[1];
         if (scoreComparaison !== 0) return scoreComparaison;
-        return this.sortWithName(firstPlayer, secondPlayer);
+        return this.sortComparaisonByName(firstPlayer, secondPlayer);
     }
 
-    // @ts-ignore
-    sortWithStatus(firstPlayer: Player, secondPlayer: Player) {
-        if (firstPlayer[STATUS].localeCompare(secondPlayer[STATUS]) === 0) return this.sortWithName(firstPlayer, secondPlayer);
-        // @ts-ignore
-        return this.mapStatus.get(secondPlayer[STATUS]) - this.mapStatus.get(firstPlayer[STATUS]);
+    private sortComparaisonByStatus(firstPlayer: Player, secondPlayer: Player) {
+        const statusComparaison = (this.mapStatus.get(secondPlayer[STATUS]) ?? 0) - (this.mapStatus.get(firstPlayer[STATUS]) ?? 0);
+        if (statusComparaison !== 0) return statusComparaison;
+        return this.sortComparaisonByName(firstPlayer, secondPlayer);
     }
 }
