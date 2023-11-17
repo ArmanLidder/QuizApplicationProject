@@ -78,7 +78,7 @@ describe('HostInterfaceComponent', () => {
     });
 
     it('should return false when a player is in the list', () => {
-        component.leftPlayers = [['player1', 0, 0, playerStatus.left]];
+        component.leftPlayers = [['player1', 0, 0, playerStatus.left, true]];
         expect(component.playerHasLeft('player1')).toBeTruthy();
     });
 
@@ -146,12 +146,12 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof seventhAction === 'function') {
             component.playerListComponent.players = [
-                ['player1', 1, 0, playerStatus.validation],
-                ['player2', 1, 0, playerStatus.validation],
-                ['player3', 1, 0, playerStatus.validation],
+                ['player1', 1, 0, playerStatus.validation, true],
+                ['player2', 1, 0, playerStatus.validation, true],
+                ['player3', 1, 0, playerStatus.validation, true],
             ];
             seventhAction('player2');
-            expect(component.leftPlayers).toEqual([['player2', 1, 0, playerStatus.validation]]);
+            expect(component.leftPlayers).toEqual([['player2', 1, 0, playerStatus.validation, true]]);
         }
         if (typeof eightAction === 'function') {
             eightAction(TIMER_VALUE);

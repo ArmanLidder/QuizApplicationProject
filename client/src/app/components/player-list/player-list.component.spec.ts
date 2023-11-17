@@ -23,8 +23,8 @@ describe('PlayerListComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         component.players = [
-            ['karim', 0, 0, playerStatus.left],
-            ['player1', 0, 0, playerStatus.interaction],
+            ['karim', 0, 0, playerStatus.left, true],
+            ['player1', 0, 0, playerStatus.interaction, true],
         ];
         component.order = 1;
         component.orderIcon = 'fa-solid fa-up-long';
@@ -80,7 +80,7 @@ describe('PlayerListComponent', () => {
     });
 
     it('should check if a player has left', () => {
-        component.leftPlayers = [['test', 0, 0, playerStatus.left]];
+        component.leftPlayers = [['test', 0, 0, playerStatus.left, true]];
         const resultTrue = component.isPlayerGone('test');
         expect(resultTrue).toBeTruthy();
         component.leftPlayers = [];
@@ -90,7 +90,7 @@ describe('PlayerListComponent', () => {
 
     it('should change player status', () => {
         const statusIndex = 3;
-        component.players = [['test', 0, 0, playerStatus.noInteraction]];
+        component.players = [['test', 0, 0, playerStatus.noInteraction, true]];
         component['changePlayerStatus']('test', playerStatus.left);
         expect(component.players[0][statusIndex]).toEqual(playerStatus.left);
         component['changePlayerStatus']('NotFound', playerStatus.left);
@@ -113,15 +113,15 @@ describe('PlayerListComponent', () => {
 
     it('should return the right index when searching for player', () => {
         const noResult = -1;
-        const player = component['findPlayer']('test', [['test', 0, 0, playerStatus.validation]]);
+        const player = component['findPlayer']('test', [['test', 0, 0, playerStatus.validation, true]]);
         expect(player).toEqual(0);
         const noPlayer = component['findPlayer']('test', []);
         expect(noPlayer).toEqual(noResult);
     });
 
     it('should init player status correctly', () => {
-        component.players = [['test', 0, 0, playerStatus.validation]];
-        component.leftPlayers = [['isGone', 0, 0, playerStatus.left]];
+        component.players = [['test', 0, 0, playerStatus.validation, true]];
+        component.leftPlayers = [['isGone', 0, 0, playerStatus.left, true]];
         component.actualStatus = component.players;
         const playerLeft = component['initPlayerStatus']('isGone', true);
         expect(playerLeft).toEqual(playerStatus.left);
@@ -154,7 +154,7 @@ describe('PlayerListComponent', () => {
     });
 
     it('should get actual status', () => {
-        component.players = [['test', 0, 0, playerStatus.endGame]];
+        component.players = [['test', 0, 0, playerStatus.endGame, true]];
         component.actualStatus = component.players;
         const playerLeft = component['getActualStatus']('test');
         expect(playerLeft).toEqual(playerStatus.endGame);

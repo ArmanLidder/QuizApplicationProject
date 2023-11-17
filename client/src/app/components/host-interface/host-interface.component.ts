@@ -9,7 +9,7 @@ import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
-type PlayerArray = [string, number, number, string];
+type PlayerArray = [string, number, number, string, boolean];
 
 @Component({
     selector: 'app-host-interface',

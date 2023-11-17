@@ -24,10 +24,10 @@ describe('SortListService', () => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SortListService);
         mockPlayers = [
-            ['Bob', SCORE_HIGH, 2, playerStatus.interaction],
-            ['Karim', SCORE_MIDDLE, 1, playerStatus.validation],
-            ['Alice', SCORE_LOW, 1, playerStatus.noInteraction],
-            ['Mahmoud', SCORE_MIDDLE, 0, playerStatus.validation],
+            ['Bob', SCORE_HIGH, 2, playerStatus.interaction, true],
+            ['Karim', SCORE_MIDDLE, 1, playerStatus.validation, true],
+            ['Alice', SCORE_LOW, 1, playerStatus.noInteraction, true],
+            ['Mahmoud', SCORE_MIDDLE, 0, playerStatus.validation, true],
         ];
     });
     const verifySortByName = () => {
