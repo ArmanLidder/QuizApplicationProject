@@ -4,6 +4,7 @@ import { GameAdministrationPageComponent } from './game-administration-page.comp
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { GameHistoryListComponent } from '@app/components/game-history-list/game-history-list.component';
 
 describe('GameAdministrationPageComponent', () => {
     let component: GameAdministrationPageComponent;
@@ -11,7 +12,7 @@ describe('GameAdministrationPageComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [GameAdministrationPageComponent, GamesListComponent],
+            declarations: [GameAdministrationPageComponent, GamesListComponent, GameHistoryListComponent],
             imports: [HttpClientModule, AppMaterialModule],
             providers: [MatDialog],
         });

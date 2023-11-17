@@ -12,6 +12,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { By } from '@angular/platform-browser';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { playerStatus } from '@common/player-status/player-status';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -77,7 +78,7 @@ describe('HostInterfaceComponent', () => {
     });
 
     it('should return false when a player is in the list', () => {
-        component.leftPlayers = [['player1', 0, 0]];
+        component.leftPlayers = [['player1', 0, 0, playerStatus.left, true]];
         expect(component.playerHasLeft('player1')).toBeTruthy();
     });
 
@@ -145,12 +146,12 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof seventhAction === 'function') {
             component.playerListComponent.players = [
-                ['player1', 1, 0],
-                ['player2', 1, 0],
-                ['player3', 1, 0],
+                ['player1', 1, 0, playerStatus.validation, true],
+                ['player2', 1, 0, playerStatus.validation, true],
+                ['player3', 1, 0, playerStatus.validation, true],
             ];
             seventhAction('player2');
-            expect(component.leftPlayers).toEqual([['player2', 1, 0]]);
+            expect(component.leftPlayers).toEqual([['player2', 1, 0, playerStatus.validation, true]]);
         }
         if (typeof eightAction === 'function') {
             eightAction(TIMER_VALUE);

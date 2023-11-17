@@ -5,7 +5,8 @@ import { Service } from 'typedi';
 import { DatabaseService } from '@app/services/database.service/database.service';
 import { SocketManager } from '@app/services/socket-manager.service/socket-manager.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
-
+import { HistoryService } from '@app/services/history.service/history.service';
+/* eslint-disable max-params */
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
@@ -16,6 +17,7 @@ export class Server {
         private readonly application: Application,
         private readonly databaseService: DatabaseService,
         private readonly quizService: QuizService,
+        private readonly historyService: HistoryService,
     ) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
@@ -26,7 +28,7 @@ export class Server {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
-        this.socketManager = new SocketManager(this.quizService, this.server);
+        this.socketManager = new SocketManager(this.quizService, this.historyService, this.server);
         this.socketManager.handleSockets();
 
         this.server.listen(Server.appPort);

@@ -23,6 +23,7 @@ export class SidebarComponent {
     formBuilder: FormBuilder;
     route: ActivatedRoute;
     gameService: GameService;
+    canChat: boolean = true;
 
     constructor(injector: Injector) {
         this.socketService = injector.get<SocketClientService>(SocketClientService);
@@ -88,6 +89,10 @@ export class SidebarComponent {
     private configureBaseSocketFeatures() {
         this.socketService.on(socketEvent.receivedMessage, (message: Message) => {
             this.messages.push(message);
+        });
+
+        this.socketService.on(socketEvent.toggleChatPermission, () => {
+            this.canChat = !this.canChat;
         });
     }
 }

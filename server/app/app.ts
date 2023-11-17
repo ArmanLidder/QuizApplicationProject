@@ -8,6 +8,7 @@ import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
 import { QuizController } from '@app/controllers/quiz.controller/quiz.controller';
 import { AdminAuthController } from './controllers/admin-auth.controller/admin-auth.controller';
+import { GameHistoryController } from '@app/controllers/game-history.controller/game-history.controller';
 
 @Service()
 export class Application {
@@ -18,6 +19,7 @@ export class Application {
     constructor(
         private readonly quizController: QuizController,
         private readonly adminAuthController: AdminAuthController,
+        private readonly historyController: GameHistoryController,
     ) {
         this.app = express();
 
@@ -40,6 +42,7 @@ export class Application {
     bindRoutes(): void {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/quiz', this.quizController.router);
+        this.app.use('/api/history', this.historyController.router);
         this.app.use('/api/auth/admin-password', this.adminAuthController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');

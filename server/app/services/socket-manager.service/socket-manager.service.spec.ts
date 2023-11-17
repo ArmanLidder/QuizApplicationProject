@@ -349,18 +349,30 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-    it('should handle submit answer', (done) => {
+    it('should handle submit answer when timer is 0', (done) => {
         gameMock.players = new Map();
         const mockAnswers = ['one', 'two'];
-        const mockTimer = 123;
-        clientSocket.emit(socketEvent.submitAnswer, { mockRoomId, mockAnswers, mockTimer, mockUsername });
+        const mockTimer = 0;
+        clientSocket.emit(socketEvent.submitAnswer, { roomId: mockRoomId, answers: mockAnswers, timer: mockTimer, username: mockUsername });
         setTimeout(() => {
+            expect(roomManager.getSocketIDByUsername.called);
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.clearRoomTimer.called);
             done();
         }, RESPONSE_DELAY);
     });
-
+    it('should handle submit answer when timer is more than 0', (done) => {
+        gameMock.players = new Map();
+        const mockAnswers = ['one', 'two'];
+        const mockTimer = 123; // Set to a value other than 0
+        clientSocket.emit(socketEvent.submitAnswer, { mockRoomId, mockAnswers, mockTimer, mockUsername });
+        setTimeout(() => {
+            expect(roomManager.getSocketIDByUsername.called);
+            expect(roomManager.getGameByRoomId.called);
+            expect(roomManager.clearRoomTimer.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
     it('should handle submit answer when length not equal', (done) => {
         const mockAnswers = ['one', 'two'];
         const mockTimer = 123;
@@ -403,6 +415,13 @@ describe('SocketManager service tests', () => {
         clientSocket.emit(socketEvent.updateSelection, { mockRoomId, mockIsSelected, mockIndex });
         setTimeout(() => {
             expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, 'Organisateur'));
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should toggle chat permission', (done) => {
+        clientSocket.emit(socketEvent.toggleChatPermission, { roomId: mockRoomId, username: mockUsername });
+        setTimeout(() => {
+            expect(roomManager.getUsernameBySocketId.called);
             done();
         }, RESPONSE_DELAY);
     });
