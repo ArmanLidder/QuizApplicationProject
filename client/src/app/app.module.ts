@@ -32,6 +32,7 @@ import { OrganizerHistogramComponent } from '@app/components/organizer-histogram
 import { NgChartsModule } from 'ng2-charts';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -52,6 +53,7 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
         PasswordPromptComponent,
         GameItemComponent,
         GamesListComponent,
+        GameHistoryListComponent,
         QuizInfoComponent,
         UniqueQuizErrorFeedbackComponent,
         ValidationQuizErrorFeedbackComponent,
