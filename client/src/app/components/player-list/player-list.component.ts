@@ -95,10 +95,14 @@ export class PlayerListComponent {
 
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
-        const playerIndex = this.findPlayer(username, this.actualStatus);
-        const canChat = this.actualStatus.length === 0 ? true : this.actualStatus[playerIndex][CAN_TALK];
+        const canChat = this.canPlayerChat(username);
         this.players.push([username, score.points, score.bonusCount, status, canChat]);
         this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
+    }
+
+    private canPlayerChat(username: string) {
+        const playerIndex = this.findPlayer(username, this.actualStatus);
+        return this.actualStatus.length === 0 ? true : this.actualStatus[playerIndex][CAN_TALK];
     }
 
     private appendLeftPlayersToActivePlayers() {
