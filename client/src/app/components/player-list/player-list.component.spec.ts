@@ -159,4 +159,15 @@ describe('PlayerListComponent', () => {
         const playerLeft = component['getActualStatus']('test');
         expect(playerLeft).toEqual(playerStatus.endGame);
     });
+
+    it('should sortPlayerByScore and verify if user can talk', () => {
+        spyOn(component, 'initPlayerStatus' as any).and.returnValue(playerStatus.endGame);
+        component.players = [['test', 0, 0, playerStatus.endGame, true]];
+        component.actualStatus = [];
+        const first = component['canPlayerChat']('test');
+        expect(first).toBeTruthy();
+        component.actualStatus = [['test', 0, 0, playerStatus.endGame, false]];
+        const second = component['canPlayerChat']('test');
+        expect(second).toBeFalsy();
+    });
 });
