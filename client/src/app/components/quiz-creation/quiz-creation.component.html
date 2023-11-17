@@ -1,6 +1,6 @@
 <div class="form-group">
     <div class="container">
-        <h2>{{mode === pageModel.CREATION ? 'Création' : 'Modification'}} du jeu</h2>
+        <h2 class="center-text">{{mode === pageModel.CREATION ? 'Création' : 'Modification'}} du jeu</h2>
         <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
             <div class="form-control">
                 <label for="title">Titre: </label>
@@ -38,7 +38,7 @@
                 <span class="popuptext" [innerHTML]="formErrors.join('<br>')"></span>
             </div>
             <div class='footer-buttons-container'>
-                <button type="submit">
+                <button type="submit" id="save">
                     {{mode === pageModel.CREATION ? 'Créer' : 'Sauvegarder'}} le quiz
                 </button>
                 <button type='button' routerLink="/game-admin-page" id="cancel">Annuler</button>
