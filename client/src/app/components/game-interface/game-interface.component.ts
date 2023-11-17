@@ -8,7 +8,7 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 
-type PlayerArray = [string, number];
+type Player = [string, number];
 
 @Component({
     selector: 'app-game-interface',
@@ -22,7 +22,7 @@ export class GameInterfaceComponent {
     isGameOver: boolean = false;
     playerScore: number = 0;
     timerText: string = timerMessage.timeLeft;
-    players: PlayerArray[] = [];
+    players: Player[] = [];
     gameService: GameService;
     private readonly socketService: SocketClientService;
     private route: ActivatedRoute;

@@ -16,12 +16,12 @@ export class Game {
     currIndex: number = 0;
     quiz: Quiz;
     players: Players = new Map();
+    playersAnswers: PlayerAnswers = new Map();
     currentQuizQuestion: QuizQuestion;
     question: string;
     choicesStats: ChoiceStats = new Map();
     correctChoices: string[] = [];
     duration: number;
-    playersAnswers: PlayerAnswers = new Map();
 
     gameHistoryInfo: GameInfo = { gameName: '', startTime: '', playersCount: 0, bestScore: 0 };
 
@@ -146,7 +146,8 @@ export class Game {
 
     private configurePlayers(usernames: string[]) {
         usernames.forEach((username) => {
-            this.players.set(username, { points: 0, bonusCount: 0, isBonus: false });
+            const score = { points: 0, bonusCount: 0, isBonus: false };
+            this.players.set(username, score);
         });
     }
 
