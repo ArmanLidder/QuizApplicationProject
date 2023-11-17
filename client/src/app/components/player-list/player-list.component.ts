@@ -4,12 +4,7 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-
-export type Player = [string, number, number, string, boolean];
-type PlayerAbandonment = [string, number, number, string, boolean];
-
-const STATUS = 3;
-const CAN_TALK = 4;
+import { STATUS, CAN_TALK, Player } from '@app/components/player-list/player-list.component.const';
 
 @Component({
     selector: 'app-player-list',
@@ -17,7 +12,7 @@ const CAN_TALK = 4;
     styleUrls: ['./player-list.component.scss'],
 })
 export class PlayerListComponent {
-    @Input() leftPlayers: PlayerAbandonment[] = [];
+    @Input() leftPlayers: Player[] = [];
     @Input() roomId: number;
     @Input() isFinal: boolean;
     @Input() isHost: boolean;
@@ -72,6 +67,8 @@ export class PlayerListComponent {
     }
 
     toggleChatPermission(username: string) {
+        const playerIndex = this.findPlayer(username, this.players);
+        this.players[playerIndex][4] = !this.players[playerIndex][4];
         this.socketService.send(socketEvent.toggleChatPermission, { roomId: this.roomId, username });
     }
 

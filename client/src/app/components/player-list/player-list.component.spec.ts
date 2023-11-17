@@ -75,8 +75,9 @@ describe('PlayerListComponent', () => {
     it('should toggle Chat Permission', () => {
         const sendSpy = spyOn(socketService, 'send');
         component.roomId = 1;
-        component.toggleChatPermission('test');
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.toggleChatPermission, { roomId: 1, username: 'test' });
+        component.players = [['karim', 0, 0, playerStatus.left, true]];
+        component.toggleChatPermission('karim');
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.toggleChatPermission, { roomId: 1, username: 'karim' });
     });
 
     it('should check if a player has left', () => {
