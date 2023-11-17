@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { QuestionService } from '@app/services/question-service/question.service';
-import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { POPUP_TIMEOUT } from '@app/components/question-list/question-list.component.const';
+import { ChoiceService } from '@app/services/choice-service/choice.service';
+import { QuestionService } from '@app/services/question-service/question.service';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 @Component({
     selector: 'app-question-list',
@@ -74,4 +75,7 @@ export class QuestionListComponent {
     getChoicesArray(index: number) {
         return this.choiceService.getChoicesArray(index, this.questionsArray);
     }
+
+    // eslint-disable-next-line @typescript-eslint/member-ordering
+    protected readonly questionType = QuestionType;
 }

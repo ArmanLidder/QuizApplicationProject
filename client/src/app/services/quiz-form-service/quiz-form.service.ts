@@ -59,14 +59,17 @@ export class QuizFormService {
             ],
             choices: this.fb.array(
                 [],
-                [
-                    Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
-                    Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
-                    this.validationService.validateChoicesForm,
-                ],
+                question?.type === QuestionType.QCM
+                    ? [
+                          Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
+                          Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
+                          this.validationService.validateChoicesForm,
+                      ]
+                    : [],
             ),
             beingModified: question === undefined,
         });
+        this.attachListenerToQuestionType(questionForm);
         this.fillChoices(questionForm.get('choices') as FormArray, question?.choices);
         return questionForm;
     }
@@ -76,9 +79,9 @@ export class QuizFormService {
             type: questionForm?.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
             text: questionForm?.get('text')?.value,
             points: questionForm?.get('points')?.value,
-            choices: [],
+            choices: questionForm?.get('type')?.value === 'QCM' ? [] : undefined,
         };
-        questionForm?.get('choices')?.value.forEach((choiceForm: QuizChoice) => {
+        questionForm?.get('choices')?.value?.forEach((choiceForm: QuizChoice) => {
             const choice: QuizChoice = {
                 text: choiceForm.text,
                 isCorrect: choiceForm.isCorrect,
@@ -126,9 +129,9 @@ export class QuizFormService {
             type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
             text: questionForm.get('text')?.value,
             points: questionForm.get('points')?.value,
-            choices: [],
+            choices: questionForm.get('type')?.value === 'QCM' ? [] : undefined,
         };
-        (questionForm.get('choices') as FormArray).controls.forEach((choiceForm) => {
+        (questionForm.get('choices') as FormArray).controls?.forEach((choiceForm) => {
             const choice = this.extractChoiceFromForm(choiceForm as FormArray);
             question.choices?.push(choice);
         });
@@ -140,5 +143,22 @@ export class QuizFormService {
             text: choiceForm.get('text')?.value,
             isCorrect: choiceForm.get('isCorrect')?.value === 'true',
         };
+    }
+
+    private attachListenerToQuestionType(questionForm: FormGroup) {
+        questionForm.get('type')?.valueChanges.subscribe((type: string | null) => {
+            const choicesControl = questionForm.get('choices') as FormArray;
+            if (type === 'QCM') {
+                choicesControl.setValidators([
+                    Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
+                    Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
+                    this.validationService.validateChoicesForm,
+                ]);
+            } else {
+                choicesControl.clearValidators();
+                choicesControl.clear();
+            }
+            choicesControl?.updateValueAndValidity();
+        });
     }
 }
