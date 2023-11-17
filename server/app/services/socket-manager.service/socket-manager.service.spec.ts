@@ -419,7 +419,7 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should toggle chat permission', (done) => {
-        clientSocket.emit(socketEvent.toggleChatPermission, { roomId: mockRoomId, username: mockUsername});
+        clientSocket.emit(socketEvent.toggleChatPermission, { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
             expect(roomManager.getUsernameBySocketId.called);
             done();

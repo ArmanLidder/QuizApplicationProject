@@ -119,7 +119,7 @@ describe('PlayerListComponent', () => {
         expect(noPlayer).toEqual(noResult);
     });
 
-    it('should init player status correctly', ()=> {
+    it('should init player status correctly', () => {
         component.players = [['test', 0, 0, playerStatus.validation]];
         component.leftPlayers = [['isGone', 0, 0, playerStatus.left]];
         component.actualStatus = component.players;
