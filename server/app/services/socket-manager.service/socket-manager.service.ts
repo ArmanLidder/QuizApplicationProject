@@ -186,6 +186,7 @@ export class SocketManager {
                 this.roomManager.clearRoomTimer(roomId);
                 this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.finalTimeTransition);
             });
+
             socket.on(socketEvent.toggleChatPermission, (data: PlayerUsername) => {
                 const playerSocket = this.roomManager.getSocketIDByUsername(data.roomId, data.username);
                 this.sio.to(playerSocket).emit(socketEvent.toggleChatPermission);
