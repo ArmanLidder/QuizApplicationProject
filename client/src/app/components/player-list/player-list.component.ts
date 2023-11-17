@@ -5,10 +5,11 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 
-export type Player = [string, number, number, string];
-type PlayerAbandonment = [string, number, number, string];
+export type Player = [string, number, number, string, boolean];
+type PlayerAbandonment = [string, number, number, string, boolean];
 
 const STATUS = 3;
+const CAN_TALK = 4;
 
 @Component({
     selector: 'app-player-list',
@@ -19,6 +20,7 @@ export class PlayerListComponent {
     @Input() leftPlayers: PlayerAbandonment[] = [];
     @Input() roomId: number;
     @Input() isFinal: boolean;
+    @Input() isHost: boolean;
     players: Player[] = [];
     actualStatus: Player[] = [];
     order = 1;
@@ -35,11 +37,13 @@ export class PlayerListComponent {
     ) {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
     }
+
     changeOrder() {
         this.order *= -1;
         this.orderIcon = this.order > 0 ? 'fa-solid fa-up-long' : 'fa-solid fa-down-long';
         this.getPlayersList(false);
     }
+
     sortByStatus() {
         this.updateOptionSelections('byStatus');
         this.sortListService.sortByStatus();
@@ -70,10 +74,12 @@ export class PlayerListComponent {
     toggleChatPermission(username: string) {
         this.socketService.send(socketEvent.toggleChatPermission, { roomId: this.roomId, username });
     }
+
     isPlayerGone(username: string) {
         const foundPlayer = this.leftPlayers.find((player) => player[0] === username);
         return foundPlayer !== undefined;
     }
+
     private updateOptionSelections(selectedMethod: string) {
         this.optionSelections.forEach((isSelected, methodName) => {
             if (isSelected && methodName !== selectedMethod) this.optionSelections.set(methodName, false);
@@ -89,13 +95,16 @@ export class PlayerListComponent {
 
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
-        this.players.push([username, score.points, score.bonusCount, status]);
+        const playerIndex = this.findPlayer(username, this.actualStatus);
+        const canChat = this.actualStatus.length === 0 ? true : this.actualStatus[playerIndex][CAN_TALK];
+        this.players.push([username, score.points, score.bonusCount, status, canChat]);
         this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
 
     private appendLeftPlayersToActivePlayers() {
-        this.leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.left]));
+        this.leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.left, false]));
     }
+
     private setupPlayerList() {
         this.actualStatus = this.players;
         this.players = [];
@@ -127,6 +136,7 @@ export class PlayerListComponent {
         else if (!resetPlayerStatus) return this.getActualStatus(username);
         else return this.isFinal ? playerStatus.endGame : playerStatus.noInteraction;
     }
+
     private getActualStatus(username: string) {
         const playerIndex = this.findPlayer(username, this.actualStatus);
         return this.actualStatus[playerIndex][STATUS];
