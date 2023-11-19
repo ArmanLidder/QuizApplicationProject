@@ -19,7 +19,7 @@ import {
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { HistoryService } from '@app/services/history.service/history.service';
-
+/* eslint-disable max-params */
 export class SocketManager {
     private sio: io.Server;
     private roomManager: RoomManagingService;
@@ -207,13 +207,13 @@ export class SocketManager {
             });
 
             socket.on(socketEvent.pauseTimer, (roomId: number) => {
-                const game =  this.roomManager.getGameByRoomId(roomId)
+                const game = this.roomManager.getGameByRoomId(roomId);
                 game.paused = !game.paused;
             });
 
             socket.on(socketEvent.panicMode, (data: PanicModeData) => {
                 this.roomManager.clearRoomTimer(data.roomId);
-                this.startTimer(data.roomId,data.timer, undefined, QUARTER_SECOND_DELAY);
+                this.startTimer(data.roomId, data.timer, undefined, QUARTER_SECOND_DELAY);
             });
 
             socket.on(socketEvent.disconnect, (reason) => {
@@ -232,12 +232,10 @@ export class SocketManager {
         this.roomManager.getRoomById(roomId).timer = setInterval(() => {
             if (game && game.paused) {
                 return;
-            }
-            else if (timeValue >= 0) {
+            } else if (timeValue >= 0) {
                 this.emitTime(roomId, timeValue, eventName);
                 timeValue--;
-            }
-            else {
+            } else {
                 this.roomManager.clearRoomTimer(roomId);
             }
         }, delay);

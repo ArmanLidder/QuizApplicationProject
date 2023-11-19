@@ -57,7 +57,10 @@ export class HostInterfaceComponent {
     }
 
     panicMode() {
-        this.socketService.send(socketEvent.panicMode, { roomId: this.gameService.gameRealService.roomId, timer: this.gameService.gameRealService.timer });
+        this.socketService.send(socketEvent.panicMode, {
+            roomId: this.gameService.gameRealService.roomId,
+            timer: this.gameService.gameRealService.timer,
+        });
     }
 
     private nextQuestion() {
