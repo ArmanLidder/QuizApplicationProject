@@ -52,6 +52,14 @@ export class HostInterfaceComponent {
         return this.leftPlayers.some((player) => player[0] === username);
     }
 
+    pauseTimer() {
+        this.socketService.send(socketEvent.pauseTimer, this.gameService.gameRealService.roomId);
+    }
+
+    panicMode() {
+        this.socketService.send(socketEvent.panicMode, { roomId: this.gameService.gameRealService.roomId, timer: this.gameService.gameRealService.timer });
+    }
+
     private nextQuestion() {
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;

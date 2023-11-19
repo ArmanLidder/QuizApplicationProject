@@ -5,6 +5,8 @@
 <div class="grid-container" *ngIf='!isGameOver'>
     <div id="flex-container">
         <p> {{timerText}} : {{ gameService.timer }}</p>
+        <button (click)='pauseTimer()' class='enter'> Pause </button>
+        <button (click)='panicMode()' class='enter'> Panic Mode </button>
     </div>
     <section id="question-field">
         <div>

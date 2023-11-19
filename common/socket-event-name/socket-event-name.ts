@@ -35,6 +35,8 @@ export namespace socketEvent {
     export const newMessage = 'newMessage'
     export const disconnect = 'disconnect';
     export const toggleChatPermission = 'toggleChatPermission';
+    export const pauseTimer = 'pauseTimer'
+    export const panicMode = 'panicMode'
 }
 
 
