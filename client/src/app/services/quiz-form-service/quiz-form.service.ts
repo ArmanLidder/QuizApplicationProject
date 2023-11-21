@@ -5,14 +5,15 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
-
-const MAX_POINTS_PER_QUESTION = 100;
-const MIN_POINTS_PER_QUESTION = 10;
-const MAX_QCM_DURATION = 60;
-const MIN_QCM_DURATION = 10;
-const MAX_NUMBER_OF_CHOICES_PER_QUESTION = 4;
-const MIN_NUMBER_OF_CHOICES_PER_QUESTION = 2;
-const MIN_NUMBER_OF_QUESTIONS = 1;
+import {
+    MAX_NUMBER_OF_CHOICES_PER_QUESTION,
+    MAX_POINTS_PER_QUESTION,
+    MAX_QCM_DURATION,
+    MIN_NUMBER_OF_CHOICES_PER_QUESTION,
+    MIN_NUMBER_OF_QUESTIONS,
+    MIN_POINTS_PER_QUESTION,
+    MIN_QCM_DURATION,
+} from '@app/services/quiz-form-service/qui-form.service.const';
 
 @Injectable({
     providedIn: 'root',
