@@ -9,6 +9,7 @@ import { timerMessage } from '@common/browser-message/displayable-message/timer-
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 @Component({
     selector: 'app-host-interface',
@@ -23,7 +24,8 @@ export class HostInterfaceComponent {
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
     reponsesQRL = new Map<string, string>();
-    
+    isHostEvaluating: boolean = false;
+
     constructor(
         public gameService: GameService,
         private readonly socketService: SocketClientService,
@@ -76,6 +78,17 @@ export class HostInterfaceComponent {
 
         this.socketService.on(socketEvent.endQuestion, () => {
             this.resetInterface();
+            if (this.gameService.question?.type === QuestionType.QCM) {
+                this.playerListComponent.getPlayersList(false);
+            } else {
+                this.socketService.send('getPlayerAnswers', this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
+                    this.reponsesQRL = new Map(JSON.parse(playerAnswers));
+                    this.isHostEvaluating = true;
+                });
+            }
+        });
+
+        this.socketService.on('evaluationOver', () => {
             this.playerListComponent.getPlayersList(false);
         });
 
