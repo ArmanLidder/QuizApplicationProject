@@ -50,7 +50,12 @@ export class GameRealService implements GameServiceInterface {
                 username: this.username,
             });
         } else {
-            // send socket event to handle qrl answer
+            this.socketService.send(socketEvent.submitAnswer, {
+                roomId: this.roomId,
+                answers: this.qrlAnswer,
+                timer: this.timer,
+                username: this.username,
+            });
         }
         this.locked = true;
         this.answers.clear();
