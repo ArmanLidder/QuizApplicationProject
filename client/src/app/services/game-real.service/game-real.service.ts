@@ -4,6 +4,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 export type Player = [string, number, number];
 
@@ -21,6 +22,7 @@ export class GameRealService implements GameServiceInterface {
     isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
+    qrlAnswer: string = '';
 
     constructor(public socketService: SocketClientService) {
         if (this.socketService.isSocketAlive()) {
@@ -39,15 +41,20 @@ export class GameRealService implements GameServiceInterface {
     }
 
     sendAnswer() {
-        const answers = Array.from(this.answers.values());
-        this.socketService.send(socketEvent.submitAnswer, {
-            roomId: this.roomId,
-            answers,
-            timer: this.timer,
-            username: this.username,
-        });
+        if (this.question?.type === QuestionType.QCM) {
+            const answers = Array.from(this.answers.values());
+            this.socketService.send(socketEvent.submitAnswer, {
+                roomId: this.roomId,
+                answers,
+                timer: this.timer,
+                username: this.username,
+            });
+        } else {
+            // send socket event to handle qrl answer
+        }
         this.locked = true;
         this.answers.clear();
+        this.qrlAnswer = '';
     }
 
     configureBaseSockets() {

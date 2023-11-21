@@ -9,6 +9,8 @@ export class GameService {
     isTestMode: boolean = false;
     isInputFocused: boolean = false;
     answers: Map<number, string | null> = new Map();
+    qrlAnswer: string = '';
+    isHostEvaluating: boolean = false;
 
     constructor(
         public gameTestService: GameTestService,
@@ -78,9 +80,11 @@ export class GameService {
     sendAnswer() {
         if (!this.isTestMode) {
             this.gameRealService.answers = this.answers;
+            this.gameRealService.qrlAnswer = this.qrlAnswer;
             this.gameRealService.sendAnswer();
         } else {
             this.gameTestService.answers = this.answers;
+            this.gameRealService.qrlAnswer = this.qrlAnswer;
             this.gameTestService.sendAnswer();
         }
         this.answers.clear();
