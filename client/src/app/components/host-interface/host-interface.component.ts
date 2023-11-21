@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PLAYER_NOT_FOUND_INDEX } from '@app/components/host-interface/host-interface.component.const';
+import { PLAYER_NOT_FOUND_INDEX, QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
@@ -22,6 +22,7 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
+    inTimeTransition: boolean = false;
 
     constructor(
         public gameService: GameService,
@@ -34,6 +35,15 @@ export class HostInterfaceComponent {
 
     isDisabled() {
         return !this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated;
+    }
+
+    isPanicDisabled(){
+
+        if (this.gameService.question?.type){
+            return this.gameService.timer > QLR_PANIC_MODE_ENABLED || this.inTimeTransition;
+        }else{
+            return this.gameService.timer > QCM_PANIC_MODE_ENABLED || this.inTimeTransition;
+        }       
     }
 
     updateHostCommand() {
@@ -78,6 +88,7 @@ export class HostInterfaceComponent {
             this.timerText = timerMessage.next;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
+                this.inTimeTransition = false;
                 this.resetInterface();
                 this.socketService.send(socketEvent.nextQuestion, this.gameService.gameRealService.roomId);
                 this.timerText = timerMessage.timeLeft;
@@ -85,6 +96,9 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.endQuestion, () => {
+            this.gameService.audio.pause();
+            this.gameService.audio.currentTime=0;
+            this.inTimeTransition = true;
             this.resetInterface();
             this.playerListComponent.getPlayersList(false);
         });
