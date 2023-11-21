@@ -1,5 +1,5 @@
-<div *ngIf='!gameService.isHostEvaluating || gameService.isTestMode' (keyup.enter)='validate()'>
-    <textarea id="responseInput" maxlength='200' [attr.disabled]='canWrite' [(ngModel)]="response" (input)="handleActiveUser()" rows="4" cols="50"></textarea>
+<div *ngIf='!gameService.gameRealService.validated || gameService.isTestMode' (keyup.enter)='validate()'>
+    <textarea id="responseInput" maxlength='200' [attr.disabled]='gameService.lockedStatus' [(ngModel)]="response" (input)="handleActiveUser()" rows="4" cols="50"></textarea>
     <div class='characters-left'>
         <small>Caractères restants: {{ charactersLeft }}/200</small>
     </div>
@@ -9,6 +9,6 @@
     </div>
 </div>
 
-<div *ngIf='gameService.isHostEvaluating && !gameService.isTestMode'>
+<div *ngIf='gameService.gameRealService.validated && !gameService.isTestMode'>
     L'organisateur est en train d'évaluer votre réponse
 </div>
