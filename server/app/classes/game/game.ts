@@ -163,13 +163,13 @@ export class Game {
         this.question = this.currentQuizQuestion.text;
         this.getAllCorrectChoices();
         this.duration = this.quiz.duration;
-        this.currentQuizQuestion.choices.forEach((choice) => {
+        this.currentQuizQuestion.choices?.forEach((choice) => {
             this.choicesStats.set(choice.text, 0);
         });
     }
 
     private getAllCorrectChoices() {
-        this.currentQuizQuestion.choices.forEach((choice: QuizChoice) => {
+        this.currentQuizQuestion.choices?.forEach((choice: QuizChoice) => {
             if (choice.isCorrect) this.correctChoices.push(choice.text);
         });
     }
