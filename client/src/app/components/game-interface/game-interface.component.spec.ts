@@ -20,6 +20,7 @@ describe('GameInterfaceComponent', () => {
         isBonus: true,
     };
     const mockTimeValue = 123;
+    const mockRoomIdValue = 100;
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
@@ -89,6 +90,17 @@ describe('GameInterfaceComponent', () => {
         expect(socketOnText).toEqual(socketEvent.removedFromGame);
         socketOnFunc();
         expect(routerSpy).toHaveBeenCalledWith(['/']);
+    });
+
+    it('should configure base socket features for play audio correctly', () => {
+        const audioSpy =  spyOn(component.gameService.audio, 'play');
+        component.gameService.gameRealService.timer = mockTimeValue;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
+        expect(socketOnText).toEqual(socketEvent.panicMode);
+        socketOnFunc({roomId: mockRoomIdValue, timer : mockTimeValue});
+        expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(audioSpy).toHaveBeenCalled();
     });
 
     it('should create in test mode if active route is quiz-testing-page', () => {
