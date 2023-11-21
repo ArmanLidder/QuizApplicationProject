@@ -1,4 +1,4 @@
 export interface Answers {
-    answers: string[];
+    answers: string[] | string;
     time: number;
 }

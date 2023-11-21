@@ -16,7 +16,7 @@ export interface RemainingTime {
 }
 export interface PlayerAnswerData {
     roomId: number;
-    answers: string[];
+    answers: string[] | string;
     timer: number;
     username: string;
 }
