@@ -3,11 +3,12 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { ONE_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
-import { PlayerAnswerData, PlayerMessage, PlayerSelection, RemainingTime, PlayerUsername } from '@common/interfaces/socket-manager.interface';
+import { ONE_SECOND_DELAY, QRL_DURATION, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
+import { PlayerAnswerData, PlayerMessage, PlayerSelection, PlayerUsername, RemainingTime } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { HistoryService } from '@app/services/history.service/history.service';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 export class SocketManager {
     private sio: io.Server;
@@ -181,7 +182,7 @@ export class SocketManager {
                 const nextQuestionNumber = ++index;
                 const nextQuestion = game.currentQuizQuestion;
                 this.sio.to(String(roomId)).emit(socketEvent.getNextQuestion, { question: nextQuestion, index: nextQuestionNumber, isLast });
-                this.startTimer(roomId, game.duration);
+                this.startTimer(roomId, game.currentQuizQuestion.type === QuestionType.QCM ? game.duration : QRL_DURATION);
             });
 
             socket.on(socketEvent.showResult, (roomId: number) => {
