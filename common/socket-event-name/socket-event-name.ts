@@ -25,6 +25,7 @@ export namespace socketEvent {
     export const submitAnswer = 'submitAnswer';
     export const time = 'time';
     export const updateSelection = 'updateSelection';
+    export const updateInteraction = 'updateInteraction';
     export const newPlayer = 'newPlayer';
     export const banPlayer = 'banPlayer';
     export const toggleRoomLock = 'toggleRoomRock';

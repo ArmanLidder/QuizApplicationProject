@@ -159,7 +159,7 @@ export class SocketManager {
                 const username = this.roomManager.getUsernameBySocketId(data.roomId, socket.id);
                 const choicesStatsValues = Array.from(game.choicesStats.values());
                 this.sio.to(hostSocketId).emit(socketEvent.refreshChoicesStats, choicesStatsValues);
-                this.sio.to(hostSocketId).emit(socketEvent.updateSelection, username);
+                this.sio.to(hostSocketId).emit(socketEvent.updateInteraction, username);
             });
 
             socket.on('getPlayerAnswers', (roomId: number, callback) => {

@@ -117,7 +117,7 @@ export class PlayerListComponent {
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on(socketEvent.updateSelection, (username: string) => {
+        this.socketService.on(socketEvent.updateInteraction, (username: string) => {
             this.changePlayerStatus(username, playerStatus.interaction);
         });
         this.socketService.on(socketEvent.submitAnswer, (username: string) => {
