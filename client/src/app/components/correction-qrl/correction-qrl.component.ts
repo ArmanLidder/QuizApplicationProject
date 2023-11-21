@@ -4,7 +4,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { GameService } from '@app/services/game.service/game.service';
 
 @Component({
-    selector: 'app-correction-qrl-list',
+    selector: 'app-correction-qrl',
     templateUrl: './correction-qrl.component.html',
     styleUrls: ['./correction-qrl.component.scss'],
 })

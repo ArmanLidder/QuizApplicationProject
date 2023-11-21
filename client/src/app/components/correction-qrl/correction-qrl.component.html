@@ -2,9 +2,8 @@
     <h3> {{ currentUsername }} </h3>
     <p> {{ currentAnswer }} </p>
     <select [(ngModel)]="inputPoint">
-        <option *ngFor="let score of scores" [value]="option">{{ score }}</option>
+        <option *ngFor="let score of scores" [value]="score">{{ score }}</option>
     </select>
     <button (click)="submitPoint()">Valider</button>
-    <p *ngIf="!isValid">Veuillez selectionez une note</p>
-    </div>
+    <p *ngIf="!isValid">Veuillez sélectionner une note</p>
 </div>
