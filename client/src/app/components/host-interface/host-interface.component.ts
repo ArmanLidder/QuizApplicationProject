@@ -2,13 +2,13 @@ import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PLAYER_NOT_FOUND_INDEX } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { Player } from '@app/components/player-list/player-list.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { Player } from '@app/components/player-list/player-list.component.const';
 
 @Component({
     selector: 'app-host-interface',
@@ -22,7 +22,8 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
-
+    reponsesQRL = new Map<string, string>();
+    
     constructor(
         public gameService: GameService,
         private readonly socketService: SocketClientService,
