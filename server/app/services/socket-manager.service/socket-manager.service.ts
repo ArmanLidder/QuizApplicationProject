@@ -214,6 +214,7 @@ export class SocketManager {
             socket.on(socketEvent.panicMode, (data: PanicModeData) => {
                 this.roomManager.clearRoomTimer(data.roomId);
                 this.startTimer(data.roomId, data.timer, undefined, QUARTER_SECOND_DELAY);
+                this.sio.to(String(data.roomId)).emit(socketEvent.panicMode, data);
             });
 
             socket.on(socketEvent.disconnect, (reason) => {
