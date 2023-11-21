@@ -42,7 +42,8 @@ export class QrlResponseAreaComponent implements OnInit, OnDestroy {
         this.charactersLeft = MAX_RESPONSE_CHARACTERS - this.response.length;
         if (!this.isActive) {
             this.isActive = true;
-            if (this.socketClientService.isSocketAlive()) this.socketClientService.send('sendActivityStatus', true);
+            if (this.socketClientService.isSocketAlive())
+                this.socketClientService.send('sendActivityStatus', { roomId: this.gameService.gameRealService.roomId, isActive: true });
         }
         if (!this.hasInteracted) {
             this.hasInteracted = true;
@@ -64,7 +65,8 @@ export class QrlResponseAreaComponent implements OnInit, OnDestroy {
     onInputStopped(): void {
         this.inactiveTimeout = window.setTimeout(() => {
             this.isActive = false;
-            if (this.socketClientService.isSocketAlive()) this.socketClientService.send('sendActivityStatus', false);
+            if (this.socketClientService.isSocketAlive())
+                this.socketClientService.send('sendActivityStatus', { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);
     }
     private setupInputDebounce(): void {
