@@ -146,7 +146,7 @@ export class SocketManager {
                     this.sio.to(hostSocketId).emit(socketEvent.submitAnswer, data.username);
                 }
                 if (game.playersAnswers.size === game.players.size) {
-                    this.roomManager.getGameByRoomId(data.roomId).updateScores();
+                    if (game.currentQuizQuestion.type === QuestionType.QCM) this.roomManager.getGameByRoomId(data.roomId).updateScores();
                     this.roomManager.clearRoomTimer(data.roomId);
                     this.sio.to(String(data.roomId)).emit(socketEvent.endQuestion);
                 }
@@ -160,6 +160,19 @@ export class SocketManager {
                 const choicesStatsValues = Array.from(game.choicesStats.values());
                 this.sio.to(hostSocketId).emit(socketEvent.refreshChoicesStats, choicesStatsValues);
                 this.sio.to(hostSocketId).emit(socketEvent.updateSelection, username);
+            });
+
+            socket.on('getPlayerAnswers', (roomId: number, callback) => {
+                const game = this.roomManager.getGameByRoomId(roomId);
+                const formattedPlayerAnswers = JSON.stringify(Array.from(game.playersAnswers));
+                callback(formattedPlayerAnswers);
+            });
+
+            socket.on('playerQrlCorrection', (roomId: number, playerCorrection: string) => {
+                const game = this.roomManager.getGameByRoomId(roomId);
+                const playerCorrectionMap = new Map(JSON.parse(playerCorrection));
+                game.updatePlayerScores(playerCorrectionMap as Map<string, number>);
+                this.sio.to(String(roomId)).emit('evaluationOver');
             });
 
             socket.on(socketEvent.startTransition, (roomId: number) => {
