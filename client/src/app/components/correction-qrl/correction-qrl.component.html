@@ -1,4 +1,4 @@
-<div *ngIf="isCorrectionFinished" class="correction-qrl-container">
+<div *ngIf="isCorrectionFinished && isHostEvaluating" class="correction-qrl-container">
     <h3> {{ currentUsername }} </h3>
     <p> {{ currentAnswer }} </p>
     <select [(ngModel)]="inputPoint">

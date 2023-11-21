@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
-
+import { FULL, HALF, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { GameService } from '@app/services/game.service/game.service';
 
 @Component({
     selector: 'app-correction-qrl-list',
@@ -8,19 +10,23 @@ import { Component, Input } from '@angular/core';
 })
 export class CorrectionQRLComponent {
     @Input() reponsesQRL = new Map<string, string>();
+    @Input() isHostEvaluating: boolean = false;
     reponsesQRLCorrected = new Map<string, number>();
     usernames: string[] = [];
     answers: string[] = [];
-    scores: number[] = [0, 50, 100];
+    scores: number[] = [NULL, HALF, FULL];
     isValid: boolean = true;
-    currentAnswer: string = "";
-    currentUsername: string = "";
+    currentAnswer: string = '';
+    currentUsername: string = '';
     points: number[] = [];
     inputPoint: number = 2;
     indexPlayer: number = 0;
     isCorrectionFinished: boolean = false;
 
-    constructor() {
+    constructor(
+        private socketClientService: SocketClientService,
+        private gameService: GameService,
+    ) {
         this.initialise();
     }
 
@@ -47,6 +53,14 @@ export class CorrectionQRLComponent {
         for (let i = 0; i < this.usernames.length; i++) {
             this.reponsesQRLCorrected.set(this.usernames[i], this.points[i]);
         }
+        this.isHostEvaluating = false;
+    }
+
+    clearAll() {
+        this.usernames.splice(0, this.usernames.length);
+        this.answers.splice(0, this.answers.length);
+        this.points.splice(0, this.points.length);
+        this.reponsesQRLCorrected.clear();
     }
 
     submitPoint() {
@@ -60,7 +74,12 @@ export class CorrectionQRLComponent {
             if (this.indexPlayer > this.usernames.length) {
                 this.isCorrectionFinished = true;
                 this.endCorrection();
-                console.log(this.reponsesQRLCorrected);
+                const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.reponsesQRLCorrected));
+                this.socketClientService.send('playerQrlCorrection', {
+                    roomId: this.gameService.gameRealService.roomId,
+                    playerCorrection: playerQrlCorrectionFormatted,
+                });
+                this.clearAll();
             }
         }
     }
