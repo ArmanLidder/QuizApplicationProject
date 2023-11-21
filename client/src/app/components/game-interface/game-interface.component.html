@@ -24,7 +24,9 @@
         </div>
         <h4>{{ gameService.question?.text }}</h4>
     </section>
-    <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
+    <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-qcm-field'>
     </app-game-answers-list>
+    <app-qrl-response-area *ngIf='gameService.question?.type === questionType.QLR' id='answer-qrl-field'>
+    </app-qrl-response-area>
 </div>
 
