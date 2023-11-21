@@ -10,6 +10,7 @@ export class GameService {
     isInputFocused: boolean = false;
     answers: Map<number, string | null> = new Map();
 
+
     constructor(
         public gameTestService: GameTestService,
         public gameRealService: GameRealService,
@@ -45,6 +46,10 @@ export class GameService {
 
     get validatedStatus() {
         return this.isTestMode ? this.gameTestService.validated : this.gameRealService.validated;
+    }
+
+    get audio(){
+        return this.gameRealService.audio;
     }
 
     destroy() {

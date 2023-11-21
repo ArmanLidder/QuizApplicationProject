@@ -21,6 +21,7 @@ export class GameRealService implements GameServiceInterface {
     isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
+    audio = new Audio('assets/music.mp3');
 
     constructor(public socketService: SocketClientService) {
         if (this.socketService.isSocketAlive()) {
