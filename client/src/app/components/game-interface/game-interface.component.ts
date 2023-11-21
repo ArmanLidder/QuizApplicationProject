@@ -7,6 +7,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { PanicModeData } from '@common/interfaces/socket-manager.interface';
 
 type Player = [string, number];
 
@@ -54,6 +55,8 @@ export class GameInterfaceComponent {
 
     private configureBaseSocketFeatures() {
         this.socketService.on(socketEvent.endQuestion, () => {
+            this.gameService.audio.pause();
+            this.gameService.audio.currentTime=0;
             if (this.gameService.gameRealService.username !== 'Organisateur') {
                 this.socketService.send(
                     socketEvent.getScore,
@@ -73,6 +76,8 @@ export class GameInterfaceComponent {
         this.socketService.on(socketEvent.timeTransition, (timeValue: number) => {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
+                this.gameService.audio.pause();
+                this.gameService.audio.currentTime=0;
                 this.gameService.gameRealService.locked = false;
                 this.gameService.gameRealService.validated = false;
                 this.isBonus = false;
@@ -91,6 +96,14 @@ export class GameInterfaceComponent {
 
         this.socketService.on(socketEvent.removedFromGame, () => {
             this.router.navigate(['/']);
+        });
+
+        this.socketService.on(socketEvent.panicMode, (data: PanicModeData) => {
+            
+            if(this.gameService.timer>0){
+                this.gameService.audio.play();
+            }
+
         });
     }
 
