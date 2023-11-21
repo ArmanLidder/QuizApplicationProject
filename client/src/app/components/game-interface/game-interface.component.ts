@@ -51,23 +51,17 @@ export class GameInterfaceComponent {
         this.isBonus = this.gameService.isTestMode ? this.gameService.isBonus : this.isBonus;
         return this.isBonus;
     }
-
     private configureBaseSocketFeatures() {
         this.socketService.on(socketEvent.endQuestion, () => {
-            if (this.gameService.gameRealService.username !== 'Organisateur') {
-                this.socketService.send(
-                    socketEvent.getScore,
-                    {
-                        roomId: this.gameService.gameRealService.roomId,
-                        username: this.gameService.gameRealService.username,
-                    },
-                    (score: Score) => {
-                        this.gameService.gameRealService.validated = true;
-                        this.playerScore = score.points;
-                        this.isBonus = score.isBonus;
-                    },
-                );
+            if (this.gameService.question?.type === QuestionType.QCM) {
+                this.getScore();
+            } else {
+                this.gameService.gameRealService.validated = true;
             }
+        });
+
+        this.socketService.on('evaluationOver', () => {
+            this.getScore();
         });
 
         this.socketService.on(socketEvent.timeTransition, (timeValue: number) => {
@@ -92,6 +86,23 @@ export class GameInterfaceComponent {
         this.socketService.on(socketEvent.removedFromGame, () => {
             this.router.navigate(['/']);
         });
+    }
+
+    private getScore() {
+        // if (this.gameService.gameRealService.username !== 'Organisateur') {
+        this.socketService.send(
+            socketEvent.getScore,
+            {
+                roomId: this.gameService.gameRealService.roomId,
+                username: this.gameService.gameRealService.username,
+            },
+            (score: Score) => {
+                this.gameService.gameRealService.validated = true;
+                this.playerScore = score.points;
+                this.isBonus = score.isBonus;
+            },
+        );
+        // }
     }
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
