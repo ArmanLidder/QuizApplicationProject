@@ -4,11 +4,7 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { STATUS_INDEX, CAN_TALK, Player } from '@app/components/player-list/player-list.component.const';
-
-export const SORT_BY_STATUS = 'byStatus';
-export const SORT_BY_SCORE = 'byScore';
-export const SORT_BY_NAME = 'byName';
+import { STATUS_INDEX, CAN_TALK, Player, SORT_BY_STATUS, SORT_BY_SCORE, SORT_BY_NAME} from '@app/components/player-list/player-list.component.const';
 
 @Component({
     selector: 'app-player-list',
