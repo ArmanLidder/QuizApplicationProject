@@ -1,5 +1,5 @@
 <div *ngIf='!gameService.gameRealService.validated || gameService.isTestMode' (keyup.enter)='validate()'>
-    <textarea id="responseInput" maxlength='200' [attr.disabled]='gameService.lockedStatus' [(ngModel)]="response" (input)="handleActiveUser()" rows="4" cols="50"></textarea>
+    <textarea id="responseInput" maxlength='200' [attr.disabled]='gameService.lockedStatus' [(ngModel)]="gameService.qrlAnswer" (input)="handleActiveUser()" rows="4" cols="50"></textarea>
     <div class='characters-left'>
         <small>Caractères restants: {{ charactersLeft }}/200</small>
     </div>

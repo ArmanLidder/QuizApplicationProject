@@ -56,6 +56,7 @@ export class GameInterfaceComponent {
             if (this.gameService.question?.type === QuestionType.QCM) {
                 this.getScore();
             } else {
+                this.gameService.qrlAnswer = '';
                 this.gameService.gameRealService.validated = true;
             }
         });

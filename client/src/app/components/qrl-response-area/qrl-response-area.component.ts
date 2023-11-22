@@ -26,6 +26,8 @@ export class QrlResponseAreaComponent implements OnDestroy {
     ) {}
 
     ngOnDestroy() {
+        this.isActive = false;
+        this.hasInteracted = false;
         clearTimeout(this.inputTimer);
         clearTimeout(this.inactiveTimeout);
     }
@@ -48,10 +50,8 @@ export class QrlResponseAreaComponent implements OnDestroy {
     validate() {
         this.canWrite = true;
         this.gameService.isHostEvaluating = true;
-        this.gameService.qrlAnswer = this.response;
         this.gameService.sendAnswer();
-        clearTimeout(this.inputTimer);
-        clearTimeout(this.inactiveTimeout);
+        this.ngOnDestroy();
     }
 
     onInputStopped(): void {
