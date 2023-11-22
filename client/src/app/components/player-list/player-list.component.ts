@@ -4,13 +4,11 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
+import { STATUS_INDEX, CAN_TALK, Player } from '@app/components/player-list/player-list.component.const';
 
-export type Player = [string, number, number, string];
-type PlayerAbandonment = [string, number, number, string];
 export const SORT_BY_STATUS = 'byStatus';
 export const SORT_BY_SCORE = 'byScore';
 export const SORT_BY_NAME = 'byName';
-export const STATUS_INDEX = 3;
 
 @Component({
     selector: 'app-player-list',
@@ -18,9 +16,10 @@ export const STATUS_INDEX = 3;
     styleUrls: ['./player-list.component.scss'],
 })
 export class PlayerListComponent {
-    @Input() leftPlayers: PlayerAbandonment[] = [];
+    @Input() leftPlayers: Player[] = [];
     @Input() roomId: number;
     @Input() isFinal: boolean;
+    @Input() isHost: boolean;
     players: Player[] = [];
     actualStatus: Player[] = [];
     order = 1;
@@ -37,11 +36,13 @@ export class PlayerListComponent {
     ) {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
     }
+
     changeOrder() {
         this.order *= -1;
         this.orderIcon = this.order > 0 ? 'fa-solid fa-up-long' : 'fa-solid fa-down-long';
         this.getPlayersList(false);
     }
+
     sortByStatus() {
         this.updateOptionSelections(SORT_BY_STATUS);
         this.sortListService.sortByStatus();
@@ -70,12 +71,16 @@ export class PlayerListComponent {
     }
 
     toggleChatPermission(username: string) {
+        const playerIndex = this.findPlayer(username, this.players);
+        this.players[playerIndex][4] = !this.players[playerIndex][4];
         this.socketService.send(socketEvent.toggleChatPermission, { roomId: this.roomId, username });
     }
+
     isPlayerGone(username: string) {
         const foundPlayer = this.leftPlayers.find((player) => player[0] === username);
         return foundPlayer !== undefined;
     }
+
     private updateOptionSelections(selectedMethod: string) {
         this.optionSelections.forEach((isSelected, methodName) => {
             if (isSelected && methodName !== selectedMethod) this.optionSelections.set(methodName, false);
@@ -91,13 +96,20 @@ export class PlayerListComponent {
 
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
-        this.players.push([username, score.points, score.bonusCount, status]);
+        const canChat = this.canPlayerChat(username);
+        this.players.push([username, score.points, score.bonusCount, status, canChat]);
         this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
 
-    private appendLeftPlayersToActivePlayers() {
-        this.leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.left]));
+    private canPlayerChat(username: string) {
+        const playerIndex = this.findPlayer(username, this.actualStatus);
+        return this.actualStatus.length === 0 ? true : this.actualStatus[playerIndex][CAN_TALK];
     }
+
+    private appendLeftPlayersToActivePlayers() {
+        this.leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.left, false]));
+    }
+
     private setupPlayerList() {
         this.actualStatus = this.players;
         this.players = [];
@@ -128,6 +140,7 @@ export class PlayerListComponent {
         else if (!resetPlayerStatus) return this.getActualStatus(username);
         else return this.isFinal ? playerStatus.endGame : playerStatus.noInteraction;
     }
+
     private getActualStatus(username: string) {
         const playerIndex = this.findPlayer(username, this.actualStatus);
         return this.actualStatus[playerIndex][STATUS_INDEX];

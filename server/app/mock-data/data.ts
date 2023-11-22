@@ -1,5 +1,26 @@
 import { QuestionType } from '@common/enums/question-type.enum';
 
+export const gameInfoMocks = [
+    {
+        gameName: 'Quiz 1',
+        startTime: '2023-11-13 15:30:00',
+        playersCount: 4,
+        bestScore: 30,
+    },
+    {
+        gameName: 'Quiz 2',
+        startTime: '2023-11-14 10:45:00',
+        playersCount: 2,
+        bestScore: 25,
+    },
+    {
+        gameName: 'Quiz 3',
+        startTime: '2023-11-15 20:00:00',
+        playersCount: 3,
+        bestScore: 40,
+    },
+];
+
 export const fillerQuizzes = [
     {
         id: '1',

@@ -8,7 +8,8 @@
     #playerListChild
     [roomId]='gameService.gameRealService.roomId'
     [leftPlayers]='[]'
-    [isFinal] = 'isGameOver'>
+    [isFinal] = 'isGameOver'
+    [isHost] = 'false'>
 </app-player-list>
 <div *ngIf='!isGameOver' class="grid-container">
     <div id="flex-container">

@@ -12,7 +12,7 @@
             <th>Nom</th>
             <th>Points</th>
             <th>Bonus</th>
-            <th *ngIf='!isFinal'>Chat</th>
+            <th *ngIf='isHost'>Chat</th>
         </tr>
         </thead>
         <tbody>
@@ -20,9 +20,9 @@
             <td> {{player[0]}} </td>
             <td> {{player[1]}} </td>
             <td> {{player[2]}} </td>
-            <td>
+            <td *ngIf='isHost'>
                 <label *ngIf='!isPlayerGone(player[0])' class="switch-btn">
-                    <input type="checkbox" checked (click)='toggleChatPermission(player[0])'>
+                    <input type="checkbox" [checked]='player[4]' (click)='toggleChatPermission(player[0])'>
                     <span class="slider round"></span>
                 </label>
             </td>

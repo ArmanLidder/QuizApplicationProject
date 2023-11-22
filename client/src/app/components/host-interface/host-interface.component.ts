@@ -8,8 +8,7 @@ import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.i
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-
-type PlayerArray = [string, number, number, string];
+import { Player } from '@app/components/player-list/player-list.component.const';
 
 @Component({
     selector: 'app-host-interface',
@@ -22,7 +21,7 @@ export class HostInterfaceComponent {
     isGameOver: boolean = false;
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
-    leftPlayers: PlayerArray[] = [];
+    leftPlayers: Player[] = [];
 
     constructor(
         public gameService: GameService,

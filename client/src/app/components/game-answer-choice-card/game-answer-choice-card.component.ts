@@ -45,7 +45,7 @@ export class GameAnswerChoiceCardComponent implements OnChanges {
                     else this.reset();
                     this.selectEvent.emit(this.index - 1);
                 }
-            } else this.toggleSelect();
+            }
         }, DEBOUNCE_TIMER);
     }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { playerStatus } from '@common/player-status/player-status';
 
-export type Player = [string, number, number, string];
+export type Player = [string, number, number, string, boolean];
 const STATUS = 3;
 @Injectable({
     providedIn: 'root',

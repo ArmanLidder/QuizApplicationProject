@@ -182,8 +182,9 @@ describe('SidebarComponent', () => {
         const newMessage: Message = { sender: 'user 2', content: 'message content 2', time: 'time 2' };
         component['messages'] = [{ sender: 'user 1', content: 'message content 1', time: 'time 1' }];
         component['configureBaseSocketFeatures']();
-        const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
+        const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual(socketEvent.receivedMessage);
+        expect(secondEvent).toEqual(socketEvent.toggleChatPermission);
 
         if (typeof firstAction === 'function') {
             firstAction(newMessage);
@@ -191,6 +192,11 @@ describe('SidebarComponent', () => {
                 { sender: 'user 1', content: 'message content 1', time: 'time 1' },
                 { sender: 'user 2', content: 'message content 2', time: 'time 2' },
             ]);
+        }
+        if (typeof secondAction === 'function') {
+            component.canChat = true;
+            secondAction(true);
+            expect(component.canChat).toBeFalsy();
         }
     });
 });

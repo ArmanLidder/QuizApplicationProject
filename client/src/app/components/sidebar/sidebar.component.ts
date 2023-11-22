@@ -90,6 +90,7 @@ export class SidebarComponent {
         this.socketService.on(socketEvent.receivedMessage, (message: Message) => {
             this.messages.push(message);
         });
+
         this.socketService.on(socketEvent.toggleChatPermission, () => {
             this.canChat = !this.canChat;
         });
