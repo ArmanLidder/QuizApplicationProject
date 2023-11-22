@@ -112,14 +112,16 @@ export class HostInterfaceComponent {
             ]);
         });
 
-        this.socketService.on(socketEvent.getInitialQuestion, (data: InitialQuestionData) => {
-            this.playerListComponent.getPlayersList();
-            this.initGraph(data.question);
+        this.socketService.on(socketEvent.getInitialQuestion, async (data: InitialQuestionData) => {
+            await this.playerListComponent.getPlayersList().then((numberOfPlayers) => {
+                this.initGraph(data.question, numberOfPlayers);
+            });
         });
 
-        this.socketService.on(socketEvent.getNextQuestion, (data: NextQuestionData) => {
-            this.playerListComponent.getPlayersList();
-            this.initGraph(data.question);
+        this.socketService.on(socketEvent.getNextQuestion, async (data: NextQuestionData) => {
+            await this.playerListComponent.getPlayersList().then((numberOfPlayers) => {
+                this.initGraph(data.question, numberOfPlayers);
+            });
         });
 
         this.socketService.on(socketEvent.removedPlayer, (username) => {
@@ -140,7 +142,7 @@ export class HostInterfaceComponent {
         this.gameService.gameRealService.locked = true;
     }
 
-    private initGraph(question: QuizQuestion) {
+    private initGraph(question: QuizQuestion, numberOfPlayers?: number) {
         this.histogramDataValue = new Map();
         this.histogramDataChangingResponses = new Map();
         if (this.gameService.question?.type === QuestionType.QCM) {
@@ -150,7 +152,7 @@ export class HostInterfaceComponent {
         } else {
             this.histogramDataChangingResponses = new Map([
                 ['Actif', 0],
-                ['Inactif', this.playerListComponent.players.length],
+                ['Inactif', numberOfPlayers as number],
             ]);
             this.histogramDataValue = new Map([
                 ['Actif', true],
