@@ -131,7 +131,8 @@ export class SocketManager {
                 const index = game.currIndex + 1;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
                 socket.emit(socketEvent.getInitialQuestion, { question, username, index, numberOfQuestions: game.quiz.questions.length });
-                const duration = this.roomManager.getGameByRoomId(roomId).duration;
+                const duration =
+                    game.currentQuizQuestion.type === QuestionType.QCM ? this.roomManager.getGameByRoomId(roomId).duration : QRL_DURATION;
                 if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
                     this.roomManager.clearRoomTimer(roomId);
                     this.startTimer(roomId, duration);
@@ -168,11 +169,11 @@ export class SocketManager {
                 callback(formattedPlayerAnswers);
             });
 
-            socket.on('playerQrlCorrection', (roomId: number, playerCorrection: string) => {
-                const game = this.roomManager.getGameByRoomId(roomId);
-                const playerCorrectionMap = new Map(JSON.parse(playerCorrection));
+            socket.on('playerQrlCorrection', (data: { roomId: number; playerCorrection: string }) => {
+                const game = this.roomManager.getGameByRoomId(data.roomId);
+                const playerCorrectionMap = new Map(JSON.parse(data.playerCorrection));
                 game.updatePlayerScores(playerCorrectionMap as Map<string, number>);
-                this.sio.to(String(roomId)).emit('evaluationOver');
+                this.sio.to(String(data.roomId)).emit('evaluationOver');
             });
 
             socket.on(socketEvent.startTransition, (roomId: number) => {
