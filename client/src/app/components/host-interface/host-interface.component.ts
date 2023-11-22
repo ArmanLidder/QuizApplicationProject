@@ -23,7 +23,7 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
-    reponsesQRL = new Map<string, string>();
+    reponsesQRL = new Map<string, { answers: string; time: number }>();
     isHostEvaluating: boolean = false;
 
     constructor(
