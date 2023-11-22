@@ -105,6 +105,13 @@ export class HostInterfaceComponent {
             this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
         });
 
+        this.socketService.on('refreshActivityStats', (activityStatsValue: [number, number]) => {
+            this.histogramDataChangingResponses = new Map([
+                ['Actif', activityStatsValue[0]],
+                ['Inactif', activityStatsValue[1]],
+            ]);
+        });
+
         this.socketService.on(socketEvent.getInitialQuestion, (data: InitialQuestionData) => {
             this.playerListComponent.getPlayersList();
             this.initGraph(data.question);
@@ -136,9 +143,20 @@ export class HostInterfaceComponent {
     private initGraph(question: QuizQuestion) {
         this.histogramDataValue = new Map();
         this.histogramDataChangingResponses = new Map();
-        question.choices?.forEach((choice: QuizChoice) => {
-            this.histogramDataValue.set(choice.text, choice.isCorrect as boolean);
-        });
+        if (this.gameService.question?.type === QuestionType.QCM) {
+            question.choices?.forEach((choice: QuizChoice) => {
+                this.histogramDataValue.set(choice.text, choice.isCorrect as boolean);
+            });
+        } else {
+            this.histogramDataChangingResponses = new Map([
+                ['Actif', 0],
+                ['Inactif', this.playerListComponent.players.length],
+            ]);
+            this.histogramDataValue = new Map([
+                ['Actif', true],
+                ['Inactif', false],
+            ]);
+        }
     }
 
     private createChoicesStatsMap(choicesStatsValue: number[]) {
