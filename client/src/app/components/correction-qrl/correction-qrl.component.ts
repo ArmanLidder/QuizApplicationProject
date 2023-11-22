@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FULL, HALF, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
+import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameService } from '@app/services/game.service/game.service';
 
@@ -20,7 +20,7 @@ export class CorrectionQRLComponent implements OnChanges {
     currentUsername: string = '';
     points: number[] = [];
     inputPoint: number = 2;
-    indexPlayer: number = -1;
+    indexPlayer: number = INITIAL_ARRAY_VALUE;
     isCorrectionFinished: boolean = false;
 
     constructor(
