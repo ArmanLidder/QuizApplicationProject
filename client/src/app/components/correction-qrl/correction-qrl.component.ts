@@ -41,7 +41,10 @@ export class CorrectionQRLComponent implements OnChanges {
 
     initialise() {
         this.indexPlayer = -1;
-        this.reponsesQRL.forEach((value: { answers: string; time: number }, key: string) => {
+        const sortedMap = new Map([...this.reponsesQRL.entries()].sort((a, b) => a[0].localeCompare(b[0])));
+        console.log('Old map:', this.reponsesQRL);
+        console.log(sortedMap);
+        sortedMap.forEach((value: { answers: string; time: number }, key: string) => {
             this.usernames.push(key);
             this.answers.push(value.answers);
         });
