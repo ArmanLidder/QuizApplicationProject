@@ -6,10 +6,10 @@ import { Player } from '@app/components/player-list/player-list.component.const'
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { QuestionType } from '@common/enums/question-type.enum';
 
 @Component({
     selector: 'app-host-interface',

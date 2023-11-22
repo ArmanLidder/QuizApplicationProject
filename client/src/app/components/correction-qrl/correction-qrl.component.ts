@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 
 @Component({
     selector: 'app-correction-qrl',
@@ -16,8 +16,8 @@ export class CorrectionQRLComponent implements OnChanges {
     answers: string[] = [];
     scores: number[] = [NULL, HALF, FULL];
     isValid: boolean = true;
-    currentAnswer: string = '';
-    currentUsername: string = '';
+    currentAnswer: string = 'nothing';
+    currentUsername: string = 'nothing';
     points: number[] = [];
     inputPoint: number = 2;
     indexPlayer: number = INITIAL_ARRAY_VALUE;
@@ -33,6 +33,7 @@ export class CorrectionQRLComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.reponsesQRL) {
             this.initialise();
+            this.isHostEvaluating = true;
         }
     }
 
@@ -68,6 +69,7 @@ export class CorrectionQRLComponent implements OnChanges {
         this.answers.splice(0, this.answers.length);
         this.points.splice(0, this.points.length);
         this.reponsesQRLCorrected.clear();
+        this.indexPlayer = -1;
     }
 
     submitPoint() {
