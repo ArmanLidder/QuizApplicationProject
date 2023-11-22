@@ -85,6 +85,7 @@ export class GameService {
         } else {
             this.gameTestService.answers = this.answers;
             this.gameRealService.qrlAnswer = this.qrlAnswer;
+            this.qrlAnswer = '';
             this.gameTestService.sendAnswer();
         }
         this.answers.clear();

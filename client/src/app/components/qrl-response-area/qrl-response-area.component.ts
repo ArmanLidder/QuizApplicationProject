@@ -13,7 +13,6 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
     styleUrls: ['./qrl-response-area.component.scss'],
 })
 export class QrlResponseAreaComponent implements OnDestroy {
-    response: string = '';
     canWrite: boolean = false;
     inactiveTimeout: number = 0;
     isActive: boolean = false;
@@ -33,7 +32,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
     }
 
     handleActiveUser() {
-        this.charactersLeft = MAX_RESPONSE_CHARACTERS - this.response.length;
+        this.charactersLeft = MAX_RESPONSE_CHARACTERS - this.gameService.qrlAnswer.length;
         if (!this.isActive) {
             this.isActive = true;
             if (this.socketClientService.isSocketAlive())
