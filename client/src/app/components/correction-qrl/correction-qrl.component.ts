@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FULL, HALF, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameService } from '@app/services/game.service/game.service';
@@ -8,8 +8,8 @@ import { GameService } from '@app/services/game.service/game.service';
     templateUrl: './correction-qrl.component.html',
     styleUrls: ['./correction-qrl.component.scss'],
 })
-export class CorrectionQRLComponent {
-    @Input() reponsesQRL = new Map<string, string>();
+export class CorrectionQRLComponent implements OnChanges {
+    @Input() reponsesQRL = new Map<string, { answers: string; time: number }>();
     @Input() isHostEvaluating: boolean = false;
     reponsesQRLCorrected = new Map<string, number>();
     usernames: string[] = [];
@@ -20,7 +20,7 @@ export class CorrectionQRLComponent {
     currentUsername: string = '';
     points: number[] = [];
     inputPoint: number = 2;
-    indexPlayer: number = 0;
+    indexPlayer: number = -1;
     isCorrectionFinished: boolean = false;
 
     constructor(
@@ -30,11 +30,19 @@ export class CorrectionQRLComponent {
         this.initialise();
     }
 
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.reponsesQRL) {
+            this.initialise();
+        }
+    }
+
     initialise() {
-        this.reponsesQRL.forEach((value: string, key: string) => {
+        this.indexPlayer = -1;
+        this.reponsesQRL.forEach((value: { answers: string; time: number }, key: string) => {
             this.usernames.push(key);
-            this.answers.push(value);
+            this.answers.push(value.answers);
         });
+        this.nextAnswer();
     }
 
     getCorrection(point: number) {
@@ -53,7 +61,6 @@ export class CorrectionQRLComponent {
         for (let i = 0; i < this.usernames.length; i++) {
             this.reponsesQRLCorrected.set(this.usernames[i], this.points[i]);
         }
-        this.isHostEvaluating = false;
     }
 
     clearAll() {
@@ -64,14 +71,14 @@ export class CorrectionQRLComponent {
     }
 
     submitPoint() {
-        this.isValid = this.scores.includes(this.inputPoint);
-        if (this.indexPlayer <= this.usernames.length) {
+        this.isValid = this.scores.includes(Number(this.inputPoint));
+        if (this.indexPlayer < this.usernames.length) {
             if (this.isValid) {
                 this.getCorrection(this.inputPoint);
                 this.nextAnswer();
                 this.inputPoint = 2;
             }
-            if (this.indexPlayer > this.usernames.length) {
+            if (this.indexPlayer >= this.usernames.length) {
                 this.isCorrectionFinished = true;
                 this.endCorrection();
                 const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.reponsesQRLCorrected));
@@ -79,6 +86,7 @@ export class CorrectionQRLComponent {
                     roomId: this.gameService.gameRealService.roomId,
                     playerCorrection: playerQrlCorrectionFormatted,
                 });
+                this.isHostEvaluating = false;
                 this.clearAll();
             }
         }
