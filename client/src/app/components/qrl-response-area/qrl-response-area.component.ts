@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { GameService } from '@app/services/game.service/game.service';
 import {
     DEBOUNCE_INACTIVE_TIME,
@@ -12,7 +12,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
     templateUrl: './qrl-response-area.component.html',
     styleUrls: ['./qrl-response-area.component.scss'],
 })
-export class QrlResponseAreaComponent implements OnInit, OnDestroy {
+export class QrlResponseAreaComponent implements OnDestroy {
     response: string = '';
     canWrite: boolean = false;
     inactiveTimeout: number = 0;
@@ -24,14 +24,6 @@ export class QrlResponseAreaComponent implements OnInit, OnDestroy {
         private socketClientService: SocketClientService,
         public gameService: GameService,
     ) {}
-
-    ngOnInit() {
-        this.isActive = true;
-        this.hasInteracted = true;
-        this.handleActiveUser();
-        this.isActive = false;
-        this.hasInteracted = false;
-    }
 
     ngOnDestroy() {
         clearTimeout(this.inputTimer);
@@ -69,6 +61,7 @@ export class QrlResponseAreaComponent implements OnInit, OnDestroy {
                 this.socketClientService.send('sendActivityStatus', { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);
     }
+
     private setupInputDebounce(): void {
         this.inputTimer = window.setTimeout(() => {
             this.onInputStopped();
