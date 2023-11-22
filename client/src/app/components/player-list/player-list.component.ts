@@ -7,8 +7,10 @@ import { SortListService } from '@app/services/sort-list.service/sort-list.servi
 
 export type Player = [string, number, number, string];
 type PlayerAbandonment = [string, number, number, string];
-
-const STATUS = 3;
+export const SORT_BY_STATUS = 'byStatus';
+export const SORT_BY_SCORE = 'byScore';
+export const SORT_BY_NAME = 'byName';
+export const STATUS_INDEX = 3;
 
 @Component({
     selector: 'app-player-list',
@@ -24,18 +26,16 @@ export class PlayerListComponent {
     order = 1;
     orderIcon = 'fa-solid fa-up-long';
     optionSelections = new Map([
-        ['byName', true],
-        ['byScore', false],
-        ['byStatus', false],
+        [SORT_BY_NAME, true],
+        [SORT_BY_SCORE, false],
+        [SORT_BY_STATUS, false],
     ]);
-    // private sortFunction: (arg1: Player, arg2: Player) => number;
 
     constructor(
         public socketService: SocketClientService,
         public sortListService: SortListService,
     ) {
         if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
-        // this.sortFunction = this.sortListService.sortByName;
     }
     changeOrder() {
         this.order *= -1;
@@ -43,19 +43,19 @@ export class PlayerListComponent {
         this.getPlayersList(false);
     }
     sortByStatus() {
-        this.updateOptionSelections('byStatus');
+        this.updateOptionSelections(SORT_BY_STATUS);
         this.sortListService.sortByStatus();
         this.getPlayersList(false);
     }
 
     sortByScore() {
-        this.updateOptionSelections('byScore');
+        this.updateOptionSelections(SORT_BY_SCORE);
         this.sortListService.sortByScore();
         this.getPlayersList(false);
     }
 
     sortByName() {
-        this.updateOptionSelections('byName');
+        this.updateOptionSelections(SORT_BY_NAME);
         this.sortListService.sortByName();
         this.getPlayersList(false);
     }
@@ -120,8 +120,7 @@ export class PlayerListComponent {
     private changePlayerStatus(username: string, status: string) {
         const playerIndex = this.findPlayer(username, this.players);
         const notFound = -1;
-        const statusIndex = 3;
-        if (playerIndex !== notFound) this.players[playerIndex][statusIndex] = status;
+        if (playerIndex !== notFound) this.players[playerIndex][STATUS_INDEX] = status;
     }
 
     private initPlayerStatus(username: string, resetPlayerStatus: boolean) {
@@ -131,6 +130,6 @@ export class PlayerListComponent {
     }
     private getActualStatus(username: string) {
         const playerIndex = this.findPlayer(username, this.actualStatus);
-        return this.actualStatus[playerIndex][STATUS];
+        return this.actualStatus[playerIndex][STATUS_INDEX];
     }
 }
