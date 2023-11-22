@@ -33,6 +33,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
+import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -68,6 +69,7 @@ import { GameHistoryListComponent } from './components/game-history-list/game-hi
         OrganizerHistogramComponent,
         AlertDialogComponent,
         PlayerListComponent,
+        StatisticZoneComponent,
     ],
     imports: [
         AppMaterialModule,
