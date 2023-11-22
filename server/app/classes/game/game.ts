@@ -20,6 +20,7 @@ export class Game {
     currentQuizQuestion: QuizQuestion;
     question: string;
     choicesStats: ChoiceStats = new Map();
+    activityStatusStats: [number, number] = [0, 0];
     correctChoices: string[] = [];
     duration: number;
 
@@ -74,6 +75,11 @@ export class Game {
             playerScore.points = playerScore.points + this.currentQuizQuestion.points * (percentage / MAX_PERCENTAGE);
             playerScore.isBonus = false;
         });
+    }
+
+    switchActivityStatus(isActive: boolean) {
+        this.activityStatusStats[0] = isActive ? this.activityStatusStats[0] + 1 : this.activityStatusStats[0] - 1;
+        this.activityStatusStats[1] = isActive ? this.activityStatusStats[1] - 1 : this.activityStatusStats[1] + 1;
     }
 
     async updateGameHistory() {
@@ -167,6 +173,7 @@ export class Game {
         this.currentQuizQuestion.choices?.forEach((choice) => {
             this.choicesStats.set(choice.text, 0);
         });
+        this.activityStatusStats = [0, this.players.size];
     }
 
     private getAllCorrectChoices() {
