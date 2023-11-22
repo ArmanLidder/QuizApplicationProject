@@ -163,6 +163,13 @@ export class SocketManager {
                 this.sio.to(hostSocketId).emit(socketEvent.updateInteraction, username);
             });
 
+            socket.on('sendActivityStatus', (data: { roomId: number; isActive: boolean }) => {
+                const game = this.roomManager.getGameByRoomId(data.roomId);
+                game.switchActivityStatus(data.isActive);
+                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, 'Organisateur');
+                this.sio.to(hostSocketId).emit('refreshActivityStats', game.activityStatusStats);
+            });
+
             socket.on('getPlayerAnswers', (roomId: number, callback) => {
                 const game = this.roomManager.getGameByRoomId(roomId);
                 const formattedPlayerAnswers = JSON.stringify(Array.from(game.playersAnswers));
