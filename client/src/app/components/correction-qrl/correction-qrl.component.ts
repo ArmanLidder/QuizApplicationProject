@@ -33,7 +33,9 @@ export class CorrectionQRLComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.reponsesQRL) {
             this.initialise();
-            this.isHostEvaluating = true;
+            if (this.usernames.length > 0) {
+                this.isHostEvaluating = true;
+            }
         }
     }
 
