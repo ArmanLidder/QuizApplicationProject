@@ -1,13 +1,52 @@
-import { Component } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { ResponsesValues, ResponsesNumber } from '@app/components/organizer-histogram/organizer-histogram.component.const';
+import { QuizQuestion } from "@common/interfaces/quiz.interface";
+import { QuestionStatistics } from "@app/components/statistic-zone/statistic-zone.component.const";
 
-type QuestionStatistics = [ResponsesValues, ResponsesNumber];
 @Component({
     selector: 'app-statistic-zone',
     templateUrl: './statistic-zone.component.html',
     styleUrls: ['./statistic-zone.component.scss'],
 })
-export class StatisticZoneComponent {
-    statistics: Map<string, QuestionStatistics>;
+export class StatisticZoneComponent implements OnInit {
 
+    @Input() gameStats: QuestionStatistics[];
+    currentStat: QuestionStatistics;
+    responseValue: ResponsesValues;
+    responseNumber: ResponsesNumber;
+    question: QuizQuestion;
+    index: number = 0;
+
+    ngOnInit() {
+        this.currentStat = this.gameStats[this.index];
+        this.setUpData();
+    }
+
+    next() {
+        this.currentStat = this.gameStats[++this.index];
+        this.setUpData();
+    }
+
+    previous() {
+        this.currentStat = this.gameStats[--this.index];
+        this.setUpData();
+    }
+
+    isEnd() {
+        return this.findIndex() === this.gameStats.length - 1;
+    }
+
+    isFirst() {
+        return this.findIndex() === 0;
+    }
+
+    private findIndex() {
+        return this.gameStats.findIndex((stat) =>  this.currentStat === stat)
+    }
+
+    private setUpData() {
+        this.responseValue  =  this.currentStat[0];
+        this.responseNumber = this.currentStat[1];
+        this.question   = this.currentStat[2];
+    }
 }
