@@ -162,3 +162,27 @@ button {
         cursor: pointer;
     }
 }
+
+
+.result-container {
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.histogram,
+app-organizer-histogram,
+app-statistic-zone,
+app-player-list {
+    flex: 1;
+}
+
+.histogram,
+app-organizer-histogram,
+app-statistic-zone {
+    flex: 1.25;
+}
+
+app-player-list {
+    flex: 1;
+}
