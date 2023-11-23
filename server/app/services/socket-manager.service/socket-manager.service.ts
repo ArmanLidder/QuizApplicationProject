@@ -10,7 +10,7 @@ import {
     PlayerSelection,
     RemainingTime,
     PlayerUsername,
-    GameStats
+    GameStats,
 } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
@@ -203,7 +203,7 @@ export class SocketManager {
             });
 
             socket.on(socketEvent.gameStatsDistribution, (data: GameStats) => {
-               this.sio.to(String(data.roomId)).emit(socketEvent.gameStatsDistribution, data.stats);
+                this.sio.to(String(data.roomId)).emit(socketEvent.gameStatsDistribution, data.stats);
             });
 
             socket.on(socketEvent.disconnect, (reason) => {
