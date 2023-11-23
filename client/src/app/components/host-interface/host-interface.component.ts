@@ -81,15 +81,11 @@ export class HostInterfaceComponent {
             if (this.gameService.question?.type === QuestionType.QCM) {
                 this.playerListComponent.getPlayersList(false);
             } else {
-                this.socketService.send('getPlayerAnswers', this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
+                this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
                     this.reponsesQRL = new Map(JSON.parse(playerAnswers));
                     this.isHostEvaluating = true;
                 });
             }
-        });
-
-        this.socketService.on('evaluationOver', () => {
-            this.playerListComponent.getPlayersList(false);
         });
 
         this.socketService.on(socketEvent.finalTimeTransition, (timeValue: number) => {
@@ -97,19 +93,12 @@ export class HostInterfaceComponent {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
-                this.playerListComponent.getPlayersList();
+                this.playerListComponent.getPlayersList().then();
             }
         });
 
         this.socketService.on(socketEvent.refreshChoicesStats, (choicesStatsValue: number[]) => {
             this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
-        });
-
-        this.socketService.on('refreshActivityStats', (activityStatsValue: [number, number]) => {
-            this.histogramDataChangingResponses = new Map([
-                ['Actif', activityStatsValue[0]],
-                ['Inactif', activityStatsValue[1]],
-            ]);
         });
 
         this.socketService.on(socketEvent.getInitialQuestion, async (data: InitialQuestionData) => {
@@ -134,6 +123,17 @@ export class HostInterfaceComponent {
 
         this.socketService.on(socketEvent.endQuestionAfterRemoval, () => {
             this.resetInterface();
+        });
+
+        this.socketService.on(socketEvent.evaluationOver, () => {
+            this.playerListComponent.getPlayersList(false);
+        });
+
+        this.socketService.on(socketEvent.refreshActivityStats, (activityStatsValue: [number, number]) => {
+            this.histogramDataChangingResponses = new Map([
+                ['Actif', activityStatsValue[0]],
+                ['Inactif', activityStatsValue[1]],
+            ]);
         });
     }
 

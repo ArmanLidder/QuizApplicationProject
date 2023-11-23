@@ -36,6 +36,12 @@ export namespace socketEvent {
     export const newMessage = 'newMessage'
     export const disconnect = 'disconnect';
     export const toggleChatPermission = 'toggleChatPermission';
+    export const sendActivityStatus = 'sendActivityStatus';
+    export const newResponseInteraction = 'newResponseInteraction';
+    export const getPlayerAnswers = 'getPlayerAnswers';
+    export const playerQrlCorrection = 'playerQrlCorrection';
+    export const evaluationOver = 'evaluationOver';
+    export const refreshActivityStats = 'refreshActivityStats';
 }
 
 
