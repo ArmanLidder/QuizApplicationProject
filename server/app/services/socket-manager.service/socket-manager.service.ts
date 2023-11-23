@@ -183,6 +183,13 @@ export class SocketManager {
                 this.sio.to(String(data.roomId)).emit('evaluationOver');
             });
 
+            socket.on('newResponseInteraction', (roomId: number) => {
+                console.log('ca envoie event');
+                const hostSocketId = this.roomManager.getSocketIDByUsername(roomId, 'Organisateur');
+                const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
+                this.sio.to(hostSocketId).emit(socketEvent.updateInteraction, username);
+            });
+
             socket.on(socketEvent.startTransition, (roomId: number) => {
                 this.roomManager.clearRoomTimer(roomId);
                 this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.timeTransition);

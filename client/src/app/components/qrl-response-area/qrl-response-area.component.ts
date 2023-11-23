@@ -47,7 +47,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
         if (!this.hasInteracted) {
             this.hasInteracted = true;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send('newResponseInteraction', { roomId: this.gameService.gameRealService.roomId });
+                this.socketClientService.send('newResponseInteraction', this.gameService.gameRealService.roomId);
         }
         this.resetInputTimer();
     }
