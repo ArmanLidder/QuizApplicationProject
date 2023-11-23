@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 const TIMER_VALUE = 20;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
