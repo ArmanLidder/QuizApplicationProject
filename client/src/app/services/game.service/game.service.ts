@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { GameTestService } from '@app/services/game-test.service/game-test.service';
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +17,10 @@ export class GameService {
     constructor(
         public gameTestService: GameTestService,
         public gameRealService: GameRealService,
-    ) {}
+        private socketService: SocketClientService,
+    ) {
+        if (socketService.isSocketAlive()) this.configureBaseSockets();
+    }
 
     get timer() {
         return this.isTestMode ? this.gameTestService.timer?.time : this.gameRealService.timer;
@@ -94,5 +99,19 @@ export class GameService {
     private reset() {
         this.gameRealService.destroy();
         this.gameTestService.reset();
+    }
+
+    private configureBaseSockets() {
+        this.socketService.on(socketEvent.time, (timeValue: number) => {
+            this.handleTimeEvent(timeValue);
+        });
+    }
+
+    private handleTimeEvent(timeValue: number) {
+        this.gameRealService.timer = timeValue;
+        if (this.timer === 0 && !this.gameRealService.locked) {
+            this.gameRealService.locked = true;
+            if (this.username !== 'Organisateur') this.sendAnswer();
+        }
     }
 }

@@ -78,22 +78,10 @@ export class GameRealService implements GameServiceInterface {
             this.validated = false;
             this.locked = false;
         });
-
-        this.socketService.on(socketEvent.time, (timeValue: number) => {
-            this.handleTimeEvent(timeValue);
-        });
     }
 
     sendSelection(index: number, isSelected: boolean) {
         if (this.socketService.isSocketAlive()) this.socketService.send(socketEvent.updateSelection, { roomId: this.roomId, isSelected, index });
-    }
-
-    private handleTimeEvent(timeValue: number) {
-        this.timer = timeValue;
-        if (this.timer === 0 && !this.locked) {
-            this.locked = true;
-            if (this.username !== 'Organisateur') this.sendAnswer();
-        }
     }
 
     private reset() {

@@ -26,7 +26,6 @@ export class QrlResponseAreaComponent implements OnDestroy {
         private socketClientService: SocketClientService,
         public gameService: GameService,
     ) {
-        this.validateTimeOut();
     }
 
     ngOnDestroy() {
@@ -56,18 +55,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
         this.resetInputTimer();
         if (this.firstTimeInput) {
             this.firstTimeInput = false;
-            this.validateTimeOut();
         }
-    }
-
-    validateTimeOut() {
-        this.validateTimer = window.setTimeout(() => {
-            if (this.oneTimeValidate) {
-                this.oneTimeValidate = false;
-                this.validate();
-                console.log(this.gameService.timer);
-            }
-        }, (this.gameService.timer - 1) * 1000);
     }
 
     validate() {
