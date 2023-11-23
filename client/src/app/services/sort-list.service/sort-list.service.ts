@@ -13,7 +13,7 @@ export class SortListService {
         [playerStatus.validation, 1],
         [playerStatus.left, 0],
     ]);
-    sortFunction: (arg1: Player, arg2: Player) => number;
+    sortFunction: (arg1: Player, arg2: Player) => number = this.sortComparaisonByName;
 
     sortByName() {
         this.sortFunction = this.sortComparaisonByName;
