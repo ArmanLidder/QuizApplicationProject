@@ -33,15 +33,11 @@ export class StatisticZoneComponent implements OnInit {
     }
 
     isEnd() {
-        return this.findIndex() === this.gameStats.length - 1;
+        return this.index === this.gameStats.length - 1;
     }
 
     isFirst() {
-        return this.findIndex() === 0;
-    }
-
-    private findIndex() {
-        return this.gameStats.findIndex((stat) =>  this.currentStat === stat)
+        return this.index === 0;
     }
 
     private setUpData() {
