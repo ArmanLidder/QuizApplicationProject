@@ -1,7 +1,8 @@
 .quiz-question {
     align-content: space-between;
     border: 1px solid black;
-    padding: 2vh
+    padding: 2vh;
+    margin-top: 20px;
 }
 
 .button-container {
@@ -10,7 +11,8 @@
     flex-direction: row;
     margin: 5px;
     padding: 5px;
-    justify-content: space-between;
+    justify-content: flex-end;
+    position: relative;
 }
 
 .error-message {
@@ -90,9 +92,67 @@
     padding: 5px;
 }
 
-.buttonOption {
+.buttonOptionAddDelete {
+    margin-left: 5px;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: -5px;
     padding-bottom: -5px;
+}
+
+.AddDelete {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.buttonOption:first-of-type {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.buttonOption:last-of-type {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 10px;
+}
+
+.green-icon {
+    color: green !important;
+  }
+  
+  .delete-icon {
+    color: red !important;
+  }
+
+  .add-icon {
+    font-size: 24px;
+    color: green !important;
+  }
+
+  .addDeleteChoices {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttonChoice-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttonOptionChoices {
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.true-false-button{
+    display: flex;
+    flex-direction: row;
+}
+
+.arrow-down{
+    display: flex;
+    flex-direction: row;
 }
