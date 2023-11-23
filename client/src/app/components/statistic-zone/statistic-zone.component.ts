@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ResponsesValues, ResponsesNumber } from '@app/components/organizer-histogram/organizer-histogram.component.const';
-import { QuizQuestion } from "@common/interfaces/quiz.interface";
-import { QuestionStatistics } from "@app/components/statistic-zone/statistic-zone.component.const";
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 @Component({
     selector: 'app-statistic-zone',
@@ -9,7 +9,6 @@ import { QuestionStatistics } from "@app/components/statistic-zone/statistic-zon
     styleUrls: ['./statistic-zone.component.scss'],
 })
 export class StatisticZoneComponent implements OnInit {
-
     @Input() gameStats: QuestionStatistics[];
     currentStat: QuestionStatistics;
     responseValue: ResponsesValues;
@@ -41,8 +40,8 @@ export class StatisticZoneComponent implements OnInit {
     }
 
     private setUpData() {
-        this.responseValue  =  this.currentStat[0];
+        this.responseValue = this.currentStat[0];
         this.responseNumber = this.currentStat[1];
-        this.question   = this.currentStat[2];
+        this.question = this.currentStat[2];
     }
 }

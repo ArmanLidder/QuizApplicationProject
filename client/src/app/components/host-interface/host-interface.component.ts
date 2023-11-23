@@ -1,19 +1,16 @@
-import {Component, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {
-    PLAYER_NOT_FOUND_INDEX,
-    TransportStatsFormat
-} from '@app/components/host-interface/host-interface.component.const';
-import {PlayerListComponent} from '@app/components/player-list/player-list.component';
-import {GameService} from '@app/services/game.service/game.service';
-import {SocketClientService} from '@app/services/socket-client.service/socket-client.service';
-import {InitialQuestionData, NextQuestionData} from '@common/interfaces/host.interface';
-import {QuizChoice, QuizQuestion} from '@common/interfaces/quiz.interface';
-import {timerMessage} from '@common/browser-message/displayable-message/timer-message';
-import {socketEvent} from '@common/socket-event-name/socket-event-name';
-import {Player} from '@app/components/player-list/player-list.component.const';
-import {QuestionStatistics} from "@app/components/statistic-zone/statistic-zone.component.const";
-import {QuestionType} from "@common/enums/question-type.enum";
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { PLAYER_NOT_FOUND_INDEX, TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
+import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { Player } from '@app/components/player-list/player-list.component.const';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 @Component({
     selector: 'app-host-interface',
@@ -61,15 +58,19 @@ export class HostInterfaceComponent {
 
     private saveStats() {
         const question = this.gameService.gameRealService.question;
-        if (question !== null ) {
-            const dataValue = (question.type === QuestionType.QLR) ? this.generateQRLMap() : this.histogramDataValue;
+        if (question !== null) {
+            const dataValue = question.type === QuestionType.QLR ? this.generateQRLMap() : this.histogramDataValue;
             const savedStats: QuestionStatistics = [dataValue, this.histogramDataChangingResponses, question];
             this.gameStats.push(savedStats);
         }
     }
 
-    private generateQRLMap(){
-        return new Map([['0', false], ['50', false], ['100', true]]);
+    private generateQRLMap() {
+        return new Map([
+            ['0', false],
+            ['50', false],
+            ['100', true],
+        ]);
     }
 
     private nextQuestion() {
@@ -157,7 +158,7 @@ export class HostInterfaceComponent {
 
     private sendGameStats() {
         const gameStats = this.stringifyStats();
-        this.socketService.send(socketEvent.gameStatsDistribution, {roomId: this.gameService.gameRealService.roomId, stats: gameStats});
+        this.socketService.send(socketEvent.gameStatsDistribution, { roomId: this.gameService.gameRealService.roomId, stats: gameStats });
     }
 
     private stringifyStats() {
@@ -165,8 +166,8 @@ export class HostInterfaceComponent {
         return JSON.stringify(stats);
     }
 
-    private prepareStatsTransport(){
-        const data : TransportStatsFormat  = [];
+    private prepareStatsTransport() {
+        const data: TransportStatsFormat = [];
         this.gameStats.forEach((stats) => {
             const values = this.mapValueToArray(stats[0]);
             const responses = this.mapResponseToArray(stats[1]);

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StatisticZoneComponent } from './statistic-zone.component';
-import {OrganizerHistogramComponent} from "@app/components/organizer-histogram/organizer-histogram.component";
-import {mockStats as mockSta} from "@app/components/statistic-zone/statistic-zone.component.const";
-import {NgChartsModule} from "ng2-charts";
+import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
+import { mockStats as mockSta } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { NgChartsModule } from 'ng2-charts';
 
 describe('StatisticZoneComponent', () => {
     let component: StatisticZoneComponent;
@@ -11,7 +11,7 @@ describe('StatisticZoneComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [StatisticZoneComponent, OrganizerHistogramComponent],
-            imports: [NgChartsModule]
+            imports: [NgChartsModule],
         });
         fixture = TestBed.createComponent(StatisticZoneComponent);
         component = fixture.componentInstance;
@@ -24,6 +24,7 @@ describe('StatisticZoneComponent', () => {
     });
 
     it('should call setUpData when changes', () => {
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
         const setUpDataSpy = spyOn<any>(component, 'setUpData');
         component.ngOnInit();
         expect(setUpDataSpy).toHaveBeenCalled();

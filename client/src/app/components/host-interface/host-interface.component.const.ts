@@ -1,5 +1,4 @@
-import {QuizQuestion} from "@common/interfaces/quiz.interface";
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
 
 export const PLAYER_NOT_FOUND_INDEX = -1;
-export type TransportStatsFormat = [[string,boolean][],[string, number][],QuizQuestion][];
-
+export type TransportStatsFormat = [[string, boolean][], [string, number][], QuizQuestion][];

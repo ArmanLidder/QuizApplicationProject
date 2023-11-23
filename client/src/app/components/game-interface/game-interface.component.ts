@@ -7,8 +7,8 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
-import { QuestionStatistics } from "@app/components/statistic-zone/statistic-zone.component.const";
-import {TransportStatsFormat} from "@app/components/host-interface/host-interface.component.const";
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 
 type Player = [string, number];
 
@@ -105,7 +105,7 @@ export class GameInterfaceComponent {
         return JSON.parse(stringifyStats);
     }
 
-    private unpackStats(stats: TransportStatsFormat){
+    private unpackStats(stats: TransportStatsFormat) {
         stats.forEach((stat) => {
             const values = new Map<string, boolean>(stat[0]);
             const responses = new Map<string, number>(stat[1]);

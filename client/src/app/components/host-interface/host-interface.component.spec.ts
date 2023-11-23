@@ -1,22 +1,20 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {
-    SocketClientServiceTestHelper
-} from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import {SocketClientService} from '@app/services/socket-client.service/socket-client.service';
-import {HostInterfaceComponent} from './host-interface.component';
-import {GameService} from '@app/services/game.service/game.service';
-import {OrganizerHistogramComponent} from '@app/components/organizer-histogram/organizer-histogram.component';
-import {NgChartsModule} from 'ng2-charts';
-import {QuizQuestion} from '@common/interfaces/quiz.interface';
-import {HttpClientModule} from '@angular/common/http';
-import {QuestionType} from '@common/enums/question-type.enum';
-import {PlayerListComponent} from '@app/components/player-list/player-list.component';
-import {By} from '@angular/platform-browser';
-import {socketEvent} from '@common/socket-event-name/socket-event-name';
-import {playerStatus} from '@common/player-status/player-status';
-import {StatisticZoneComponent} from "@app/components/statistic-zone/statistic-zone.component";
-import {fillerQuizzes} from "../../../../../server/app/mock-data/data";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { HostInterfaceComponent } from './host-interface.component';
+import { GameService } from '@app/services/game.service/game.service';
+import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
+import { NgChartsModule } from 'ng2-charts';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { HttpClientModule } from '@angular/common/http';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { By } from '@angular/platform-browser';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { playerStatus } from '@common/player-status/player-status';
+import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic-zone.component';
+import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -267,31 +265,55 @@ describe('HostInterfaceComponent', () => {
     it('should prepare stats transport correctly', () => {
         component.gameStats = [
             [
-                new Map<string, boolean>([['value1', true], ['value2', false]]),
-                new Map<string, number>([['response1', 3], ['response2', 5]]),
-                fillerQuizzes[0].questions[0],
+                new Map<string, boolean>([
+                    ['value1', true],
+                    ['value2', false],
+                ]),
+                new Map<string, number>([
+                    ['response1', 0],
+                    ['response2', 0],
+                ]),
+                question,
             ],
         ];
         const preparedStats = component['prepareStatsTransport']();
         expect(preparedStats).toEqual([
             [
-                [['value1', true], ['value2', false]],
-                [['response1', 3], ['response2', 5]],
-                fillerQuizzes[0].questions[0],
+                [
+                    ['value1', true],
+                    ['value2', false],
+                ],
+                [
+                    ['response1', 0],
+                    ['response2', 0],
+                ],
+                question,
             ],
         ]);
     });
 
     it('should map response to array correctly', () => {
-        const responseMap = new Map<string, number>([['response1', 3], ['response2', 5]]);
+        const responseMap = new Map<string, number>([
+            ['response1', 0],
+            ['response2', 0],
+        ]);
         const responseArray = component['mapResponseToArray'](responseMap);
-        expect(responseArray).toEqual([['response1', 3], ['response2', 5]]);
+        expect(responseArray).toEqual([
+            ['response1', 0],
+            ['response2', 0],
+        ]);
     });
 
     it('should map value to array correctly', () => {
-        const valueMap = new Map<string, boolean>([['value1', true], ['value2', false]]);
+        const valueMap = new Map<string, boolean>([
+            ['value1', true],
+            ['value2', false],
+        ]);
         const valueArray = component['mapValueToArray'](valueMap);
-        expect(valueArray).toEqual([['value1', true], ['value2', false]]);
+        expect(valueArray).toEqual([
+            ['value1', true],
+            ['value2', false],
+        ]);
     });
 
     it('should save stats correctly for QLR question type', () => {
@@ -299,13 +321,19 @@ describe('HostInterfaceComponent', () => {
         component.gameService.gameRealService.question.type = QuestionType.QLR;
         component['saveStats']();
         expect(component.gameStats.length).toEqual(1);
-        expect(component.gameStats[0][0]).toEqual(new Map([['0', false], ['50', false], ['100', true]]));
+        expect(component.gameStats[0][0]).toEqual(
+            new Map([
+                ['0', false],
+                ['50', false],
+                ['100', true],
+            ]),
+        );
     });
 
     it('should save stats correctly for other question types', () => {
-        component.gameService.gameRealService.question = mockQuestion
-        component.histogramDataValue = new Map([['test', false]])
-        component.histogramDataChangingResponses = new Map([['test', 0]])
+        component.gameService.gameRealService.question = mockQuestion;
+        component.histogramDataValue = new Map([['test', false]]);
+        component.histogramDataChangingResponses = new Map([['test', 0]]);
         component['saveStats']();
         expect(component.gameStats.length).toEqual(1);
         expect(component.gameStats[0][0]).toEqual(new Map([['test', false]]));

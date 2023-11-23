@@ -7,8 +7,8 @@ import { GameInterfaceComponent } from './game-interface.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { TransportStatsFormat } from "@app/components/host-interface/host-interface.component.const";
-import { fillerQuizzes } from "../../../../../server/app/mock-data/data"
+import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
+import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -94,8 +94,10 @@ describe('GameInterfaceComponent', () => {
     });
 
     it('should configure base socket features for removed from game correctly', () => {
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
         const unpackSpy = spyOn(component, 'unpackStats' as any);
         const parseSpy = spyOn(component, 'parseGameStats' as any);
+        /* eslint-enable  @typescript-eslint/no-explicit-any */
         component['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
         expect(socketOnText).toEqual(socketEvent.gameStatsDistribution);
@@ -158,9 +160,15 @@ describe('GameInterfaceComponent', () => {
     it('should unpack game stats correctly', () => {
         const stats: TransportStatsFormat = [
             [
-                [['value1', true], ['value2', false]],
-                [['response1', 3], ['response2', 5]],
-                fillerQuizzes[0].questions[0],
+                [
+                    ['value1', true],
+                    ['value2', false],
+                ],
+                [
+                    ['response1', 0],
+                    ['response2', 0],
+                ],
+                question,
             ],
         ];
         component['unpackStats'](stats);
