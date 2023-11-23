@@ -100,6 +100,7 @@ export class GameTestService implements GameServiceInterface {
         this.gameOver = false;
         this.locked = false;
         this.validated = false;
+        this.qrlAnswer = '';
         clearTimeout(this.timeouts[0]);
         clearTimeout(this.timeouts[1]);
     }

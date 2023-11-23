@@ -94,6 +94,7 @@ export class GameRealService implements GameServiceInterface {
         this.isLast = false;
         this.players = [];
         this.answers.clear();
+        this.qrlAnswer = '';
         this.questionNumber = 1;
     }
 }

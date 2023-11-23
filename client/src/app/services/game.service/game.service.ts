@@ -96,7 +96,7 @@ export class GameService {
     }
 
     private reset() {
-        this.socketService.socket.removeAllListeners();
+        this.qrlAnswer = '';
         this.gameRealService.destroy();
         this.gameTestService.reset();
     }
