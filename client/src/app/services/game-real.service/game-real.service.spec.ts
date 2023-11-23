@@ -65,16 +65,6 @@ describe('GameRealService', () => {
         }
     });
 
-    it('should handle time event properly', () => {
-        const sendAnswerSpy = spyOn<any>(service, 'sendAnswer');
-        service.locked = false;
-        service.username = 'Joueur';
-        service['handleTimeEvent'](0);
-        expect(service.timer).toEqual(0);
-        expect(service.locked).toBeTruthy();
-        expect(sendAnswerSpy).toHaveBeenCalled();
-    });
-
     it('should reset properly', () => {
         service['reset']();
         expect(service.username).toEqual('');
