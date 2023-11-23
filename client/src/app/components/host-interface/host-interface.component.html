@@ -22,17 +22,19 @@
         <button class='cancel' routerLink='/home'> Quitter </button>
     </div>
 </div>
-<div class="histogram" *ngIf='!this.isGameOver'>
-    <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
+<div class="result-container">
+    <div class="histogram" *ngIf='!this.isGameOver'>
+        <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
+    </div>
+    <app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
+    <app-player-list
+        #playerListChild
+        [roomId]='this.gameService.gameRealService.roomId'
+        [leftPlayers]='this.leftPlayers'
+        [isFinal]='this.isGameOver'
+        [isHost] = 'true'>
+    </app-player-list>
 </div>
-<app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
-<app-player-list
-    #playerListChild
-    [roomId]='this.gameService.gameRealService.roomId'
-    [leftPlayers]='this.leftPlayers'
-    [isFinal]='this.isGameOver'
-    [isHost] = 'true'>
-</app-player-list>
 
 
 
