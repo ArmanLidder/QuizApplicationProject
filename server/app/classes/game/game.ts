@@ -69,7 +69,7 @@ export class Game {
         this.choicesStats.set(answer, isSelected ? oldValue + 1 : oldValue - 1);
     }
 
-    updatePlayerScores(playerCorrections: Map<string, number> = new Map()) {
+    updatePlayerScores(playerCorrections: Map<string, number>) {
         playerCorrections.forEach((percentage, username) => {
             const playerScore = this.players.get(username);
             playerScore.points = playerScore.points + this.currentQuizQuestion.points * (percentage / MAX_PERCENTAGE);
