@@ -9,6 +9,7 @@ import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { Player } from '@app/components/player-list/player-list.component.const';
+import { QuestionStatistics } from "@app/components/statistic-zone/statistic-zone.component.const";
 
 @Component({
     selector: 'app-host-interface',
@@ -22,6 +23,7 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
+    gameStats: QuestionStatistics[] = [];
 
     constructor(
         public gameService: GameService,
@@ -41,6 +43,7 @@ export class HostInterfaceComponent {
     }
 
     handleHostCommand() {
+        this.saveStats();
         if (this.gameService.gameRealService.isLast) {
             this.handleLastQuestion();
         } else {
@@ -50,6 +53,14 @@ export class HostInterfaceComponent {
 
     playerHasLeft(username: string): boolean {
         return this.leftPlayers.some((player) => player[0] === username);
+    }
+
+    private saveStats() {
+        const question = this.gameService.gameRealService.question;
+        if (question !== null ) {
+            const savedStats: QuestionStatistics = [this.histogramDataValue, this.histogramDataChangingResponses, question];
+            this.gameStats.push(savedStats);
+        }
     }
 
     private nextQuestion() {
