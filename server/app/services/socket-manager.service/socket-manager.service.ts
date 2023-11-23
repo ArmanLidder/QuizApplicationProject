@@ -131,8 +131,8 @@ export class SocketManager {
                 const index = game.currIndex + 1;
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
                 socket.emit(socketEvent.getInitialQuestion, { question, username, index, numberOfQuestions: game.quiz.questions.length });
-                const duration =
-                    game.currentQuizQuestion.type === QuestionType.QCM ? this.roomManager.getGameByRoomId(roomId).duration : QRL_DURATION;
+                const isChoiceQuestion = game.currentQuizQuestion.type === QuestionType.QCM;
+                const duration = isChoiceQuestion ? this.roomManager.getGameByRoomId(roomId).duration : QRL_DURATION;
                 if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === 'Organisateur') {
                     this.roomManager.clearRoomTimer(roomId);
                     this.startTimer(roomId, duration);
