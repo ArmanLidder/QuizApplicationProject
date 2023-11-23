@@ -20,13 +20,11 @@ export class QrlResponseAreaComponent implements OnDestroy {
     charactersLeft: number = MAX_RESPONSE_CHARACTERS;
     inputTimer: number = 0;
     validateTimer: number = 0;
-    firstTimeInput: boolean = true;
     oneTimeValidate: boolean = true;
     constructor(
         private socketClientService: SocketClientService,
         public gameService: GameService,
-    ) {
-    }
+    ) {}
 
     ngOnDestroy() {
         this.isActive = false;
@@ -34,9 +32,8 @@ export class QrlResponseAreaComponent implements OnDestroy {
         clearTimeout(this.inputTimer);
         clearTimeout(this.inactiveTimeout);
         clearTimeout(this.validateTimer);
-        if (!this.oneTimeValidate && !this.firstTimeInput) {
+        if (!this.oneTimeValidate) {
             this.oneTimeValidate = true;
-            this.firstTimeInput = true;
         }
     }
 
@@ -53,9 +50,6 @@ export class QrlResponseAreaComponent implements OnDestroy {
                 this.socketClientService.send('newResponseInteraction', { roomId: this.gameService.gameRealService.roomId });
         }
         this.resetInputTimer();
-        if (this.firstTimeInput) {
-            this.firstTimeInput = false;
-        }
     }
 
     validate() {

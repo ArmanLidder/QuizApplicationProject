@@ -18,9 +18,7 @@ export class GameService {
         public gameTestService: GameTestService,
         public gameRealService: GameRealService,
         private socketService: SocketClientService,
-    ) {
-        if (socketService.isSocketAlive()) this.configureBaseSockets();
-    }
+    ) {}
 
     get timer() {
         return this.isTestMode ? this.gameTestService.timer?.time : this.gameRealService.timer;
@@ -61,6 +59,7 @@ export class GameService {
 
     init(pathId: string) {
         if (!this.isTestMode) {
+            this.configureBaseSockets();
             this.gameRealService.roomId = Number(pathId);
             this.gameRealService.init();
         } else {
@@ -97,6 +96,7 @@ export class GameService {
     }
 
     private reset() {
+        this.socketService.socket.removeAllListeners();
         this.gameRealService.destroy();
         this.gameTestService.reset();
     }
