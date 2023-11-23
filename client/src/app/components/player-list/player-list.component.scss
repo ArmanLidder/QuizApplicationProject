@@ -165,8 +165,10 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 .left {
-    color: black;
+    background-color: #2d2d2d;
     text-decoration: line-through;
+    text-decoration-color: white;
+    color: white;
 }
 
 .no-interaction {
@@ -182,8 +184,8 @@ input:checked + .slider:before {
 }
 
 .endGame {
-    color: white;
-    background-color: #5b5a5a;
+    color: black;
+    background-color: white;
 }
 
 
