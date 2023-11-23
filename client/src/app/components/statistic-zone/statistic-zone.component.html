@@ -1,4 +1,13 @@
-<p>statistic-zone works!</p>
-<app-organizer-histogram >
+<div class="stats-container">
+    <h2>Question {{index + 1}}</h2>
+    <h2>{{question.text}}</h2>
+    <div class="graph-title">
+        <button *ngIf="!isFirst()" class="arrow" (click)="previous()">Précédent</button>
+        <button *ngIf="!isEnd()" class="arrow" (click)="next()">Suivant</button>
+    </div>
+    <app-organizer-histogram
+        [changingResponses]="responseNumber"
+        [valueOfResponses]="responseValue">
+    </app-organizer-histogram>
+</div>
 
-</app-organizer-histogram>
