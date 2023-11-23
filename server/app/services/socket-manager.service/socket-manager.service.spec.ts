@@ -425,4 +425,13 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should toggle chat permission', (done) => {
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit(socketEvent.gameStatsDistribution, { roomId: mockRoomId, stats: 'test' });
+        setTimeout(() => {
+            expect(emitSpy.calledWith(socketEvent.gameStatsDistribution, { roomId: mockRoomId, stats: 'test' }));
+            done();
+        }, RESPONSE_DELAY);
+    });
 });
