@@ -184,7 +184,6 @@ export class SocketManager {
             });
 
             socket.on('newResponseInteraction', (roomId: number) => {
-                console.log('ca envoie event');
                 const hostSocketId = this.roomManager.getSocketIDByUsername(roomId, 'Organisateur');
                 const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
                 this.sio.to(hostSocketId).emit(socketEvent.updateInteraction, username);

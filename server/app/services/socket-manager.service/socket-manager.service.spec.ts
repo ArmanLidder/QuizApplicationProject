@@ -510,6 +510,19 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
+    it('should handle player interaction update for a qrl', (done) => {
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        roomManager.getSocketIDByUsername.returns('test');
+        roomManager.getUsernameBySocketId.returns('Player1');
+        clientSocket.emit('newResponseInteraction', mockRoomId);
+        setTimeout(() => {
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, 'Organisateur'));
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, clientSocket.id));
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should toggle chat permission', (done) => {
         clientSocket.emit(socketEvent.toggleChatPermission, { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
