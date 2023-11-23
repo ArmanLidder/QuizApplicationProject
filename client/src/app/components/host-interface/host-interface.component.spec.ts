@@ -13,6 +13,7 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
 import { By } from '@angular/platform-browser';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
+import {StatisticZoneComponent} from "@app/components/statistic-zone/statistic-zone.component";
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -46,7 +47,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent],
+            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent, StatisticZoneComponent],
             providers: [
                 SocketClientService,
                 GameService,
