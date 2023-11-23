@@ -6,6 +6,7 @@ import {
 } from '@app/components/qrl-response-area/qrl-response-area.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-qrl-response-area',
@@ -13,14 +14,12 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
     styleUrls: ['./qrl-response-area.component.scss'],
 })
 export class QrlResponseAreaComponent implements OnDestroy {
-    canWrite: boolean = false;
     inactiveTimeout: number = 0;
     isActive: boolean = false;
     hasInteracted: boolean = false;
     charactersLeft: number = MAX_RESPONSE_CHARACTERS;
     inputTimer: number = 0;
     validateTimer: number = 0;
-    oneTimeValidate: boolean = true;
     constructor(
         private socketClientService: SocketClientService,
         public gameService: GameService,
@@ -32,9 +31,6 @@ export class QrlResponseAreaComponent implements OnDestroy {
         clearTimeout(this.inputTimer);
         clearTimeout(this.inactiveTimeout);
         clearTimeout(this.validateTimer);
-        if (!this.oneTimeValidate) {
-            this.oneTimeValidate = true;
-        }
     }
 
     handleActiveUser() {
@@ -42,18 +38,17 @@ export class QrlResponseAreaComponent implements OnDestroy {
         if (!this.isActive) {
             this.isActive = true;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send('sendActivityStatus', { roomId: this.gameService.gameRealService.roomId, isActive: true });
+                this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: true });
         }
         if (!this.hasInteracted) {
             this.hasInteracted = true;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send('newResponseInteraction', this.gameService.gameRealService.roomId);
+                this.socketClientService.send(socketEvent.newResponseInteraction, this.gameService.gameRealService.roomId);
         }
         this.resetInputTimer();
     }
 
     validate() {
-        this.canWrite = true;
         this.gameService.isHostEvaluating = true;
         this.gameService.sendAnswer();
         this.ngOnDestroy();
@@ -63,7 +58,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
         this.inactiveTimeout = window.setTimeout(() => {
             this.isActive = false;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send('sendActivityStatus', { roomId: this.gameService.gameRealService.roomId, isActive: false });
+                this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);
     }
 

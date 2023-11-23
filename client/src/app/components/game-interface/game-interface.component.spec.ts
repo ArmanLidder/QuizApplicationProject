@@ -7,6 +7,7 @@ import { GameInterfaceComponent } from './game-interface.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -23,7 +24,7 @@ describe('GameInterfaceComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            declarations: [GameInterfaceComponent, PlayerListComponent],
+            declarations: [GameInterfaceComponent, PlayerListComponent, QrlResponseAreaComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },

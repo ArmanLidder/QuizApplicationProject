@@ -5,12 +5,15 @@ import { GameRealService } from '@app/services/game-real.service/game-real.servi
 import { TimeService } from '@app/services/time.service/time.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameService', () => {
     const timeService: TimeService = new TimeService();
     let service: GameService;
-
+    let socketService: SocketClientServiceTestHelper;
     const firstQuestionMock = {
         type: QuestionType.QCM,
         text: 'What is 2 + 2?',
@@ -34,8 +37,17 @@ describe('GameService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [GameTestService, GameRealService],
+            providers: [
+                GameTestService,
+                GameRealService,
+                SocketClientService,
+                { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
+            ],
             imports: [HttpClientTestingModule],
+        });
+        socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
+        spyOn(socketService, 'isSocketAlive').and.callFake(() => {
+            return true;
         });
         service = TestBed.inject(GameService);
     });
@@ -128,15 +140,18 @@ describe('GameService', () => {
         service.isTestMode = true;
         const quizId = 'testQuizId';
         spyOn(service.gameTestService, 'init');
+        spyOn(service, 'configureBaseSockets' as any);
         service.init(quizId);
         expect(service.gameTestService.init).toHaveBeenCalled();
         expect(service.gameTestService.quizId).toBe(quizId);
+        expect(service['configureBaseSockets']).not.toHaveBeenCalled();
         service.isTestMode = false;
         spyOn(service.gameRealService, 'init');
         const roomId = '123';
         service.init(roomId);
         expect(service.gameRealService.init).toHaveBeenCalled();
         expect(service.gameRealService.roomId).toBe(Number(roomId));
+        expect(service['configureBaseSockets']).toHaveBeenCalled();
     });
 
     it('should send answers and clear them in sendAnswer', () => {
@@ -199,5 +214,28 @@ describe('GameService', () => {
         service.gameRealService.question = null;
         service.selectChoice(testIndex);
         expect(service.answers.get(testIndex)).toBeNull();
+    });
+
+    it('should configure base sockets properly', () => {
+        const onSpy = spyOn(service['socketService'], 'on').and.callThrough();
+        const handleTimeSpy = spyOn<any>(service, 'handleTimeEvent');
+        service['configureBaseSockets']();
+        const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
+        expect(firstEvent).toEqual(socketEvent.time);
+
+        if (typeof firstAction === 'function') {
+            firstAction(1);
+            expect(handleTimeSpy).toHaveBeenCalledWith(1);
+        }
+    });
+
+    it('should handle time event properly', () => {
+        const sendAnswerSpy = spyOn<any>(service, 'sendAnswer');
+        service.gameRealService.locked = false;
+        service.gameRealService.username = 'Joueur';
+        service['handleTimeEvent'](0);
+        expect(service.timer).toEqual(0);
+        expect(service.gameRealService.locked).toBeTruthy();
+        expect(sendAnswerSpy).toHaveBeenCalled();
     });
 });

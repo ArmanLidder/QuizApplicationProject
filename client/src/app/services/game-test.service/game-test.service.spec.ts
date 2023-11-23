@@ -35,6 +35,11 @@ describe('GameTestService', () => {
                     { text: '3', isCorrect: true },
                 ],
             },
+            {
+                type: QuestionType.QLR,
+                text: 'What is 2 + 2?',
+                points: 20,
+            },
         ],
         visible: true,
     };
@@ -62,7 +67,7 @@ describe('GameTestService', () => {
         gameTestService.timeService.getTimer(0);
         expect(gameTestService.timeService.getTimer(0)).toBe(TIMER1);
 
-        gameTestService.currQuestionIndex = 1;
+        gameTestService.currQuestionIndex = 2;
         gameTestService.quiz = mockQuiz;
         expect(gameTestService.next()).toBe(false);
     });
@@ -108,7 +113,7 @@ describe('GameTestService', () => {
     });
 
     it('should set isBonus to true and add the bonus to the player score', () => {
-        const BONUS_MULT = 1.2;
+        const BONUS_MULTIPLIER = 1.2;
         gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
@@ -117,11 +122,16 @@ describe('GameTestService', () => {
         ]);
 
         gameTestService.currQuestionIndex = 1;
-
+        gameTestService.question = mockQuiz.questions[1];
         gameTestService.updateScore(answers);
 
         expect(gameTestService.isBonus).toBe(true);
-        expect(gameTestService.playerScore).toBe(mockQuiz.questions[1].points * BONUS_MULT);
+        expect(gameTestService.playerScore).toBe(mockQuiz.questions[1].points * BONUS_MULTIPLIER);
+        gameTestService.question = mockQuiz.questions[2];
+        gameTestService.playerScore = 0;
+        gameTestService.updateScore(answers);
+        expect(gameTestService.isBonus).toBe(false);
+        expect(gameTestService.playerScore).toBe(mockQuiz.questions[2].points);
     });
 
     it('should start a timer from the timeService', () => {

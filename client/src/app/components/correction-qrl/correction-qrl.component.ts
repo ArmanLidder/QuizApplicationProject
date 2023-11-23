@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-correction-qrl',
@@ -87,7 +88,7 @@ export class CorrectionQRLComponent implements OnChanges {
                 this.isCorrectionFinished = true;
                 this.endCorrection();
                 const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.reponsesQRLCorrected));
-                this.socketClientService.send('playerQrlCorrection', {
+                this.socketClientService.send(socketEvent.playerQrlCorrection, {
                     roomId: this.gameService.gameRealService.roomId,
                     playerCorrection: playerQrlCorrectionFormatted,
                 });

@@ -61,7 +61,7 @@ export class GameInterfaceComponent {
             }
         });
 
-        this.socketService.on('evaluationOver', () => {
+        this.socketService.on(socketEvent.evaluationOver, () => {
             this.getScore();
         });
 
