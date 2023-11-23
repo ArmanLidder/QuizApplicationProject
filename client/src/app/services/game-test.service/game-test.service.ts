@@ -80,6 +80,7 @@ export class GameTestService implements GameServiceInterface {
             this.isBonus = true;
             this.playerScore += questionPoints * BONUS_MULTIPLIER;
         } else {
+            this.isBonus = false;
             this.playerScore += questionPoints;
         }
     }
