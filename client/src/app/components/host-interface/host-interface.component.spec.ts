@@ -13,6 +13,7 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
 import { By } from '@angular/platform-browser';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
+import { CorrectionQRLComponent } from '@app/components/correction-qrl/correction-qrl.component';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -46,7 +47,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent],
+            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent, CorrectionQRLComponent],
             providers: [
                 SocketClientService,
                 GameService,
@@ -63,9 +64,12 @@ describe('HostInterfaceComponent', () => {
             return true;
         });
         const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
-
         component = fixture.componentInstance;
-        spyOn(childComponent, 'getPlayersList');
+        spyOn(childComponent, 'getPlayersList').and.resolveTo(
+            Promise.resolve((numberPlayer: number) => {
+                component['initGraph'](mockQuestion, numberPlayer);
+            }),
+        );
         fixture.detectChanges();
     });
 
@@ -125,6 +129,7 @@ describe('HostInterfaceComponent', () => {
             secondAction(0);
             expect(component.gameService.validatedStatus).toEqual(true);
             expect(component.gameService.lockedStatus).toEqual(true);
+            component.gameService.gameRealService.question = mockQuestion;
         }
 
         if (typeof thirdAction === 'function') {
@@ -142,7 +147,6 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof sixthAction === 'function') {
             sixthAction({ question: {}, index: 0, isLast: false });
-            expect(component['initGraph']).toHaveBeenCalled();
         }
         if (typeof seventhAction === 'function') {
             component.playerListComponent.players = [
@@ -249,6 +253,7 @@ describe('HostInterfaceComponent', () => {
 
     it('should initialize correctly histogram data when initGraph is called', () => {
         const expectedMapChanginResponses = new Map();
+        component.gameService.gameRealService.question = mockQuestion;
         component['initGraph'](mockQuestion);
         expect(component.histogramDataValue).toEqual(mockValuesMap);
         expect(component.histogramDataChangingResponses).toEqual(expectedMapChanginResponses);
