@@ -13,6 +13,8 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
 import { By } from '@angular/platform-browser';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
+import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic-zone.component';
+import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -46,7 +48,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent],
+            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent, StatisticZoneComponent],
             providers: [
                 SocketClientService,
                 GameService,
@@ -258,5 +260,83 @@ describe('HostInterfaceComponent', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const functionReturn = component.updateHostCommand();
         expect(functionReturn).toEqual(component['gameService'].gameRealService.isLast ? 'Montrer résultat' : 'Prochaine question');
+    });
+
+    it('should prepare stats transport correctly', () => {
+        component.gameStats = [
+            [
+                new Map<string, boolean>([
+                    ['value1', true],
+                    ['value2', false],
+                ]),
+                new Map<string, number>([
+                    ['response1', 0],
+                    ['response2', 0],
+                ]),
+                question,
+            ],
+        ];
+        const preparedStats = component['prepareStatsTransport']();
+        expect(preparedStats).toEqual([
+            [
+                [
+                    ['value1', true],
+                    ['value2', false],
+                ],
+                [
+                    ['response1', 0],
+                    ['response2', 0],
+                ],
+                question,
+            ],
+        ]);
+    });
+
+    it('should map response to array correctly', () => {
+        const responseMap = new Map<string, number>([
+            ['response1', 0],
+            ['response2', 0],
+        ]);
+        const responseArray = component['mapResponseToArray'](responseMap);
+        expect(responseArray).toEqual([
+            ['response1', 0],
+            ['response2', 0],
+        ]);
+    });
+
+    it('should map value to array correctly', () => {
+        const valueMap = new Map<string, boolean>([
+            ['value1', true],
+            ['value2', false],
+        ]);
+        const valueArray = component['mapValueToArray'](valueMap);
+        expect(valueArray).toEqual([
+            ['value1', true],
+            ['value2', false],
+        ]);
+    });
+
+    it('should save stats correctly for QLR question type', () => {
+        component.gameService.gameRealService.question = mockQuestion;
+        component.gameService.gameRealService.question.type = QuestionType.QLR;
+        component['saveStats']();
+        expect(component.gameStats.length).toEqual(1);
+        expect(component.gameStats[0][0]).toEqual(
+            new Map([
+                ['0', false],
+                ['50', false],
+                ['100', true],
+            ]),
+        );
+    });
+
+    it('should save stats correctly for other question types', () => {
+        component.gameService.gameRealService.question = mockQuestion;
+        component.histogramDataValue = new Map([['test', false]]);
+        component.histogramDataChangingResponses = new Map([['test', 0]]);
+        component['saveStats']();
+        expect(component.gameStats.length).toEqual(1);
+        expect(component.gameStats[0][0]).toEqual(new Map([['test', false]]));
+        expect(component.gameStats[0][1]).toEqual(new Map([['test', 0]]));
     });
 });

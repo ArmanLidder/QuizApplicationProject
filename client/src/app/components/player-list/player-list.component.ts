@@ -4,7 +4,7 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { STATUS, CAN_TALK, Player } from '@app/components/player-list/player-list.component.const';
+import { STATUS_INDEX, CAN_TALK, Player, SORT_BY_STATUS, SORT_BY_SCORE, SORT_BY_NAME } from '@app/components/player-list/player-list.component.const';
 
 @Component({
     selector: 'app-player-list',
@@ -21,9 +21,9 @@ export class PlayerListComponent {
     order = 1;
     orderIcon = 'fa-solid fa-up-long';
     optionSelections = new Map([
-        ['byName', true],
-        ['byScore', false],
-        ['byStatus', false],
+        [SORT_BY_NAME, true],
+        [SORT_BY_SCORE, false],
+        [SORT_BY_STATUS, false],
     ]);
 
     constructor(
@@ -40,19 +40,19 @@ export class PlayerListComponent {
     }
 
     sortByStatus() {
-        this.updateOptionSelections('byStatus');
+        this.updateOptionSelections(SORT_BY_STATUS);
         this.sortListService.sortByStatus();
         this.getPlayersList(false);
     }
 
     sortByScore() {
-        this.updateOptionSelections('byScore');
+        this.updateOptionSelections(SORT_BY_SCORE);
         this.sortListService.sortByScore();
         this.getPlayersList(false);
     }
 
     sortByName() {
-        this.updateOptionSelections('byName');
+        this.updateOptionSelections(SORT_BY_NAME);
         this.sortListService.sortByName();
         this.getPlayersList(false);
     }
@@ -93,6 +93,7 @@ export class PlayerListComponent {
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         const canChat = this.canPlayerChat(username);
+        // this.sortListService.sortByScore();
         this.players.push([username, score.points, score.bonusCount, status, canChat]);
         this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
@@ -128,8 +129,7 @@ export class PlayerListComponent {
     private changePlayerStatus(username: string, status: string) {
         const playerIndex = this.findPlayer(username, this.players);
         const notFound = -1;
-        const statusIndex = 3;
-        if (playerIndex !== notFound) this.players[playerIndex][statusIndex] = status;
+        if (playerIndex !== notFound) this.players[playerIndex][STATUS_INDEX] = status;
     }
 
     private initPlayerStatus(username: string, resetPlayerStatus: boolean) {
@@ -140,6 +140,6 @@ export class PlayerListComponent {
 
     private getActualStatus(username: string) {
         const playerIndex = this.findPlayer(username, this.actualStatus);
-        return this.actualStatus[playerIndex][STATUS];
+        return this.actualStatus[playerIndex][STATUS_INDEX];
     }
 }

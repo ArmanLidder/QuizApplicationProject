@@ -3,14 +3,17 @@
     <p>Votre score final : {{ playerScore }}</p>
     <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
-<app-player-list
-    [hidden]='!isGameOver'
-    #playerListChild
-    [roomId]='gameService.gameRealService.roomId'
-    [leftPlayers]='[]'
-    [isFinal] = 'isGameOver'
-    [isHost] = 'false'>
-</app-player-list>
+<div class="result-container">
+<app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
+    <app-player-list
+        [hidden]='!isGameOver'
+        #playerListChild
+        [roomId]='gameService.gameRealService.roomId'
+        [leftPlayers]='[]'
+        [isFinal] = 'isGameOver'
+        [isHost] = 'false'>
+    </app-player-list>
+</div>
 <div *ngIf='!isGameOver' class="grid-container">
     <div id="flex-container">
         <p>Pointage: {{ score }}</p>

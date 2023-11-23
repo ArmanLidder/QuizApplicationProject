@@ -35,6 +35,7 @@ export namespace socketEvent {
     export const newMessage = 'newMessage'
     export const disconnect = 'disconnect';
     export const toggleChatPermission = 'toggleChatPermission';
+    export const gameStatsDistribution = 'gameStatsDistribution';
 }
 
 

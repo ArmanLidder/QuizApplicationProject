@@ -4,7 +4,14 @@ import { RoomManagingService } from '@app/services/room-managing.service/room-ma
 import * as http from 'http';
 import * as io from 'socket.io';
 import { ONE_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
-import { PlayerAnswerData, PlayerMessage, PlayerSelection, RemainingTime, PlayerUsername } from '@common/interfaces/socket-manager.interface';
+import {
+    PlayerAnswerData,
+    PlayerMessage,
+    PlayerSelection,
+    RemainingTime,
+    PlayerUsername,
+    GameStats,
+} from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { HistoryService } from '@app/services/history.service/history.service';
@@ -193,6 +200,10 @@ export class SocketManager {
             socket.on(socketEvent.toggleChatPermission, (data: PlayerUsername) => {
                 const playerSocket = this.roomManager.getSocketIDByUsername(data.roomId, data.username);
                 this.sio.to(playerSocket).emit(socketEvent.toggleChatPermission);
+            });
+
+            socket.on(socketEvent.gameStatsDistribution, (data: GameStats) => {
+                this.sio.to(String(data.roomId)).emit(socketEvent.gameStatsDistribution, data.stats);
             });
 
             socket.on(socketEvent.disconnect, (reason) => {

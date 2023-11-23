@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PLAYER_NOT_FOUND_INDEX } from '@app/components/host-interface/host-interface.component.const';
+import { PLAYER_NOT_FOUND_INDEX, TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
@@ -9,6 +9,8 @@ import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { Player } from '@app/components/player-list/player-list.component.const';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 @Component({
     selector: 'app-host-interface',
@@ -22,6 +24,7 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
+    gameStats: QuestionStatistics[] = [];
 
     constructor(
         public gameService: GameService,
@@ -41,6 +44,7 @@ export class HostInterfaceComponent {
     }
 
     handleHostCommand() {
+        this.saveStats();
         if (this.gameService.gameRealService.isLast) {
             this.handleLastQuestion();
         } else {
@@ -52,6 +56,23 @@ export class HostInterfaceComponent {
         return this.leftPlayers.some((player) => player[0] === username);
     }
 
+    private saveStats() {
+        const question = this.gameService.gameRealService.question;
+        if (question !== null) {
+            const dataValue = question.type === QuestionType.QLR ? this.generateQRLMap() : this.histogramDataValue;
+            const savedStats: QuestionStatistics = [dataValue, this.histogramDataChangingResponses, question];
+            this.gameStats.push(savedStats);
+        }
+    }
+
+    private generateQRLMap() {
+        return new Map([
+            ['0', false],
+            ['50', false],
+            ['100', true],
+        ]);
+    }
+
     private nextQuestion() {
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;
@@ -59,6 +80,7 @@ export class HostInterfaceComponent {
     }
 
     private handleLastQuestion() {
+        this.sendGameStats();
         this.socketService.send(socketEvent.showResult, this.gameService.gameRealService.roomId);
     }
 
@@ -132,5 +154,33 @@ export class HostInterfaceComponent {
         const choices = this.gameService.question?.choices;
         choices?.forEach((choice: QuizChoice, index: number) => choicesStats.set(choice.text, choicesStatsValue[index]));
         return choicesStats;
+    }
+
+    private sendGameStats() {
+        const gameStats = this.stringifyStats();
+        this.socketService.send(socketEvent.gameStatsDistribution, { roomId: this.gameService.gameRealService.roomId, stats: gameStats });
+    }
+
+    private stringifyStats() {
+        const stats = this.prepareStatsTransport();
+        return JSON.stringify(stats);
+    }
+
+    private prepareStatsTransport() {
+        const data: TransportStatsFormat = [];
+        this.gameStats.forEach((stats) => {
+            const values = this.mapValueToArray(stats[0]);
+            const responses = this.mapResponseToArray(stats[1]);
+            data.push([values, responses, stats[2]]);
+        });
+        return data;
+    }
+
+    private mapResponseToArray(map: Map<string, number>) {
+        return Array.from(map);
+    }
+
+    private mapValueToArray(map: Map<string, boolean>) {
+        return Array.from(map);
     }
 }

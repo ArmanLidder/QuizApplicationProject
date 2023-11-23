@@ -31,3 +31,8 @@ export interface RoomValidationResult {
     isRoom: boolean;
     isLocked: boolean;
 }
+
+export interface GameStats {
+    roomId: number;
+    stats: string;
+}

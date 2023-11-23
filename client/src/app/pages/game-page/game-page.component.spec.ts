@@ -76,5 +76,19 @@ describe('GamePageComponent', () => {
         component.ngOnInit();
         expect(window.onbeforeunload).toEqual(jasmine.any(Function));
         expect(window.onload).toEqual(jasmine.any(Function));
+        if (window) {
+            if (window.onbeforeunload) {
+                const spyOnNgOnDestroy = spyOn(component, 'ngOnDestroy');
+                // @ts-ignore
+                window.onbeforeunload();
+                expect(spyOnNgOnDestroy).toHaveBeenCalled();
+            }
+            if (window.onload) {
+                const spyRoute = spyOn(component.route, 'navigate');
+                // @ts-ignore
+                window.onload();
+                expect(spyRoute).toHaveBeenCalledWith(['/']);
+            }
+        }
     });
 });

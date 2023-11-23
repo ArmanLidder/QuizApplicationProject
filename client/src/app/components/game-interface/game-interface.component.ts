@@ -7,6 +7,8 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 
 type Player = [string, number];
 
@@ -24,6 +26,7 @@ export class GameInterfaceComponent {
     timerText: string = timerMessage.timeLeft;
     players: Player[] = [];
     gameService: GameService;
+    gameStats: QuestionStatistics[] = [];
     private readonly socketService: SocketClientService;
     private route: ActivatedRoute;
     private router: Router;
@@ -91,6 +94,22 @@ export class GameInterfaceComponent {
 
         this.socketService.on(socketEvent.removedFromGame, () => {
             this.router.navigate(['/']);
+        });
+
+        this.socketService.on(socketEvent.gameStatsDistribution, (gameStats: string) => {
+            this.unpackStats(this.parseGameStats(gameStats));
+        });
+    }
+
+    private parseGameStats(stringifyStats: string) {
+        return JSON.parse(stringifyStats);
+    }
+
+    private unpackStats(stats: TransportStatsFormat) {
+        stats.forEach((stat) => {
+            const values = new Map<string, boolean>(stat[0]);
+            const responses = new Map<string, number>(stat[1]);
+            this.gameStats.push([values, responses, stat[2]]);
         });
     }
 
