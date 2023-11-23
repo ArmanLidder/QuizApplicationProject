@@ -96,7 +96,7 @@ export class PlayerListComponent {
     private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         const canChat = this.canPlayerChat(username);
-        this.sortListService.sortByScore();
+        // this.sortListService.sortByScore();
         this.players.push([username, score.points, score.bonusCount, status, canChat]);
         this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
