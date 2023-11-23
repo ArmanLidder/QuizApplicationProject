@@ -9,6 +9,9 @@ import { QuestionType } from '@common/enums/question-type.enum';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameService', () => {
     const timeService: TimeService = new TimeService();
+    const QCM_VALID_TIMER_VALUE = 15;
+    const QLR_VALID_TIMER_VALUE = 25;
+    const QLR_NOT_VALID_TIMER_VALUE = 15;
     let service: GameService;
 
     const firstQuestionMock = {
@@ -199,5 +202,24 @@ describe('GameService', () => {
         service.gameRealService.question = null;
         service.selectChoice(testIndex);
         expect(service.answers.get(testIndex)).toBeNull();
+    });
+
+    it('should cover isPanicDisabled() method', () => {
+        service.isTestMode = false;
+        service.gameRealService.question = firstQuestionMock;
+
+        service.gameRealService.timer = QCM_VALID_TIMER_VALUE;
+        service.gameRealService.inTimeTransition = false;
+        expect(service.isPanicDisabled()).toBe(true);
+
+        service.gameRealService.question.type = 1;
+        service.gameRealService.timer = QLR_VALID_TIMER_VALUE;
+        service.gameRealService.inTimeTransition = false;
+        expect(service.isPanicDisabled()).toBe(true);
+
+        service.gameRealService.question.type = 1;
+        service.gameRealService.timer = QLR_NOT_VALID_TIMER_VALUE;
+        service.gameRealService.inTimeTransition = false;
+        expect(service.isPanicDisabled()).toBe(false);
     });
 });

@@ -181,6 +181,7 @@ describe('HostInterfaceComponent', () => {
 
     it('should go to the final result when timer is 0', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.timer = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
@@ -212,6 +213,24 @@ describe('HostInterfaceComponent', () => {
         expect(component.gameService.validatedStatus).toEqual(false);
         expect(component.gameService.lockedStatus).toEqual(false);
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.startTransition, component.gameService.gameRealService.roomId);
+    });
+
+    it('should pause the timer', () => {
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        const sendSpy = spyOn(socketService, 'send');
+        component['pauseTimer']();
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.pauseTimer, component.gameService.gameRealService.roomId);
+    });
+
+    it('should enable the panic mode', () => {
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        component['gameService'].gameRealService.timer = TIMER_VALUE;
+        const sendSpy = spyOn(socketService, 'send');
+        component['panicMode']();
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.panicMode, {
+            roomId: component.gameService.gameRealService.roomId,
+            timer: component.gameService.gameRealService.timer,
+        });
     });
 
     it('should handle properly the last question', () => {

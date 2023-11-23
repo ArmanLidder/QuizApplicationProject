@@ -93,13 +93,37 @@ describe('GameInterfaceComponent', () => {
     });
 
     it('should configure base socket features for play audio correctly', () => {
-        const audioSpy =  spyOn(component.gameService.audio, 'play');
+        const audioSpy = spyOn(component.gameService.audio, 'play');
         component.gameService.gameRealService.timer = mockTimeValue;
         component['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
         expect(socketOnText).toEqual(socketEvent.panicMode);
-        socketOnFunc({roomId: mockRoomIdValue, timer : mockTimeValue});
+        socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
         expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for pausing the audio', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'play');
+        component.gameService.gameRealService.audioPaused = true;
+        component.inPanicMode = true;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        expect(socketOnText).toEqual(socketEvent.pauseTimer);
+        socketOnFunc(mockRoomIdValue);
+        expect(component.gameService.gameRealService.audioPaused).toBeFalsy();
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for Unpausing the audio', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'pause');
+        component.gameService.gameRealService.audioPaused = false;
+        component.inPanicMode = true;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        expect(socketOnText).toEqual(socketEvent.pauseTimer);
+        socketOnFunc(mockRoomIdValue);
+        expect(component.gameService.gameRealService.audioPaused).toBeTruthy();
         expect(audioSpy).toHaveBeenCalled();
     });
 

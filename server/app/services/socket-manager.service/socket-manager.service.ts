@@ -209,6 +209,7 @@ export class SocketManager {
             socket.on(socketEvent.pauseTimer, (roomId: number) => {
                 const game = this.roomManager.getGameByRoomId(roomId);
                 game.paused = !game.paused;
+                this.sio.to(String(roomId)).emit(socketEvent.pauseTimer, roomId);
             });
 
             socket.on(socketEvent.panicMode, (data: PanicModeData) => {
