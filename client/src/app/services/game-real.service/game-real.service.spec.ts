@@ -5,7 +5,6 @@ import { GameRealService } from '@app/services/game-real.service/game-real.servi
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { QuestionType } from '@common/enums/question-type.enum';
 
-const TIMER_VALUE = 20;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameRealService', () => {
     let service: GameRealService;
@@ -39,12 +38,10 @@ describe('GameRealService', () => {
 
     it('should configure base sockets properly', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
-        const handleTimeSpy = spyOn<any>(service, 'handleTimeEvent');
         service['configureBaseSockets']();
-        const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
+        const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
         expect(firstEvent).toEqual(socketEvent.getInitialQuestion);
         expect(secondEvent).toEqual(socketEvent.getNextQuestion);
-        expect(thirdEvent).toEqual(socketEvent.time);
 
         if (typeof firstAction === 'function') {
             firstAction({ question: questionMock, username: 'Arman', index: 1, numberOfQuestions: 1 });
@@ -58,10 +55,6 @@ describe('GameRealService', () => {
             expect(service.isLast).toEqual(true);
             expect(service.validated).toEqual(false);
             expect(service.locked).toEqual(false);
-        }
-        if (typeof thirdAction === 'function') {
-            thirdAction(TIMER_VALUE);
-            expect(handleTimeSpy).toHaveBeenCalled();
         }
     });
 
