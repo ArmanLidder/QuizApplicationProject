@@ -57,6 +57,11 @@ export class PlayerListComponent {
         this.getPlayersList(false);
     }
 
+    sortAllPlayers(): Player[] {
+        this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
+        return this.players;
+    }
+
     getPlayersList(resetPlayerStatus: boolean = true) {
         this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
             this.setupPlayerList();
@@ -86,16 +91,14 @@ export class PlayerListComponent {
 
     private getPlayerScoreFromServer(username: string, resetPlayerStatus: boolean) {
         this.socketService.send(socketEvent.getScore, { roomId: this.roomId, username }, (score: Score) => {
-            this.sortPlayersByScore(username, score, resetPlayerStatus);
+            this.addPlayer(username, score, resetPlayerStatus);
         });
     }
 
-    private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
+    private addPlayer(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         const canChat = this.canPlayerChat(username);
-        // this.sortListService.sortByScore();
         this.players.push([username, score.points, score.bonusCount, status, canChat]);
-        this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
 
     private canPlayerChat(username: string) {
