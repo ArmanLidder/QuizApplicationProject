@@ -27,23 +27,21 @@ export class CorrectionQRLComponent implements OnChanges {
         private socketClientService: SocketClientService,
         private gameService: GameService,
     ) {
-        this.initialise();
+        this.initialize();
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.reponsesQRL) {
-            this.initialise();
+            this.initialize();
             if (this.usernames.length > 0) {
                 this.isHostEvaluating = true;
             }
         }
     }
 
-    initialise() {
+    initialize() {
         this.indexPlayer = -1;
         const sortedMap = new Map([...this.reponsesQRL.entries()].sort((a, b) => a[0].localeCompare(b[0])));
-        console.log('Old map:', this.reponsesQRL);
-        console.log(sortedMap);
         sortedMap.forEach((value: { answers: string; time: number }, key: string) => {
             this.usernames.push(key);
             this.answers.push(value.answers);
