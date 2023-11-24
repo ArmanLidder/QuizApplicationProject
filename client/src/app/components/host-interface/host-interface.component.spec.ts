@@ -17,7 +17,6 @@ import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic
 import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
 
@@ -209,7 +208,6 @@ describe('HostInterfaceComponent', () => {
             expect(component.isGameOver).toEqual(true);
         }
     });
-
     it('should go to the next question', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
@@ -218,14 +216,12 @@ describe('HostInterfaceComponent', () => {
         expect(component.gameService.lockedStatus).toEqual(false);
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.startTransition, component.gameService.gameRealService.roomId);
     });
-
     it('should pause the timer', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['pauseTimer']();
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.pauseTimer, component.gameService.gameRealService.roomId);
     });
-
     it('should enable the panic mode', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         component['gameService'].gameRealService.timer = TIMER_VALUE;
@@ -236,21 +232,18 @@ describe('HostInterfaceComponent', () => {
             timer: component.gameService.gameRealService.timer,
         });
     });
-
     it('should handle properly the last question', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['handleLastQuestion']();
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.showResult, component.gameService.gameRealService.roomId);
     });
-
     it('should update host command properly', () => {
         component.gameService.gameRealService.isLast = false;
         expect(component.updateHostCommand()).toEqual('Prochaine question');
         component.gameService.gameRealService.isLast = true;
         expect(component.updateHostCommand()).toEqual('Montrer résultat');
     });
-
     it('should handle properly the host command', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
@@ -263,26 +256,22 @@ describe('HostInterfaceComponent', () => {
         component.handleHostCommand();
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.showResult, component.gameService.gameRealService.roomId);
     });
-
     it('should return the right condition of isDisabled', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const functionReturn = component.isDisabled();
         expect(functionReturn).toEqual(!component['gameService'].lockedStatus && !component['gameService'].validatedStatus);
     });
-
     it('should initialize correctly histogram data when initGraph is called', () => {
         const expectedMapChanginResponses = new Map();
         component['initGraph'](mockQuestion);
         expect(component.histogramDataValue).toEqual(mockValuesMap);
         expect(component.histogramDataChangingResponses).toEqual(expectedMapChanginResponses);
     });
-
     it('should return the right condition of updateHostCommand', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const functionReturn = component.updateHostCommand();
         expect(functionReturn).toEqual(component['gameService'].gameRealService.isLast ? 'Montrer résultat' : 'Prochaine question');
     });
-
     it('should prepare stats transport correctly', () => {
         component.gameStats = [
             [
@@ -312,7 +301,6 @@ describe('HostInterfaceComponent', () => {
             ],
         ]);
     });
-
     it('should map response to array correctly', () => {
         const responseMap = new Map<string, number>([
             ['response1', 0],
@@ -324,7 +312,6 @@ describe('HostInterfaceComponent', () => {
             ['response2', 0],
         ]);
     });
-
     it('should map value to array correctly', () => {
         const valueMap = new Map<string, boolean>([
             ['value1', true],
@@ -336,7 +323,6 @@ describe('HostInterfaceComponent', () => {
             ['value2', false],
         ]);
     });
-
     it('should save stats correctly for QLR question type', () => {
         component.gameService.gameRealService.question = mockQuestion;
         component.gameService.gameRealService.question.type = QuestionType.QLR;
@@ -350,7 +336,6 @@ describe('HostInterfaceComponent', () => {
             ]),
         );
     });
-
     it('should save stats correctly for other question types', () => {
         component.gameService.gameRealService.question = mockQuestion;
         component.histogramDataValue = new Map([['test', false]]);

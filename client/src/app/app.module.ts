@@ -82,7 +82,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         ReactiveFormsModule,
         NgChartsModule,
         BrowserAnimationsModule,
-        MatTooltipModule
+        MatTooltipModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

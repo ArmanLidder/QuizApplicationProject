@@ -128,7 +128,7 @@ describe('GameInterfaceComponent', () => {
         expect(component.gameService.gameRealService.audioPaused).toBeTruthy();
         expect(audioSpy).toHaveBeenCalled();
     });
-    
+
     it('should configure base socket features for removed from game correctly', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const unpackSpy = spyOn(component, 'unpackStats' as any);

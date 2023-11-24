@@ -10,13 +10,13 @@
             <mat-icon [matTooltip]="isPaused ? 'Play' : 'Pause'" (click)='pauseTimer()'>{{ isPaused ? 'play_circle_outline' : 'pause_circle_outline' }}</mat-icon>
             <mat-icon [matTooltip]="gameService.isPanicDisabled() || isPanicMode ? 'Vous ne pouvez  pas encore activer le mode panique' : 'Activez mode panique !'" (click)='panicMode()' [ngClass]="{'disable':gameService.isPanicDisabled() || isPanicMode}"> whatshot </mat-icon>
         </div>
-    <section id="question-field">
-        <div>
-            <h2> Question {{gameService.questionNumber}}</h2>
-            <h3> Valeur: {{ gameService.question?.points }} points</h3>
-            <h4>{{ gameService.question?.text }}</h4>
-        </div>
-    </section>
+        <section id="question-field">
+            <div>
+                <h2> Question {{gameService.questionNumber}}</h2>
+                <h3> Valeur: {{ gameService.question?.points }} points</h3>
+                <h4>{{ gameService.question?.text }}</h4>
+            </div>
+        </section>
     </div>
     <div class='btn-container'>
         <button class='enter'

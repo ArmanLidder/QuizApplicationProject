@@ -1,4 +1,4 @@
-import { Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PLAYER_NOT_FOUND_INDEX, TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
@@ -25,8 +25,8 @@ export class HostInterfaceComponent {
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
     gameStats: QuestionStatistics[] = [];
-    isPaused : boolean = false;
-    isPanicMode : boolean = false;
+    isPaused: boolean = false;
+    isPanicMode: boolean = false;
 
     constructor(
         public gameService: GameService,
@@ -59,7 +59,7 @@ export class HostInterfaceComponent {
     }
 
     pauseTimer() {
-        this.isPaused = !this.isPaused
+        this.isPaused = !this.isPaused;
         this.socketService.send(socketEvent.pauseTimer, this.gameService.gameRealService.roomId);
     }
 
@@ -69,7 +69,7 @@ export class HostInterfaceComponent {
             timer: this.gameService.gameRealService.timer,
         });
         this.isPanicMode = true;
-    };
+    }
     private saveStats() {
         const question = this.gameService.gameRealService.question;
         if (question !== null) {
@@ -86,7 +86,6 @@ export class HostInterfaceComponent {
             ['100', true],
         ]);
     }
-
 
     private nextQuestion() {
         this.isPanicMode = false;
