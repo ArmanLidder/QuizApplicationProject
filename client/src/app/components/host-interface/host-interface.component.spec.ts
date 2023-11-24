@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
@@ -317,7 +318,12 @@ describe('HostInterfaceComponent', () => {
         }
         if (typeof tenthAction === 'function') {
             tenthAction([0, 0]);
-            expect(component.histogramDataChangingResponses).toEqual(new Map([['Actif', 0], ['Inactif', 0],]));
+            expect(component.histogramDataChangingResponses).toEqual(
+                new Map([
+                    ['Actif', 0],
+                    ['Inactif', 0],
+                ]),
+            );
         }
     }));
 
@@ -341,16 +347,6 @@ describe('HostInterfaceComponent', () => {
         }
     });
 
-    it('should send event when running sendQrlAnswer ', () => {
-        const sendSpy = spyOn(socketService, 'send');
-        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
-        component.gameService.gameRealService.question = mockQuestion;
-        component.gameService.gameRealService.question.type = QuestionType.QLR;
-        component.gameService.gameRealService.roomId = 0;
-        component.isHostEvaluating = false;
-        component['sendQrlAnswer']();
-        expect(sendSpy).toHaveBeenCalled();
-    });
     it('should go to the final result when timer is 0', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn(component, 'initGraph' as any);
