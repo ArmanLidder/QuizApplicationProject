@@ -98,15 +98,26 @@ describe('GameRealService', () => {
         service.answers = new Map();
         service.answers.set(1, 'test');
         const sendSpy = spyOn(service.socketService, 'send');
-        const expectedObject = {
+        const expectedObjectForQcm = {
             roomId: 1,
             answers: ['test'],
             timer: 0,
             username: 'test',
         };
         service.sendAnswer();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.submitAnswer, expectedObject);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.submitAnswer, expectedObjectForQcm);
         expect(service.answers.size).toEqual(0);
+        service.question.type = QuestionType.QLR;
+        service.qrlAnswer = 'test';
+        const expectedObjectForQrl = {
+            roomId: 1,
+            answers: 'test',
+            timer: 0,
+            username: 'test',
+        };
+        service.sendAnswer();
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.submitAnswer, expectedObjectForQrl);
+        expect(service.qrlAnswer).toEqual('');
     });
 
     it('should send the selection properly', () => {
