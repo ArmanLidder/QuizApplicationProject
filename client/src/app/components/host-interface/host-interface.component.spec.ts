@@ -15,6 +15,8 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { playerStatus } from '@common/player-status/player-status';
 import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic-zone.component';
 import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -55,7 +57,7 @@ describe('HostInterfaceComponent', () => {
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
             ],
-            imports: [NgChartsModule, HttpClientModule],
+            imports: [NgChartsModule, HttpClientModule, MatTooltipModule],
         }).compileComponents();
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         fixture = TestBed.createComponent(HostInterfaceComponent);
