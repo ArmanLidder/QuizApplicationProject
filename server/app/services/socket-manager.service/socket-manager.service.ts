@@ -15,6 +15,7 @@ import {
     RemainingTime,
     PlayerUsername,
     PanicModeData,
+    GameStats,
 } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
@@ -216,6 +217,10 @@ export class SocketManager {
                 this.roomManager.clearRoomTimer(data.roomId);
                 this.startTimer(data.roomId, data.timer, undefined, QUARTER_SECOND_DELAY);
                 this.sio.to(String(data.roomId)).emit(socketEvent.panicMode, data);
+            });
+
+            socket.on(socketEvent.gameStatsDistribution, (data: GameStats) => {
+                this.sio.to(String(data.roomId)).emit(socketEvent.gameStatsDistribution, data.stats);
             });
 
             socket.on(socketEvent.disconnect, (reason) => {

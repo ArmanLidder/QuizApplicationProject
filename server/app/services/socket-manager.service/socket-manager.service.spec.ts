@@ -448,6 +448,14 @@ describe('SocketManager service tests', () => {
         clientSocket.emit(socketEvent.panicMode, mockRoomId);
         setTimeout(() => {
             expect(roomManager.clearRoomTimer.called);
+        });
+    });
+
+    it('should toggle chat permission', (done) => {
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit(socketEvent.gameStatsDistribution, { roomId: mockRoomId, stats: 'test' });
+        setTimeout(() => {
+            expect(emitSpy.calledWith(socketEvent.gameStatsDistribution, { roomId: mockRoomId, stats: 'test' }));
             done();
         }, RESPONSE_DELAY);
     });

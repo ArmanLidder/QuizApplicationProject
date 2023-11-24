@@ -37,6 +37,7 @@ export namespace socketEvent {
     export const toggleChatPermission = 'toggleChatPermission';
     export const pauseTimer = 'pauseTimer'
     export const panicMode = 'panicMode'
+    export const gameStatsDistribution = 'gameStatsDistribution';
 }
 
 
