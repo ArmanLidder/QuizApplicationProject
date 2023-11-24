@@ -106,7 +106,7 @@ export class GameInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.panicMode, () => {
-            if (this.gameService.timer > 0) {
+            if (this.gameService.timer > 0 && !this.gameService.gameRealService.audioPaused) {
                 this.gameService.audio.play();
             }
             this.inPanicMode = true;
@@ -115,12 +115,10 @@ export class GameInterfaceComponent {
         this.socketService.on(socketEvent.pauseTimer, () => {
             if (this.gameService.gameRealService.audioPaused && this.inPanicMode) {
                 this.gameService.audio.play();
-                this.gameService.gameRealService.audioPaused = false;
             } else if (!this.gameService.gameRealService.audioPaused && this.inPanicMode) {
                 this.gameService.audio.pause();
-                this.gameService.gameRealService.audioPaused = true;
             }
-            
+            this.gameService.gameRealService.audioPaused = !this.gameService.gameRealService.audioPaused
             });
 
         this.socketService.on(socketEvent.gameStatsDistribution, (gameStats: string) => {

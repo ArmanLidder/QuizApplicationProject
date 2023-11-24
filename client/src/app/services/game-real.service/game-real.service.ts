@@ -82,6 +82,7 @@ export class GameRealService implements GameServiceInterface {
     private handleTimeEvent(timeValue: number) {
         this.timer = timeValue;
         if (this.timer === 0 && !this.locked) {
+            this.audio.pause();
             this.locked = true;
             if (this.username !== 'Organisateur') this.sendAnswer();
         }
