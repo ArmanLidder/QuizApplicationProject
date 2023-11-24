@@ -16,17 +16,22 @@
 </div>
 <div *ngIf='!isGameOver' class="grid-container">
     <div id="flex-container">
-        <p>Pointage: {{ score }}</p>
-        <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
-        <p> {{ timerText }} : {{ gameService.timer }}</p>
-    </div>
-    <section id="question-field">
-        <div>
-            <h2>Question {{ gameService.questionNumber }}</h2>
-            <h3>Valeur : {{ gameService.question?.points }} points</h3>
+        <div class='points'>
+            <p>Pointage: {{ score }}</p>
+            <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
         </div>
-        <h4>{{ gameService.question?.text }}</h4>
-    </section>
+        <div class="circle">
+            <span>{{timerText}}</span>
+            <span>{{gameService.timer}}</span>
+        </div>
+        <section id="question-field">
+            <div>
+                <h2>Question {{ gameService.questionNumber }}</h2>
+                <h3>Valeur : {{ gameService.question?.points }} points</h3>
+            </div>
+            <h4>{{ gameService.question?.text }}</h4>
+        </section>
+    </div>
     <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>
 </div>

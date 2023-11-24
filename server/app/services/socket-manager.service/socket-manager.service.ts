@@ -3,19 +3,24 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { ONE_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
+import {
+    ONE_SECOND_DELAY,
+    QUARTER_SECOND_DELAY,
+    TRANSITION_QUESTIONS_DELAY,
+} from '@app/services/socket-manager.service/socket-manager.service.const';
 import {
     PlayerAnswerData,
     PlayerMessage,
     PlayerSelection,
     RemainingTime,
     PlayerUsername,
+    PanicModeData,
     GameStats,
 } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { HistoryService } from '@app/services/history.service/history.service';
-
+/* eslint-disable max-params */
 export class SocketManager {
     private sio: io.Server;
     private roomManager: RoomManagingService;
@@ -202,6 +207,18 @@ export class SocketManager {
                 this.sio.to(playerSocket).emit(socketEvent.toggleChatPermission);
             });
 
+            socket.on(socketEvent.pauseTimer, (roomId: number) => {
+                const game = this.roomManager.getGameByRoomId(roomId);
+                game.paused = !game.paused;
+                this.sio.to(String(roomId)).emit(socketEvent.pauseTimer, roomId);
+            });
+
+            socket.on(socketEvent.panicMode, (data: PanicModeData) => {
+                this.roomManager.clearRoomTimer(data.roomId);
+                this.startTimer(data.roomId, data.timer, undefined, QUARTER_SECOND_DELAY);
+                this.sio.to(String(data.roomId)).emit(socketEvent.panicMode, data);
+            });
+
             socket.on(socketEvent.gameStatsDistribution, (data: GameStats) => {
                 this.sio.to(String(data.roomId)).emit(socketEvent.gameStatsDistribution, data.stats);
             });
@@ -215,17 +232,20 @@ export class SocketManager {
         });
     }
 
-    private startTimer(roomId: number, timeValue: number, eventName?: string) {
+    private startTimer(roomId: number, timeValue: number, eventName?: string, delay = ONE_SECOND_DELAY) {
+        const game = this.roomManager.getGameByRoomId(roomId);
         this.emitTime(roomId, timeValue, eventName);
         timeValue--;
         this.roomManager.getRoomById(roomId).timer = setInterval(() => {
-            if (timeValue >= 0) {
+            if (game && game.paused) {
+                return;
+            } else if (timeValue >= 0) {
                 this.emitTime(roomId, timeValue, eventName);
                 timeValue--;
             } else {
                 this.roomManager.clearRoomTimer(roomId);
             }
-        }, ONE_SECOND_DELAY);
+        }, delay);
     }
 
     private emitTime(roomId: number, time: number, eventName?: string) {

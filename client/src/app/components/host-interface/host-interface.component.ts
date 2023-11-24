@@ -25,6 +25,8 @@ export class HostInterfaceComponent {
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
     gameStats: QuestionStatistics[] = [];
+    isPaused: boolean = false;
+    isPanicMode: boolean = false;
 
     constructor(
         public gameService: GameService,
@@ -56,6 +58,18 @@ export class HostInterfaceComponent {
         return this.leftPlayers.some((player) => player[0] === username);
     }
 
+    pauseTimer() {
+        this.isPaused = !this.isPaused;
+        this.socketService.send(socketEvent.pauseTimer, this.gameService.gameRealService.roomId);
+    }
+
+    panicMode() {
+        this.socketService.send(socketEvent.panicMode, {
+            roomId: this.gameService.gameRealService.roomId,
+            timer: this.gameService.gameRealService.timer,
+        });
+        this.isPanicMode = true;
+    }
     private saveStats() {
         const question = this.gameService.gameRealService.question;
         if (question !== null) {
@@ -74,6 +88,7 @@ export class HostInterfaceComponent {
     }
 
     private nextQuestion() {
+        this.isPanicMode = false;
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;
         this.socketService.send(socketEvent.startTransition, this.gameService.gameRealService.roomId);
@@ -89,6 +104,7 @@ export class HostInterfaceComponent {
             this.timerText = timerMessage.next;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
+                this.gameService.gameRealService.inTimeTransition = false;
                 this.resetInterface();
                 this.socketService.send(socketEvent.nextQuestion, this.gameService.gameRealService.roomId);
                 this.timerText = timerMessage.timeLeft;
@@ -96,6 +112,10 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.endQuestion, () => {
+            this.gameService.audio.pause();
+            this.gameService.audio.currentTime = 0;
+            this.gameService.gameRealService.audioPaused = false;
+            this.gameService.gameRealService.inTimeTransition = true;
             this.resetInterface();
             this.playerListComponent.getPlayersList(false);
         });

@@ -22,6 +22,7 @@ describe('GameInterfaceComponent', () => {
         isBonus: true,
     };
     const mockTimeValue = 123;
+    const mockRoomIdValue = 100;
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
@@ -93,13 +94,48 @@ describe('GameInterfaceComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
+    it('should configure base socket features for play audio correctly', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'play');
+        component.gameService.gameRealService.timer = mockTimeValue;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
+        expect(socketOnText).toEqual(socketEvent.panicMode);
+        socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
+        expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for pausing the audio', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'play');
+        component.gameService.gameRealService.audioPaused = true;
+        component.inPanicMode = true;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        expect(socketOnText).toEqual(socketEvent.pauseTimer);
+        socketOnFunc(mockRoomIdValue);
+        expect(component.gameService.gameRealService.audioPaused).toBeFalsy();
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for Unpausing the audio', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'pause');
+        component.gameService.gameRealService.audioPaused = false;
+        component.inPanicMode = true;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        expect(socketOnText).toEqual(socketEvent.pauseTimer);
+        socketOnFunc(mockRoomIdValue);
+        expect(component.gameService.gameRealService.audioPaused).toBeTruthy();
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
     it('should configure base socket features for removed from game correctly', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const unpackSpy = spyOn(component, 'unpackStats' as any);
         const parseSpy = spyOn(component, 'parseGameStats' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
         expect(socketOnText).toEqual(socketEvent.gameStatsDistribution);
         socketOnFunc();
         expect(parseSpy).toHaveBeenCalled();

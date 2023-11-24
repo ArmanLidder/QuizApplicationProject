@@ -21,6 +21,9 @@ export class GameRealService implements GameServiceInterface {
     isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
+    audio = new Audio('assets/music.mp3');
+    audioPaused: boolean = false;
+    inTimeTransition: boolean = false;
 
     constructor(public socketService: SocketClientService) {
         if (this.socketService.isSocketAlive()) {
@@ -79,6 +82,7 @@ export class GameRealService implements GameServiceInterface {
     private handleTimeEvent(timeValue: number) {
         this.timer = timeValue;
         if (this.timer === 0 && !this.locked) {
+            this.audio.pause();
             this.locked = true;
             if (this.username !== 'Organisateur') this.sendAnswer();
         }
@@ -95,5 +99,7 @@ export class GameRealService implements GameServiceInterface {
         this.players = [];
         this.answers.clear();
         this.questionNumber = 1;
+        this.audioPaused = false;
+        this.inTimeTransition = false;
     }
 }

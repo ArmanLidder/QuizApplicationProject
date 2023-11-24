@@ -22,6 +22,7 @@ export class Game {
     choicesStats: ChoiceStats = new Map();
     correctChoices: string[] = [];
     duration: number;
+    paused = false;
 
     gameHistoryInfo: GameInfo = { gameName: '', startTime: '', playersCount: 0, bestScore: 0 };
 
