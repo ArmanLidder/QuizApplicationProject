@@ -98,5 +98,7 @@ export class GameRealService implements GameServiceInterface {
         this.players = [];
         this.answers.clear();
         this.questionNumber = 1;
+        this.audioPaused = false;
+        this.inTimeTransition = false;
     }
 }

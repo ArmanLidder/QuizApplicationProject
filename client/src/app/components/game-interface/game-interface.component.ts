@@ -120,14 +120,18 @@ export class GameInterfaceComponent {
                 this.gameService.audio.pause();
                 this.gameService.gameRealService.audioPaused = true;
             }
+            
+            });
+
         this.socketService.on(socketEvent.gameStatsDistribution, (gameStats: string) => {
             this.unpackStats(this.parseGameStats(gameStats));
         });
-    });
+    
+    };
 
     private parseGameStats(stringifyStats: string) {
         return JSON.parse(stringifyStats);
-    }
+    };
 
     private unpackStats(stats: TransportStatsFormat) {
         stats.forEach((stat) => {
@@ -135,7 +139,7 @@ export class GameInterfaceComponent {
             const responses = new Map<string, number>(stat[1]);
             this.gameStats.push([values, responses, stat[2]]);
         });
-    }
+    };
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     protected readonly questionType = QuestionType;

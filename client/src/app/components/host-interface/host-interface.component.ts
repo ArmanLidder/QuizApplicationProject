@@ -65,6 +65,7 @@ export class HostInterfaceComponent {
             roomId: this.gameService.gameRealService.roomId,
             timer: this.gameService.gameRealService.timer,
         });
+    };
     private saveStats() {
         const question = this.gameService.gameRealService.question;
         if (question !== null) {
