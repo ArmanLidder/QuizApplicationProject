@@ -196,7 +196,7 @@ export class HostInterfaceComponent {
     }
 
     private sendQrlAnswer() {
-        this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
+        this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string) => {
             this.reponsesQRL = new Map(JSON.parse(playerAnswers));
             this.isHostEvaluating = true;
         });
