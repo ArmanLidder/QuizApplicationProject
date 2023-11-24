@@ -9,10 +9,16 @@ describe('CorrectionQRLComponent', () => {
     let component: CorrectionQRLComponent;
     let fixture: ComponentFixture<CorrectionQRLComponent>;
     const mockPoint = 40;
-    const mockreponsesQRL = new Map<string, { answers: string; time: number }>();
-    const mokcUsernames = ['Hamza', 'Arman', 'Rayan', 'Adlane', 'Ely'];
+    const mockTimeOne = 23;
+    const mockTimeTwo = 25;
+    const mockTimeThree = 40;
+    const mockTimeFour = 10;
+    const mockTimeFive = 30;
+    const initialIndex = -1;
+    const mockResponsesQrl = new Map<string, { answers: string; time: number }>();
+    const mockUsernames = ['Hamza', 'Arman', 'Rayan', 'Adlane', 'Ely'];
     const mockAnswers = ['Answer1', 'Answer2', 'Answer3', 'Answer4', 'Answer5'];
-    const mockTime = [23, 25, 40, 10, 30];
+    const mockTimes = [mockTimeOne, mockTimeTwo, mockTimeThree, mockTimeFour, mockTimeFive];
     let socketService: SocketClientServiceTestHelper;
     let sendSpy: jasmine.Spy;
 
@@ -24,8 +30,8 @@ describe('CorrectionQRLComponent', () => {
         });
         fixture = TestBed.createComponent(CorrectionQRLComponent);
         component = fixture.componentInstance;
-        for (let i = 0; i < mokcUsernames.length; i++) {
-            mockreponsesQRL.set(mokcUsernames[i], { answers: mockAnswers[i], time: mockTime[i] });
+        for (let i = 0; i < mockUsernames.length; i++) {
+            mockResponsesQrl.set(mockUsernames[i], { answers: mockAnswers[i], time: mockTimes[i] });
         }
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         fixture.detectChanges();
@@ -43,19 +49,20 @@ describe('CorrectionQRLComponent', () => {
 
     it('should go to the next answer', () => {
         component.indexPlayer = 1;
-        component.usernames = mokcUsernames;
+        component.usernames = mockUsernames;
         component.answers = mockAnswers;
         component.nextAnswer();
         expect(component.indexPlayer).toEqual(2);
-        expect(component.currentUsername).toEqual(mokcUsernames[component.indexPlayer]);
+        expect(component.currentUsername).toEqual(mockUsernames[component.indexPlayer]);
         expect(component.currentAnswer).toEqual(mockAnswers[component.indexPlayer]);
+        const expectedIndex = 9;
         component.indexPlayer = 8;
         component.nextAnswer();
-        expect(component.indexPlayer).toEqual(9);
+        expect(component.indexPlayer).toEqual(expectedIndex);
     });
 
     it('should end Correction preperly', () => {
-        component.reponsesQRL = mockreponsesQRL;
+        component.reponsesQRL = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         component.endCorrection();
@@ -68,16 +75,16 @@ describe('CorrectionQRLComponent', () => {
         expect(component.answers.length).toEqual(0);
         expect(component.points.length).toEqual(0);
         expect(component.reponsesQRLCorrected.size).toEqual(0);
-        expect(component.indexPlayer).toEqual(-1);
+        expect(component.indexPlayer).toEqual(initialIndex);
     });
 
     it('should initialize correctly', () => {
         spyOn(component, 'nextAnswer');
-        component.reponsesQRL = mockreponsesQRL;
+        component.reponsesQRL = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
-        expect(component.indexPlayer).toEqual(-1);
-        expect(component.usernames.length).toEqual(mokcUsernames.length);
+        expect(component.indexPlayer).toEqual(initialIndex);
+        expect(component.usernames.length).toEqual(mockUsernames.length);
         expect(component.answers.length).toEqual(mockAnswers.length);
         expect(component.nextAnswer).toHaveBeenCalled();
     });
@@ -87,7 +94,7 @@ describe('CorrectionQRLComponent', () => {
         spyOn(component, 'nextAnswer').and.callThrough();
         spyOn(component, 'endCorrection');
         spyOn(component, 'clearAll');
-        component.reponsesQRL = mockreponsesQRL;
+        component.reponsesQRL = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         component.indexPlayer = component.usernames.length - 1;
