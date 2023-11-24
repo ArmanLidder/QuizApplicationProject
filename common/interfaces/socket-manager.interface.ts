@@ -16,7 +16,7 @@ export interface RemainingTime {
 }
 export interface PlayerAnswerData {
     roomId: number;
-    answers: string[];
+    answers: string[] | string;
     timer: number;
     username: string;
 }
@@ -30,6 +30,11 @@ export interface PlayerSelection {
 export interface RoomValidationResult {
     isRoom: boolean;
     isLocked: boolean;
+}
+
+export interface PanicModeData {
+    roomId: number;
+    timer: number;
 }
 
 export interface GameStats {

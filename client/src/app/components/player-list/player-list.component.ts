@@ -62,11 +62,14 @@ export class PlayerListComponent {
         return this.players;
     }
 
-    getPlayersList(resetPlayerStatus: boolean = true) {
-        this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
-            this.setupPlayerList();
-            players.forEach((username) => {
-                this.getPlayerScoreFromServer(username, resetPlayerStatus);
+    async getPlayersList(resetPlayerStatus: boolean = true) {
+        return new Promise<number>((resolve) => {
+            this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
+                resolve(players.length);
+                this.setupPlayerList();
+                players.forEach((username) => {
+                    this.getPlayerScoreFromServer(username, resetPlayerStatus);
+                });
             });
         });
     }
@@ -121,7 +124,7 @@ export class PlayerListComponent {
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on(socketEvent.updateSelection, (username: string) => {
+        this.socketService.on(socketEvent.updateInteraction, (username: string) => {
             this.changePlayerStatus(username, playerStatus.interaction);
         });
         this.socketService.on(socketEvent.submitAnswer, (username: string) => {

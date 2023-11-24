@@ -63,6 +63,11 @@ describe('Game', () => {
                     { text: '10', isCorrect: false },
                 ],
             },
+            {
+                type: QuestionType.QLR,
+                text: 'What do you find most intriguing about the process of photosynthesis?',
+                points: 30,
+            },
         ],
         visible: true,
     };
@@ -182,7 +187,7 @@ describe('Game', () => {
         expect(game.players.get('Player2')).to.deep.equal({ points: 0, isBonus: false, bonusCount: 0 });
     });
 
-    it('should set values correctly', () => {
+    it('should set values correctly for a qcm', () => {
         game['setValues']();
         const expectedSizeOfChoicesStats = 4;
         expect(game.currentQuizQuestion).to.deep.equal(testQuiz.questions[0]);
@@ -192,6 +197,14 @@ describe('Game', () => {
         expect(game.choicesStats.get('London')).to.equal(0);
         expect(game.choicesStats.get('Berlin')).to.equal(0);
         expect(game.choicesStats.get('Madrid')).to.equal(0);
+    });
+
+    it('should set values correctly for a qrl', () => {
+        game.currIndex = 2;
+        game['setValues']();
+        expect(game.currentQuizQuestion).to.deep.equal(testQuiz.questions[2]);
+        expect(game.question).to.equal('What do you find most intriguing about the process of photosynthesis?');
+        expect(game.currentQuizQuestion.choices).to.equal(undefined);
     });
 
     it('should correctly handle cases where there is one fastest player', () => {
@@ -214,6 +227,31 @@ describe('Game', () => {
         expect(game.choicesStats.get('Paris')).to.equal(1);
         game['updateChoicesStats'](true, playerAnswerTwo);
         expect(game.choicesStats.get('London')).to.equal(2);
+    });
+
+    it('should update player scores correctly when the question is open ended', () => {
+        game.currentQuizQuestion = testQuiz.questions[2];
+        const HALF_MULTIPLIER = 0.5;
+        const HALF = 50;
+        const playerEvaluations = new Map<string, number>([
+            ['Player1', 0],
+            ['Player2', HALF],
+        ]);
+        game.updatePlayerScores(playerEvaluations);
+        expect(game.players.get('Player1')).to.deep.equal({ points: 0, isBonus: false, bonusCount: 0 });
+        expect(game.players.get('Player2')).to.deep.equal({
+            points: game.currentQuizQuestion.points * HALF_MULTIPLIER,
+            isBonus: false,
+            bonusCount: 0,
+        });
+    });
+
+    it('should update the validity stats correctly', () => {
+        game.activityStatusStats = [1, 1];
+        game.switchActivityStatus(true);
+        expect(game.activityStatusStats).to.deep.equal([2, 0]);
+        game.switchActivityStatus(false);
+        expect(game.activityStatusStats).to.deep.equal([1, 1]);
     });
 
     it('should update game history correctly', async () => {

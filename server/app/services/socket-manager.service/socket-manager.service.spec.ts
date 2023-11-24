@@ -2,16 +2,18 @@
 import { Server } from '@app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
+import { SinonStubbedInstance } from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
 import { SocketManager } from '@app/services/socket-manager.service/socket-manager.service';
-import { SinonStubbedInstance } from 'sinon';
 import { RoomData, RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { Game } from '@app/classes/game/game';
 import { Answers } from '@app/interface/game-interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QRL_DURATION } from '@app/services/socket-manager.service/socket-manager.service.const';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 const RESPONSE_DELAY = 200;
 
@@ -30,6 +32,7 @@ describe('SocketManager service tests', () => {
     let gameMock: sinon.SinonStubbedInstance<Game>;
     beforeEach(async () => {
         gameMock = sinon.createStubInstance(Game);
+        gameMock.paused = false;
         gameMock.quiz = fillerQuizzes[0];
         gameMock.currentQuizQuestion = fillerQuizzes[0].questions[0];
         gameMock.players = new Map();
@@ -89,6 +92,7 @@ describe('SocketManager service tests', () => {
         const clientCallBack = (isLocked: boolean) => {
             expect(isLocked).to.equal(false);
             expect(roomManager.addUser.called);
+            done();
         };
         clientSocket.emit(socketEvent.joinGame, { roomId: mockRoomId, username: mockUsername }, clientCallBack);
         clientSocket.on(socketEvent.newPlayer, (players: string[]) => {
@@ -234,7 +238,6 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
     it('should call final time transition when every player abandoned', (done) => {
         gameMock.players.clear();
         roomManager.removeUserBySocketID.returns({ roomId: mockRoomId, username: 'username1' });
@@ -329,16 +332,46 @@ describe('SocketManager service tests', () => {
             done();
         }, FIVE_SECOND);
     });
-    it('should emit get initial question and set timer', (done) => {
+
+    it('should emit get initial question and set timer for a qcm', (done) => {
+        gameMock.currentQuizQuestion = gameMock.quiz.questions[0];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const startTimerStub = sinon.spy(service, 'startTimer' as any);
         roomManager.getUsernameBySocketId.returns('Organisateur');
         clientSocket.emit(socketEvent.getQuestion, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernameBySocketId.called);
             expect(roomManager.clearRoomTimer.called);
+            expect(startTimerStub.calledWith(mockRoomId, gameMock.quiz.duration));
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should not change timeValue when gamepaused', (done) => {
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        const emitSpy = sinon.spy(service, 'emitTime' as any);
+        /* eslint-enable  @typescript-eslint/no-explicit-any */
+        gameMock.paused = true;
+        service['startTimer'](mockRoomId, TIME_VALUE);
+        setTimeout(() => {
+            expect(emitSpy.callCount).to.equal(1);
+            done();
+        }, FIVE_SECOND);
+    });
+
+    it('should emit get initial question and set timer for a qrl', (done) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const startTimerStub = sinon.spy(service, 'startTimer' as any);
+        roomManager.getUsernameBySocketId.returns('Organisateur');
+        gameMock.currentQuizQuestion = gameMock.quiz.questions[1];
+        clientSocket.emit(socketEvent.getQuestion, mockRoomId);
+        setTimeout(() => {
+            expect(startTimerStub.calledWith(mockRoomId, QRL_DURATION));
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should handle when Organizer not found', (done) => {
         roomManager.getUsernameBySocketId.returns(undefined);
         clientSocket.emit(socketEvent.getQuestion, mockRoomId);
@@ -349,7 +382,7 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-    it('should handle submit answer when timer is 0', (done) => {
+    it('should handle submit answer when timer is 0 when its a qcm', (done) => {
         gameMock.players = new Map();
         const mockAnswers = ['one', 'two'];
         const mockTimer = 0;
@@ -361,6 +394,19 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should handle submit answer when timer is 0 when its a qrl', (done) => {
+        gameMock.players = new Map();
+        const mockAnswers = ['one', 'two'];
+        const mockTimer = 0;
+        gameMock.currentQuizQuestion = gameMock.quiz.questions[1];
+        clientSocket.emit(socketEvent.submitAnswer, { roomId: mockRoomId, answers: mockAnswers, timer: mockTimer, username: mockUsername });
+        setTimeout(() => {
+            expect(roomManager.getGameByRoomId.notCalled);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should handle submit answer when timer is more than 0', (done) => {
         gameMock.players = new Map();
         const mockAnswers = ['one', 'two'];
@@ -400,13 +446,30 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-    it('should handle next question properly', (done) => {
+
+    it('should handle next question properly for a qcm', (done) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const startTimerStub = sinon.spy(service, 'startTimer' as any);
+        gameMock.currentQuizQuestion.type = QuestionType.QCM;
         clientSocket.emit(socketEvent.nextQuestion, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
+            expect(startTimerStub.calledWith(mockRoomId, gameMock.duration));
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should handle next question properly for a qrl', (done) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const startTimerStub = sinon.spy(service, 'startTimer' as any);
+        gameMock.currentQuizQuestion.type = QuestionType.QLR;
+        clientSocket.emit(socketEvent.nextQuestion, mockRoomId);
+        setTimeout(() => {
+            expect(startTimerStub.calledWith(mockRoomId, QRL_DURATION));
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should handle update selection', (done) => {
         roomManager.getSocketIDByUsername.returns('test');
         gameMock.choicesStats = new Map();
@@ -418,10 +481,80 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should handle set activity status correctly for a qrl', (done) => {
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        roomManager.getSocketIDByUsername.returns('test');
+        clientSocket.emit('sendActivityStatus', { roomId: mockRoomId, isActive: true });
+        setTimeout(() => {
+            expect(roomManager.getGameByRoomId.calledWith(mockRoomId));
+            expect(gameMock.switchActivityStatus.calledWith(true));
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should get players answers for a qrl', (done) => {
+        const answer: Answers = { answers: ['1'], time: 10 };
+        gameMock.playersAnswers.set('test', answer);
+        const clientCallBack = (formattedList: string) => {
+            expect(formattedList).to.equal('[["test",{"answers":["1"],"time":10}]]');
+        };
+        clientSocket.emit('getPlayerAnswers', mockRoomId, clientCallBack);
+        setTimeout(() => {
+            expect(roomManager.getGameByRoomId.calledWith(mockRoomId));
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle player correction evaluation correctly for a qrl', (done) => {
+        const playerCorrectionMap = new Map<string, number>([
+            ['Player1', 0],
+            ['Player2', 1],
+        ]);
+        const formattedPlayerAnswers = JSON.stringify(Array.from(playerCorrectionMap));
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        roomManager.getSocketIDByUsername.returns('test');
+        clientSocket.emit('playerQrlCorrection', { roomId: mockRoomId, playerCorrection: formattedPlayerAnswers });
+        setTimeout(() => {
+            expect(roomManager.getGameByRoomId.calledWith(mockRoomId));
+            expect(gameMock.updatePlayerScores.calledWith(playerCorrectionMap));
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle player interaction update for a qrl', (done) => {
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        roomManager.getSocketIDByUsername.returns('test');
+        roomManager.getUsernameBySocketId.returns('Player1');
+        clientSocket.emit('newResponseInteraction', mockRoomId);
+        setTimeout(() => {
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, 'Organisateur'));
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, clientSocket.id));
+            expect(emitSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should toggle chat permission', (done) => {
         clientSocket.emit(socketEvent.toggleChatPermission, { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
             expect(roomManager.getUsernameBySocketId.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should pause timer', (done) => {
+        clientSocket.emit(socketEvent.pauseTimer, mockRoomId);
+        setTimeout(() => {
+            expect(roomManager.getGameByRoomId.calledWith(mockRoomId));
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should handle panic mode', (done) => {
+        clientSocket.emit(socketEvent.panicMode, mockRoomId);
+        setTimeout(() => {
+            expect(roomManager.clearRoomTimer.called);
             done();
         }, RESPONSE_DELAY);
     });

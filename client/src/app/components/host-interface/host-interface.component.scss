@@ -4,14 +4,59 @@
     align-items: center;
 }
 
+.circle {
+    border-radius: 50%;
+    float: left;
+    position: absolute;
+    left: 0;
+
+    font-size: 45px;
+    width: 220px;
+    height: 80px;
+    padding: 50px 0px 70px 0px;
+    color: #FFF;
+    border: 2px solid #000000;
+    text-align: center;
+    font-family: Arial;
+    display: block;
+}
+
+.circle span:first-child {
+    color:black;
+    font-size: 14px;
+    display: block
+}
+
+.circle span:nth-child(2) {
+    color: #000000;
+    font-size: 60px;
+    display: block
+}
+
+.circle mat-icon {
+    font-size: 40px;
+    height: 40px ;
+    width: 40px;
+    cursor: pointer;
+    color: black;
+}
+
 .histogram {
     align-items: center;
+}
+
+#panicButton {
+    width: 200px;
+    height: 100px;
+    align-items: center;
+    align-content: center;
 }
 
 #question-field{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0px;
 }
 
@@ -61,8 +106,10 @@
     width: 90%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
+    align-content: center;
     padding: 10px ;
+    position: relative;
 }
 
 .enter {
@@ -185,4 +232,14 @@ app-statistic-zone {
 
 app-player-list {
     flex: 1;
+}
+
+.disable:hover{
+    cursor: not-allowed;
+}
+.disable:active{
+    pointer-events: none;
+}
+mat-icon.disable {
+    filter:opacity(0.35);
 }

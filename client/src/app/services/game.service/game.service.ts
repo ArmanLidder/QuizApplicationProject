@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { GameTestService } from '@app/services/game-test.service/game-test.service';
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
 
 @Injectable({
     providedIn: 'root',
@@ -9,10 +12,14 @@ export class GameService {
     isTestMode: boolean = false;
     isInputFocused: boolean = false;
     answers: Map<number, string | null> = new Map();
-
+    qrlAnswer: string = '';
+    isHostEvaluating: boolean = false;
+    isActive: boolean = false;
+    hasInteracted: boolean = false;
     constructor(
         public gameTestService: GameTestService,
         public gameRealService: GameRealService,
+        private socketService: SocketClientService,
     ) {}
 
     get timer() {
@@ -47,6 +54,10 @@ export class GameService {
         return this.isTestMode ? this.gameTestService.validated : this.gameRealService.validated;
     }
 
+    get audio() {
+        return this.gameRealService.audio;
+    }
+
     destroy() {
         this.reset();
         this.answers.clear();
@@ -54,6 +65,7 @@ export class GameService {
 
     init(pathId: string) {
         if (!this.isTestMode) {
+            this.configureBaseSockets();
             this.gameRealService.roomId = Number(pathId);
             this.gameRealService.init();
         } else {
@@ -78,16 +90,46 @@ export class GameService {
     sendAnswer() {
         if (!this.isTestMode) {
             this.gameRealService.answers = this.answers;
+            this.gameRealService.qrlAnswer = this.qrlAnswer;
             this.gameRealService.sendAnswer();
+            this.isActive = false;
+            this.hasInteracted = false;
         } else {
             this.gameTestService.answers = this.answers;
+            this.gameRealService.qrlAnswer = this.qrlAnswer;
+            this.qrlAnswer = '';
             this.gameTestService.sendAnswer();
         }
         this.answers.clear();
     }
 
+    isPanicDisabled() {
+        if (this.question?.type) {
+            return this.timer > QLR_PANIC_MODE_ENABLED || this.gameRealService.inTimeTransition;
+        } else {
+            return this.timer > QCM_PANIC_MODE_ENABLED || this.gameRealService.inTimeTransition;
+        }
+    }
+
     private reset() {
+        this.qrlAnswer = '';
+        this.isActive = false;
+        this.hasInteracted = false;
         this.gameRealService.destroy();
         this.gameTestService.reset();
+    }
+
+    private configureBaseSockets() {
+        this.socketService.on(socketEvent.time, (timeValue: number) => {
+            this.handleTimeEvent(timeValue);
+        });
+    }
+
+    private handleTimeEvent(timeValue: number) {
+        this.gameRealService.timer = timeValue;
+        if (this.timer === 0 && !this.gameRealService.locked) {
+            this.gameRealService.locked = true;
+            if (this.username !== 'Organisateur') this.sendAnswer();
+        }
     }
 }

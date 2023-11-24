@@ -4,9 +4,8 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Timer } from '@app/classes/timer/timer';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { TimeService } from '@app/services/time.service/time.service';
-
-const BONUS_MULTIPLIER = 1.2;
-const TESTING_TRANSITION_TIMER = 3;
+import { QuestionType } from '@common/enums/question-type.enum';
+import { BONUS_MULTIPLIER, QRL_DURATION, TESTING_TRANSITION_TIMER } from '@app/services/game-test.service/game-test.service.const';
 
 @Injectable({
     providedIn: 'root',
@@ -24,6 +23,7 @@ export class GameTestService implements GameServiceInterface {
     playerScore: number = 0;
     question: QuizQuestion | null = null;
     currQuestionIndex: number = 0;
+    qrlAnswer: string = '';
 
     constructor(
         public timeService: TimeService,
@@ -35,7 +35,7 @@ export class GameTestService implements GameServiceInterface {
             this.quiz = quiz;
             this.question = quiz.questions[this.currQuestionIndex];
             this.timeService.deleteAllTimers();
-            this.startTimer(this.quiz.duration);
+            this.startTimer(this.question.type === QuestionType.QCM ? this.quiz.duration : QRL_DURATION);
             this.handleQuestionTimerEnd();
         });
     }
@@ -63,21 +63,26 @@ export class GameTestService implements GameServiceInterface {
     }
 
     updateScore(answers: Map<number, string | null>) {
-        const choices = this.quiz.questions[this.currQuestionIndex].choices as QuizChoice[];
-        const correctChoices = this.extractCorrectChoices(choices);
         const questionPoints = this.quiz.questions[this.currQuestionIndex].points;
-        if (answers.size !== correctChoices?.length) {
-            this.isBonus = false;
-            return;
-        }
-        for (const [key, value] of answers) {
-            if (!choices[key] || choices[key].text !== value || !choices[key].isCorrect) {
+        if (this.question?.type === QuestionType.QCM) {
+            const choices = this.quiz.questions[this.currQuestionIndex].choices as QuizChoice[];
+            const correctChoices = this.extractCorrectChoices(choices);
+            if (answers.size !== correctChoices?.length) {
                 this.isBonus = false;
                 return;
             }
+            for (const [key, value] of answers) {
+                if (!choices[key] || choices[key].text !== value || !choices[key].isCorrect) {
+                    this.isBonus = false;
+                    return;
+                }
+            }
+            this.isBonus = true;
+            this.playerScore += questionPoints * BONUS_MULTIPLIER;
+        } else {
+            this.isBonus = false;
+            this.playerScore += questionPoints;
         }
-        this.isBonus = true;
-        this.playerScore += questionPoints * BONUS_MULTIPLIER;
     }
 
     startTimer(duration: number) {
@@ -96,6 +101,7 @@ export class GameTestService implements GameServiceInterface {
         this.gameOver = false;
         this.locked = false;
         this.validated = false;
+        this.qrlAnswer = '';
         clearTimeout(this.timeouts[0]);
         clearTimeout(this.timeouts[1]);
     }

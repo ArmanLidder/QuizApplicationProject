@@ -16,7 +16,7 @@ export class SortListService {
     sortFunction: (arg1: Player, arg2: Player) => number = this.sortComparaisonByName;
 
     sortByName() {
-        this.sortFunction = this.sortComparaisonByName;
+        this.sortFunction = this.sortComparaisonByName.bind(this);
     }
 
     sortByScore() {

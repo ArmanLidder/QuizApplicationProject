@@ -39,6 +39,11 @@ export const fillerQuizzes = [
                     { text: '5', isCorrect: false },
                 ],
             },
+            {
+                type: QuestionType.QLR,
+                text: 'What do you find most intriguing about the process of photosynthesis?',
+                points: 30,
+            },
         ],
         visible: true,
     },

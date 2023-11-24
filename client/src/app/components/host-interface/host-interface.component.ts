@@ -2,15 +2,15 @@ import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PLAYER_NOT_FOUND_INDEX, TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { Player } from '@app/components/player-list/player-list.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { Player } from '@app/components/player-list/player-list.component.const';
 import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
-import { QuestionType } from '@common/enums/question-type.enum';
 
 @Component({
     selector: 'app-host-interface',
@@ -24,7 +24,11 @@ export class HostInterfaceComponent {
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
     leftPlayers: Player[] = [];
+    reponsesQRL = new Map<string, { answers: string; time: number }>();
+    isHostEvaluating: boolean = false;
     gameStats: QuestionStatistics[] = [];
+    isPaused: boolean = false;
+    isPanicMode: boolean = false;
 
     constructor(
         public gameService: GameService,
@@ -56,24 +60,28 @@ export class HostInterfaceComponent {
         return this.leftPlayers.some((player) => player[0] === username);
     }
 
+    pauseTimer() {
+        this.isPaused = !this.isPaused;
+        this.socketService.send(socketEvent.pauseTimer, this.gameService.gameRealService.roomId);
+    }
+
+    panicMode() {
+        this.socketService.send(socketEvent.panicMode, {
+            roomId: this.gameService.gameRealService.roomId,
+            timer: this.gameService.gameRealService.timer,
+        });
+        this.isPanicMode = true;
+    }
     private saveStats() {
         const question = this.gameService.gameRealService.question;
         if (question !== null) {
-            const dataValue = question.type === QuestionType.QLR ? this.generateQRLMap() : this.histogramDataValue;
-            const savedStats: QuestionStatistics = [dataValue, this.histogramDataChangingResponses, question];
-            this.gameStats.push(savedStats);
+            const savedStats: QuestionStatistics = [this.histogramDataValue, this.histogramDataChangingResponses, question];
+            if (question.type !== QuestionType.QLR) this.gameStats.push(savedStats);
         }
     }
 
-    private generateQRLMap() {
-        return new Map([
-            ['0', false],
-            ['50', false],
-            ['100', true],
-        ]);
-    }
-
     private nextQuestion() {
+        this.isPanicMode = false;
         this.gameService.gameRealService.validated = false;
         this.gameService.gameRealService.locked = false;
         this.socketService.send(socketEvent.startTransition, this.gameService.gameRealService.roomId);
@@ -89,6 +97,7 @@ export class HostInterfaceComponent {
             this.timerText = timerMessage.next;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
+                this.gameService.gameRealService.inTimeTransition = false;
                 this.resetInterface();
                 this.socketService.send(socketEvent.nextQuestion, this.gameService.gameRealService.roomId);
                 this.timerText = timerMessage.timeLeft;
@@ -96,8 +105,16 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.endQuestion, () => {
+            this.gameService.audio.pause();
+            this.gameService.audio.currentTime = 0;
+            this.gameService.gameRealService.audioPaused = false;
+            this.gameService.gameRealService.inTimeTransition = true;
             this.resetInterface();
-            this.playerListComponent.getPlayersList(false);
+            if (this.gameService.question?.type === QuestionType.QCM) {
+                this.playerListComponent.getPlayersList(false);
+            } else {
+                this.sendQrlAnswer();
+            }
         });
 
         this.socketService.on(socketEvent.finalTimeTransition, (timeValue: number) => {
@@ -113,26 +130,37 @@ export class HostInterfaceComponent {
             this.histogramDataChangingResponses = this.createChoicesStatsMap(choicesStatsValue);
         });
 
-        this.socketService.on(socketEvent.getInitialQuestion, (data: InitialQuestionData) => {
-            this.playerListComponent.getPlayersList();
-            this.initGraph(data.question);
+        this.socketService.on(socketEvent.getInitialQuestion, async (data: InitialQuestionData) => {
+            const numberOfPlayers = await this.playerListComponent.getPlayersList();
+            this.initGraph(data.question, numberOfPlayers);
         });
 
-        this.socketService.on(socketEvent.getNextQuestion, (data: NextQuestionData) => {
-            this.playerListComponent.getPlayersList();
-            this.initGraph(data.question);
+        this.socketService.on(socketEvent.getNextQuestion, async (data: NextQuestionData) => {
+            const numberOfPlayers = await this.playerListComponent.getPlayersList();
+            this.initGraph(data.question, numberOfPlayers);
         });
 
         this.socketService.on(socketEvent.removedPlayer, (username) => {
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
-                this.playerListComponent.getPlayersList(false);
+                this.playerListComponent.getPlayersList(false).then();
             }
         });
 
         this.socketService.on(socketEvent.endQuestionAfterRemoval, () => {
             this.resetInterface();
+        });
+
+        this.socketService.on(socketEvent.evaluationOver, () => {
+            this.playerListComponent.getPlayersList(false).then();
+        });
+
+        this.socketService.on(socketEvent.refreshActivityStats, (activityStatsValue: [number, number]) => {
+            this.histogramDataChangingResponses = new Map([
+                ['Actif', activityStatsValue[0]],
+                ['Inactif', activityStatsValue[1]],
+            ]);
         });
     }
 
@@ -141,12 +169,23 @@ export class HostInterfaceComponent {
         this.gameService.gameRealService.locked = true;
     }
 
-    private initGraph(question: QuizQuestion) {
+    private initGraph(question: QuizQuestion, numberOfPlayers?: number) {
         this.histogramDataValue = new Map();
         this.histogramDataChangingResponses = new Map();
-        question.choices?.forEach((choice: QuizChoice) => {
-            this.histogramDataValue.set(choice.text, choice.isCorrect as boolean);
-        });
+        if (this.gameService.question?.type === QuestionType.QCM) {
+            question.choices?.forEach((choice: QuizChoice) => {
+                this.histogramDataValue.set(choice.text, choice.isCorrect as boolean);
+            });
+        } else {
+            this.histogramDataChangingResponses = new Map([
+                ['Actif', 0],
+                ['Inactif', numberOfPlayers as number],
+            ]);
+            this.histogramDataValue = new Map([
+                ['Actif', true],
+                ['Inactif', false],
+            ]);
+        }
     }
 
     private createChoicesStatsMap(choicesStatsValue: number[]) {
@@ -154,6 +193,13 @@ export class HostInterfaceComponent {
         const choices = this.gameService.question?.choices;
         choices?.forEach((choice: QuizChoice, index: number) => choicesStats.set(choice.text, choicesStatsValue[index]));
         return choicesStats;
+    }
+
+    private sendQrlAnswer() {
+        this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
+            this.reponsesQRL = new Map(JSON.parse(playerAnswers));
+            this.isHostEvaluating = true;
+        });
     }
 
     private sendGameStats() {

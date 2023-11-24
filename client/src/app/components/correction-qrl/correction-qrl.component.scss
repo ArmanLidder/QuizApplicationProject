@@ -1,0 +1,61 @@
+.correction-qrl-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .correction-qrl-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .correction-qrl-container p {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .correction-qrl-container select {
+    padding: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  
+  .correction-qrl-container p.error-message {
+    color: red;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+
+
+  .valider {
+    margin-left: 10px;
+    background-color: green;
+    color: white;
+    border: 4px solid green;
+    font-size: 1.4rem;
+}
+
+.valider:hover {
+    background-color: white;
+    color: green;
+    transition: 0.5s;
+}
+
+.valider:active {
+    background-color: green;
+    color: black;
+    border: 1px solid black;
+}
+
+.valider:disabled {
+    background-color: gray;
+    color: white;
+    border: 4px solid gray;
+    cursor: not-allowed;
+    opacity: 0.35;
+}
+  
