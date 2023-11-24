@@ -93,7 +93,7 @@ export class HostInterfaceComponent {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
-                this.playerListComponent.getPlayersList().then();
+                this.playerListComponent.getPlayersList();
             }
         });
 
@@ -102,22 +102,20 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.getInitialQuestion, async (data: InitialQuestionData) => {
-            await this.playerListComponent.getPlayersList().then((numberOfPlayers) => {
-                this.initGraph(data.question, numberOfPlayers);
-            });
+            const numberOfPlayers = await this.playerListComponent.getPlayersList();
+            this.initGraph(data.question, numberOfPlayers);
         });
 
         this.socketService.on(socketEvent.getNextQuestion, async (data: NextQuestionData) => {
-            await this.playerListComponent.getPlayersList().then((numberOfPlayers) => {
-                this.initGraph(data.question, numberOfPlayers);
-            });
+            const numberOfPlayers = await this.playerListComponent.getPlayersList();
+            this.initGraph(data.question, numberOfPlayers);
         });
 
         this.socketService.on(socketEvent.removedPlayer, (username) => {
             const playerIndex = this.playerListComponent.players.findIndex((player) => player[0] === username);
             if (playerIndex !== PLAYER_NOT_FOUND_INDEX) {
                 this.leftPlayers.push(this.playerListComponent.players[playerIndex]);
-                this.playerListComponent.getPlayersList(false);
+                this.playerListComponent.getPlayersList(false).then();
             }
         });
 
@@ -126,7 +124,7 @@ export class HostInterfaceComponent {
         });
 
         this.socketService.on(socketEvent.evaluationOver, () => {
-            this.playerListComponent.getPlayersList(false);
+            this.playerListComponent.getPlayersList(false).then();
         });
 
         this.socketService.on(socketEvent.refreshActivityStats, (activityStatsValue: [number, number]) => {
