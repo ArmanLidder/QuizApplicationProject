@@ -38,20 +38,20 @@ describe('QrlResponseAreaComponent', () => {
         const numberOfExpectedCalls = 3;
         spyOn(window, 'clearTimeout');
         component.ngOnDestroy();
-        expect(component.isActive).toBeFalsy();
-        expect(component.hasInteracted).toBeFalsy();
+        expect(component.gameService.isActive).toBeFalsy();
+        expect(component.gameService.hasInteracted).toBeFalsy();
         expect(window.clearTimeout).toHaveBeenCalledTimes(numberOfExpectedCalls);
     });
 
     it('should emit socket events when user not active or has not interacted yet', () => {
-        component.isActive = false;
-        component.hasInteracted = false;
+        component.gameService.isActive = false;
+        component.gameService.hasInteracted = false;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn(component, 'resetInputTimer' as any);
         spyOn(socketService, 'send');
         component.handleActiveUser();
-        expect(component.isActive).toBeTruthy();
-        expect(component.hasInteracted).toBeTruthy();
+        expect(component.gameService.isActive).toBeTruthy();
+        expect(component.gameService.hasInteracted).toBeTruthy();
         expect(socketService.send).toHaveBeenCalledWith(socketEvent.sendActivityStatus, {
             roomId: component.gameService.gameRealService.roomId,
             isActive: true,

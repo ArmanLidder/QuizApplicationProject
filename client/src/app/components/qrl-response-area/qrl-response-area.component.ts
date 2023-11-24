@@ -15,8 +15,6 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 })
 export class QrlResponseAreaComponent implements OnDestroy {
     inactiveTimeout: number = 0;
-    isActive: boolean = false;
-    hasInteracted: boolean = false;
     charactersLeft: number = MAX_RESPONSE_CHARACTERS;
     inputTimer: number = 0;
     validateTimer: number = 0;
@@ -26,8 +24,8 @@ export class QrlResponseAreaComponent implements OnDestroy {
     ) {}
 
     ngOnDestroy() {
-        this.isActive = false;
-        this.hasInteracted = false;
+        this.gameService.isActive = false;
+        this.gameService.hasInteracted = false;
         clearTimeout(this.inputTimer);
         clearTimeout(this.inactiveTimeout);
         clearTimeout(this.validateTimer);
@@ -35,13 +33,13 @@ export class QrlResponseAreaComponent implements OnDestroy {
 
     handleActiveUser() {
         this.charactersLeft = MAX_RESPONSE_CHARACTERS - this.gameService.qrlAnswer.length;
-        if (!this.isActive) {
-            this.isActive = true;
+        if (!this.gameService.isActive) {
+            this.gameService.isActive = true;
             if (this.socketClientService.isSocketAlive())
                 this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: true });
         }
-        if (!this.hasInteracted) {
-            this.hasInteracted = true;
+        if (!this.gameService.hasInteracted) {
+            this.gameService.hasInteracted = true;
             if (this.socketClientService.isSocketAlive())
                 this.socketClientService.send(socketEvent.newResponseInteraction, this.gameService.gameRealService.roomId);
         }
@@ -56,7 +54,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
 
     onInputStopped(): void {
         this.inactiveTimeout = window.setTimeout(() => {
-            this.isActive = false;
+            this.gameService.isActive = false;
             if (this.socketClientService.isSocketAlive())
                 this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);

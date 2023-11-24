@@ -14,7 +14,8 @@ export class GameService {
     answers: Map<number, string | null> = new Map();
     qrlAnswer: string = '';
     isHostEvaluating: boolean = false;
-
+    isActive: boolean = false;
+    hasInteracted: boolean = false;
     constructor(
         public gameTestService: GameTestService,
         public gameRealService: GameRealService,
@@ -91,6 +92,8 @@ export class GameService {
             this.gameRealService.answers = this.answers;
             this.gameRealService.qrlAnswer = this.qrlAnswer;
             this.gameRealService.sendAnswer();
+            this.isActive = false;
+            this.hasInteracted = false;
         } else {
             this.gameTestService.answers = this.answers;
             this.gameRealService.qrlAnswer = this.qrlAnswer;
@@ -110,6 +113,8 @@ export class GameService {
 
     private reset() {
         this.qrlAnswer = '';
+        this.isActive = false;
+        this.hasInteracted = false;
         this.gameRealService.destroy();
         this.gameTestService.reset();
     }
