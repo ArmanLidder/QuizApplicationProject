@@ -222,7 +222,133 @@ describe('HostInterfaceComponent', () => {
         }
     });
 
+    it('should configure the right socket event listener', fakeAsync(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn(component, 'initGraph' as any);
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        const onSpy = spyOn(socketService, 'on').and.callThrough();
+        component['configureBaseSocketFeatures']();
+        const [
+            [firstEvent, firstAction],
+            [secondEvent, secondAction],
+            [thirdEvent, thirdAction],
+            [fourthEvent, fourthAction],
+            [fifthEvent, fifthAction],
+            [sixthEvent, sixthAction],
+            [seventhEvent, seventhAction],
+            [eighthEvent, eightAction],
+            [nineEvent, nineAction],
+            [tenthEvent, tenthAction],
+        ] = onSpy.calls.allArgs();
+        expect(firstEvent).toEqual(socketEvent.timeTransition);
+        expect(secondEvent).toEqual(socketEvent.endQuestion);
+        expect(thirdEvent).toEqual(socketEvent.finalTimeTransition);
+        expect(fourthEvent).toEqual(socketEvent.refreshChoicesStats);
+        expect(fifthEvent).toEqual(socketEvent.getInitialQuestion);
+        expect(sixthEvent).toEqual(socketEvent.getNextQuestion);
+        expect(seventhEvent).toEqual(socketEvent.removedPlayer);
+        expect(eighthEvent).toEqual(socketEvent.endQuestionAfterRemoval);
+        expect(nineEvent).toEqual(socketEvent.evaluationOver);
+        expect(tenthEvent).toEqual(socketEvent.refreshActivityStats);
+
+        if (typeof firstAction === 'function') {
+            firstAction(TIMER_VALUE);
+            expect(component.gameService.timer).toEqual(TIMER_VALUE);
+        }
+
+        if (typeof secondAction === 'function') {
+            secondAction(0);
+            expect(component.gameService.validatedStatus).toEqual(true);
+            expect(component.gameService.lockedStatus).toEqual(true);
+            component.gameService.gameRealService.question = mockQuestion;
+            component.gameService.gameRealService.question.type = QuestionType.QLR;
+            component.gameService.gameRealService.roomId = 0;
+            const sendSpy = spyOn(component['socketService'], 'send').and.callThrough();
+            secondAction(0);
+            const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
+            expect(event).toEqual(socketEvent.getPlayerAnswers);
+            expect(roomId).toEqual(0);
+            if (typeof callback === 'function') {
+                const testMap = new Map([['test', { answers: 'test', time: 0 }]]);
+                component.isHostEvaluating = false;
+                callback(JSON.stringify(Array.from(testMap)));
+                expect(sendSpy).toHaveBeenCalled();
+                expect(component.isHostEvaluating).toBeTruthy();
+            }
+        }
+
+        if (typeof thirdAction === 'function') {
+            thirdAction(TIMER_VALUE);
+            expect(component.timerText).toEqual('Résultat disponible dans ');
+            expect(component.gameService.timer).toEqual(TIMER_VALUE);
+        }
+        if (typeof fourthAction === 'function') {
+            fourthAction([0]);
+            expect(component.histogramDataChangingResponses).toBeDefined();
+        }
+        if (typeof fifthAction === 'function') {
+            fifthAction(0);
+            expect(component.histogramDataChangingResponses).toBeDefined();
+        }
+        if (typeof sixthAction === 'function') {
+            sixthAction({ question: {}, index: 0, isLast: false });
+        }
+        if (typeof seventhAction === 'function') {
+            component.playerListComponent.players = [
+                ['player1', 1, 0, playerStatus.validation, true],
+                ['player2', 1, 0, playerStatus.validation, true],
+                ['player3', 1, 0, playerStatus.validation, true],
+            ];
+            seventhAction('player2');
+            expect(component.leftPlayers).toEqual([['player2', 1, 0, playerStatus.validation, true]]);
+        }
+        if (typeof eightAction === 'function') {
+            eightAction(TIMER_VALUE);
+            expect(component.gameService.gameRealService.validated).toBeTruthy();
+            expect(component.gameService.gameRealService.locked).toBeTruthy();
+        }
+        if (typeof eightAction === 'function') {
+            nineAction(0);
+            expect(getPlayerListSpy).toHaveBeenCalled();
+        }
+        if (typeof tenthAction === 'function') {
+            tenthAction([0, 0]);
+            expect(component.histogramDataChangingResponses).toEqual(new Map([['Actif', 0], ['Inactif', 0],]));
+        }
+    }));
+
+    it('should sendQrlAnswer if question is Qrl', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn(component, 'initGraph' as any);
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        component.gameService.gameRealService.question = mockQuestion;
+        component.gameService.gameRealService.question.type = QuestionType.QLR;
+        component.gameService.gameRealService.roomId = 0;
+        component.isHostEvaluating = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sendQrlAnswerSpy = spyOn(component, 'sendQrlAnswer' as any);
+        const onSpy = spyOn(socketService, 'on').and.callThrough();
+        component['configureBaseSocketFeatures']();
+        const [firstEvent, firstAction] = onSpy.calls.allArgs()[1];
+        expect(firstEvent).toEqual(socketEvent.endQuestion);
+        if (typeof firstAction === 'function') {
+            firstAction(0);
+            expect(sendQrlAnswerSpy).toHaveBeenCalled();
+        }
+    });
+
+    it('should send event when running sendQrlAnswer ', () => {
+        const sendSpy = spyOn(socketService, 'send');
+        component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        component.gameService.gameRealService.question = mockQuestion;
+        component.gameService.gameRealService.question.type = QuestionType.QLR;
+        component.gameService.gameRealService.roomId = 0;
+        component.isHostEvaluating = false;
+        component['sendQrlAnswer']();
+        expect(sendSpy).toHaveBeenCalled();
+    });
     it('should go to the final result when timer is 0', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn(component, 'initGraph' as any);
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const onSpy = spyOn(socketService, 'on').and.callThrough();
