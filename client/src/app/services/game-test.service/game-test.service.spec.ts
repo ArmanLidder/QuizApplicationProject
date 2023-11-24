@@ -4,6 +4,7 @@ import { Quiz } from '@common/interfaces/quiz.interface';
 import { GameTestService } from './game-test.service';
 import { of } from 'rxjs';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { QRL_DURATION } from '@app/services/game-test.service/game-test.service.const';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const TICK = 1000;
 const TRANSITION_TIMER_DELAY = 3;
@@ -134,6 +135,30 @@ describe('GameTestService', () => {
         expect(gameTestService.playerScore).toBe(mockQuiz.questions[2].points);
     });
 
+    it('should set isBonus to false if the number of answers submitted is not equal to the number of correct choices', () => {
+        gameTestService.quiz = mockQuiz;
+
+        const answers = new Map<number, string | null>([[1, '2']]);
+
+        gameTestService.currQuestionIndex = 1;
+        gameTestService.question = mockQuiz.questions[1];
+        gameTestService.updateScore(answers);
+        expect(gameTestService.isBonus).toBe(false);
+    });
+
+    it('should set isBonus to false if one of the choices submitted is incorrect', () => {
+        gameTestService.quiz = mockQuiz;
+
+        const answers = new Map<number, string | null>([
+            [1, '2'],
+            [2, '4'],
+        ]);
+        gameTestService.currQuestionIndex = 1;
+        gameTestService.question = mockQuiz.questions[1];
+        gameTestService.updateScore(answers);
+        expect(gameTestService.isBonus).toBe(false);
+    });
+
     it('should start a timer from the timeService', () => {
         const DURATION = 20;
         spyOn(gameTestService.timeService, 'deleteAllTimers');
@@ -174,6 +199,9 @@ describe('GameTestService', () => {
         expect(deleteTimersSpy).toHaveBeenCalled();
         expect(startTimersSpy).toHaveBeenCalledWith(mockQuiz.duration);
         expect(handleQuestionTimerSpy).toHaveBeenCalled();
+        gameTestService.currQuestionIndex = 2;
+        gameTestService.init();
+        expect(startTimersSpy).toHaveBeenCalledWith(QRL_DURATION);
     });
 
     it('should send answer properly if socket not connected', () => {
