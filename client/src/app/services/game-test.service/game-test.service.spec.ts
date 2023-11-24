@@ -72,7 +72,7 @@ describe('GameTestService', () => {
         expect(gameTestService.next()).toBe(false);
     });
 
-    it('should increment currQuestionIndex when it is less than quiz questions lenght -1', () => {
+    it('should increment currQuestionIndex when it is less than quiz questions length -1', () => {
         const TIMER_VALUE = 10;
         gameTestService.timeService.createTimer(TIMER_VALUE);
         gameTestService.timeService.getTimer(0);
@@ -82,7 +82,7 @@ describe('GameTestService', () => {
         expect(gameTestService.currQuestionIndex).toBe(1);
     });
 
-    it('should set isBonus to false and return when the correct answer lenght is false', () => {
+    it('should set isBonus to false and return when the correct answer length is false', () => {
         gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
