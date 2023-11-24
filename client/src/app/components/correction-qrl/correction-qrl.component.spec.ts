@@ -5,11 +5,11 @@ import { SocketClientServiceTestHelper } from '@app/classes/socket-client-servic
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { CorrectionQRLComponent } from './correction-qrl.component';
 
-fdescribe('CorrectionQRLComponent', () => {
+describe('CorrectionQRLComponent', () => {
     let component: CorrectionQRLComponent;
     let fixture: ComponentFixture<CorrectionQRLComponent>;
-    let mockPoint = 40;
-    let mockreponsesQRL = new Map<string, { answers: string; time: number }>();
+    const mockPoint = 40;
+    const mockreponsesQRL = new Map<string, { answers: string; time: number }>();
     const mokcUsernames = ['Hamza', 'Arman', 'Rayan', 'Adlane', 'Ely'];
     const mockAnswers = ['Answer1', 'Answer2', 'Answer3', 'Answer4', 'Answer5'];
     const mockTime = [23, 25, 40, 10, 30];
@@ -109,7 +109,7 @@ fdescribe('CorrectionQRLComponent', () => {
     it('should change when there is a change', () => {
         spyOn(component, 'initialize');
         const changes: SimpleChanges = {
-            reponsesQRL: new SimpleChange(null, 'nouvelleValeurDeReponsesQRL', true)
+            reponsesQRL: new SimpleChange(null, 'nouvelleValeurDeReponsesQRL', true),
         };
         component.ngOnChanges(changes);
         expect(component.initialize).toHaveBeenCalled();

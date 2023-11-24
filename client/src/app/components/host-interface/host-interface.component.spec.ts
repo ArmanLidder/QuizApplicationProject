@@ -154,7 +154,9 @@ describe('HostInterfaceComponent', () => {
             expect(roomId).toEqual(0);
             if (typeof callback === 'function') {
                 const testMap = new Map([['test', { answers: 'test', time: 0 }]]);
+                component.isHostEvaluating = false;
                 callback(JSON.stringify(Array.from(testMap)));
+                expect(sendSpy).toHaveBeenCalled();
                 expect(component.isHostEvaluating).toBeTruthy();
             }
         }
