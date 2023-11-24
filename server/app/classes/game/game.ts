@@ -23,7 +23,6 @@ export class Game {
     correctChoices: string[] = [];
     duration: number;
     paused = false;
-    panicMode = false;
 
     gameHistoryInfo: GameInfo = { gameName: '', startTime: '', playersCount: 0, bestScore: 0 };
 

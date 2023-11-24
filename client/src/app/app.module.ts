@@ -34,6 +34,7 @@ import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
 import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -81,6 +82,7 @@ import { StatisticZoneComponent } from './components/statistic-zone/statistic-zo
         ReactiveFormsModule,
         NgChartsModule,
         BrowserAnimationsModule,
+        MatTooltipModule
     ],
     providers: [],
     bootstrap: [AppComponent],

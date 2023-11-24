@@ -448,7 +448,8 @@ describe('SocketManager service tests', () => {
         clientSocket.emit(socketEvent.panicMode, mockRoomId);
         setTimeout(() => {
             expect(roomManager.clearRoomTimer.called);
-        });
+            done();
+        }, RESPONSE_DELAY);
     });
 
     it('should toggle chat permission', (done) => {
