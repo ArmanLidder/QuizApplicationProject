@@ -75,18 +75,9 @@ export class HostInterfaceComponent {
     private saveStats() {
         const question = this.gameService.gameRealService.question;
         if (question !== null) {
-            const dataValue = question.type === QuestionType.QLR ? this.generateQRLMap() : this.histogramDataValue;
-            const savedStats: QuestionStatistics = [dataValue, this.histogramDataChangingResponses, question];
-            this.gameStats.push(savedStats);
+            const savedStats: QuestionStatistics = [this.histogramDataValue, this.histogramDataChangingResponses, question];
+            if (question.type !== QuestionType.QLR) this.gameStats.push(savedStats);
         }
-    }
-
-    private generateQRLMap() {
-        return new Map([
-            ['0', false],
-            ['50', false],
-            ['100', true],
-        ]);
     }
 
     private nextQuestion() {
@@ -210,7 +201,7 @@ export class HostInterfaceComponent {
             this.isHostEvaluating = true;
         });
     }
-    
+
     private sendGameStats() {
         const gameStats = this.stringifyStats();
         this.socketService.send(socketEvent.gameStatsDistribution, { roomId: this.gameService.gameRealService.roomId, stats: gameStats });

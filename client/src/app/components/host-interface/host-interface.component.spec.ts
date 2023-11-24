@@ -459,7 +459,7 @@ describe('HostInterfaceComponent', () => {
         expect(component.histogramDataChangingResponses).toEqual(mapOne);
         expect(component.histogramDataValue).toEqual(mapTwo);
     });
-    
+
     it('should prepare stats transport correctly', () => {
         component.gameStats = [
             [
@@ -510,19 +510,6 @@ describe('HostInterfaceComponent', () => {
             ['value1', true],
             ['value2', false],
         ]);
-    });
-    it('should save stats correctly for QLR question type', () => {
-        component.gameService.gameRealService.question = mockQuestion;
-        component.gameService.gameRealService.question.type = QuestionType.QLR;
-        component['saveStats']();
-        expect(component.gameStats.length).toEqual(1);
-        expect(component.gameStats[0][0]).toEqual(
-            new Map([
-                ['0', false],
-                ['50', false],
-                ['100', true],
-            ]),
-        );
     });
     it('should save stats correctly for other question types', () => {
         component.gameService.gameRealService.question = mockQuestion;

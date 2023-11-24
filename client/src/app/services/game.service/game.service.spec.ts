@@ -241,7 +241,7 @@ describe('GameService', () => {
         expect(service.gameRealService.locked).toBeTruthy();
         expect(sendAnswerSpy).toHaveBeenCalled();
     });
-    
+
     it('should cover isPanicDisabled() method', () => {
         service.isTestMode = false;
         service.gameRealService.question = firstQuestionMock;
