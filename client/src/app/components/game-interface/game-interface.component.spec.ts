@@ -135,7 +135,7 @@ describe('GameInterfaceComponent', () => {
         const parseSpy = spyOn(component, 'parseGameStats' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
         expect(socketOnText).toEqual(socketEvent.gameStatsDistribution);
         socketOnFunc();
         expect(parseSpy).toHaveBeenCalled();
