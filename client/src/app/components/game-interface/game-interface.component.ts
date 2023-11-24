@@ -57,12 +57,11 @@ export class GameInterfaceComponent {
     }
     private configureBaseSocketFeatures() {
         this.socketService.on(socketEvent.endQuestion, () => {
-            if (this.gameService.question?.type === QuestionType.QCM) {
-                this.gameService.audio.pause();
+            this.gameService.audio.pause();
             this.gameService.audio.currentTime = 0;
             this.gameService.gameRealService.audioPaused = false;
             this.inPanicMode = false;
-
+            if (this.gameService.question?.type === QuestionType.QCM) {
                 this.getScore();
             } else {
                 this.gameService.qrlAnswer = '';
