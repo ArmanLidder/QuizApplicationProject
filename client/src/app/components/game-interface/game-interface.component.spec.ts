@@ -129,7 +129,7 @@ describe('GameInterfaceComponent', () => {
         const audioSpy = spyOn(component.gameService.audio, 'play');
         component.gameService.gameRealService.timer = mockTimeValue;
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
         expect(socketOnText).toEqual(socketEvent.panicMode);
         socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
         expect(component.gameService.timer).toEqual(mockTimeValue);
@@ -141,7 +141,7 @@ describe('GameInterfaceComponent', () => {
         component.gameService.gameRealService.audioPaused = true;
         component.inPanicMode = true;
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
         expect(socketOnText).toEqual(socketEvent.pauseTimer);
         socketOnFunc(mockRoomIdValue);
         expect(component.gameService.gameRealService.audioPaused).toBeFalsy();
@@ -153,7 +153,7 @@ describe('GameInterfaceComponent', () => {
         component.gameService.gameRealService.audioPaused = false;
         component.inPanicMode = true;
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
         expect(socketOnText).toEqual(socketEvent.pauseTimer);
         socketOnFunc(mockRoomIdValue);
         expect(component.gameService.gameRealService.audioPaused).toBeTruthy();
@@ -166,7 +166,7 @@ describe('GameInterfaceComponent', () => {
         const parseSpy = spyOn(component, 'parseGameStats' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
         component['configureBaseSocketFeatures']();
-        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[7];
         expect(socketOnText).toEqual(socketEvent.gameStatsDistribution);
         socketOnFunc();
         expect(parseSpy).toHaveBeenCalled();
