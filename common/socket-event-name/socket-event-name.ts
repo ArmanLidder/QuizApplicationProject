@@ -42,6 +42,9 @@ export namespace socketEvent {
     export const playerQrlCorrection = 'playerQrlCorrection';
     export const evaluationOver = 'evaluationOver';
     export const refreshActivityStats = 'refreshActivityStats';
+    export const pauseTimer = 'pauseTimer'
+    export const panicMode = 'panicMode'
+    export const gameStatsDistribution = 'gameStatsDistribution';
 }
 
 

@@ -4,15 +4,20 @@
 </div>
 <div class="grid-container" *ngIf='!isGameOver'>
     <div id="flex-container">
-        <p> {{timerText}} : {{ gameService.timer }}</p>
-    </div>
-    <section id="question-field">
-        <div>
-            <h2> Question {{gameService.questionNumber}}</h2>
-            <h3> Valeur: {{ gameService.question?.points }} points</h3>
-            <h4>{{ gameService.question?.text }}</h4>
+        <div class="circle">
+            <span>{{timerText}}</span>
+            <span>{{gameService.timer}}</span>
+            <mat-icon [matTooltip]="isPaused ? 'Play' : 'Pause'" (click)='pauseTimer()'>{{ isPaused ? 'play_circle_outline' : 'pause_circle_outline' }}</mat-icon>
+            <mat-icon [matTooltip]="gameService.isPanicDisabled() || isPanicMode ? 'Vous ne pouvez  pas encore activer le mode panique' : 'Activez mode panique !'" (click)='panicMode()' [ngClass]="{'disable':gameService.isPanicDisabled() || isPanicMode}"> whatshot </mat-icon>
         </div>
-    </section>
+        <section id="question-field">
+            <div>
+                <h2> Question {{gameService.questionNumber}}</h2>
+                <h3> Valeur: {{ gameService.question?.points }} points</h3>
+                <h4>{{ gameService.question?.text }}</h4>
+            </div>
+        </section>
+    </div>
     <div class='btn-container'>
         <button class='enter'
                 [disabled]='isDisabled()'
@@ -23,15 +28,19 @@
     </div>
 </div>
 <app-correction-qrl [reponsesQRL]='reponsesQRL' [isHostEvaluating]='isHostEvaluating'></app-correction-qrl>
-<div class="histogram" *ngIf='!this.isGameOver'>
-    <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
+<div class="result-container">
+    <div class="histogram" *ngIf='!this.isGameOver'>
+        <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
+    </div>
+    <app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
+    <app-player-list
+        #playerListChild
+        [roomId]='this.gameService.gameRealService.roomId'
+        [leftPlayers]='this.leftPlayers'
+        [isFinal]='this.isGameOver'
+        [isHost] = 'true'>
+    </app-player-list>
 </div>
-<app-player-list
-    #playerListChild
-    [roomId]='this.gameService.gameRealService.roomId'
-    [leftPlayers]='this.leftPlayers'
-    [isFinal]='this.isGameOver'
-    [isHost] = 'true'>
-</app-player-list>
+
 
 

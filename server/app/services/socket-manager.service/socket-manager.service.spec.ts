@@ -32,6 +32,7 @@ describe('SocketManager service tests', () => {
     let gameMock: sinon.SinonStubbedInstance<Game>;
     beforeEach(async () => {
         gameMock = sinon.createStubInstance(Game);
+        gameMock.paused = false;
         gameMock.quiz = fillerQuizzes[0];
         gameMock.currentQuizQuestion = fillerQuizzes[0].questions[0];
         gameMock.players = new Map();
@@ -331,6 +332,7 @@ describe('SocketManager service tests', () => {
             done();
         }, FIVE_SECOND);
     });
+
     it('should emit get initial question and set timer for a qcm', (done) => {
         gameMock.currentQuizQuestion = gameMock.quiz.questions[0];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -344,6 +346,18 @@ describe('SocketManager service tests', () => {
             expect(startTimerStub.calledWith(mockRoomId, gameMock.quiz.duration));
             done();
         }, RESPONSE_DELAY);
+    });
+
+    it('should not change timeValue when gamepaused', (done) => {
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        const emitSpy = sinon.spy(service, 'emitTime' as any);
+        /* eslint-enable  @typescript-eslint/no-explicit-any */
+        gameMock.paused = true;
+        service['startTimer'](mockRoomId, TIME_VALUE);
+        setTimeout(() => {
+            expect(emitSpy.callCount).to.equal(1);
+            done();
+        }, FIVE_SECOND);
     });
 
     it('should emit get initial question and set timer for a qrl', (done) => {
@@ -527,6 +541,29 @@ describe('SocketManager service tests', () => {
         clientSocket.emit(socketEvent.toggleChatPermission, { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
             expect(roomManager.getUsernameBySocketId.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should pause timer', (done) => {
+        clientSocket.emit(socketEvent.pauseTimer, mockRoomId);
+        setTimeout(() => {
+            expect(roomManager.getGameByRoomId.calledWith(mockRoomId));
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should handle panic mode', (done) => {
+        clientSocket.emit(socketEvent.panicMode, mockRoomId);
+        setTimeout(() => {
+            expect(roomManager.clearRoomTimer.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should toggle chat permission', (done) => {
+        const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
+        clientSocket.emit(socketEvent.gameStatsDistribution, { roomId: mockRoomId, stats: 'test' });
+        setTimeout(() => {
+            expect(emitSpy.calledWith(socketEvent.gameStatsDistribution, { roomId: mockRoomId, stats: 'test' }));
             done();
         }, RESPONSE_DELAY);
     });

@@ -35,7 +35,8 @@ import { NgChartsModule } from 'ng2-charts';
 import { CorrectionQRLComponent } from './components/correction-qrl/correction-qrl.component';
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
 import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
-
+import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -73,6 +74,7 @@ import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-
         PlayerListComponent,
         CorrectionQRLComponent,
         QrlResponseAreaComponent,
+        StatisticZoneComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -84,6 +86,7 @@ import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-
         ReactiveFormsModule,
         NgChartsModule,
         BrowserAnimationsModule,
+        MatTooltipModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

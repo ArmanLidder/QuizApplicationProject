@@ -31,3 +31,13 @@ export interface RoomValidationResult {
     isRoom: boolean;
     isLocked: boolean;
 }
+
+export interface PanicModeData {
+    roomId: number;
+    timer: number;
+}
+
+export interface GameStats {
+    roomId: number;
+    stats: string;
+}

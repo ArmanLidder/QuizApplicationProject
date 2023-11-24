@@ -1,28 +1,28 @@
 :host {
-  display: flex;
-  flex-direction: column;
-  height: 80%;
   width: 80%;
 }
 
 .chart-container {
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+  margin-right: 25px;
 }
 
 .graph {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .custom-legend {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .legend-item {
@@ -37,4 +37,5 @@
   height: 15px;
   margin-right: 5px;
 }
+
 

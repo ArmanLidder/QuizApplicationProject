@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { ResponsesValues, ResponsesNumber } from '@app/components/organizer-histogram/organizer-histogram.component.const';
 
 @Component({
     selector: 'app-organizer-histogram',
@@ -7,8 +8,8 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
     styleUrls: ['./organizer-histogram.component.scss'],
 })
 export class OrganizerHistogramComponent implements OnChanges {
-    @Input() changingResponses: Map<string, number>;
-    @Input() valueOfResponses: Map<string, boolean>;
+    @Input() changingResponses: ResponsesNumber;
+    @Input() valueOfResponses: ResponsesValues;
     barChartOptions: ChartConfiguration['options'] = {
         responsive: true,
         plugins: {

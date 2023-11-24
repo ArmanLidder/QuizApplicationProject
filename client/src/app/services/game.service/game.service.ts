@@ -3,6 +3,7 @@ import { GameTestService } from '@app/services/game-test.service/game-test.servi
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
 
 @Injectable({
     providedIn: 'root',
@@ -52,6 +53,10 @@ export class GameService {
         return this.isTestMode ? this.gameTestService.validated : this.gameRealService.validated;
     }
 
+    get audio() {
+        return this.gameRealService.audio;
+    }
+
     destroy() {
         this.reset();
         this.answers.clear();
@@ -93,6 +98,14 @@ export class GameService {
             this.gameTestService.sendAnswer();
         }
         this.answers.clear();
+    }
+
+    isPanicDisabled() {
+        if (this.question?.type) {
+            return this.timer > QLR_PANIC_MODE_ENABLED || this.gameRealService.inTimeTransition;
+        } else {
+            return this.timer > QCM_PANIC_MODE_ENABLED || this.gameRealService.inTimeTransition;
+        }
     }
 
     private reset() {

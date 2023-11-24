@@ -23,6 +23,9 @@ export class GameRealService implements GameServiceInterface {
     locked: boolean = false;
     validated: boolean = false;
     qrlAnswer: string = '';
+    audio = new Audio('assets/music.mp3');
+    audioPaused: boolean = false;
+    inTimeTransition: boolean = false;
 
     constructor(public socketService: SocketClientService) {
         if (this.socketService.isSocketAlive()) {
@@ -96,5 +99,7 @@ export class GameRealService implements GameServiceInterface {
         this.answers.clear();
         this.qrlAnswer = '';
         this.questionNumber = 1;
+        this.audioPaused = false;
+        this.inTimeTransition = false;
     }
 }

@@ -9,6 +9,8 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
+import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -33,6 +35,7 @@ describe('GameInterfaceComponent', () => {
         isBonus: true,
     };
     const mockTimeValue = 123;
+    const mockRoomIdValue = 100;
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
@@ -122,6 +125,54 @@ describe('GameInterfaceComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
+    it('should configure base socket features for play audio correctly', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'play');
+        component.gameService.gameRealService.timer = mockTimeValue;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
+        expect(socketOnText).toEqual(socketEvent.panicMode);
+        socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
+        expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for pausing the audio', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'play');
+        component.gameService.gameRealService.audioPaused = true;
+        component.inPanicMode = true;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        expect(socketOnText).toEqual(socketEvent.pauseTimer);
+        socketOnFunc(mockRoomIdValue);
+        expect(component.gameService.gameRealService.audioPaused).toBeFalsy();
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for Unpausing the audio', () => {
+        const audioSpy = spyOn(component.gameService.audio, 'pause');
+        component.gameService.gameRealService.audioPaused = false;
+        component.inPanicMode = true;
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
+        expect(socketOnText).toEqual(socketEvent.pauseTimer);
+        socketOnFunc(mockRoomIdValue);
+        expect(component.gameService.gameRealService.audioPaused).toBeTruthy();
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for removed from game correctly', () => {
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        const unpackSpy = spyOn(component, 'unpackStats' as any);
+        const parseSpy = spyOn(component, 'parseGameStats' as any);
+        /* eslint-enable  @typescript-eslint/no-explicit-any */
+        component['configureBaseSocketFeatures']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
+        expect(socketOnText).toEqual(socketEvent.gameStatsDistribution);
+        socketOnFunc();
+        expect(parseSpy).toHaveBeenCalled();
+        expect(unpackSpy).toHaveBeenCalled();
+    });
+
     it('should create in test mode if active route is quiz-testing-page', () => {
         component['route'].snapshot.url[0].path = 'quiz-testing-page';
         fixture = TestBed.createComponent(GameInterfaceComponent);
@@ -165,5 +216,29 @@ describe('GameInterfaceComponent', () => {
         expect(sendGetScoreObject).toBeDefined();
         expect(sendGetScoreCallback).toBeDefined();
         sendGetScoreCallback(mockScore);
+    });
+
+    it('should parse game stats correctly', () => {
+        const statsString = '{"stats": "some stats"}';
+        const parsedStats = component['parseGameStats'](statsString);
+        expect(parsedStats).toEqual({ stats: 'some stats' });
+    });
+
+    it('should unpack game stats correctly', () => {
+        const stats: TransportStatsFormat = [
+            [
+                [
+                    ['value1', true],
+                    ['value2', false],
+                ],
+                [
+                    ['response1', 0],
+                    ['response2', 0],
+                ],
+                question,
+            ],
+        ];
+        component['unpackStats'](stats);
+        expect(component.gameStats.length).toBe(1);
     });
 });
