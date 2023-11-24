@@ -34,5 +34,7 @@
     </div>
     <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>
+    <app-qrl-response-area *ngIf='gameService.question?.type === questionType.QLR' id='answer-qrl-field'>
+    </app-qrl-response-area>
 </div>
 

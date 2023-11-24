@@ -1,0 +1,4 @@
+export const INACTIVITY_TIME = 5000;
+export const DEBOUNCE_INACTIVE_TIME = 1000;
+
+export const MAX_RESPONSE_CHARACTERS = 200;

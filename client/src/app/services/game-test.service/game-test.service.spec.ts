@@ -4,6 +4,7 @@ import { Quiz } from '@common/interfaces/quiz.interface';
 import { GameTestService } from './game-test.service';
 import { of } from 'rxjs';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { QRL_DURATION } from '@app/services/game-test.service/game-test.service.const';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const TICK = 1000;
 const TRANSITION_TIMER_DELAY = 3;
@@ -35,6 +36,11 @@ describe('GameTestService', () => {
                     { text: '3', isCorrect: true },
                 ],
             },
+            {
+                type: QuestionType.QLR,
+                text: 'What is 2 + 2?',
+                points: 20,
+            },
         ],
         visible: true,
     };
@@ -62,12 +68,12 @@ describe('GameTestService', () => {
         gameTestService.timeService.getTimer(0);
         expect(gameTestService.timeService.getTimer(0)).toBe(TIMER1);
 
-        gameTestService.currQuestionIndex = 1;
+        gameTestService.currQuestionIndex = 2;
         gameTestService.quiz = mockQuiz;
         expect(gameTestService.next()).toBe(false);
     });
 
-    it('should increment currQuestionIndex when it is less than quiz questions lenght -1', () => {
+    it('should increment currQuestionIndex when it is less than quiz questions length -1', () => {
         const TIMER_VALUE = 10;
         gameTestService.timeService.createTimer(TIMER_VALUE);
         gameTestService.timeService.getTimer(0);
@@ -77,7 +83,7 @@ describe('GameTestService', () => {
         expect(gameTestService.currQuestionIndex).toBe(1);
     });
 
-    it('should set isBonus to false and return when the correct answer lenght is false', () => {
+    it('should set isBonus to false and return when the correct answer length is false', () => {
         gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
@@ -108,7 +114,7 @@ describe('GameTestService', () => {
     });
 
     it('should set isBonus to true and add the bonus to the player score', () => {
-        const BONUS_MULT = 1.2;
+        const BONUS_MULTIPLIER = 1.2;
         gameTestService.quiz = mockQuiz;
 
         const answers = new Map<number, string | null>([
@@ -117,11 +123,40 @@ describe('GameTestService', () => {
         ]);
 
         gameTestService.currQuestionIndex = 1;
-
+        gameTestService.question = mockQuiz.questions[1];
         gameTestService.updateScore(answers);
 
         expect(gameTestService.isBonus).toBe(true);
-        expect(gameTestService.playerScore).toBe(mockQuiz.questions[1].points * BONUS_MULT);
+        expect(gameTestService.playerScore).toBe(mockQuiz.questions[1].points * BONUS_MULTIPLIER);
+        gameTestService.question = mockQuiz.questions[2];
+        gameTestService.playerScore = 0;
+        gameTestService.updateScore(answers);
+        expect(gameTestService.isBonus).toBe(false);
+        expect(gameTestService.playerScore).toBe(mockQuiz.questions[2].points);
+    });
+
+    it('should set isBonus to false if the number of answers submitted is not equal to the number of correct choices', () => {
+        gameTestService.quiz = mockQuiz;
+
+        const answers = new Map<number, string | null>([[1, '2']]);
+
+        gameTestService.currQuestionIndex = 1;
+        gameTestService.question = mockQuiz.questions[1];
+        gameTestService.updateScore(answers);
+        expect(gameTestService.isBonus).toBe(false);
+    });
+
+    it('should set isBonus to false if one of the choices submitted is incorrect', () => {
+        gameTestService.quiz = mockQuiz;
+
+        const answers = new Map<number, string | null>([
+            [1, '2'],
+            [2, '4'],
+        ]);
+        gameTestService.currQuestionIndex = 1;
+        gameTestService.question = mockQuiz.questions[1];
+        gameTestService.updateScore(answers);
+        expect(gameTestService.isBonus).toBe(false);
     });
 
     it('should start a timer from the timeService', () => {
@@ -164,6 +199,9 @@ describe('GameTestService', () => {
         expect(deleteTimersSpy).toHaveBeenCalled();
         expect(startTimersSpy).toHaveBeenCalledWith(mockQuiz.duration);
         expect(handleQuestionTimerSpy).toHaveBeenCalled();
+        gameTestService.currQuestionIndex = 2;
+        gameTestService.init();
+        expect(startTimersSpy).toHaveBeenCalledWith(QRL_DURATION);
     });
 
     it('should send answer properly if socket not connected', () => {

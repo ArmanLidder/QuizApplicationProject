@@ -141,7 +141,7 @@ describe('PlayerListComponent', () => {
         const changePlayerStatusSpy = spyOn(component, 'changePlayerStatus' as any);
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.updateSelection);
+        expect(firstEvent).toEqual(socketEvent.updateInteraction);
         expect(secondEvent).toEqual(socketEvent.submitAnswer);
         if (typeof firstAction === 'function') {
             firstAction('test');

@@ -83,15 +83,15 @@
     font-size: 2vw;
 }
 
-#answer-field {
+#answer-qcm-field, #answer-qrl-field {
     width: 90%;
     height: 40%;
     text-align: center;
     display: flex;
     flex-wrap: wrap;
-    justify-content:space-around;
+    justify-content: space-around;
     gap: 5%;
-    padding-bottom: 2% ;
+    padding-bottom: 2%;
     margin-bottom: 5vh;
 }
 

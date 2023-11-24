@@ -4,6 +4,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 export type Player = [string, number, number];
 
@@ -21,6 +22,7 @@ export class GameRealService implements GameServiceInterface {
     isLast: boolean = false;
     locked: boolean = false;
     validated: boolean = false;
+    qrlAnswer: string = '';
     audio = new Audio('assets/music.mp3');
     audioPaused: boolean = false;
     inTimeTransition: boolean = false;
@@ -42,15 +44,25 @@ export class GameRealService implements GameServiceInterface {
     }
 
     sendAnswer() {
-        const answers = Array.from(this.answers.values());
-        this.socketService.send(socketEvent.submitAnswer, {
-            roomId: this.roomId,
-            answers,
-            timer: this.timer,
-            username: this.username,
-        });
+        if (this.question?.type === QuestionType.QCM) {
+            const answers = Array.from(this.answers.values());
+            this.socketService.send(socketEvent.submitAnswer, {
+                roomId: this.roomId,
+                answers,
+                timer: this.timer,
+                username: this.username,
+            });
+        } else {
+            this.socketService.send(socketEvent.submitAnswer, {
+                roomId: this.roomId,
+                answers: this.qrlAnswer,
+                timer: this.timer,
+                username: this.username,
+            });
+        }
         this.locked = true;
         this.answers.clear();
+        this.qrlAnswer = '';
     }
 
     configureBaseSockets() {
@@ -69,23 +81,10 @@ export class GameRealService implements GameServiceInterface {
             this.validated = false;
             this.locked = false;
         });
-
-        this.socketService.on(socketEvent.time, (timeValue: number) => {
-            this.handleTimeEvent(timeValue);
-        });
     }
 
     sendSelection(index: number, isSelected: boolean) {
         if (this.socketService.isSocketAlive()) this.socketService.send(socketEvent.updateSelection, { roomId: this.roomId, isSelected, index });
-    }
-
-    private handleTimeEvent(timeValue: number) {
-        this.timer = timeValue;
-        if (this.timer === 0 && !this.locked) {
-            this.audio.pause();
-            this.locked = true;
-            if (this.username !== 'Organisateur') this.sendAnswer();
-        }
     }
 
     private reset() {
@@ -98,6 +97,7 @@ export class GameRealService implements GameServiceInterface {
         this.isLast = false;
         this.players = [];
         this.answers.clear();
+        this.qrlAnswer = '';
         this.questionNumber = 1;
         this.audioPaused = false;
         this.inTimeTransition = false;

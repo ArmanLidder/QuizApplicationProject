@@ -1,0 +1,10 @@
+<div *ngIf="isHostEvaluating" class="correction-qrl-container">
+    <h3> Question Correction:</h3>
+    <p> Player : {{ currentUsername }} </p>
+    <p> Answer : {{ currentAnswer }} </p>
+    <select [(ngModel)]="inputPoint">
+        <option *ngFor="let score of scores" [value]="score">{{ score }}</option>
+    </select>
+    <button class="valider" (click)="submitPoint()">Valider</button>
+    <p *ngIf="!isValid">Veuillez sélectionner une note</p>
+</div>
