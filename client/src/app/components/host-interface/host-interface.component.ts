@@ -81,10 +81,7 @@ export class HostInterfaceComponent {
             if (this.gameService.question?.type === QuestionType.QCM) {
                 this.playerListComponent.getPlayersList(false);
             } else {
-                this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
-                    this.reponsesQRL = new Map(JSON.parse(playerAnswers));
-                    this.isHostEvaluating = true;
-                });
+                this.sendQrlAnswer();
             }
         });
 
@@ -164,5 +161,12 @@ export class HostInterfaceComponent {
         const choices = this.gameService.question?.choices;
         choices?.forEach((choice: QuizChoice, index: number) => choicesStats.set(choice.text, choicesStatsValue[index]));
         return choicesStats;
+    }
+
+    private sendQrlAnswer() {
+        this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
+            this.reponsesQRL = new Map(JSON.parse(playerAnswers));
+            this.isHostEvaluating = true;
+        });
     }
 }
