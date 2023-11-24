@@ -3,6 +3,8 @@ import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correctio
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
 
 @Component({
     selector: 'app-correction-qrl',
@@ -10,8 +12,14 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
     styleUrls: ['./correction-qrl.component.scss'],
 })
 export class CorrectionQRLComponent implements OnChanges {
+    @Input() gameStats: QuestionStatistics[] = [];
     @Input() reponsesQRL = new Map<string, { answers: string; time: number }>();
     @Input() isHostEvaluating: boolean = false;
+    questionStats = new Map<string, number>([
+        ['0', 0],
+        ['50', 0],
+        ['100', 0],
+    ]);
     reponsesQRLCorrected = new Map<string, number>();
     usernames: string[] = [];
     answers: string[] = [];
@@ -65,7 +73,15 @@ export class CorrectionQRLComponent implements OnChanges {
     endCorrection() {
         for (let i = 0; i < this.usernames.length; i++) {
             this.reponsesQRLCorrected.set(this.usernames[i], this.points[i]);
+            this.questionStats.set(String(this.points[i]), (this.questionStats.get(String(this.points[i])) as number) + 1);
         }
+        const emptyMap = new Map<string, boolean>([
+            ['0', false],
+            ['50', false],
+            ['100', true],
+        ]);
+        const newQuestionMap = new Map(this.questionStats);
+        this.gameStats.push([emptyMap, newQuestionMap, this.gameService.gameRealService.question as QuizQuestion]);
     }
 
     clearAll() {
@@ -73,6 +89,11 @@ export class CorrectionQRLComponent implements OnChanges {
         this.answers.splice(0, this.answers.length);
         this.points.splice(0, this.points.length);
         this.reponsesQRLCorrected.clear();
+        this.questionStats = new Map<string, number>([
+            ['0', 0],
+            ['50', 0],
+            ['100', 0],
+        ]);
         this.indexPlayer = -1;
     }
 
