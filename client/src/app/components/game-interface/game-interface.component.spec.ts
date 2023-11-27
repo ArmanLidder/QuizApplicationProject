@@ -64,6 +64,7 @@ describe('GameInterfaceComponent', () => {
     });
 
     it('should configure base socket features for end question correctly', () => {
+        mockQuestion.type = QuestionType.QCM;
         component.gameService.gameRealService.question = mockQuestion;
         component.gameService.gameRealService.username = 'test';
         spyOnProperty(component.gameService, 'username', 'get').and.returnValue('test');
@@ -201,6 +202,16 @@ describe('GameInterfaceComponent', () => {
         component.gameService.isTestMode = true;
         spyOnProperty(component.gameService, 'isBonus', 'get').and.returnValue(true);
         expect(component.bonusStatus).toBeTruthy();
+    });
+
+    it('should correctly update player points', () => {
+        const expectedPercentage = 50;
+        component.gameService.isTestMode = false;
+        component.gameService.gameRealService.question = mockQuestion;
+        mockQuestion.type = QuestionType.QLR;
+        const score = component.playerScore + mockQuestion.points / 2;
+        component['updateScore'](score);
+        expect(component.gameService.lastQrlScore).toEqual(expectedPercentage);
     });
 
     it('should get and define properly the players data', () => {
