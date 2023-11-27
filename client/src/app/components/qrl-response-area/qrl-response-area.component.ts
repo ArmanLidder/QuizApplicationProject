@@ -7,6 +7,7 @@ import {
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 
 @Component({
     selector: 'app-qrl-response-area',
@@ -15,7 +16,6 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 })
 export class QrlResponseAreaComponent implements OnDestroy {
     inactiveTimeout: number = 0;
-    charactersLeft: number = MAX_RESPONSE_CHARACTERS;
     inputTimer: number = 0;
     validateTimer: number = 0;
     constructor(
@@ -32,7 +32,6 @@ export class QrlResponseAreaComponent implements OnDestroy {
     }
 
     handleActiveUser() {
-        this.charactersLeft = MAX_RESPONSE_CHARACTERS - this.gameService.qrlAnswer.length;
         if (!this.gameService.isActive) {
             this.gameService.isActive = true;
             if (this.socketClientService.isSocketAlive())
@@ -60,6 +59,11 @@ export class QrlResponseAreaComponent implements OnDestroy {
         }, INACTIVITY_TIME);
     }
 
+    obtainedPoints() {
+        if (this.gameService.lastQrlScore) return (this.gameService.lastQrlScore / MAX_PERCENTAGE) * (this.gameService.question?.points as number);
+        return 0;
+    }
+
     private setupInputDebounce(): void {
         this.inputTimer = window.setTimeout(() => {
             this.onInputStopped();
@@ -71,4 +75,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
         clearTimeout(this.inactiveTimeout);
         this.setupInputDebounce();
     }
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/member-ordering
+    protected readonly MAX_RESPONSE_CHARACTERS = MAX_RESPONSE_CHARACTERS;
 }
