@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameHistoryService } from '@app/services/game-history.service/game-history.service';
 import { GameInfo } from '@common/interfaces/game-info.interface';
+import { DEFAULT_RADIX_VALUE } from '@app/components/game-history-list/game-history-list.component.const';
 @Component({
     selector: 'app-history-list',
     templateUrl: './game-history-list.component.html',
@@ -59,6 +60,6 @@ export class GameHistoryListComponent implements OnInit {
 
     private convertDateToNumber(dateString: string) {
         const cleanedString = dateString.replace(/[-: ]/g, '');
-        return parseInt(cleanedString, 10);
+        return parseInt(cleanedString, DEFAULT_RADIX_VALUE);
     }
 }
