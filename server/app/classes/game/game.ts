@@ -73,8 +73,10 @@ export class Game {
     updatePlayerScores(playerCorrections: Map<string, number>) {
         playerCorrections.forEach((percentage, username) => {
             const playerScore = this.players.get(username);
-            playerScore.points = playerScore.points + this.currentQuizQuestion.points * (percentage / MAX_PERCENTAGE);
-            playerScore.isBonus = false;
+            if (playerScore) {
+                playerScore.points = playerScore.points + this.currentQuizQuestion.points * (percentage / MAX_PERCENTAGE);
+                playerScore.isBonus = false;
+            }
         });
     }
 
