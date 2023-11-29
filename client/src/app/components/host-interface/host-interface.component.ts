@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PLAYER_NOT_FOUND_INDEX, TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { Player } from '@app/components/player-list/player-list.component.const';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
@@ -10,7 +11,6 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 @Component({
     selector: 'app-host-interface',
@@ -154,6 +154,9 @@ export class HostInterfaceComponent {
 
         this.socketService.on(socketEvent.evaluationOver, () => {
             this.playerListComponent.getPlayersList(false).then();
+            if (this.isHostEvaluating) {
+                this.isHostEvaluating = false;
+            }
         });
 
         this.socketService.on(socketEvent.refreshActivityStats, (activityStatsValue: [number, number]) => {

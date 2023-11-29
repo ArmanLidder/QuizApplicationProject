@@ -18,7 +18,7 @@
             </div>
         </section>
     </div>
-    <div class='btn-container'>
+    <div class='btn-container' *ngIf='!isHostEvaluating'>
         <button class='enter'
                 [disabled]='isDisabled()'
                 (click)='handleHostCommand()'>
