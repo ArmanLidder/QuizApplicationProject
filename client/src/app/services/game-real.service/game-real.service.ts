@@ -5,6 +5,7 @@ import { GameServiceInterface } from '@app/interfaces/game-service.interface/gam
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { DEFAULT_VOLUME } from '@app/services/game-real.service/game-real.service.const';
 
 export type Player = [string, number, number];
 
@@ -31,6 +32,7 @@ export class GameRealService implements GameServiceInterface {
         if (this.socketService.isSocketAlive()) {
             this.configureBaseSockets();
         }
+        this.audio.volume = DEFAULT_VOLUME;
     }
 
     init() {
