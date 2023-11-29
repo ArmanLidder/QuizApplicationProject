@@ -71,7 +71,6 @@ describe('RoomCodePromptComponent', () => {
         expect(sendRoomDataSpy).toHaveBeenCalledWith(true);
     });
 
-
     it('should validate room Id correctly', async () => {
         component.error = '';
         spyOn(roomValidationService, 'verifyRoomId').and.resolveTo('test');

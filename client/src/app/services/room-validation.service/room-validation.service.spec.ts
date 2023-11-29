@@ -21,7 +21,7 @@ describe('RoomValidationService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should reset all data when calling resetService', ()=>{
+    it('should reset all data when calling resetService', () => {
         service.isActive = false;
         service.isLocked = true;
         service.isRoomIdValid = true;
@@ -92,7 +92,7 @@ describe('RoomValidationService', () => {
         expect(error).toEqual('test');
     });
 
-    it('should return the right error while trying to join room', fakeAsync( () => {
+    it('should return the right error while trying to join room', fakeAsync(() => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         service.username = 'test';
         service.roomId = '1234';
