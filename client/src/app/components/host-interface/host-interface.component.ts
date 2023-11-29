@@ -154,9 +154,7 @@ export class HostInterfaceComponent {
 
         this.socketService.on(socketEvent.evaluationOver, () => {
             this.playerListComponent.getPlayersList(false).then();
-            if (this.isHostEvaluating) {
-                this.isHostEvaluating = false;
-            }
+            this.isHostEvaluating = false;
         });
 
         this.socketService.on(socketEvent.refreshActivityStats, (activityStatsValue: [number, number]) => {
@@ -199,7 +197,7 @@ export class HostInterfaceComponent {
     }
 
     private sendQrlAnswer() {
-        this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string = '') => {
+        this.socketService.send(socketEvent.getPlayerAnswers, this.gameService.gameRealService.roomId, (playerAnswers: string) => {
             this.reponsesQRL = new Map(JSON.parse(playerAnswers));
             this.isHostEvaluating = true;
         });
