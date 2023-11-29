@@ -122,6 +122,7 @@ export class HostInterfaceComponent {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
+                this.gameService.audio.pause();
                 this.playerListComponent.getPlayersList();
             }
         });
