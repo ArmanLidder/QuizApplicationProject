@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OrganizerHistogramComponent } from './organizer-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
+import { HttpClientModule } from '@angular/common/http';
+import { GameService } from '@app/services/game.service/game.service';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
 
 const HISTOGRAM_VALUE_PLAYER_ONE = 15;
 const HISTOGRAM_VALUE_PLAYER_TWO = 5;
@@ -9,13 +13,15 @@ const HISTOGRAM_VALUE_PLAYER_THREE = 8;
 describe('OrganizerHistogramComponent', () => {
     let component: OrganizerHistogramComponent;
     let fixture: ComponentFixture<OrganizerHistogramComponent>;
-
+    let mockQuestion: QuizQuestion;
     beforeEach(() => {
         TestBed.configureTestingModule({
+            providers: [GameService],
             declarations: [OrganizerHistogramComponent],
-            imports: [NgChartsModule],
+            imports: [NgChartsModule, HttpClientModule],
         }).compileComponents();
         fixture = TestBed.createComponent(OrganizerHistogramComponent);
+        TestBed.inject(GameService);
         component = fixture.componentInstance;
 
         component.changingResponses = new Map<string, number>([
@@ -28,6 +34,11 @@ describe('OrganizerHistogramComponent', () => {
             ['Dollar', false],
             ['Pound', true],
         ]);
+        mockQuestion = {
+            type: QuestionType.QLR,
+            text: 'test question',
+            points: 40,
+        };
     });
 
     it('should create', () => {
@@ -57,6 +68,7 @@ describe('OrganizerHistogramComponent', () => {
             ['Dollar', undefined],
             ['Pound', undefined],
         ]) as Map<string, number>;
+        spyOnProperty(component['gameService'], 'question', 'get').and.returnValue(mockQuestion);
         component.ngOnChanges();
         expect(component.barChartData.labels?.length).toEqual(3);
         expect(component.barChartData.datasets[0].data?.length).toEqual(3);
