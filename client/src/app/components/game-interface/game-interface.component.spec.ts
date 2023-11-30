@@ -11,6 +11,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { GameInterfaceComponent } from './game-interface.component';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -39,7 +40,7 @@ describe('GameInterfaceComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            declarations: [GameInterfaceComponent, PlayerListComponent, QrlResponseAreaComponent],
+            declarations: [GameInterfaceComponent, PlayerListComponent, QrlResponseAreaComponent, StatisticHistogramComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },

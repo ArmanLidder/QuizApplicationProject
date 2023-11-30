@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ResponsesValues, ResponsesNumber } from '@app/components/organizer-histogram/organizer-histogram.component.const';
+import { ResponsesValues, ResponsesNumber } from '@app/components/statistic-histogram/statistic-histogram.component.const';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 

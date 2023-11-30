@@ -11,6 +11,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { GamePageComponent } from './game-page.component';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
@@ -33,7 +34,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent],
+            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent, StatisticHistogramComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
