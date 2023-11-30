@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { WaitingRoomComponent } from './waiting-room.component';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { WaitingRoomComponent } from './waiting-room.component';
 
 const DIGIT_CONSTANT = 1;
 // Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix
@@ -59,7 +59,7 @@ describe('WaitingRoomComponent', () => {
         component.isHost = true;
         component.roomId = DIGIT_CONSTANT;
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.hostLeft, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.HOST_LEFT, DIGIT_CONSTANT);
     });
 
     it('should send a player abandonment event on component destruction if not host', () => {
@@ -68,7 +68,7 @@ describe('WaitingRoomComponent', () => {
         component.isHost = false;
         component.roomId = DIGIT_CONSTANT;
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.PLAYER_LEFT, DIGIT_CONSTANT);
     });
 
     it('should not send abandonment event on component destruction if game is starting', () => {
@@ -131,7 +131,7 @@ describe('WaitingRoomComponent', () => {
         component.roomId = DIGIT_CONSTANT + DIGIT_CONSTANT;
         component['sendRoomCreation']();
         const [event, quizId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.createRoom);
+        expect(event).toEqual(socketEvent.CREATE_ROOM);
         expect(quizId).toEqual('1');
         if (typeof callback === 'function') {
             callback(DIGIT_CONSTANT);
@@ -144,7 +144,7 @@ describe('WaitingRoomComponent', () => {
         component.roomId = DIGIT_CONSTANT;
         component['sendBanPlayer']('test');
         const [event, data] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.banPlayer);
+        expect(event).toEqual(socketEvent.BAN_PLAYER);
         expect(data).toEqual({ roomId: DIGIT_CONSTANT, username: 'test' });
     });
 
@@ -153,7 +153,7 @@ describe('WaitingRoomComponent', () => {
         component.roomId = DIGIT_CONSTANT;
         component['sendToggleRoomLock']();
         const [event, roomId] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.toggleRoomLock);
+        expect(event).toEqual(socketEvent.TOGGLE_ROOM_LOCK);
         expect(roomId).toEqual(DIGIT_CONSTANT);
     });
 
@@ -162,7 +162,7 @@ describe('WaitingRoomComponent', () => {
         component.roomId = DIGIT_CONSTANT;
         component['sendStartSignal']();
         const [event, roomId] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.start);
+        expect(event).toEqual(socketEvent.START);
         expect(roomId).toEqual({ roomId: DIGIT_CONSTANT, time: 5 });
     });
 
@@ -181,7 +181,7 @@ describe('WaitingRoomComponent', () => {
         component.roomId = DIGIT_CONSTANT;
         component['gatherPlayers']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.gatherPlayersUsername);
+        expect(event).toEqual(socketEvent.GATHER_PLAYERS_USERNAME);
         expect(roomId).toEqual(DIGIT_CONSTANT);
         if (typeof callback === 'function') {
             callback(['1', '2']);
@@ -203,11 +203,11 @@ describe('WaitingRoomComponent', () => {
             [fourthEvent, fourthAction],
             [lastEvent, lastAction],
         ] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.newPlayer);
-        expect(secondEvent).toEqual(socketEvent.removedFromGame);
-        expect(thirdEvent).toEqual(socketEvent.removedPlayer);
-        expect(fourthEvent).toEqual(socketEvent.time);
-        expect(lastEvent).toEqual(socketEvent.finalTimeTransition);
+        expect(firstEvent).toEqual(socketEvent.NEW_PLAYER);
+        expect(secondEvent).toEqual(socketEvent.REMOVED_FROM_GAME);
+        expect(thirdEvent).toEqual(socketEvent.REMOVED_PLAYER);
+        expect(fourthEvent).toEqual(socketEvent.TIME);
+        expect(lastEvent).toEqual(socketEvent.FINAL_TIME_TRANSITION);
 
         if (typeof firstAction === 'function') {
             firstAction(['1', '2', '3', '4', '5']);
@@ -241,7 +241,7 @@ describe('WaitingRoomComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component.stopTimer();
         const [eventName, roomId] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.stopTimer);
+        expect(eventName).toEqual(socketEvent.STOP_TIMER);
         expect(roomId).toEqual(component.roomId);
     });
 });
