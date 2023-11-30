@@ -1,4 +1,4 @@
-import { Component, Injector, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injector, Input, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MESSAGE_MAX_CHARACTERS } from '@app/components/sidebar/sidebar.component.const';
@@ -13,7 +13,8 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements AfterViewInit {
+    @ViewChildren('messageContainer') messageElements: QueryList<ElementRef>;
     @Input() isHost: boolean;
     myName: string;
     roomId: string;
@@ -46,6 +47,9 @@ export class SidebarComponent {
             message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
         });
     }
+    ngAfterViewInit() {
+        this.scrollToBottom();
+    }
 
     sendMessage() {
         const newMessageContent: string = this.messageForm.get('message')?.value;
@@ -64,6 +68,13 @@ export class SidebarComponent {
 
     onChatBlur() {
         this.gameService.isInputFocused = false;
+    }
+
+    scrollToBottom() {
+        if (this.messageElements.last) {
+            const containerElement = this.messageElements.last.nativeElement;
+            containerElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+        }
     }
 
     private setup() {
@@ -89,6 +100,9 @@ export class SidebarComponent {
     private configureBaseSocketFeatures() {
         this.socketService.on(socketEvent.receivedMessage, (message: Message) => {
             this.messages.push(message);
+            setTimeout(() => {
+                this.scrollToBottom();
+            });
         });
 
         this.socketService.on(socketEvent.toggleChatPermission, () => {
