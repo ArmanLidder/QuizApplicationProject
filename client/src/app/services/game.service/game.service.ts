@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
-import { GameRealService } from '@app/services/game-real.service/game-real.service';
 import { GameTestService } from '@app/services/game-test.service/game-test.service';
+import { GameRealService } from '@app/services/game-real.service/game-real.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
 
 @Injectable({
     providedIn: 'root',
@@ -120,7 +120,7 @@ export class GameService {
     }
 
     private configureBaseSockets() {
-        this.socketService.on(socketEvent.TIME, (timeValue: number) => {
+        this.socketService.on(socketEvent.time, (timeValue: number) => {
             this.handleTimeEvent(timeValue);
         });
     }

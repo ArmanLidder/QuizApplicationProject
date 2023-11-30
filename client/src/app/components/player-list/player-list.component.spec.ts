@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { playerStatus } from '@common/player-status/player-status';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { PlayerListComponent } from './player-list.component';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { playerStatus } from '@common/player-status/player-status';
+import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 
 describe('PlayerListComponent', () => {
     let component: PlayerListComponent;
@@ -77,7 +77,7 @@ describe('PlayerListComponent', () => {
         component.roomId = 1;
         component.players = [['karim', 0, 0, playerStatus.left, true]];
         component.toggleChatPermission('karim');
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId: 1, username: 'karim' });
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.toggleChatPermission, { roomId: 1, username: 'karim' });
     });
 
     it('should check if a player has left', () => {
@@ -141,8 +141,8 @@ describe('PlayerListComponent', () => {
         const changePlayerStatusSpy = spyOn(component, 'changePlayerStatus' as any);
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.UPDATE_INTERACTION);
-        expect(secondEvent).toEqual(socketEvent.SUBMIT_ANSWER);
+        expect(firstEvent).toEqual(socketEvent.updateInteraction);
+        expect(secondEvent).toEqual(socketEvent.submitAnswer);
         if (typeof firstAction === 'function') {
             firstAction('test');
             expect(changePlayerStatusSpy).toHaveBeenCalledWith('test', playerStatus.interaction);

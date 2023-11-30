@@ -1,18 +1,18 @@
 /* eslint-disable max-lines */
-import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { HttpClientModule, HttpResponse } from '@angular/common/http';
+import { GamesListComponent } from './games-list.component';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
+import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { getCurrentDateService } from 'src/utils/current-date-format';
+import { Quiz } from '@common/interfaces/quiz.interface';
+import { QuestionType } from '@common/enums/question-type.enum';
+import SpyObj = jasmine.SpyObj;
+import { AppMaterialModule } from '@app/modules/material.module';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { AppMaterialModule } from '@app/modules/material.module';
-import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
-import { QuestionType } from '@common/enums/question-type.enum';
-import { Quiz } from '@common/interfaces/quiz.interface';
-import { of } from 'rxjs';
-import { getCurrentDateService } from 'src/utils/current-date-format/current-date-format';
-import { GamesListComponent } from './games-list.component';
-import SpyObj = jasmine.SpyObj;
 
 describe('GamesListComponent Admin view', () => {
     let quizServiceSpy: SpyObj<QuizService>;

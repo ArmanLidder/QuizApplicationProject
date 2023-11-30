@@ -36,7 +36,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (!this.isGameStarting) {
-            const messageType = this.isHost ? socketEvent.HOST_LEFT : socketEvent.PLAYER_LEFT;
+            const messageType = this.isHost ? socketEvent.hostLeft : socketEvent.playerLeft;
             this.socketService.send(messageType, this.roomId);
         }
         this.socketService.socket.removeAllListeners();
@@ -67,26 +67,26 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     stopTimer() {
-        this.socketService.send(socketEvent.STOP_TIMER, this.roomId);
+        this.socketService.send(socketEvent.stopTimer, this.roomId);
     }
 
     private sendRoomCreation() {
         const QUIZ_ID = this.route.snapshot.paramMap.get('id');
-        this.socketService.send(socketEvent.CREATE_ROOM, QUIZ_ID, (roomCode: number) => {
+        this.socketService.send(socketEvent.createRoom, QUIZ_ID, (roomCode: number) => {
             this.roomId = roomCode;
         });
     }
 
     private sendBanPlayer(username: string) {
-        this.socketService.send(socketEvent.BAN_PLAYER, { roomId: this.roomId, username });
+        this.socketService.send(socketEvent.banPlayer, { roomId: this.roomId, username });
     }
 
     private sendToggleRoomLock() {
-        this.socketService.send(socketEvent.TOGGLE_ROOM_LOCK, this.roomId);
+        this.socketService.send(socketEvent.toggleRoomLock, this.roomId);
     }
 
     private sendStartSignal() {
-        this.socketService.send(socketEvent.START, { roomId: this.roomId, time: START_TRANSITION_DELAY });
+        this.socketService.send(socketEvent.start, { roomId: this.roomId, time: START_TRANSITION_DELAY });
     }
 
     private removePlayer(username: string) {
@@ -95,27 +95,27 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     private gatherPlayers() {
-        this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, this.roomId, (players: string[]) => {
+        this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
             this.players = players;
         });
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on(socketEvent.NEW_PLAYER, (players: string[]) => {
+        this.socketService.on(socketEvent.newPlayer, (players: string[]) => {
             this.players = players;
         });
 
-        this.socketService.on(socketEvent.REMOVED_FROM_GAME, () => {
+        this.socketService.on(socketEvent.removedFromGame, () => {
             this.router.navigate(['/home']);
         });
 
-        this.socketService.on(socketEvent.REMOVED_PLAYER, (username: string) => {
+        this.socketService.on(socketEvent.removedPlayer, (username: string) => {
             if (this.players.includes(username)) {
                 this.removePlayer(username);
             }
         });
 
-        this.socketService.on(socketEvent.TIME, (timeValue: number) => {
+        this.socketService.on(socketEvent.time, (timeValue: number) => {
             this.isTransition = true;
             this.time = timeValue;
             if (this.time === 0) {
@@ -124,7 +124,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, () => {
+        this.socketService.on(socketEvent.finalTimeTransition, () => {
             if (this.isTransition) {
                 this.router.navigate(['/']);
             }

@@ -1,12 +1,12 @@
-import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
-import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME } from '@app/components/qrl-response-area/qrl-response-area.component.const';
-import { AppMaterialModule } from '@app/modules/material.module';
-import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { GameService } from '@app/services/game.service/game.service';
+import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
+import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { FormsModule } from '@angular/forms';
+import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME } from '@app/components/qrl-response-area/qrl-response-area.component.const';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 describe('QrlResponseAreaComponent', () => {
@@ -52,11 +52,11 @@ describe('QrlResponseAreaComponent', () => {
         component.handleActiveUser();
         expect(component.gameService.isActive).toBeTruthy();
         expect(component.gameService.hasInteracted).toBeTruthy();
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.SEND_ACTIVITY_STATUS, {
+        expect(socketService.send).toHaveBeenCalledWith(socketEvent.sendActivityStatus, {
             roomId: component.gameService.gameRealService.roomId,
             isActive: true,
         });
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.NEW_RESPONSE_INTERACTION, component.gameService.gameRealService.roomId);
+        expect(socketService.send).toHaveBeenCalledWith(socketEvent.newResponseInteraction, component.gameService.gameRealService.roomId);
     });
 
     it('should validate and send answer', () => {
@@ -73,7 +73,7 @@ describe('QrlResponseAreaComponent', () => {
         component.onInputStopped();
         tick(INACTIVITY_TIME);
         expect(socketService.isSocketAlive).toHaveBeenCalled();
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.SEND_ACTIVITY_STATUS, {
+        expect(socketService.send).toHaveBeenCalledWith(socketEvent.sendActivityStatus, {
             roomId: component.gameService.gameRealService.roomId,
             isActive: false,
         });

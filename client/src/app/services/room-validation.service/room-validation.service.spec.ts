@@ -1,9 +1,9 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { RoomValidationService } from './room-validation.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { RoomValidationService } from './room-validation.service';
 
 describe('RoomValidationService', () => {
     let service: RoomValidationService;
@@ -102,7 +102,7 @@ describe('RoomValidationService', () => {
         service.sendJoinRoomRequest();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.JOIN_GAME);
+        expect(event).toEqual(socketEvent.joinGame);
         expect(data).toEqual({ roomId: Number(service.roomId), username: service.username });
         if (typeof callback === 'function') {
             callback(true);
@@ -134,7 +134,7 @@ describe('RoomValidationService', () => {
         service['sendUsername']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.VALIDATE_USERNAME);
+        expect(event).toEqual(socketEvent.validateUsername);
         expect(data).toEqual({ roomId: Number(service.roomId), username: service.username });
         if (typeof callback === 'function') {
             callback(true);
@@ -152,7 +152,7 @@ describe('RoomValidationService', () => {
         service['sendRoomId']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.VALIDATE_ROOM_ID);
+        expect(event).toEqual(socketEvent.validateRoomId);
         expect(data).toEqual(Number(service.roomId));
         if (typeof callback === 'function') {
             callback(true);

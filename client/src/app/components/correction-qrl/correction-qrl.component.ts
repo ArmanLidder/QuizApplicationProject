@@ -1,10 +1,10 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
 
 @Component({
     selector: 'app-correction-qrl',
@@ -109,7 +109,7 @@ export class CorrectionQRLComponent implements OnChanges {
                 this.isCorrectionFinished = true;
                 this.endCorrection();
                 const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.reponsesQRLCorrected));
-                this.socketClientService.send(socketEvent.PLAYER_QRL_CORRECTION, {
+                this.socketClientService.send(socketEvent.playerQrlCorrection, {
                     roomId: this.gameService.gameRealService.roomId,
                     playerCorrection: playerQrlCorrectionFormatted,
                 });

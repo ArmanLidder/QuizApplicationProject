@@ -1,16 +1,16 @@
 import { Component, Injector } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
-import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
-import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
-import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { Quiz } from '@common/interfaces/quiz.interface';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
+import { generateRandomId } from 'src/utils/random-id-generator';
+import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { PageMode } from 'src/enums/page-mode.enum';
-import { generateRandomId } from 'src/utils/random-id-generator/random-id-generator';
+import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 
 @Component({
     selector: 'app-quiz-creation',
