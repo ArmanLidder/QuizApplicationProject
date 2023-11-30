@@ -14,6 +14,7 @@ import { Answers } from '@app/interface/game-interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { QRL_DURATION } from '@app/services/socket-manager.service/socket-manager.service.const';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 const RESPONSE_DELAY = 200;
 
@@ -42,7 +43,7 @@ describe('SocketManager service tests', () => {
             room: mockRoomId,
             quizID: 'quiz123',
             players: new Map([
-                ['Organisateur', 'socket organisateur'],
+                [HOST_USERNAME, 'socket organisateur'],
                 ['username1', 'socketId1'],
                 ['username2', 'socketId2'],
             ]),
@@ -271,7 +272,7 @@ describe('SocketManager service tests', () => {
         const startTimerSpy = sinon.spy(service, 'startTimer' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
         const players = Array.from(mockRoom.players.keys());
-        players.splice(players.indexOf('Organisateur'), 1);
+        players.splice(players.indexOf(HOST_USERNAME), 1);
         roomManager.getUsernamesArray.returns(players);
         roomManager.getRoomById.returns(mockRoom);
         sinon.stub(Game.prototype, 'setup').resolves();
@@ -337,7 +338,7 @@ describe('SocketManager service tests', () => {
         gameMock.currentQuizQuestion = gameMock.quiz.questions[0];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const startTimerStub = sinon.spy(service, 'startTimer' as any);
-        roomManager.getUsernameBySocketId.returns('Organisateur');
+        roomManager.getUsernameBySocketId.returns(HOST_USERNAME);
         clientSocket.emit(socketEvent.GET_QUESTION, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
@@ -363,7 +364,7 @@ describe('SocketManager service tests', () => {
     it('should emit get initial question and set timer for a qrl', (done) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const startTimerStub = sinon.spy(service, 'startTimer' as any);
-        roomManager.getUsernameBySocketId.returns('Organisateur');
+        roomManager.getUsernameBySocketId.returns(HOST_USERNAME);
         gameMock.currentQuizQuestion = gameMock.quiz.questions[1];
         clientSocket.emit(socketEvent.GET_QUESTION, mockRoomId);
         setTimeout(() => {
@@ -477,7 +478,7 @@ describe('SocketManager service tests', () => {
         const mockIndex = 1;
         clientSocket.emit(socketEvent.UPDATE_SELECTION, { mockRoomId, mockIsSelected, mockIndex });
         setTimeout(() => {
-            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, 'Organisateur'));
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, HOST_USERNAME));
             done();
         }, RESPONSE_DELAY);
     });
@@ -530,7 +531,7 @@ describe('SocketManager service tests', () => {
         roomManager.getUsernameBySocketId.returns('Player1');
         clientSocket.emit('newResponseInteraction', mockRoomId);
         setTimeout(() => {
-            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, 'Organisateur'));
+            expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, HOST_USERNAME));
             expect(roomManager.getSocketIDByUsername.calledWith(mockRoomId, clientSocket.id));
             expect(emitSpy.called);
             done();

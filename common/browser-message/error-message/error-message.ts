@@ -1,3 +1,5 @@
+import { HOST_USERNAME } from '../../names/host-username';
+
 export namespace errorDictionary {
     export const issues = 'les problèmes suivants';
     export const issue = 'le problème suivant';
@@ -8,7 +10,7 @@ export namespace errorDictionary {
     export const quizAlreadyExist = 'Un quiz ayant le même titre existe déjà';
     export const wrongPassword = 'Mot de passe incorrect. Veuillez réessayer!';
     export const charNumError = "Le nom de l'utilisateur doit contenir au moins un caractère!";
-    export const organiserNameError = "Le nom de l'utilisateur ne peut pas être Organisateur!";
+    export const organiserNameError = `Le nom de l'utilisateur ne peut pas être ${HOST_USERNAME}!`;
     export const validationCodeError = 'Votre code doit contenir seulement 4 chiffres (ex: 1234)';
     export const roomCodeExpired = 'Le code ne correspond a aucune partie en cours. Veuillez réessayer';
     export const roomLocked = 'La partie est vérouillée. Veuillez réessayer.';

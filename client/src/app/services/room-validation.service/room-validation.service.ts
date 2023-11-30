@@ -3,6 +3,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { RoomValidationResult, UsernameValidation } from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 @Injectable({
     providedIn: 'root',
@@ -33,7 +34,7 @@ export class RoomValidationService {
     async verifyUsername() {
         const whitespacePattern = /^\s*$/;
         const isFormatValid = this.username === undefined || whitespacePattern.test(this.username);
-        const isHost = this.username?.toLowerCase() === 'organisateur';
+        const isHost = this.username?.toLowerCase() === HOST_USERNAME.toLowerCase();
         if (isFormatValid) return errorDictionary.charNumError;
         else if (isHost) return errorDictionary.organiserNameError;
         else return await this.sendUsername();

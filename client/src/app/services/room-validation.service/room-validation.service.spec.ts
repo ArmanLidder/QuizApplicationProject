@@ -4,6 +4,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { RoomValidationService } from './room-validation.service';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 describe('RoomValidationService', () => {
     let service: RoomValidationService;
@@ -64,9 +65,9 @@ describe('RoomValidationService', () => {
         expect(error).toEqual(errorDictionary.charNumError);
     });
 
-    it('should return the right error if username is Organisateur', async () => {
+    it(`should return the right error if username is ${HOST_USERNAME}`, async () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
-        service.username = 'ORGANISATEUR';
+        service.username = HOST_USERNAME.toUpperCase();
         const sendUsernameSpy = spyOn(service, 'sendUsername' as any).and.resolveTo();
         const error = await service.verifyUsername();
         expect(sendUsernameSpy).not.toHaveBeenCalled();
