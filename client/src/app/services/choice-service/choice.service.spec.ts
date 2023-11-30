@@ -5,6 +5,8 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
+import { ItemMovingDirection } from 'src/enums/item-moving-direction';
+import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
 
 describe('ChoiceService', () => {
     let service: ChoiceService;
@@ -87,28 +89,35 @@ describe('ChoiceService', () => {
         const questionsFormArray = formQuestionsArrayAllSaved;
         const questionToModifyIndex = 0;
         const choiceToMoveUpIndex = 1;
+        const moveQuestionChoicePosition = { questionNumber: questionToModifyIndex, choiceNumber: choiceToMoveUpIndex };
+
         spyOn(service, 'swapElements');
         spyOn(service, 'getChoicesArray').and.returnValue(new FormArray([new FormControl('Choice 1'), new FormControl('Choice 2')]));
-        service.moveChoiceUp(questionToModifyIndex, choiceToMoveUpIndex, questionsFormArray);
+        service.moveChoice(ItemMovingDirection.UP, moveQuestionChoicePosition, questionsFormArray);
         expect(service.swapElements).toHaveBeenCalled();
         expect(service.getChoicesArray).toHaveBeenCalled();
-        service.moveChoiceDown(questionToModifyIndex, 0, questionsFormArray);
+        moveQuestionChoicePosition.choiceNumber = 0;
+        service.moveChoice(ItemMovingDirection.DOWN, moveQuestionChoicePosition, questionsFormArray);
         expect(service.swapElements).toHaveBeenCalled();
         expect(service.getChoicesArray).toHaveBeenCalled();
     });
 
     it('should move a choice up or move choice down within the specified question', () => {
         const questionIndex = 0;
-        let choiceIndex = 1;
+        const choiceIndex = 1;
+        const choicePosition: QuestionChoicePosition = {
+            questionNumber: questionIndex,
+            choiceNumber: choiceIndex,
+        };
         const choicesArray = new FormArray([new FormControl('Choice 1'), new FormControl('Choice 2')]);
         const questionFormGroup = new FormGroup({
             choices: choicesArray,
         });
         const questionFormArray = new FormArray([questionFormGroup]);
-        service.moveChoiceUp(questionIndex, choiceIndex, questionFormArray);
+        service.moveChoice(ItemMovingDirection.UP, choicePosition, questionFormArray);
         expect(choicesArray.value).toEqual(['Choice 2', 'Choice 1']);
-        choiceIndex = 0;
-        service.moveChoiceDown(questionIndex, choiceIndex, questionFormArray);
+        choicePosition.choiceNumber = 0;
+        service.moveChoice(ItemMovingDirection.DOWN, choicePosition, questionFormArray);
         expect(choicesArray.value).toEqual(['Choice 1', 'Choice 2']);
     });
 
