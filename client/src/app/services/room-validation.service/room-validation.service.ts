@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { RoomValidationResult, UsernameValidation } from '@common/interfaces/socket-manager.interface';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { RoomValidationResult, UsernameValidation } from '@common/interfaces/socket-manager.interface';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Injectable({
     providedIn: 'root',
@@ -44,7 +44,7 @@ export class RoomValidationService {
         if (error !== '') return error;
         return new Promise<string>((resolve) => {
             const usernameData = { roomId: Number(this.roomId), username: this.username };
-            this.socketService.send(socketEvent.joinGame, usernameData, (isLocked: boolean) => {
+            this.socketService.send(socketEvent.JOIN_GAME, usernameData, (isLocked: boolean) => {
                 resolve(this.handleJoiningRoomValidation(isLocked));
             });
         });
@@ -55,7 +55,7 @@ export class RoomValidationService {
         if (error !== '') return error;
         return new Promise<string>((resolve) => {
             const usernameData = { roomId: Number(this.roomId), username: this.username };
-            this.socketService.send(socketEvent.validateUsername, usernameData, (data: UsernameValidation) => {
+            this.socketService.send(socketEvent.VALIDATE_USERNAME, usernameData, (data: UsernameValidation) => {
                 resolve(this.handleUsernameValidation(data));
             });
         });
@@ -63,7 +63,7 @@ export class RoomValidationService {
 
     private async sendRoomId() {
         return new Promise<string>((resolve) => {
-            this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: RoomValidationResult) => {
+            this.socketService.send(socketEvent.VALIDATE_ROOM_ID, Number(this.roomId), (data: RoomValidationResult) => {
                 resolve(this.handleRoomIdValidation(data));
             });
         });
