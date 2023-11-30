@@ -4,6 +4,8 @@ import { POPUP_TIMEOUT } from '@app/components/question-list/question-list.compo
 import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { QuestionService } from '@app/services/question-service/question.service';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { ItemMovingDirection } from 'src/enums/item-moving-direction';
+import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
 
 @Component({
     selector: 'app-question-list',
@@ -57,12 +59,9 @@ export class QuestionListComponent {
         this.questionService.moveQuestionDown(index, this.questionsArray);
     }
 
-    moveChoiceUp(questionIndex: number, choiceIndex: number) {
-        this.choiceService.moveChoiceUp(questionIndex, choiceIndex, this.questionsArray);
-    }
-
-    moveChoiceDown(questionIndex: number, choiceIndex: number) {
-        this.choiceService.moveChoiceDown(questionIndex, choiceIndex, this.questionsArray);
+    moveChoice(direction: ItemMovingDirection, questionIndex: number, choiceIndex: number) {
+        const choicePosition: QuestionChoicePosition = { questionNumber: questionIndex, choiceNumber: choiceIndex };
+        this.choiceService.moveChoice(direction, choicePosition, this.questionsArray);
     }
 
     addChoice(questionIndex: number, choiceIndex: number) {
@@ -78,4 +77,6 @@ export class QuestionListComponent {
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     protected readonly questionType = QuestionType;
+    // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/member-ordering
+    protected readonly ItemMovingDirection = ItemMovingDirection;
 }
