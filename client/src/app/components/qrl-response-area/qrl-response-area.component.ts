@@ -15,9 +15,9 @@ import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.co
     styleUrls: ['./qrl-response-area.component.scss'],
 })
 export class QrlResponseAreaComponent implements OnDestroy {
-    inactiveTimeout: number = 0;
-    inputTimer: number = 0;
-    validateTimer: number = 0;
+    private inactiveTimeout: number = 0;
+    private inputTimer: number = 0;
+    private validateTimer: number = 0;
     constructor(
         private socketClientService: SocketClientService,
         public gameService: GameService,
