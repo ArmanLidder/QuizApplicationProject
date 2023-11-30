@@ -36,12 +36,12 @@ export class QrlResponseAreaComponent implements OnDestroy {
         if (!this.gameService.isActive) {
             this.gameService.isActive = true;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: true });
+                this.socketClientService.send(socketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: true });
         }
         if (!this.gameService.hasInteracted) {
             this.gameService.hasInteracted = true;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send(socketEvent.newResponseInteraction, this.gameService.gameRealService.roomId);
+                this.socketClientService.send(socketEvent.NEW_RESPONSE_INTERACTION, this.gameService.gameRealService.roomId);
         }
         this.resetInputTimer();
     }
@@ -56,7 +56,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
         this.inactiveTimeout = window.setTimeout(() => {
             this.gameService.isActive = false;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: false });
+                this.socketClientService.send(socketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);
     }
 

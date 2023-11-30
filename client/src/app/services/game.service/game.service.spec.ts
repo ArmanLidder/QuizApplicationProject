@@ -1,13 +1,13 @@
-import { GameService } from '@app/services/game.service/game.service';
-import { TestBed } from '@angular/core/testing';
-import { GameTestService } from '@app/services/game-test.service/game-test.service';
-import { GameRealService } from '@app/services/game-real.service/game-real.service';
-import { TimeService } from '@app/services/time.service/time.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { GameRealService } from '@app/services/game-real.service/game-real.service';
+import { GameTestService } from '@app/services/game-test.service/game-test.service';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { TimeService } from '@app/services/time.service/time.service';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameService', () => {
@@ -224,7 +224,7 @@ describe('GameService', () => {
         const handleTimeSpy = spyOn<any>(service, 'handleTimeEvent');
         service['configureBaseSockets']();
         const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.time);
+        expect(firstEvent).toEqual(socketEvent.TIME);
 
         if (typeof firstAction === 'function') {
             firstAction(1);

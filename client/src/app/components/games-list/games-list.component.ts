@@ -1,14 +1,14 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
-import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
-import { Quiz } from '@common/interfaces/quiz.interface';
-import { generateRandomId } from 'src/utils/random-id-generator';
-import { getCurrentDateService } from 'src/utils/current-date-format';
-import { Router } from '@angular/router';
-import { CREATED } from '@app/components/games-list/games-list.component.const';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
-import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
+import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
+import { CREATED } from '@app/components/games-list/games-list.component.const';
+import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { Quiz } from '@common/interfaces/quiz.interface';
+import { getCurrentDateService } from 'src/utils/current-date-format/current-date-format';
+import { generateRandomId } from 'src/utils/random-id-generator/random-id-generator';
 
 @Component({
     selector: 'app-games-list',

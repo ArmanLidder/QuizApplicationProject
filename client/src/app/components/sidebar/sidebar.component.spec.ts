@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { ActivatedRoute } from '@angular/router';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Message } from '@common/interfaces/message.interface';
-import { getCurrentDateService } from 'src/utils/current-date-format';
-import SpyObj = jasmine.SpyObj;
+import { ActivatedRoute } from '@angular/router';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { Message } from '@common/interfaces/message.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { getCurrentDateService } from 'src/utils/current-date-format/current-date-format';
+import SpyObj = jasmine.SpyObj;
 
 const MESSAGE_MAX_CHARACTERS = 200;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -113,7 +113,7 @@ describe('SidebarComponent', () => {
             content: newValidMessageContent,
             time: getCurrentDateService(),
         };
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.newMessage, {
+        expect(socketService.send).toHaveBeenCalledWith(socketEvent.NEW_MESSAGE, {
             roomId: Number(component.roomId),
             message: expectedMessage,
         });
@@ -148,7 +148,7 @@ describe('SidebarComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component['getUsername']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.getUsername);
+        expect(event).toEqual(socketEvent.GET_USERNAME);
         expect(roomId).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback(username);
@@ -164,7 +164,7 @@ describe('SidebarComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component['getRoomMessages']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.getMessages);
+        expect(event).toEqual(socketEvent.GET_MESSAGES);
         expect(roomId).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback(roomMessages);
@@ -183,8 +183,8 @@ describe('SidebarComponent', () => {
         component['messages'] = [{ sender: 'user 1', content: 'message content 1', time: 'time 1' }];
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.receivedMessage);
-        expect(secondEvent).toEqual(socketEvent.toggleChatPermission);
+        expect(firstEvent).toEqual(socketEvent.RECEIVED_MESSAGE);
+        expect(secondEvent).toEqual(socketEvent.TOGGLE_CHAT_PERMISSION);
 
         if (typeof firstAction === 'function') {
             firstAction(newMessage);
