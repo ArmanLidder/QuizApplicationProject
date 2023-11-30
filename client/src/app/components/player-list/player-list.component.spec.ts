@@ -26,7 +26,7 @@ describe('PlayerListComponent', () => {
             ['karim', 0, 0, playerStatus.left, true],
             ['player1', 0, 0, playerStatus.interaction, true],
         ];
-        component.order = 1;
+        component['order'] = 1;
         component.orderIcon = 'fa-solid fa-up-long';
         getPlayersListSpy = spyOn(component, 'getPlayersList');
     });
@@ -39,12 +39,12 @@ describe('PlayerListComponent', () => {
         const expectedValue = -1;
         component.changeOrder();
         expect(getPlayersListSpy).toHaveBeenCalledWith(false);
-        expect(component.order).toEqual(expectedValue);
+        expect(component['order']).toEqual(expectedValue);
         expect(component.orderIcon).toEqual('fa-solid fa-down-long');
         getPlayersListSpy.calls.reset();
         component.changeOrder();
         expect(getPlayersListSpy).toHaveBeenCalledWith(false);
-        expect(component.order).toEqual(1);
+        expect(component['order']).toEqual(1);
         expect(component.orderIcon).toEqual('fa-solid fa-up-long');
     });
 
@@ -123,7 +123,7 @@ describe('PlayerListComponent', () => {
     it('should init player status correctly', () => {
         component.players = [['test', 0, 0, playerStatus.validation, true]];
         component.leftPlayers = [['isGone', 0, 0, playerStatus.left, true]];
-        component.actualStatus = component.players;
+        component['actualStatus'] = component.players;
         const playerLeft = component['initPlayerStatus']('isGone', true);
         expect(playerLeft).toEqual(playerStatus.left);
         const actualStatus = component['initPlayerStatus']('test', false);
@@ -156,7 +156,7 @@ describe('PlayerListComponent', () => {
 
     it('should get actual status', () => {
         component.players = [['test', 0, 0, playerStatus.endGame, true]];
-        component.actualStatus = component.players;
+        component['actualStatus'] = component.players;
         const playerLeft = component['getActualStatus']('test');
         expect(playerLeft).toEqual(playerStatus.endGame);
     });
@@ -164,10 +164,10 @@ describe('PlayerListComponent', () => {
     it('should sortPlayerByScore and verify if user can talk', () => {
         spyOn(component, 'initPlayerStatus' as any).and.returnValue(playerStatus.endGame);
         component.players = [['test', 0, 0, playerStatus.endGame, true]];
-        component.actualStatus = [];
+        component['actualStatus'] = [];
         const first = component['canPlayerChat']('test');
         expect(first).toBeTruthy();
-        component.actualStatus = [['test', 0, 0, playerStatus.endGame, false]];
+        component['actualStatus'] = [['test', 0, 0, playerStatus.endGame, false]];
         const second = component['canPlayerChat']('test');
         expect(second).toBeFalsy();
     });

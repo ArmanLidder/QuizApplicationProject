@@ -17,14 +17,14 @@ export class PlayerListComponent {
     @Input() isFinal: boolean;
     @Input() isHost: boolean;
     players: Player[] = [];
-    actualStatus: Player[] = [];
-    order = 1;
     orderIcon = 'fa-solid fa-up-long';
     optionSelections = new Map([
         [SORT_BY_NAME, true],
         [SORT_BY_SCORE, false],
         [SORT_BY_STATUS, false],
     ]);
+    private actualStatus: Player[] = []; // meilleur nom?
+    private order = 1;
 
     constructor(
         public socketService: SocketClientService,
