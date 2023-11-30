@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
-import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 export type Player = [string, number, number];
 
@@ -35,7 +35,7 @@ export class GameRealService implements GameServiceInterface {
 
     init() {
         this.configureBaseSockets();
-        this.socketService.send(socketEvent.getQuestion, this.roomId);
+        this.socketService.send(socketEvent.GET_QUESTION, this.roomId);
     }
 
     destroy() {
@@ -46,14 +46,14 @@ export class GameRealService implements GameServiceInterface {
     sendAnswer() {
         if (this.question?.type === QuestionType.QCM) {
             const answers = Array.from(this.answers.values());
-            this.socketService.send(socketEvent.submitAnswer, {
+            this.socketService.send(socketEvent.SUBMIT_ANSWER, {
                 roomId: this.roomId,
                 answers,
                 timer: this.timer,
                 username: this.username,
             });
         } else {
-            this.socketService.send(socketEvent.submitAnswer, {
+            this.socketService.send(socketEvent.SUBMIT_ANSWER, {
                 roomId: this.roomId,
                 answers: this.qrlAnswer,
                 timer: this.timer,
@@ -66,7 +66,7 @@ export class GameRealService implements GameServiceInterface {
     }
 
     configureBaseSockets() {
-        this.socketService.on(socketEvent.getInitialQuestion, (data: InitialQuestionData) => {
+        this.socketService.on(socketEvent.GET_INITIAL_QUESTION, (data: InitialQuestionData) => {
             this.question = data.question;
             this.username = data.username;
             if (data.numberOfQuestions === 1) {
@@ -74,7 +74,7 @@ export class GameRealService implements GameServiceInterface {
             }
         });
 
-        this.socketService.on(socketEvent.getNextQuestion, (data: NextQuestionData) => {
+        this.socketService.on(socketEvent.GET_NEXT_QUESTION, (data: NextQuestionData) => {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;
@@ -84,7 +84,7 @@ export class GameRealService implements GameServiceInterface {
     }
 
     sendSelection(index: number, isSelected: boolean) {
-        if (this.socketService.isSocketAlive()) this.socketService.send(socketEvent.updateSelection, { roomId: this.roomId, isSelected, index });
+        if (this.socketService.isSocketAlive()) this.socketService.send(socketEvent.UPDATE_SELECTION, { roomId: this.roomId, isSelected, index });
     }
 
     private reset() {
