@@ -31,5 +31,6 @@ export class GamePageComponent implements OnDestroy, OnInit {
             this.socketService.send(messageType, this.gameService.gameRealService.roomId);
         }
         this.gameService.destroy();
+        this.gameService.audio.pause();
     }
 }
