@@ -151,7 +151,7 @@ describe('QuizCreationComponent', () => {
         spyOn(activatedRoute.snapshot.paramMap, 'get').and.callFake(customGet);
         fixture = TestBed.createComponent(QuizCreationComponent);
         component = fixture.componentInstance;
-        expect(component.quizFormService.fillForm).toHaveBeenCalledWith();
+        expect(component['quizFormService'].fillForm).toHaveBeenCalledWith();
         expect(component.mode).toBe(PageMode.CREATION);
     });
 
@@ -166,7 +166,7 @@ describe('QuizCreationComponent', () => {
         fixture = TestBed.createComponent(QuizCreationComponent);
         component = fixture.componentInstance;
         expect(component['quizService'].basicGetById).toHaveBeenCalledWith(customGet('id') as string);
-        expect(component.quizFormService.fillForm).toHaveBeenCalledWith(mockQuiz);
+        expect(component['quizFormService'].fillForm).toHaveBeenCalledWith(mockQuiz);
         expect(component.mode).toBe(PageMode.MODIFICATION);
     });
 
@@ -223,7 +223,7 @@ describe('QuizCreationComponent', () => {
         component.onSubmit();
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledWith(title);
         expect(quizServiceMock.checkTitleUniqueness).toHaveBeenCalledTimes(1);
-        expect(component.quizFormService.extractQuizFromForm).toHaveBeenCalledTimes(1);
+        expect(component['quizFormService'].extractQuizFromForm).toHaveBeenCalledTimes(1);
         expect(component['addOrUpdateQuiz']).toHaveBeenCalled();
     });
 

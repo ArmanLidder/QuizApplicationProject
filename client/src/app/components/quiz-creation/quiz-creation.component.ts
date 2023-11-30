@@ -24,9 +24,9 @@ export class QuizCreationComponent {
     isPopupVisibleDuration: boolean;
     isPopupVisibleForm: boolean;
     formErrors: string[];
-    quizFormService: QuizFormService;
-    quizValidationService: QuizValidationService;
     protected readonly pageModel = PageMode;
+    private quizFormService: QuizFormService;
+    private quizValidationService: QuizValidationService;
     private quizService: QuizService;
     private route: ActivatedRoute;
     private navigateRoute: Router;
