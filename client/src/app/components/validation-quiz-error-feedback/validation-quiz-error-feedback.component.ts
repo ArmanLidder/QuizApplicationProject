@@ -11,13 +11,10 @@ export class ValidationQuizErrorFeedbackComponent {
     error: string = '';
 
     get errorsWithLineBreaks(): string {
-        if (this.errors) {
-            return this.errors.replace(/\n/g, '<br>');
-        }
-        return '';
+        return this.errors ? this.errors.replace(/\n/g, '<br>') : '';
     }
 
-    returnToList() {
+    returnToList(): void {
         this.cancelOperation.emit(true);
     }
 }
