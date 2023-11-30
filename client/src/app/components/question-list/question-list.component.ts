@@ -18,8 +18,8 @@ export class QuestionListComponent {
     questionErrors: string[] = [];
 
     constructor(
-        public questionService: QuestionService,
-        public choiceService: ChoiceService,
+        private questionService: QuestionService,
+        private choiceService: ChoiceService,
     ) {}
     showPopupIfConditionMet(condition: boolean) {
         if (condition) {
