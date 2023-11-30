@@ -11,9 +11,9 @@ import { errorDictionary } from '@common/browser-message/error-message/error-mes
 export class PasswordPromptComponent {
     @ViewChild('enterButton', { static: false }) enterButton: ElementRef;
     loginStatus: string | null = null;
-    errorMessage: string = errorDictionary.wrongPassword;
     inputBorderColor: string = '';
     textColor: string = '';
+    private errorMessage: string = errorDictionary.wrongPassword;
 
     constructor(
         public router: Router,
