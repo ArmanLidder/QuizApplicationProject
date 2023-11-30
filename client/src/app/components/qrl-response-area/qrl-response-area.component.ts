@@ -33,14 +33,10 @@ export class QrlResponseAreaComponent implements OnDestroy {
 
     handleActiveUser() {
         if (!this.gameService.isActive) {
-            this.gameService.isActive = true;
-            if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: true });
+            this.sendActiveNotice();
         }
         if (!this.gameService.hasInteracted) {
-            this.gameService.hasInteracted = true;
-            if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send(socketEvent.newResponseInteraction, this.gameService.gameRealService.roomId);
+            this.sendInteractionNotice();
         }
         this.resetInputTimer();
     }
@@ -62,6 +58,18 @@ export class QrlResponseAreaComponent implements OnDestroy {
     obtainedPoints() {
         if (this.gameService.lastQrlScore) return (this.gameService.lastQrlScore / MAX_PERCENTAGE) * (this.gameService.question?.points as number);
         return 0;
+    }
+
+    private sendActiveNotice() {
+        this.gameService.isActive = true;
+        if (this.socketClientService.isSocketAlive())
+            this.socketClientService.send(socketEvent.sendActivityStatus, { roomId: this.gameService.gameRealService.roomId, isActive: true });
+    }
+
+    private sendInteractionNotice() {
+        this.gameService.hasInteracted = true;
+        if (this.socketClientService.isSocketAlive())
+            this.socketClientService.send(socketEvent.newResponseInteraction, this.gameService.gameRealService.roomId);
     }
 
     private setupInputDebounce(): void {
