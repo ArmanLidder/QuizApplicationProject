@@ -13,7 +13,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import SpyObj = jasmine.SpyObj;
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { MatDialog } from '@angular/material/dialog';
-import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
+import { createFormQuestionFormGroup } from 'src/utils/create-form-question/create-form-question';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { PageMode } from 'src/enums/page-mode.enum';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';

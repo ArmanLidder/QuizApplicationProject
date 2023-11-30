@@ -62,10 +62,10 @@ export class QuizFormService {
                 [],
                 question?.type === QuestionType.QCM
                     ? [
-                        Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
-                        Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
-                        this.validationService.validateChoicesForm,
-                    ]
+                          Validators.minLength(MIN_NUMBER_OF_CHOICES_PER_QUESTION),
+                          Validators.maxLength(MAX_NUMBER_OF_CHOICES_PER_QUESTION),
+                          this.validationService.validateChoicesForm,
+                      ]
                     : [],
             ),
             beingModified: question === undefined,
