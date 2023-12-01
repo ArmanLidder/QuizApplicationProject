@@ -325,14 +325,14 @@ describe('GamesListComponent Admin view', () => {
         component.asyncFileResolver = () => {
             component.isQuizUnique = false;
         };
-        component.resolveasyncFileRead();
+        component.resolveAsyncFileRead();
         expect(component.isQuizUnique).toBeFalsy();
     });
     it('should seize reject callback promise', () => {
         component.asyncFileRejecter = (error) => {
             component.isQuizUnique = !!error;
         };
-        component.rejectasyncFileRead(false);
+        component.rejectAsyncFileRead(false);
         expect(component.isQuizUnique).toBeFalsy();
     });
     it('should test the game and navigate to quiz-testing-page', fakeAsync(() => {
