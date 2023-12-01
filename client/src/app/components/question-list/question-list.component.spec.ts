@@ -1,13 +1,15 @@
 import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { QuestionListComponent } from './question-list.component';
-import SpyObj = jasmine.SpyObj;
 import { QuestionService } from '@app/services/question-service/question.service';
 import { ChoiceService } from '@app/services/choice-service/choice.service';
+import { ItemMovingDirection } from 'src/enums/item-moving-direction';
+import SpyObj = jasmine.SpyObj;
+import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
 
 const fb = new FormBuilder();
 const POPUP_DELAY = 3200;
@@ -48,14 +50,7 @@ describe('QuestionListComponent', () => {
             'moveQuestionDown',
         ]);
 
-        choiceServiceMock = jasmine.createSpyObj('ChoiceService', [
-            'moveChoiceUp',
-            'moveChoiceDown',
-            'addChoice',
-            'addChoiceFirst',
-            'removeChoice',
-            'getChoicesArray',
-        ]);
+        choiceServiceMock = jasmine.createSpyObj('ChoiceService', ['moveChoice', 'addChoice', 'addChoiceFirst', 'removeChoice', 'getChoicesArray']);
     });
 
     beforeEach(() => {
@@ -69,7 +64,6 @@ describe('QuestionListComponent', () => {
             isCorrect: false,
         };
 
-        // Create FormQuestion objects
         question1 = {
             type: QuestionType.QCM,
             text: 'Question 1',
@@ -171,13 +165,15 @@ describe('QuestionListComponent', () => {
     });
 
     it('should move a choice up', () => {
-        component.moveChoiceUp(0, 0);
-        expect(choiceServiceMock.moveChoiceUp).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
+        component.moveChoice(ItemMovingDirection.UP, 0, 0);
+        const choicePosition: QuestionChoicePosition = { questionNumber: 0, choiceNumber: 0 };
+        expect(choiceServiceMock.moveChoice).toHaveBeenCalledOnceWith(ItemMovingDirection.UP, choicePosition, component.questionsArray);
     });
 
     it('should move a choice down', () => {
-        component.moveChoiceDown(0, 0);
-        expect(choiceServiceMock.moveChoiceDown).toHaveBeenCalledOnceWith(0, 0, component.questionsArray);
+        component.moveChoice(ItemMovingDirection.DOWN, 0, 0);
+        const choicePosition: QuestionChoicePosition = { questionNumber: 0, choiceNumber: 0 };
+        expect(choiceServiceMock.moveChoice).toHaveBeenCalledOnceWith(ItemMovingDirection.DOWN, choicePosition, component.questionsArray);
     });
 
     it('should add a choice', () => {

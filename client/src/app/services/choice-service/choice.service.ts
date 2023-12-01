@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
+import { ItemMovingDirection } from 'src/enums/item-moving-direction';
+import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
 
 const MAX_NUMBER_OF_CHOICES = 4;
 const MIN_NUMBER_OF_CHOICES = 2;
@@ -19,14 +21,11 @@ export class ChoiceService {
         }
     }
 
-    moveChoiceUp(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
-        const choicesArray = this.getChoicesArray(questionIndex, questionFormArray);
-        this.swapElements(choiceIndex, choiceIndex - 1, choicesArray);
-    }
-
-    moveChoiceDown(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {
-        const choicesArray = this.getChoicesArray(questionIndex, questionFormArray);
-        this.swapElements(choiceIndex, choiceIndex + 1, choicesArray);
+    moveChoice(direction: ItemMovingDirection, choicePosition: QuestionChoicePosition, questionFormArray?: FormArray) {
+        const { questionNumber, choiceNumber } = choicePosition;
+        const choicesArray = this.getChoicesArray(questionNumber, questionFormArray);
+        const newPosition = direction === ItemMovingDirection.UP ? choiceNumber - 1 : choiceNumber + 1;
+        this.swapElements(choiceNumber, newPosition, choicesArray);
     }
 
     removeChoice(questionIndex: number, choiceIndex: number, questionFormArray?: FormArray) {

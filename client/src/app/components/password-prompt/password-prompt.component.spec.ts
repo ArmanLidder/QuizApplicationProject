@@ -36,7 +36,7 @@ describe('PasswordPromptComponent', () => {
         const showFeedbackSpy = spyOn(component, 'showErrorFeedback');
         component.treatResponse(false);
         expect(showFeedbackSpy).toHaveBeenCalled();
-        expect(component.loginStatus).toEqual(component.errorMessage);
+        expect(component.loginStatus).toEqual(component['errorMessage']);
     });
 
     it('should remove error feedback on server positive response ', () => {

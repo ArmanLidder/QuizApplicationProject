@@ -50,6 +50,11 @@ describe('SidebarComponent', () => {
         component.messageForm = formBuilder.group({
             message: ['', [Validators.required, Validators.maxLength(MESSAGE_MAX_CHARACTERS)]],
         });
+        const mockMessageElements = {
+            last: jasmine.createSpyObj('last', ['nativeElement']),
+        };
+        component.messageElements = mockMessageElements as any;
+        mockMessageElements.last.nativeElement = jasmine.createSpyObj('containerElement', ['scrollIntoView']);
     });
 
     it('should create in test mode if active route is quiz-testing-page', () => {

@@ -104,7 +104,7 @@ describe('CorrectionQRLComponent', () => {
         const [sendplayerQrlCorrection, sendplayerQrlCorrectionObject] = sendSpy.calls.allArgs()[0];
         expect(component.getCorrection).toHaveBeenCalled();
         expect(component.nextAnswer).toHaveBeenCalled();
-        expect(component.inputPoint).toEqual(2);
+        expect(component.inputPoint).toEqual(0);
         expect(component.isCorrectionFinished).toBeTruthy();
         expect(component.endCorrection).toHaveBeenCalled();
         expect(component.clearAll).toHaveBeenCalled();

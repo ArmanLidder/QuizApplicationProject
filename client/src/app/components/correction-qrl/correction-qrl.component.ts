@@ -28,7 +28,7 @@ export class CorrectionQRLComponent implements OnChanges {
     currentAnswer: string = 'nothing';
     currentUsername: string = 'nothing';
     points: number[] = [];
-    inputPoint: number = 2;
+    inputPoint: number = 0;
     indexPlayer: number = INITIAL_ARRAY_VALUE;
     isCorrectionFinished: boolean = false;
 
@@ -103,7 +103,7 @@ export class CorrectionQRLComponent implements OnChanges {
             if (this.isValid) {
                 this.getCorrection(this.inputPoint);
                 this.nextAnswer();
-                this.inputPoint = 2;
+                this.inputPoint = 0;
             }
             if (this.indexPlayer >= this.usernames.length) {
                 this.isCorrectionFinished = true;

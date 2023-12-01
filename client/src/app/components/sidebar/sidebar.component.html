@@ -4,7 +4,7 @@
     </div>
 
     <div class="sidebar-content">
-        <div class="message-container" *ngFor="let message of messages">
+        <div class="message-container" *ngFor="let message of messages" #messageContainer>
             <div class="username-said">{{message.sender}} dit:</div>
             <p>{{ message.content }}</p>
             <p>{{ message.time }}</p>
