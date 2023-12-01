@@ -23,16 +23,16 @@ export class QuizFormService {
     quiz: Quiz;
 
     constructor(
-        private fb: FormBuilder,
+        private formBuilder: FormBuilder,
         private validationService: QuizValidationService,
     ) {}
 
     fillForm(quiz?: Quiz) {
-        const quizForm: FormGroup = this.fb.group({
+        const quizForm: FormGroup = this.formBuilder.group({
             title: [quiz?.title, Validators.required],
             duration: [quiz?.duration, [Validators.required, Validators.min(MIN_QCM_DURATION), Validators.max(MAX_QCM_DURATION)]],
             description: [quiz?.description, Validators.required],
-            questions: this.fb.array([], [Validators.minLength(MIN_NUMBER_OF_QUESTIONS), Validators.required]),
+            questions: this.formBuilder.array([], [Validators.minLength(MIN_NUMBER_OF_QUESTIONS), Validators.required]),
             visible: [quiz?.visible],
         });
         this.fillQuestions(quizForm.get('questions') as FormArray, quiz?.questions);
@@ -46,7 +46,7 @@ export class QuizFormService {
     }
 
     initQuestion(question?: QuizQuestion): FormGroup {
-        const questionForm = this.fb.group({
+        const questionForm = this.formBuilder.group({
             type: [question?.type === QuestionType.QCM ? 'QCM' : 'QLR', Validators.required],
             text: [question?.text ?? '', Validators.required],
             points: [
@@ -58,7 +58,7 @@ export class QuizFormService {
                     this.validationService.divisibleByTen,
                 ],
             ],
-            choices: this.fb.array(
+            choices: this.formBuilder.array(
                 [],
                 question?.type === QuestionType.QCM
                     ? [
@@ -99,7 +99,7 @@ export class QuizFormService {
     }
 
     initChoice(choice?: QuizChoice): FormGroup {
-        return this.fb.group({
+        return this.formBuilder.group({
             text: [choice?.text, Validators.required],
             isCorrect: [choice?.isCorrect ? 'true' : 'false'],
         });

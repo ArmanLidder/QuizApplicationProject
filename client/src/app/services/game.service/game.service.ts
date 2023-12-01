@@ -17,6 +17,8 @@ export class GameService {
     isHostEvaluating: boolean = false;
     isActive: boolean = false;
     hasInteracted: boolean = false;
+    lastQrlScore: number | undefined = undefined;
+
     constructor(
         public gameTestService: GameTestService,
         public gameRealService: GameRealService,
@@ -97,10 +99,11 @@ export class GameService {
             this.hasInteracted = false;
         } else {
             this.gameTestService.answers = this.answers;
-            this.gameRealService.qrlAnswer = this.qrlAnswer;
+            this.gameTestService.qrlAnswer = this.qrlAnswer;
             this.qrlAnswer = '';
             this.gameTestService.sendAnswer();
         }
+        this.lastQrlScore = undefined;
         this.answers.clear();
     }
 

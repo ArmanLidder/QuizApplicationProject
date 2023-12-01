@@ -1,7 +1,7 @@
 <div *ngIf='!gameService.gameRealService.validated || gameService.isTestMode' (keyup.enter)='validate()'>
     <textarea id="responseInput" maxlength='200' [disabled]='gameService.lockedStatus' [(ngModel)]="gameService.qrlAnswer" (input)="handleActiveUser()" rows="4" cols="50"></textarea>
     <div class='characters-left'>
-        <small>Caractères restants: {{ charactersLeft }}/200</small>
+        <small>Caractères restants: {{ MAX_RESPONSE_CHARACTERS - this.gameService.qrlAnswer.length }}/200</small>
     </div>
 </div>
 <div class='btn-container'>
@@ -9,5 +9,10 @@
     <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
 <div *ngIf='gameService.gameRealService.validated && !gameService.isTestMode'>
-    L'organisateur est en train d'évaluer votre réponse
+    <div [ngSwitch]="gameService.lastQrlScore">
+        <div *ngSwitchCase="0">Vous avez eu aucun point pour votre réponse : {{obtainedPoints()}} points</div>
+        <div *ngSwitchCase="50">Vous avez eu la moitié des points pour votre réponse : {{obtainedPoints()}} points</div>
+        <div *ngSwitchCase="100">Félicitations, vous avez eu tout les points de la question pour votre réponse : {{obtainedPoints()}} points</div>
+        <div *ngSwitchDefault>L'organisateur est en train d'évaluer votre réponse</div>
+    </div>
 </div>

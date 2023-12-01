@@ -9,6 +9,7 @@ import { timerMessage } from '@common/browser-message/displayable-message/timer-
 import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 import { HOST_USERNAME } from '@common/names/host-username';
 
 type Player = [string, number];
@@ -144,10 +145,19 @@ export class GameInterfaceComponent {
                 },
                 (score: Score) => {
                     this.gameService.gameRealService.validated = true;
-                    this.playerScore = score.points;
+                    this.updateScore(score.points);
                     this.isBonus = score.isBonus;
                 },
             );
+        }
+    }
+
+    private updateScore(score: number) {
+        const oldScore = this.playerScore;
+        this.playerScore = score;
+        if (this.gameService.question?.type === QuestionType.QLR) {
+            this.gameService.lastQrlScore =
+                ((this.playerScore - oldScore) / (this.gameService.gameRealService.question?.points as number)) * MAX_PERCENTAGE;
         }
     }
 

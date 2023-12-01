@@ -11,7 +11,7 @@
                         <mat-icon class="delete-icon">delete</mat-icon>
                     </button>
                 </div>
-                
+
                 <button *ngIf='i !== 0' type="button" (click)="moveQuestionUp(i)">
                     <mat-icon>keyboard_arrow_up</mat-icon></button><br><br>
                 <div *ngIf="question.get('beingModified')?.value">
@@ -56,10 +56,10 @@
                                 <div class="addDeleteChoices">
                                     <label for="choix{{i}}{{j}}">le choix{{j + 1}}:</label>
                                     <div  class ="arrow-down">
-                                        <button class="buttonOptionChoices" *ngIf='j !== getChoicesArray(i).controls.length - 1' type="button" (click)='moveChoiceDown(i, j)'>
+                                        <button class="buttonOptionChoices" *ngIf='j !== getChoicesArray(i).controls.length - 1' type="button" (click)='moveChoice(ItemMovingDirection.DOWN, i, j)'>
                                             <mat-icon>keyboard_arrow_down</mat-icon>
                                         </button>
-                                        <button class="buttonOptionChoices" *ngIf='j !== 0' type="button" (click)='moveChoiceUp(i, j)'>
+                                        <button class="buttonOptionChoices" *ngIf='j !== 0' type="button" (click)='moveChoice(ItemMovingDirection.UP, i, j)'>
                                             <mat-icon>keyboard_arrow_up</mat-icon>
                                         </button>
                                     </div>
@@ -68,7 +68,7 @@
                                         <button class="buttonOptionChoices" type="button" (click)="removeChoice(i, j)"><mat-icon class="delete-icon">remove</mat-icon></button>
                                     </div>
                                 </div>
-                                
+
                                 <div class='choice-input-text'>
                                     <input type="text" [attr.id]="'choix' + i + j" name="textChoix{{i}}{{j}}" formControlName="text" required><br>
                                 </div>
@@ -105,7 +105,7 @@
                 <div class='button-container'>
                     <button class="buttonOption" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)"><mat-icon class="green-icon">check_circle</mat-icon></button><br><br>
                     <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)"><mat-icon class="edit-icon">edit</mat-icon></button><br><br>
-                </div>                
+                </div>
                 <button *ngIf='i + 1 !== questionsArray?.length' type="button" (click)="moveQuestionDown(i)">
                     <mat-icon>keyboard_arrow_down</mat-icon>
                 </button><br><br>

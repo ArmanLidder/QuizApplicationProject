@@ -79,6 +79,15 @@ describe('QrlResponseAreaComponent', () => {
         });
     }));
 
+    it('should return the correct number of points obtained for a question', () => {
+        component.gameService.lastQrlScore = undefined;
+        let points = component.obtainedPoints();
+        expect(points).toEqual(0);
+        component.gameService.lastQrlScore = 50;
+        points = component.obtainedPoints();
+        expect(points).toEqual((component.gameService.question?.points as number) / 2);
+    });
+
     it('should setup input debounce correctly', fakeAsync(() => {
         spyOn(socketService, 'send');
         spyOn(component, 'onInputStopped');
