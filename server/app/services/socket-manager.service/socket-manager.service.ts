@@ -1,33 +1,19 @@
-import { Game } from '@app/classes/game/game';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as http from 'http';
 import * as io from 'socket.io';
-import {
-    ONE_SECOND_DELAY,
-    QUARTER_SECOND_DELAY,
-    TRANSITION_QUESTIONS_DELAY,
-    QRL_DURATION,
-} from '@app/services/socket-manager.service/socket-manager.service.const';
-import {
-    PlayerAnswerData,
-    PlayerMessage,
-    PlayerSelection,
-    RemainingTime,
-    PlayerUsername,
-    PanicModeData,
-    GameStats,
-} from '@common/interfaces/socket-manager.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { HistoryService } from '@app/services/history.service/history.service';
-import { QuestionType } from '@common/enums/question-type.enum';
-import { HOST_USERNAME } from '@common/names/host-username';
+import { GameCreationService } from '@app/services/game-creation.service/game-creation.service';
+import { GameManagementService } from '@app/services/game-management.service/game-management.service';
+import { ChatService } from '@app/services/chat.service/chat.service';
 
-/* eslint-disable max-params */
 export class SocketManager {
     private sio: io.Server;
     private roomManager: RoomManagingService;
+    private gameCreationService: GameCreationService;
+    private gameManagementService: GameManagementService;
+    private chatService: ChatService;
 
     constructor(
         private quizService: QuizService,
@@ -36,251 +22,16 @@ export class SocketManager {
     ) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.roomManager = new RoomManagingService();
+        this.gameCreationService = new GameCreationService();
+        this.gameManagementService = new GameManagementService(this.quizService, this.historyService);
+        this.chatService = new ChatService();
     }
 
     handleSockets(): void {
         this.sio.on(socketEvent.CONNECTION, (socket) => {
-            socket.on(socketEvent.CREATE_ROOM, (quizID: string, callback) => {
-                const roomCode = this.roomManager.addRoom(quizID);
-                this.roomManager.addUser(roomCode, HOST_USERNAME, socket.id);
-                socket.join(String(roomCode));
-                callback(roomCode);
-            });
-
-            socket.on(socketEvent.JOIN_GAME, (data: PlayerUsername, callback) => {
-                const isLocked = this.roomManager.isRoomLocked(data.roomId);
-                if (!isLocked) {
-                    this.roomManager.addUser(data.roomId, data.username, socket.id);
-                    const players = this.roomManager.getUsernamesArray(data.roomId);
-                    socket.join(String(data.roomId));
-                    this.sio.to(String(data.roomId)).emit(socketEvent.NEW_PLAYER, players);
-                }
-                callback(isLocked);
-            });
-
-            socket.on(socketEvent.BAN_PLAYER, (data: PlayerUsername) => {
-                const bannedID = this.roomManager.getSocketIDByUsername(data.roomId, data.username);
-                this.roomManager.banUser(data.roomId, data.username);
-                this.sio.to(bannedID).emit(socketEvent.REMOVED_FROM_GAME);
-                this.sio.to(String(data.roomId)).emit(socketEvent.REMOVED_PLAYER, data.username);
-            });
-
-            socket.on(socketEvent.TOGGLE_ROOM_LOCK, (roomId: number) => {
-                this.roomManager.changeLockState(roomId);
-            });
-
-            socket.on(socketEvent.VALIDATE_USERNAME, (data: PlayerUsername, callback) => {
-                let error = '';
-                if (this.roomManager.isNameUsed(data.roomId, data.username)) error = errorDictionary.nameAlreadyUsed;
-                else if (this.roomManager.isNameBanned(data.roomId, data.username)) error = errorDictionary.banMessage;
-                callback({ isValid: error.length === 0, error });
-            });
-
-            socket.on(socketEvent.GATHER_PLAYERS_USERNAME, (roomId: number, callback) => {
-                const players = this.roomManager.getUsernamesArray(roomId);
-                callback(players);
-            });
-
-            socket.on(socketEvent.VALIDATE_ROOM_ID, (roomId: number, callback) => {
-                let isLocked = false;
-                const isRoom = this.roomManager.roomMap.has(roomId);
-                if (isRoom) isLocked = this.roomManager.getRoomById(roomId).locked;
-                callback({ isRoom, isLocked });
-            });
-
-            socket.on(socketEvent.PLAYER_LEFT, (roomId: number) => {
-                const userInfo = this.roomManager.removeUserBySocketID(socket.id);
-                if (userInfo) {
-                    const game = this.roomManager.getGameByRoomId(roomId);
-                    if (game) {
-                        game.removePlayer(userInfo.username);
-                        if (game.players.size === 0) {
-                            this.roomManager.clearRoomTimer(roomId);
-                            this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.FINAL_TIME_TRANSITION);
-                        } else if (game.playersAnswers.size === game.players.size) {
-                            this.roomManager.getGameByRoomId(roomId).updateScores();
-                            this.roomManager.clearRoomTimer(roomId);
-                            this.roomManager.getRoomById(roomId).players.forEach((socketId, username) => {
-                                if (username !== HOST_USERNAME) this.sio.to(socketId).emit(socketEvent.END_QUESTION);
-                            });
-                            this.sio.to(String(roomId)).emit(socketEvent.END_QUESTION_AFTER_REMOVAL);
-                        }
-                    }
-                    this.sio.to(String(roomId)).emit(socketEvent.REMOVED_PLAYER, userInfo.username);
-                }
-            });
-
-            socket.on(socketEvent.HOST_LEFT, (roomId: number) => {
-                socket.to(String(roomId)).emit(socketEvent.REMOVED_FROM_GAME);
-                this.roomManager.deleteRoom(roomId);
-                this.sio.to(String(roomId)).disconnectSockets(true);
-            });
-
-            socket.on(socketEvent.GET_MESSAGES, (data: number, callback) => {
-                const messages = this.roomManager.getRoomById(data)?.messages;
-                callback(messages);
-            });
-
-            socket.on(socketEvent.GET_USERNAME, (data: number, callback) => {
-                const username = this.roomManager.getUsernameBySocketId(data, socket.id);
-                callback(username);
-            });
-
-            socket.on(socketEvent.NEW_MESSAGE, (data: PlayerMessage) => {
-                this.roomManager.addMessage(data.roomId, data.message);
-                this.sio.to(String(data.roomId)).emit(socketEvent.RECEIVED_MESSAGE, data.message);
-            });
-
-            socket.on(socketEvent.START, async (data: RemainingTime) => {
-                const room = this.roomManager.getRoomById(data.roomId);
-                const quizId = room.quizID;
-                const usernames = this.roomManager.getUsernamesArray(data.roomId);
-                room.game = new Game(usernames, this.quizService, this.historyService);
-                await room.game.setup(quizId);
-                this.startTimer(data.roomId, data.time);
-            });
-
-            socket.on(socketEvent.GET_QUESTION, (roomId: number) => {
-                const game = this.roomManager.getGameByRoomId(roomId);
-                const question = game.currentQuizQuestion;
-                const index = game.currIndex + 1;
-                const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
-                socket.emit(socketEvent.GET_INITIAL_QUESTION, { question, username, index, numberOfQuestions: game.quiz.questions.length });
-                const isChoiceQuestion = game.currentQuizQuestion.type === QuestionType.QCM;
-                const duration = isChoiceQuestion ? this.roomManager.getGameByRoomId(roomId).duration : QRL_DURATION;
-                if (this.roomManager.getUsernameBySocketId(roomId, socket.id) === HOST_USERNAME) {
-                    this.roomManager.clearRoomTimer(roomId);
-                    this.startTimer(roomId, duration);
-                }
-            });
-
-            socket.on(socketEvent.SUBMIT_ANSWER, (data: PlayerAnswerData) => {
-                const game = this.roomManager.getGameByRoomId(data.roomId);
-                this.roomManager.getGameByRoomId(data.roomId).storePlayerAnswer(data.username, data.timer, data.answers);
-                if (data.timer !== 0) {
-                    const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, HOST_USERNAME);
-                    this.sio.to(hostSocketId).emit(socketEvent.SUBMIT_ANSWER, data.username);
-                }
-                if (game.playersAnswers.size === game.players.size) {
-                    if (game.currentQuizQuestion.type === QuestionType.QCM) this.roomManager.getGameByRoomId(data.roomId).updateScores();
-                    this.roomManager.clearRoomTimer(data.roomId);
-                    this.sio.to(String(data.roomId)).emit(socketEvent.END_QUESTION);
-                }
-            });
-
-            socket.on(socketEvent.UPDATE_SELECTION, (data: PlayerSelection) => {
-                const game = this.roomManager.getGameByRoomId(data.roomId);
-                game.updateChoicesStats(data.isSelected, data.index);
-                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, HOST_USERNAME);
-                const username = this.roomManager.getUsernameBySocketId(data.roomId, socket.id);
-                const choicesStatsValues = Array.from(game.choicesStats.values());
-                this.sio.to(hostSocketId).emit(socketEvent.REFRESH_CHOICES_STATS, choicesStatsValues);
-                this.sio.to(hostSocketId).emit(socketEvent.UPDATE_INTERACTION, username);
-            });
-
-            socket.on(socketEvent.SEND_ACTIVITY_STATUS, (data: { roomId: number; isActive: boolean }) => {
-                const game = this.roomManager.getGameByRoomId(data.roomId);
-                game.switchActivityStatus(data.isActive);
-                const hostSocketId = this.roomManager.getSocketIDByUsername(data.roomId, HOST_USERNAME);
-                this.sio.to(hostSocketId).emit(socketEvent.REFRESH_ACTIVITY_STATS, game.activityStatusStats);
-            });
-
-            socket.on(socketEvent.GET_PLAYER_ANSWERS, (roomId: number, callback) => {
-                const game = this.roomManager.getGameByRoomId(roomId);
-                const formattedPlayerAnswers = JSON.stringify(Array.from(game.playersAnswers));
-                callback(formattedPlayerAnswers);
-            });
-
-            socket.on(socketEvent.PLAYER_QRL_CORRECTION, (data: { roomId: number; playerCorrection: string }) => {
-                const game = this.roomManager.getGameByRoomId(data.roomId);
-                const playerCorrectionMap = new Map(JSON.parse(data.playerCorrection));
-                game.updatePlayerScores(playerCorrectionMap as Map<string, number>);
-                this.sio.to(String(data.roomId)).emit(socketEvent.EVALUATION_OVER);
-            });
-
-            socket.on(socketEvent.NEW_RESPONSE_INTERACTION, (roomId: number) => {
-                const hostSocketId = this.roomManager.getSocketIDByUsername(roomId, HOST_USERNAME);
-                const username = this.roomManager.getUsernameBySocketId(roomId, socket.id);
-                this.sio.to(hostSocketId).emit(socketEvent.UPDATE_INTERACTION, username);
-            });
-
-            socket.on(socketEvent.START_TRANSITION, (roomId: number) => {
-                this.roomManager.clearRoomTimer(roomId);
-                this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.TIME_TRANSITION);
-            });
-
-            socket.on(socketEvent.GET_SCORE, (data: PlayerUsername, callback) => {
-                const playerScore = this.roomManager.getGameByRoomId(data.roomId).players.get(data.username);
-                callback(playerScore);
-            });
-
-            socket.on(socketEvent.NEXT_QUESTION, (roomId: number) => {
-                const game = this.roomManager.getGameByRoomId(roomId);
-                this.roomManager.clearRoomTimer(roomId);
-                const lastIndex = game.quiz.questions.length - 1;
-                game.next();
-                let index = game.currIndex;
-                const isLast = index === lastIndex;
-                const nextQuestionNumber = ++index;
-                const nextQuestion = game.currentQuizQuestion;
-                this.sio.to(String(roomId)).emit(socketEvent.GET_NEXT_QUESTION, { question: nextQuestion, index: nextQuestionNumber, isLast });
-                this.startTimer(roomId, game.currentQuizQuestion.type === QuestionType.QCM ? game.duration : QRL_DURATION);
-            });
-
-            socket.on(socketEvent.SHOW_RESULT, (roomId: number) => {
-                this.roomManager.clearRoomTimer(roomId);
-                this.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.FINAL_TIME_TRANSITION);
-                this.roomManager.getGameByRoomId(roomId).updateGameHistory();
-            });
-
-            socket.on(socketEvent.TOGGLE_CHAT_PERMISSION, (data: PlayerUsername) => {
-                const playerSocket = this.roomManager.getSocketIDByUsername(data.roomId, data.username);
-                this.sio.to(playerSocket).emit(socketEvent.TOGGLE_CHAT_PERMISSION);
-            });
-
-            socket.on(socketEvent.PAUSE_TIMER, (roomId: number) => {
-                const game = this.roomManager.getGameByRoomId(roomId);
-                game.paused = !game.paused;
-                this.sio.to(String(roomId)).emit(socketEvent.PAUSE_TIMER, roomId);
-            });
-
-            socket.on(socketEvent.PANIC_MODE, (data: PanicModeData) => {
-                this.roomManager.clearRoomTimer(data.roomId);
-                this.startTimer(data.roomId, data.timer, undefined, QUARTER_SECOND_DELAY);
-                this.sio.to(String(data.roomId)).emit(socketEvent.PANIC_MODE, data);
-            });
-
-            socket.on(socketEvent.GAME_STATUS_DISTRIBUTION, (data: GameStats) => {
-                this.sio.to(String(data.roomId)).emit(socketEvent.GAME_STATUS_DISTRIBUTION, data.stats);
-            });
-
-            socket.on(socketEvent.DISCONNECT, (reason) => {
-                // eslint-disable-next-line no-console
-                console.log(`Déconnexion par l'utilisateur avec id : ${socket.id}`);
-                // eslint-disable-next-line no-console
-                console.log(`Raison de déconnexion : ${reason}`);
-            });
+            this.gameCreationService.configureGameCreationSockets(this.roomManager, socket, this.sio);
+            this.gameManagementService.configureGameManagingSockets(this.roomManager, socket, this.sio);
+            this.chatService.configureChatSockets(this.roomManager, socket, this.sio);
         });
-    }
-
-    private startTimer(roomId: number, timeValue: number, eventName?: string, delay = ONE_SECOND_DELAY) {
-        const game = this.roomManager.getGameByRoomId(roomId);
-        this.emitTime(roomId, timeValue, eventName);
-        timeValue--;
-        this.roomManager.getRoomById(roomId).timer = setInterval(() => {
-            if (game && game.paused) {
-                return;
-            } else if (timeValue >= 0) {
-                this.emitTime(roomId, timeValue, eventName);
-                timeValue--;
-            } else {
-                this.roomManager.clearRoomTimer(roomId);
-            }
-        }, delay);
-    }
-
-    private emitTime(roomId: number, time: number, eventName?: string) {
-        const event = eventName ?? socketEvent.TIME;
-        this.sio.to(String(roomId)).emit(event, time);
     }
 }

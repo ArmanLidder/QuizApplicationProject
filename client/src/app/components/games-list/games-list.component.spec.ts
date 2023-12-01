@@ -293,10 +293,10 @@ describe('GamesListComponent Admin view', () => {
     it('should correctly parse and handle a valid JSON result', fakeAsync(() => {
         const mockData = JSON.stringify(quizzesMock[0]);
         const parseSpy = spyOn(JSON, 'parse').and.returnValue(quizzesMock[0]);
-        spyOn(component, 'resolveasyncFileRead').and.callFake(async () => {
+        spyOn(component, 'resolveAsyncFileRead').and.callFake(async () => {
             component.isErrors = true;
         });
-        spyOn(component, 'rejectasyncFileRead').and.returnValue();
+        spyOn(component, 'rejectAsyncFileRead').and.returnValue();
         const event: ProgressEvent<FileReader> = {
             target: {
                 result: mockData,
@@ -311,10 +311,10 @@ describe('GamesListComponent Admin view', () => {
     }));
     it('should handle an error when parsing invalid JSON result', () => {
         const parseSpy = spyOn(JSON, 'parse');
-        spyOn(component, 'resolveasyncFileRead').and.callFake(async () => {
+        spyOn(component, 'resolveAsyncFileRead').and.callFake(async () => {
             component.isErrors = true;
         });
-        spyOn(component, 'rejectasyncFileRead').and.returnValue();
+        spyOn(component, 'rejectAsyncFileRead').and.returnValue();
         const event: ProgressEvent<FileReader> = {
             target: { result: 'invalidJSON' },
         } as ProgressEvent<FileReader>;
@@ -325,14 +325,14 @@ describe('GamesListComponent Admin view', () => {
         component.asyncFileResolver = () => {
             component.isQuizUnique = false;
         };
-        component.resolveasyncFileRead();
+        component.resolveAsyncFileRead();
         expect(component.isQuizUnique).toBeFalsy();
     });
     it('should seize reject callback promise', () => {
         component.asyncFileRejecter = (error) => {
             component.isQuizUnique = !!error;
         };
-        component.rejectasyncFileRead(false);
+        component.rejectAsyncFileRead(false);
         expect(component.isQuizUnique).toBeFalsy();
     });
     it('should test the game and navigate to quiz-testing-page', fakeAsync(() => {
