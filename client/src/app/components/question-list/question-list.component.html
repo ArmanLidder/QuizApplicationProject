@@ -23,7 +23,7 @@
                         <label for="type{{i}}">Type de la question:</label>
                         <select formControlName="type" name="type{{i}}">
                             <option value="QCM">QCM</option>
-                            <option value="QLR">QLR</option>
+                            <option value="QLR">QRL</option>
                         </select><br>
                         <div *ngIf="question.get('type')?.hasError('required') && question.get('type')?.touched" class="error-message">
                             Le type de question est requis
