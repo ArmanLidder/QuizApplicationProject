@@ -91,7 +91,7 @@ export class GameRealService implements GameServiceInterface {
     }
 
     private reset() {
-        this.username = 'yo';
+        this.username = '';
         this.roomId = 0;
         this.timer = 0;
         this.question = null;
