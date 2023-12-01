@@ -91,7 +91,6 @@ describe('Timer service tests', () => {
         setTimeout(() => {
             expect(emitSpy.notCalled);
             done();
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, ONE_SECOND_DELAY);
     });
 
@@ -105,7 +104,6 @@ describe('Timer service tests', () => {
         setTimeout(() => {
             expect(emitSpy.called);
             done();
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, ONE_SECOND_DELAY);
     });
 });
