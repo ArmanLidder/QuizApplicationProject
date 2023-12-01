@@ -1,21 +1,10 @@
-import { Game } from '@app/classes/game/game';
 import { Message } from '@common/interfaces/message.interface';
 import { Service } from 'typedi';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { RoomData } from '@app/interface/room-data-interface';
 
 type SocketId = string;
 type Username = string;
-
-export interface RoomData {
-    room: number;
-    quizID: string;
-    players: Map<Username, SocketId>;
-    locked: boolean;
-    game: Game;
-    timer: NodeJS.Timer;
-    bannedNames: string[];
-    messages?: Message[];
-}
 
 @Service()
 export class RoomManagingService {
@@ -42,11 +31,11 @@ export class RoomManagingService {
         return this.rooms.get(roomId)?.game;
     }
 
-    addRoom(quizID: string): number {
-        const roomID = this.generateUniqueRoomID();
+    addRoom(quizId: string): number {
+        const roomId = this.generateUniqueRoomId();
         const roomData: RoomData = {
-            room: roomID,
-            quizID,
+            room: roomId,
+            quizId,
             players: new Map<Username, SocketId>(),
             locked: false,
             game: null,
@@ -54,24 +43,24 @@ export class RoomManagingService {
             messages: [],
             timer: null,
         };
-        this.rooms.set(roomID, roomData);
-        return roomID;
+        this.rooms.set(roomId, roomData);
+        return roomId;
     }
 
-    deleteRoom(roomID: number): void {
-        this.clearRoomTimer(roomID);
-        this.rooms.delete(roomID);
+    deleteRoom(roomId: number): void {
+        this.clearRoomTimer(roomId);
+        this.rooms.delete(roomId);
     }
 
-    addUser(roomId: number, username: string, socketID: string) {
-        this.getRoomById(roomId).players.set(username, socketID);
+    addUser(roomId: number, username: string, socketId: string) {
+        this.getRoomById(roomId).players.set(username, socketId);
     }
 
     addMessage(roomId: number, message: Message) {
         this.getRoomById(roomId).messages?.push(message);
     }
 
-    getSocketIDByUsername(roomId: number, username: string): string {
+    getSocketIdByUsername(roomId: number, username: string): string {
         return this.getRoomById(roomId).players.get(username);
     }
 
@@ -83,15 +72,15 @@ export class RoomManagingService {
         return undefined;
     }
 
-    removeUserFromRoom(roomID: number, name: string): void {
-        const playerMap = this.getRoomById(roomID).players;
+    removeUserFromRoom(roomId: number, name: string): void {
+        const playerMap = this.getRoomById(roomId).players;
         playerMap.delete(name);
     }
 
-    removeUserBySocketID(userSocketID: string) {
+    removeUserBySocketId(userSocketId: string) {
         for (const [roomId, roomData] of this.rooms.entries()) {
-            for (const [username, socketID] of roomData.players.entries()) {
-                if (userSocketID === socketID) {
+            for (const [username, socketId] of roomData.players.entries()) {
+                if (userSocketId === socketId) {
                     this.removeUserFromRoom(roomId, username);
                     return { roomId, username };
                 }
@@ -108,27 +97,27 @@ export class RoomManagingService {
         } else return undefined;
     }
 
-    banUser(roomID: number, name: string): void {
-        this.rooms.get(roomID).bannedNames.push(name);
-        this.removeUserFromRoom(roomID, name);
+    banUser(roomId: number, name: string): void {
+        this.rooms.get(roomId).bannedNames.push(name);
+        this.removeUserFromRoom(roomId, name);
     }
 
-    isNameUsed(roomID: number, name: string): boolean {
-        const room = this.getRoomById(roomID);
+    isNameUsed(roomId: number, name: string): boolean {
+        const room = this.getRoomById(roomId);
         return Array.from(room.players.keys()).some((username) => username.toLowerCase() === name.toLowerCase());
     }
 
-    isNameBanned(roomID: number, name: string): boolean {
-        const room = this.getRoomById(roomID);
+    isNameBanned(roomId: number, name: string): boolean {
+        const room = this.getRoomById(roomId);
         return Array.from(room.bannedNames).some((username) => username.toLowerCase() === name.toLowerCase());
     }
 
-    isRoomLocked(roomID: number): boolean {
-        return this.getRoomById(roomID).locked;
+    isRoomLocked(roomId: number): boolean {
+        return this.getRoomById(roomId).locked;
     }
 
-    changeLockState(roomID: number): void {
-        const room = this.rooms.get(roomID);
+    changeLockState(roomId: number): void {
+        const room = this.rooms.get(roomId);
         room.locked = !room.locked;
     }
 
@@ -136,13 +125,13 @@ export class RoomManagingService {
         return this.rooms.has(code);
     }
 
-    private generateUniqueRoomID(): number {
-        let roomID: number;
+    private generateUniqueRoomId(): number {
+        let roomId: number;
         const UPPER_BOUND_MULTIPLIER = 9000;
         const LOWER_BOUND = 1000;
         do {
-            roomID = Math.floor(Math.random() * UPPER_BOUND_MULTIPLIER) + LOWER_BOUND;
-        } while (this.isRoomExistent(roomID));
-        return roomID;
+            roomId = Math.floor(Math.random() * UPPER_BOUND_MULTIPLIER) + LOWER_BOUND;
+        } while (this.isRoomExistent(roomId));
+        return roomId;
     }
 }
