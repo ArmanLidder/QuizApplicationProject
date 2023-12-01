@@ -35,6 +35,7 @@ export class HostInterfaceComponent {
         private readonly socketService: SocketClientService,
         private route: ActivatedRoute,
     ) {
+        console.log(this.gameService.username);
         if (this.socketService.isSocketAlive()) this.configureBaseSocketFeatures();
         this.gameService.init(this.route.snapshot.paramMap.get('id') as string);
     }

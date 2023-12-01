@@ -119,6 +119,8 @@ export class GameService {
         this.qrlAnswer = '';
         this.isActive = false;
         this.hasInteracted = false;
+        this.audio.pause();
+        this.audio.currentTime = 0;
         this.gameRealService.destroy();
         this.gameTestService.reset();
     }

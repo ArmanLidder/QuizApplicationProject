@@ -1,40 +1,40 @@
-<div class="grid-container" *ngIf='isGameOver'>
+<div class="grid-container" *ngIf='gameInterfaceManagementService.isGameOver'>
     <h2>Le jeu est terminé!</h2>
-    <p>Votre score final : {{ playerScore }}</p>
+    <p>Votre score final : {{ gameInterfaceManagementService.playerScore }}</p>
     <button class='cancel' routerLink='/home'>Quitter</button>
 </div>
 <div class="result-container">
-<app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
+<app-statistic-zone *ngIf="gameInterfaceManagementService.isGameOver" [gameStats]="gameInterfaceManagementService.gameStats"></app-statistic-zone>
     <app-player-list
-        [hidden]='!isGameOver'
+        [hidden]='!gameInterfaceManagementService.isGameOver'
         #playerListChild
-        [roomId]='gameService.gameRealService.roomId'
+        [roomId]='gameInterfaceManagementService.gameService.gameRealService.roomId'
         [leftPlayers]='[]'
-        [isFinal] = 'isGameOver'
+        [isFinal] = 'gameInterfaceManagementService.isGameOver'
         [isHost] = 'false'>
     </app-player-list>
 </div>
-<div *ngIf='!isGameOver' class="grid-container">
+<div *ngIf='!gameInterfaceManagementService.isGameOver' class="grid-container">
     <div id="flex-container">
         <div class='points'>
             <p>Pointage: {{ score }}</p>
             <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
         </div>
         <div class="circle">
-            <span>{{timerText}}</span>
-            <span>{{gameService.timer}}</span>
+            <span>{{gameInterfaceManagementService.timerText}}</span>
+            <span>{{gameInterfaceManagementService.gameService.timer}}</span>
         </div>
         <section id="question-field">
             <div>
-                <h2>Question {{ gameService.questionNumber }}</h2>
-                <h3>Valeur : {{ gameService.question?.points }} points</h3>
+                <h2>Question {{ gameInterfaceManagementService.gameService.questionNumber }}</h2>
+                <h3>Valeur : {{ gameInterfaceManagementService.gameService.question?.points }} points</h3>
             </div>
-            <h4>{{ gameService.question?.text }}</h4>
+            <h4>{{ gameInterfaceManagementService.gameService.question?.text }}</h4>
         </section>
     </div>
-    <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
+    <app-game-answers-list *ngIf='gameInterfaceManagementService.gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>
-    <app-qrl-response-area *ngIf='gameService.question?.type === questionType.QLR' id='answer-qrl-field'>
+    <app-qrl-response-area *ngIf='gameInterfaceManagementService.gameService.question?.type === questionType.QLR' id='answer-qrl-field'>
     </app-qrl-response-area>
 </div>
 
