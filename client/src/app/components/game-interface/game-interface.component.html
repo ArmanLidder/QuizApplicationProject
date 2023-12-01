@@ -1,7 +1,7 @@
 <div class="grid-container" *ngIf='isGameOver'>
     <h2>Le jeu est terminé!</h2>
     <p>Votre score final : {{ playerScore }}</p>
-    <button class='cancel' routerLink='/home'>Quitter</button>
+    <app-quitter-button></app-quitter-button>
 </div>
 <div class="result-container">
 <app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
@@ -16,10 +16,6 @@
 </div>
 <div *ngIf='!isGameOver' class="grid-container">
     <div id="flex-container">
-        <div class='points'>
-            <p>Pointage: {{ score }}</p>
-            <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
-        </div>
         <div class="circle">
             <span>{{timerText}}</span>
             <span>{{gameService.timer}}</span>
@@ -31,6 +27,10 @@
             </div>
             <h4>{{ gameService.question?.text }}</h4>
         </section>
+        <div class='points'>
+            <p>Pointage: {{ score }}</p>
+            <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
+        </div>
     </div>
     <app-game-answers-list *ngIf='gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>

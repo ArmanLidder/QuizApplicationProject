@@ -25,7 +25,7 @@
                     <app-quiz-info *ngIf="quiz === selectedQuiz && !isAdmin" [selectedQuiz]="quiz"></app-quiz-info>
                 </td>
                 <td *ngIf="isAdmin">
-                    <label class="switch-btn">
+                    <label class="switch-btn" matTooltip="Afficher le questionnaire">
                         <input type="checkbox" [(ngModel)]="quiz.visible" (click)="updateVisibility(quiz)" />
                         <span class="slider round"></span>
                     </label>
@@ -41,7 +41,6 @@
                     <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Ajouter</button>
                     <input type="file" class="file-selector" #fileInput accept="application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
                     <button class="add upload" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Importer</button>
-                    <button routerLink="/home" class="cancel">Annuler</button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
                     <button (click)="playGame()" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Jouer</button>

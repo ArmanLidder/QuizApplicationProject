@@ -1,5 +1,6 @@
 import { Component, Injector, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
@@ -8,9 +9,8 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 type Player = [string, number];
 

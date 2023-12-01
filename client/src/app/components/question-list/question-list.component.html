@@ -5,11 +5,11 @@
             <div class='quiz-question' [formGroupName]="i">
                 <div class="AddDelete">
                     <button class="buttonOptionAddDelete" type="button" (click)="addQuestion(i)">
-                        <mat-icon class="add-icon">add</mat-icon>
+                        <mat-icon class="add-icon" matTooltip="Ajouter une question">add</mat-icon>
                     </button>
                     <button class="buttonOptionAddDelete" type="button" (click)="removeQuestion(i)">
-                        <mat-icon class="delete-icon">delete</mat-icon>
-                    </button>
+                        <mat-icon class="delete-icon" matTooltip="Supprimer la question">delete</mat-icon>
+                    </button> 
                 </div>
 
                 <button *ngIf='i !== 0' type="button" (click)="moveQuestionUp(i)">
@@ -23,7 +23,7 @@
                         <label for="type{{i}}">Type de la question:</label>
                         <select formControlName="type" name="type{{i}}">
                             <option value="QCM">QCM</option>
-                            <option value="QLR">QLR</option>
+                            <option value="QLR">QRL</option>
                         </select><br>
                         <div *ngIf="question.get('type')?.hasError('required') && question.get('type')?.touched" class="error-message">
                             Le type de question est requis
@@ -64,8 +64,8 @@
                                         </button>
                                     </div>
                                     <div class="buttonChoice-container">
-                                        <button class="buttonOptionChoices" type="button" (click)="addChoice(i, j)"><mat-icon class="add-icon">add</mat-icon></button>
-                                        <button class="buttonOptionChoices" type="button" (click)="removeChoice(i, j)"><mat-icon class="delete-icon">remove</mat-icon></button>
+                                        <button class="buttonOptionChoices" type="button" (click)="addChoice(i, j)" matTooltip="Ajouter un choix"><mat-icon class="add-icon">add</mat-icon></button>
+                                        <button class="buttonOptionChoices" type="button" (click)="removeChoice(i, j)"><mat-icon class="delete-icon" matTooltip="Supprimer un choix">remove</mat-icon></button>
                                     </div>
                                 </div>
 
@@ -103,8 +103,8 @@
 
 
                 <div class='button-container'>
-                    <button class="buttonOption" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)"><mat-icon class="green-icon">check_circle</mat-icon></button><br><br>
-                    <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)"><mat-icon class="edit-icon">edit</mat-icon></button><br><br>
+                    <button class="buttonOption" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)"><mat-icon class="green-icon" matTooltip="Sauvegarder la question">check_circle</mat-icon></button><br><br>
+                    <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)"><mat-icon class="edit-icon" matTooltip="Changer la question">edit</mat-icon></button><br><br>
                 </div>
                 <button *ngIf='i + 1 !== questionsArray?.length' type="button" (click)="moveQuestionDown(i)">
                     <mat-icon>keyboard_arrow_down</mat-icon>

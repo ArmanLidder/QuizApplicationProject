@@ -1,15 +1,13 @@
 .grid-container {
     display: flex;
     flex-direction: column;
+    min-width: 70vw;
     align-items: center;
 }
 
 .circle {
     border-radius: 50%;
     float: left;
-    position: absolute;
-    left: 0;
-
     font-size: 45px;
     width: 170px;
     height: 60px;
@@ -51,6 +49,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 0 auto;
     gap: 0px;
 }
 
@@ -62,6 +61,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: -160px;
 }
 
 #question-field > div > * {
@@ -100,7 +100,7 @@
     width: 90%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-content: center;
     padding: 10px ;
     position: relative;
@@ -226,6 +226,4 @@ app-statistic-zone {
 app-player-list {
     flex: 1;
 }
-
-
 
