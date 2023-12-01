@@ -233,9 +233,11 @@ describe('Game', () => {
         game.currentQuizQuestion = testQuiz.questions[2];
         const HALF_MULTIPLIER = 0.5;
         const HALF = 50;
+        const FULL = 100;
         const playerEvaluations = new Map<string, number>([
             ['Player1', 0],
             ['Player2', HALF],
+            ['Player3', FULL],
         ]);
         game.updatePlayerScores(playerEvaluations);
         expect(game.players.get('Player1')).to.deep.equal({ points: 0, isBonus: false, bonusCount: 0 });

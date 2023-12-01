@@ -19,7 +19,7 @@
         </section>
     </div>
     <div class='btn-container'>
-        <button class='enter'
+        <button *ngIf='!isHostEvaluating' class='enter'
                 [disabled]='isDisabled()'
                 (click)='handleHostCommand()'>
                 {{updateHostCommand()}}

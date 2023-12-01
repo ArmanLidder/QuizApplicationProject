@@ -3,6 +3,7 @@ import { StatisticZoneComponent } from './statistic-zone.component';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { mockStats as mockSta } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { NgChartsModule } from 'ng2-charts';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('StatisticZoneComponent', () => {
     let component: StatisticZoneComponent;
@@ -11,7 +12,7 @@ describe('StatisticZoneComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [StatisticZoneComponent, StatisticHistogramComponent],
-            imports: [NgChartsModule],
+            imports: [NgChartsModule, HttpClientModule],
         });
         fixture = TestBed.createComponent(StatisticZoneComponent);
         component = fixture.componentInstance;
