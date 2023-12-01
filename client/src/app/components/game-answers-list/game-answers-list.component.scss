@@ -2,6 +2,7 @@
     margin-left: 10px;
     background-color: #007bff;
     color: white;
+    flex: 0 0 auto;
     border: 4px solid #007bff;
 }
 
@@ -14,6 +15,7 @@
 .enter:active {
     background-color: #007bff;
     color: black;
+    flex: 0 0 auto;
     border: 4px solid black;
 }
 
@@ -56,6 +58,7 @@ button {
 #answer-field {
     width: 90%;
     margin: 0 auto;
+    min-width: 456px;
     display: grid;
     grid-template-columns: 1fr auto;
     padding-bottom: 2%;
@@ -74,3 +77,14 @@ app-game-answer-choice-card {
     margin-bottom: 20px;
 }
 
+.game-container{
+    flex-direction: column;
+    align-items: center;
+    min-width: 456px;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

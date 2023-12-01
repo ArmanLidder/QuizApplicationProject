@@ -1,15 +1,13 @@
 .grid-container {
     display: flex;
     flex-direction: column;
+    min-width: 70vw;
     align-items: center;
 }
 
 .circle {
     border-radius: 50%;
     float: left;
-    position: absolute;
-    left: 0;
-
     font-size: 45px;
     width: 170px;
     height: 60px;
@@ -226,6 +224,4 @@ app-statistic-zone {
 app-player-list {
     flex: 1;
 }
-
-
 
