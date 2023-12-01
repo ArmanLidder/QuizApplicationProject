@@ -155,6 +155,7 @@ export class HostInterfaceComponent {
 
         this.socketService.on(socketEvent.EVALUATION_OVER, () => {
             this.playerListComponent.getPlayersList(false).then();
+            this.isHostEvaluating = false;
         });
 
         this.socketService.on(socketEvent.REFRESH_ACTIVITY_STATS, (activityStatsValue: [number, number]) => {
