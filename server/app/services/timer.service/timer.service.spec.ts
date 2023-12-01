@@ -16,6 +16,7 @@ import { fillerQuizzes } from '@app/mock-data/data';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { Message } from '@common/interfaces/message.interface';
 import { RoomData } from '@app/interface/room-data-interface';
+import { ONE_SECOND_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
 
 describe('Timer service tests', () => {
     let timerService: TimerService;
@@ -91,7 +92,7 @@ describe('Timer service tests', () => {
             expect(emitSpy.notCalled);
             done();
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        }, 1000);
+        }, ONE_SECOND_DELAY);
     });
 
     it('should emit time if game is not paused', (done) => {
@@ -105,6 +106,6 @@ describe('Timer service tests', () => {
             expect(emitSpy.called);
             done();
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        }, 1000);
+        }, ONE_SECOND_DELAY);
     });
 });
