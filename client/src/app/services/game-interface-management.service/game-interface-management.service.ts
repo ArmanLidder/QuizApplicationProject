@@ -10,7 +10,7 @@ import { HOST_USERNAME } from '@common/names/host-username';
 import { Score } from '@common/interfaces/score.interface';
 import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
-// import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 
 type Player = [string, number];
 
@@ -25,8 +25,7 @@ export class GameInterfaceManagementService {
     players: Player[] = [];
     inPanicMode: boolean = false;
     gameStats: QuestionStatistics[] = [];
-    //playerListService: PlayerListService = inject(PlayerListService);
-    // playerListComponent: PlayerListComponent;
+    playerListComponent: PlayerListComponent;
 
     constructor(
         public gameService: GameService,
@@ -56,10 +55,9 @@ export class GameInterfaceManagementService {
 
 
     configureBaseSocketFeatures() {
-        this.handleTimeTransition();
         this.handleEndQuestion();
         this.handleEvaluationOver();
-        this.handleFinalTimeTransition();
+        this.handleTimeTransition();
         this.handleFinalTimeTransition();
         this.handleRemovedFromGame();
         this.handlePanicMode();
@@ -114,7 +112,7 @@ export class GameInterfaceManagementService {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
-                // this.playerListComponent.getPlayersList();
+                this.playerListComponent.getPlayersList();
             }
         });
     }

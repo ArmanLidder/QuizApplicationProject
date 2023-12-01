@@ -25,7 +25,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
         if (this.gameInterfaceManagementService.gameService.username !== HOST_USERNAME) {
             console.log('game interface component ngOnInit');
             this.gameInterfaceManagementService.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
-            // this.gameInterfaceManagementService.playerListComponent = this.playerListComponent;
+            this.gameInterfaceManagementService.playerListComponent = this.playerListComponent;
             const pathId = this.route.snapshot.paramMap.get('id') as string;
             this.gameInterfaceManagementService.setup(pathId);
         }
