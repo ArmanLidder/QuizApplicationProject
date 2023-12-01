@@ -4,6 +4,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
+//import { HOST_USERNAME } from '@common/names/host-username';
 
 @Component({
     selector: 'app-game-page',
@@ -11,14 +12,14 @@ import { HOST_USERNAME } from '@common/names/host-username';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnDestroy, OnInit {
+    public isHost : boolean;
+
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
         public route: Router,
-    ) {}
-
-    get isHost(): boolean {
-        return this.gameService.username === HOST_USERNAME;
+    ) {
+        this.isHost = this.gameService.gameRealService.username === HOST_USERNAME;
     }
 
     ngOnInit() {

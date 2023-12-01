@@ -3,6 +3,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
 import { ActivatedRoute } from '@angular/router';
+import { GameService } from '@app/services/game.service/game.service';
 
 @Component({
     selector: 'app-waiting-room',
@@ -17,6 +18,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     constructor(
         public waitingRoomManagementService: WaitingRoomManagementService,
+        public gameService : GameService,
         private socketService: SocketClientService,
     ) {
         this.connect();
@@ -64,6 +66,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     private async setUpHost() {
         const quizId = this.route.snapshot.paramMap.get('id');
         this.roomId = await this.waitingRoomManagementService.sendRoomCreation(quizId);
+        this.gameService.gameRealService.username = 'Organisateur';
     }
 
     private setUpPlayer() {
