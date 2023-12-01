@@ -34,10 +34,12 @@ import { QuizCreationPageComponent } from '@app/pages/quiz-creation-page/quiz-cr
 import { WaitingRoomHostPageComponent } from '@app/pages/waiting-room-host-page/waiting-room-host-page.component';
 import { WaitingRoomPlayerPageComponent } from '@app/pages/waiting-room-player-page/waiting-room-player-page.component';
 import { NgChartsModule } from 'ng2-charts';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 import { CorrectionQRLComponent } from './components/correction-qrl/correction-qrl.component';
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
 import { QuitterButtonComponent } from './components/quitter-bouton/quitter-bouton.component';
 import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -77,6 +79,7 @@ import { StatisticZoneComponent } from './components/statistic-zone/statistic-zo
         QrlResponseAreaComponent,
         QuitterButtonComponent,
         StatisticZoneComponent,
+        ConfirmationDialogComponent,
     ],
     imports: [
         AppMaterialModule,
