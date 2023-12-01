@@ -31,7 +31,7 @@ export class ChatService {
         });
     }
 
-    private handleGetUsername(roomManager: RoomManagingService, socket: io.Socket){
+    private handleGetUsername(roomManager: RoomManagingService, socket: io.Socket) {
         socket.on(socketEvent.GET_USERNAME, (data: number, callback) => {
             const username = roomManager.getUsernameBySocketId(data, socket.id);
             callback(username);

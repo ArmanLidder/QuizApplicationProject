@@ -250,5 +250,4 @@ describe('Game Creation service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
 });
