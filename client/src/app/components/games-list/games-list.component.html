@@ -41,7 +41,7 @@
                     <button routerLink="/quiz-creation" class="add"><i class="fas fa-plus"></i> Ajouter</button>
                     <input type="file" class="file-selector" #fileInput accept="application/json" [class.hide-file-input]="true" (change)="selectFile($event)" />
                     <button class="add upload" (click)="this.uploadFile()"><i class="fas fa-file-import"></i> Importer</button>
-                    <button routerLink="/home" class="cancel">Annuler</button>
+                    <button routerLink="/home" class="cancel">Quitter</button>
                 </td>
                 <td class="button-container" *ngIf="!isAdmin">
                     <button (click)="playGame()" class="add" [class.disabled-button]="!selectedQuiz" [disabled]="!selectedQuiz">Jouer</button>

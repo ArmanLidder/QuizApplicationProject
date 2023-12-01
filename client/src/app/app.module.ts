@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
@@ -10,14 +11,15 @@ import { GameInterfaceComponent } from '@app/components/game-interface/game-inte
 import { GameItemComponent } from '@app/components/game-item/game-item.component';
 import { GamesListComponent } from '@app/components/games-list/games-list.component';
 import { HostInterfaceComponent } from '@app/components/host-interface/host-interface.component';
-import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { PasswordPromptComponent } from '@app/components/password-prompt/password-prompt.component';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
 import { QuestionListComponent } from '@app/components/question-list/question-list.component';
 import { QuizCreationComponent } from '@app/components/quiz-creation/quiz-creation.component';
 import { QuizInfoComponent } from '@app/components/quiz-info/quiz-info.component';
 import { RoomCodePromptComponent } from '@app/components/room-code-prompt/room-code-prompt.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { UniqueQuizErrorFeedbackComponent } from '@app/components/unique-quiz-error-feedback/unique-quiz-error-feedback.component';
 import { ValidationQuizErrorFeedbackComponent } from '@app/components/validation-quiz-error-feedback/validation-quiz-error-feedback.component';
 import { WaitingRoomComponent } from '@app/components/waiting-room/waiting-room.component';
@@ -34,9 +36,8 @@ import { WaitingRoomPlayerPageComponent } from '@app/pages/waiting-room-player-p
 import { NgChartsModule } from 'ng2-charts';
 import { CorrectionQRLComponent } from './components/correction-qrl/correction-qrl.component';
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
-import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
+import { QuitterButtonComponent } from './components/quitter-bouton/quitter-bouton.component';
 import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -74,6 +75,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         PlayerListComponent,
         CorrectionQRLComponent,
         QrlResponseAreaComponent,
+        QuitterButtonComponent,
         StatisticZoneComponent,
     ],
     imports: [
