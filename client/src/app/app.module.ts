@@ -37,6 +37,7 @@ import { GameHistoryListComponent } from './components/game-history-list/game-hi
 import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
 import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -75,6 +76,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         CorrectionQRLComponent,
         QrlResponseAreaComponent,
         StatisticZoneComponent,
+        ConfirmationDialogComponent,
     ],
     imports: [
         AppMaterialModule,
