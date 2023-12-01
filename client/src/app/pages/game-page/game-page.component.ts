@@ -5,7 +5,6 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
 
-
 @Component({
     selector: 'app-game-page',
     templateUrl: './game-page.component.html',
