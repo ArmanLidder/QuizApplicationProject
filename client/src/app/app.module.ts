@@ -39,7 +39,6 @@ import { CorrectionQRLComponent } from './components/correction-qrl/correction-q
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
 import { QuitterButtonComponent } from './components/quitter-bouton/quitter-bouton.component';
 import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
-import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
