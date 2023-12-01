@@ -37,7 +37,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     }
 
     get score() {
-        this.gameInterfaceManagementService.playerScore = this.gameInterfaceManagementService.gameService.isTestMode ? this.gameInterfaceManagementService.playerScore : this.gameInterfaceManagementService.playerScore;
+        this.gameInterfaceManagementService.playerScore = this.gameInterfaceManagementService.gameService.isTestMode ? this.gameInterfaceManagementService.gameService.playerScore : this.gameInterfaceManagementService.playerScore;
         return this.gameInterfaceManagementService.playerScore;
     }
 
