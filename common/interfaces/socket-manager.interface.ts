@@ -41,3 +41,8 @@ export interface GameStats {
     roomId: number;
     stats: string;
 }
+
+export interface UsernameValidation {
+    isValid: boolean;
+    error: string
+}

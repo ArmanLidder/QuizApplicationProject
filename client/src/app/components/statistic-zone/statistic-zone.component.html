@@ -5,10 +5,10 @@
         <button *ngIf="!isFirst()" class="arrow" (click)="previous()">Précédent</button>
         <button *ngIf="!isEnd()" class="arrow" (click)="next()">Suivant</button>
     </div>
-    <app-organizer-histogram
+    <app-statistic-histogram
         [changingResponses]="responseNumber"
         [valueOfResponses]="responseValue"
         [isGameOver]='true'>
-    </app-organizer-histogram>
+    </app-statistic-histogram>
 </div>
 

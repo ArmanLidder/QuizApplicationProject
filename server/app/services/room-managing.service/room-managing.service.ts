@@ -1,6 +1,7 @@
 import { Game } from '@app/classes/game/game';
 import { Message } from '@common/interfaces/message.interface';
 import { Service } from 'typedi';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 type SocketId = string;
 type Username = string;
@@ -102,7 +103,7 @@ export class RoomManagingService {
     getUsernamesArray(roomId: number) {
         if (roomId !== undefined) {
             const players = Array.from(this.getRoomById(roomId).players.keys());
-            players.splice(players.indexOf('Organisateur'), 1);
+            players.splice(players.indexOf(HOST_USERNAME), 1);
             return players;
         } else return undefined;
     }

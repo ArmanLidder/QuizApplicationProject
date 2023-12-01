@@ -1,8 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { RoomValidationResult } from '@common/interfaces/socket-manager.interface';
+import { RoomValidationService } from '@app/services/room-validation.service/room-validation.service';
 
 @Component({
     selector: 'app-room-code-prompt',
@@ -13,20 +11,18 @@ export class RoomCodePromptComponent implements OnInit {
     @Output() sendRoomData: EventEmitter<number> = new EventEmitter<number>();
     @Output() sendUsernameData: EventEmitter<string> = new EventEmitter<string>();
     @Output() validationDone: EventEmitter<boolean> = new EventEmitter<boolean>();
-    isLocked: boolean = false;
-    isActive: boolean = true;
-    isRoomIdValid: boolean = false;
-    isUsernameValid: boolean = false;
-    roomId: string | undefined;
-    username: string = '';
     inputBorderColor: string = '';
     error: string | undefined = '';
     textColor: string = '';
 
-    constructor(private socketService: SocketClientService) {}
+    constructor(
+        public roomValidationService: RoomValidationService,
+        private socketService: SocketClientService,
+    ) {}
 
     ngOnInit() {
         this.connect();
+        this.roomValidationService.resetService();
     }
 
     connect() {
@@ -36,124 +32,45 @@ export class RoomCodePromptComponent implements OnInit {
     }
 
     sendRoomIdToWaitingRoom() {
-        this.sendRoomData.emit(Number(this.roomId));
+        this.sendRoomData.emit(Number(this.roomValidationService.roomId));
     }
 
     sendUsernameToWaitingRoom() {
-        this.sendUsernameData.emit(this.username);
+        this.sendUsernameData.emit(this.roomValidationService.username);
     }
 
     sendValidationDone() {
-        this.validationDone.emit(this.isActive);
+        this.validationDone.emit(this.roomValidationService.isActive);
     }
 
     async validateRoomId() {
-        if (this.isOnlyDigit()) await this.sendRoomId();
-        else this.roomIdClientValidation();
+        this.error = await this.roomValidationService.verifyRoomId();
+        this.handleError();
     }
 
     async validateUsername() {
-        const whitespacePattern = /^\s*$/;
-        if (this.username === undefined || whitespacePattern.test(this.username)) {
-            this.error = errorDictionary.charNumError;
-            this.showErrorFeedback();
-        } else if (this.username?.toLowerCase() === 'organisateur') {
-            this.error = errorDictionary.organiserNameError;
-            this.showErrorFeedback();
-        } else {
-            await this.sendUsername();
-        }
+        this.error = await this.roomValidationService.verifyUsername();
+        this.handleError();
     }
 
     async joinRoom() {
-        await this.sendJoinRoomRequest();
-        if (!this.isLocked && this.isRoomIdValid && this.isUsernameValid) {
-            this.sendRoomIdToWaitingRoom();
-            this.sendUsernameToWaitingRoom();
-            this.isActive = false;
-            this.sendValidationDone();
-        } else if (!this.isUsernameValid) {
-            this.error = errorDictionary.nameAlreadyUsed;
-            this.showErrorFeedback();
-        }
+        this.error = await this.roomValidationService.sendJoinRoomRequest();
+        const isValid =
+            !this.roomValidationService.isLocked && this.roomValidationService.isRoomIdValid && this.roomValidationService.isUsernameValid;
+        if (isValid) this.sendAllDataToWaitingRoom();
+        else this.handleError();
     }
 
-    private roomIdClientValidation() {
-        if (!this.isOnlyDigit()) {
-            this.error = errorDictionary.validationCodeError;
-            this.showErrorFeedback();
-        } else {
-            this.reset();
-        }
+    private sendAllDataToWaitingRoom() {
+        this.sendRoomIdToWaitingRoom();
+        this.sendUsernameToWaitingRoom();
+        this.roomValidationService.isActive = false;
+        this.sendValidationDone();
     }
 
-    private isOnlyDigit() {
-        return this.roomId?.match('[0-9]{4}');
-    }
-
-    private async sendJoinRoomRequest() {
-        await this.sendUsername();
-        if (this.isRoomIdValid && this.isUsernameValid) {
-            return new Promise<void>((resolve) => {
-                this.socketService.send(socketEvent.joinGame, { roomId: Number(this.roomId), username: this.username }, (isLocked: boolean) => {
-                    if (isLocked) {
-                        this.isLocked = true;
-                        this.showErrorFeedback();
-                    } else {
-                        this.isLocked = false;
-                        this.reset();
-                    }
-                    resolve();
-                });
-            });
-        }
-    }
-
-    private async sendUsername() {
-        await this.sendRoomId();
-        if (this.isRoomIdValid) {
-            return new Promise<void>((resolve) => {
-                this.socketService.send(
-                    socketEvent.validateUsername,
-                    { roomId: Number(this.roomId), username: this.username },
-                    (data: { isValid: boolean; error: string }) => {
-                        if (!data.isValid) {
-                            this.isUsernameValid = false;
-                            this.showErrorFeedback();
-                            this.error = data.error;
-                        } else {
-                            this.isUsernameValid = true;
-                            this.reset();
-                        }
-                    },
-                );
-                resolve();
-            });
-        }
-    }
-
-    private async sendRoomId() {
-        return new Promise<void>((resolve) => {
-            this.socketService.send(socketEvent.validateRoomId, Number(this.roomId), (data: RoomValidationResult) => {
-                if (!data.isRoom) {
-                    this.handleErrors();
-                    this.error = errorDictionary.roomCodeExpired;
-                } else if (data.isLocked) {
-                    this.handleErrors();
-                    this.error = errorDictionary.roomLocked;
-                } else {
-                    this.isRoomIdValid = true;
-                    this.reset();
-                }
-                resolve();
-            });
-        });
-    }
-
-    private handleErrors() {
-        this.isRoomIdValid = false;
-        this.isUsernameValid = false;
-        this.showErrorFeedback();
+    private handleError() {
+        if (this.error === '') this.reset();
+        else this.showErrorFeedback();
     }
 
     private reset() {

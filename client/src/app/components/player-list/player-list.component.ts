@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { CAN_TALK, Player, SORT_BY_NAME, SORT_BY_SCORE, SORT_BY_STATUS, STATUS_INDEX } from '@app/components/player-list/player-list.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { Score } from '@common/interfaces/score.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { STATUS_INDEX, CAN_TALK, Player, SORT_BY_STATUS, SORT_BY_SCORE, SORT_BY_NAME } from '@app/components/player-list/player-list.component.const';
+import { Score } from '@common/interfaces/score.interface';
+import { playerStatus } from '@common/player-status/player-status';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Component({
     selector: 'app-player-list',
@@ -57,9 +57,14 @@ export class PlayerListComponent {
         this.getPlayersList(false);
     }
 
+    sortAllPlayers(): Player[] {
+        this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
+        return this.players;
+    }
+
     async getPlayersList(resetPlayerStatus: boolean = true) {
         return new Promise<number>((resolve) => {
-            this.socketService.send(socketEvent.gatherPlayersUsername, this.roomId, (players: string[]) => {
+            this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, this.roomId, (players: string[]) => {
                 resolve(players.length);
                 this.setupPlayerList();
                 players.forEach((username) => {
@@ -72,7 +77,7 @@ export class PlayerListComponent {
     toggleChatPermission(username: string) {
         const playerIndex = this.findPlayer(username, this.players);
         this.players[playerIndex][4] = !this.players[playerIndex][4];
-        this.socketService.send(socketEvent.toggleChatPermission, { roomId: this.roomId, username });
+        this.socketService.send(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId: this.roomId, username });
     }
 
     isPlayerGone(username: string) {
@@ -88,17 +93,15 @@ export class PlayerListComponent {
     }
 
     private getPlayerScoreFromServer(username: string, resetPlayerStatus: boolean) {
-        this.socketService.send(socketEvent.getScore, { roomId: this.roomId, username }, (score: Score) => {
-            this.sortPlayersByScore(username, score, resetPlayerStatus);
+        this.socketService.send(socketEvent.GET_SCORE, { roomId: this.roomId, username }, (score: Score) => {
+            this.addPlayer(username, score, resetPlayerStatus);
         });
     }
 
-    private sortPlayersByScore(username: string, score: Score, resetPlayerStatus: boolean) {
+    private addPlayer(username: string, score: Score, resetPlayerStatus: boolean) {
         const status = this.initPlayerStatus(username, resetPlayerStatus);
         const canChat = this.canPlayerChat(username);
-        // this.sortListService.sortByScore();
         this.players.push([username, score.points, score.bonusCount, status, canChat]);
-        this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
     }
 
     private canPlayerChat(username: string) {
@@ -121,10 +124,10 @@ export class PlayerListComponent {
     }
 
     private configureBaseSocketFeatures() {
-        this.socketService.on(socketEvent.updateInteraction, (username: string) => {
+        this.socketService.on(socketEvent.UPDATE_INTERACTION, (username: string) => {
             this.changePlayerStatus(username, playerStatus.interaction);
         });
-        this.socketService.on(socketEvent.submitAnswer, (username: string) => {
+        this.socketService.on(socketEvent.SUBMIT_ANSWER, (username: string) => {
             this.changePlayerStatus(username, playerStatus.validation);
         });
     }

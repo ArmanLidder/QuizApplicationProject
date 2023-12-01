@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let player of players" [class]='player[3]'>
+        <tr *ngFor="let player of sortAllPlayers()" [class]='player[3]'>
             <td> {{player[0]}} </td>
             <td> {{player[1]}} </td>
             <td> {{player[2]}} </td>

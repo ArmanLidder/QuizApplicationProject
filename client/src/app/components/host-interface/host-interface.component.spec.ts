@@ -1,23 +1,23 @@
 /* eslint-disable max-lines */
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { HostInterfaceComponent } from './host-interface.component';
-import { GameService } from '@app/services/game.service/game.service';
-import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
-import { NgChartsModule } from 'ng2-charts';
-import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { HttpClientModule } from '@angular/common/http';
-import { QuestionType } from '@common/enums/question-type.enum';
-import { PlayerListComponent } from '@app/components/player-list/player-list.component';
-import { By } from '@angular/platform-browser';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { playerStatus } from '@common/player-status/player-status';
 import { CorrectionQRLComponent } from '@app/components/correction-qrl/correction-qrl.component';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic-zone.component';
 import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { QuizQuestion } from '@common/interfaces/quiz.interface';
+import { playerStatus } from '@common/player-status/player-status';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { NgChartsModule } from 'ng2-charts';
+import { HostInterfaceComponent } from './host-interface.component';
 
 const DIGIT_CONSTANT = 1;
 const TIMER_VALUE = 20;
@@ -65,7 +65,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent, CorrectionQRLComponent, StatisticZoneComponent],
+            declarations: [HostInterfaceComponent, StatisticHistogramComponent, PlayerListComponent, CorrectionQRLComponent, StatisticZoneComponent],
             providers: [
                 SocketClientService,
                 GameService,
@@ -127,16 +127,16 @@ describe('HostInterfaceComponent', () => {
             [nineEvent, nineAction],
             [tenthEvent, tenthAction],
         ] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.timeTransition);
-        expect(secondEvent).toEqual(socketEvent.endQuestion);
-        expect(thirdEvent).toEqual(socketEvent.finalTimeTransition);
-        expect(fourthEvent).toEqual(socketEvent.refreshChoicesStats);
-        expect(fifthEvent).toEqual(socketEvent.getInitialQuestion);
-        expect(sixthEvent).toEqual(socketEvent.getNextQuestion);
-        expect(seventhEvent).toEqual(socketEvent.removedPlayer);
-        expect(eighthEvent).toEqual(socketEvent.endQuestionAfterRemoval);
-        expect(nineEvent).toEqual(socketEvent.evaluationOver);
-        expect(tenthEvent).toEqual(socketEvent.refreshActivityStats);
+        expect(firstEvent).toEqual(socketEvent.TIME_TRANSITION);
+        expect(secondEvent).toEqual(socketEvent.END_QUESTION);
+        expect(thirdEvent).toEqual(socketEvent.FINAL_TIME_TRANSITION);
+        expect(fourthEvent).toEqual(socketEvent.REFRESH_CHOICES_STATS);
+        expect(fifthEvent).toEqual(socketEvent.GET_INITIAL_QUESTION);
+        expect(sixthEvent).toEqual(socketEvent.GET_NEXT_QUESTION);
+        expect(seventhEvent).toEqual(socketEvent.REMOVED_PLAYER);
+        expect(eighthEvent).toEqual(socketEvent.END_QUESTION_AFTER_REMOVAL);
+        expect(nineEvent).toEqual(socketEvent.EVALUATION_OVER);
+        expect(tenthEvent).toEqual(socketEvent.REFRESH_ACTIVITY_STATS);
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
@@ -153,7 +153,7 @@ describe('HostInterfaceComponent', () => {
             const sendSpy = spyOn(component['socketService'], 'send').and.callThrough();
             secondAction(0);
             const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-            expect(event).toEqual(socketEvent.getPlayerAnswers);
+            expect(event).toEqual(socketEvent.GET_PLAYER_ANSWERS);
             expect(roomId).toEqual(0);
             if (typeof callback === 'function') {
                 const testMap = new Map([['test', { answers: 'test', time: 0 }]]);
@@ -217,11 +217,11 @@ describe('HostInterfaceComponent', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.timeTransition);
+        expect(firstEvent).toEqual(socketEvent.TIME_TRANSITION);
 
         if (typeof firstAction === 'function') {
             firstAction(0);
-            expect(sendSpy).toHaveBeenCalledWith(socketEvent.nextQuestion, component.gameService.gameRealService.roomId);
+            expect(sendSpy).toHaveBeenCalledWith(socketEvent.NEXT_QUESTION, component.gameService.gameRealService.roomId);
             expect(component.gameService.timer).toEqual(0);
             expect(component.gameService.questionNumber).toEqual(1);
             expect(component.gameService.validatedStatus).toEqual(true);
@@ -248,16 +248,16 @@ describe('HostInterfaceComponent', () => {
             [nineEvent, nineAction],
             [tenthEvent, tenthAction],
         ] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.timeTransition);
-        expect(secondEvent).toEqual(socketEvent.endQuestion);
-        expect(thirdEvent).toEqual(socketEvent.finalTimeTransition);
-        expect(fourthEvent).toEqual(socketEvent.refreshChoicesStats);
-        expect(fifthEvent).toEqual(socketEvent.getInitialQuestion);
-        expect(sixthEvent).toEqual(socketEvent.getNextQuestion);
-        expect(seventhEvent).toEqual(socketEvent.removedPlayer);
-        expect(eighthEvent).toEqual(socketEvent.endQuestionAfterRemoval);
-        expect(nineEvent).toEqual(socketEvent.evaluationOver);
-        expect(tenthEvent).toEqual(socketEvent.refreshActivityStats);
+        expect(firstEvent).toEqual(socketEvent.TIME_TRANSITION);
+        expect(secondEvent).toEqual(socketEvent.END_QUESTION);
+        expect(thirdEvent).toEqual(socketEvent.FINAL_TIME_TRANSITION);
+        expect(fourthEvent).toEqual(socketEvent.REFRESH_CHOICES_STATS);
+        expect(fifthEvent).toEqual(socketEvent.GET_INITIAL_QUESTION);
+        expect(sixthEvent).toEqual(socketEvent.GET_NEXT_QUESTION);
+        expect(seventhEvent).toEqual(socketEvent.REMOVED_PLAYER);
+        expect(eighthEvent).toEqual(socketEvent.END_QUESTION_AFTER_REMOVAL);
+        expect(nineEvent).toEqual(socketEvent.EVALUATION_OVER);
+        expect(tenthEvent).toEqual(socketEvent.REFRESH_ACTIVITY_STATS);
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
@@ -274,7 +274,7 @@ describe('HostInterfaceComponent', () => {
             const sendSpy = spyOn(component['socketService'], 'send').and.callThrough();
             secondAction(0);
             const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-            expect(event).toEqual(socketEvent.getPlayerAnswers);
+            expect(event).toEqual(socketEvent.GET_PLAYER_ANSWERS);
             expect(roomId).toEqual(0);
             if (typeof callback === 'function') {
                 const testMap = new Map([['test', { answers: 'test', time: 0 }]]);
@@ -343,7 +343,7 @@ describe('HostInterfaceComponent', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [firstEvent, firstAction] = onSpy.calls.allArgs()[1];
-        expect(firstEvent).toEqual(socketEvent.endQuestion);
+        expect(firstEvent).toEqual(socketEvent.END_QUESTION);
         if (typeof firstAction === 'function') {
             firstAction(0);
             expect(sendQrlAnswerSpy).toHaveBeenCalled();
@@ -358,9 +358,9 @@ describe('HostInterfaceComponent', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction], [thirdEvent, thirdAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.timeTransition);
-        expect(secondEvent).toEqual(socketEvent.endQuestion);
-        expect(thirdEvent).toEqual(socketEvent.finalTimeTransition);
+        expect(firstEvent).toEqual(socketEvent.TIME_TRANSITION);
+        expect(secondEvent).toEqual(socketEvent.END_QUESTION);
+        expect(thirdEvent).toEqual(socketEvent.FINAL_TIME_TRANSITION);
 
         if (typeof firstAction === 'function') {
             firstAction(TIMER_VALUE);
@@ -384,20 +384,20 @@ describe('HostInterfaceComponent', () => {
         component['nextQuestion']();
         expect(component.gameService.validatedStatus).toEqual(false);
         expect(component.gameService.lockedStatus).toEqual(false);
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.startTransition, component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.START_TRANSITION, component.gameService.gameRealService.roomId);
     });
     it('should pause the timer', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['pauseTimer']();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.pauseTimer, component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.PAUSE_TIMER, component.gameService.gameRealService.roomId);
     });
     it('should enable the panic mode', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         component['gameService'].gameRealService.timer = TIMER_VALUE;
         const sendSpy = spyOn(socketService, 'send');
         component['panicMode']();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.panicMode, {
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.PANIC_MODE, {
             roomId: component.gameService.gameRealService.roomId,
             timer: component.gameService.gameRealService.timer,
         });
@@ -406,7 +406,7 @@ describe('HostInterfaceComponent', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         const sendSpy = spyOn(socketService, 'send');
         component['handleLastQuestion']();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.showResult, component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.SHOW_RESULT, component.gameService.gameRealService.roomId);
     });
     it('should update host command properly', () => {
         component.gameService.gameRealService.isLast = false;
@@ -421,10 +421,10 @@ describe('HostInterfaceComponent', () => {
         component.handleHostCommand();
         expect(component.gameService.validatedStatus).toEqual(false);
         expect(component.gameService.lockedStatus).toEqual(false);
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.startTransition, component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.START_TRANSITION, component.gameService.gameRealService.roomId);
         component['gameService'].gameRealService.isLast = true;
         component.handleHostCommand();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.showResult, component.gameService.gameRealService.roomId);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.SHOW_RESULT, component.gameService.gameRealService.roomId);
     });
     it('should return the right condition of isDisabled', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
