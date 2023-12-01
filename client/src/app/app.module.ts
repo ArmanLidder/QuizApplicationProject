@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -91,6 +92,7 @@ import { StatisticZoneComponent } from './components/statistic-zone/statistic-zo
         NgChartsModule,
         BrowserAnimationsModule,
         MatTooltipModule,
+        MatDialogModule,
     ],
     providers: [],
     bootstrap: [AppComponent],
