@@ -1,6 +1,6 @@
 import { QuestionType } from '@common/enums/question-type.enum';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { ResponsesNumber, ResponsesValues } from '@app/components/organizer-histogram/organizer-histogram.component.const';
+import { ResponsesNumber, ResponsesValues } from '@app/components/statistic-histogram/statistic-histogram.component.const';
 
 export type QuestionStatistics = [ResponsesValues, ResponsesNumber, QuizQuestion];
 

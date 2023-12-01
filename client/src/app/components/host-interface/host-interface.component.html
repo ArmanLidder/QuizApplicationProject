@@ -30,7 +30,7 @@
 <app-correction-qrl [gameStats] ='gameStats' [reponsesQRL]='reponsesQRL' [isHostEvaluating]='isHostEvaluating'></app-correction-qrl>
 <div class="result-container">
     <div class="histogram" *ngIf='!this.isGameOver'>
-        <app-organizer-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-organizer-histogram>
+        <app-statistic-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-statistic-histogram>
     </div>
     <app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
     <app-player-list

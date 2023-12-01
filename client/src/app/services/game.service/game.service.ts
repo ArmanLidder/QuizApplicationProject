@@ -4,6 +4,7 @@ import { GameRealService } from '@app/services/game-real.service/game-real.servi
 import { GameTestService } from '@app/services/game-test.service/game-test.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 @Injectable({
     providedIn: 'root',
@@ -129,7 +130,7 @@ export class GameService {
         this.gameRealService.timer = timeValue;
         if (this.timer === 0 && !this.gameRealService.locked) {
             this.gameRealService.locked = true;
-            if (this.username !== 'Organisateur') this.sendAnswer();
+            if (this.username !== HOST_USERNAME) this.sendAnswer();
         }
     }
 }

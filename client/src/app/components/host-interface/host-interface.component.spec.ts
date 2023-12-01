@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { CorrectionQRLComponent } from '@app/components/correction-qrl/correction-qrl.component';
-import { OrganizerHistogramComponent } from '@app/components/organizer-histogram/organizer-histogram.component';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic-zone.component';
 import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
@@ -65,7 +65,7 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, OrganizerHistogramComponent, PlayerListComponent, CorrectionQRLComponent, StatisticZoneComponent],
+            declarations: [HostInterfaceComponent, StatisticHistogramComponent, PlayerListComponent, CorrectionQRLComponent, StatisticZoneComponent],
             providers: [
                 SocketClientService,
                 GameService,

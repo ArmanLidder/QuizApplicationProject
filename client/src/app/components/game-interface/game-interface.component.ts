@@ -9,6 +9,7 @@ import { timerMessage } from '@common/browser-message/displayable-message/timer-
 import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 type Player = [string, number];
 
@@ -134,7 +135,7 @@ export class GameInterfaceComponent {
     }
 
     private getScore() {
-        if (this.gameService.gameRealService.username !== 'Organisateur') {
+        if (this.gameService.gameRealService.username !== HOST_USERNAME) {
             this.socketService.send(
                 socketEvent.GET_SCORE,
                 {

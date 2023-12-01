@@ -10,6 +10,8 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { GamePageComponent } from './game-page.component';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
@@ -32,7 +34,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent],
+            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent, StatisticHistogramComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
@@ -57,7 +59,7 @@ describe('GamePageComponent', () => {
 
     it('should send host abandonment event on component destruction if game is starting', () => {
         sendSpy = spyOn(socketService, 'send');
-        component['gameService'].gameRealService.username = 'Organisateur';
+        component['gameService'].gameRealService.username = HOST_USERNAME;
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
