@@ -161,11 +161,6 @@ export class GameInterfaceComponent {
         }
     }
 
-    clickMethod(name: string) {
-        if(confirm("Are you sure to delete "+name)) {
-          console.log("Implement delete functionality here");
-        }
-    }
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     protected readonly questionType = QuestionType;
