@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -8,19 +9,17 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
     styleUrls: ['./quitter-bouton.component.scss'],
 })
 export class QuitterButtonComponent {
-    constructor(private dialog: MatDialog) {}
+    constructor(private dialog: MatDialog, private router: Router) {}
 
     openConfirmationDialog(): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '250px',
-            data: { message: 'Are you sure you want to proceed?' }
+            width: '300px',
+            data: { message: 'Etes-vous sur de vouloir quitter?' }
         });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                // Action to perform on confirmation
-                console.log('User confirmed.');
-                // Call your method or perform any action here
+                this.router.navigate(['./home']);
             } else {
                 // Action to perform if canceled
                 console.log('User canceled.');
