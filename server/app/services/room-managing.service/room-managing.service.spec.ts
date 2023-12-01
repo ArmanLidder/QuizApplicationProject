@@ -1,6 +1,7 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
-import { RoomData, RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
+import { RoomData } from '@app/interface/room-data-interface';
+import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as sinon from 'sinon';
 import { Message } from '@common/interfaces/message.interface';
 import { Game } from '@app/classes/game/game';
@@ -29,7 +30,7 @@ describe('Room Managing Service', () => {
         roomService = new RoomManagingService();
         roomService['rooms'].set(roomId, {
             room: roomId,
-            quizID: 'quiz123',
+            quizId: 'quiz123',
             players: new Map([
                 [HOST_USERNAME, 'socket organisateur'],
                 [mockUsername, mockSocket],
@@ -48,7 +49,7 @@ describe('Room Managing Service', () => {
 
         expect(roomData).to.not.equal(undefined);
         expect(roomData.room).to.equal(roomID);
-        expect(roomData.quizID).to.equal('quiz123');
+        expect(roomData.quizId).to.equal('quiz123');
     });
 
     it('should delete a room', () => {
@@ -71,7 +72,7 @@ describe('Room Managing Service', () => {
 
     it('get socketID by username', () => {
         const username = 'usernameOne';
-        const socket = roomService.getSocketIDByUsername(roomId, username);
+        const socket = roomService.getSocketIdByUsername(roomId, username);
         expect(socket).to.equal(mockSocket);
     });
 
@@ -119,11 +120,11 @@ describe('Room Managing Service', () => {
         const roomData = roomService.roomMap.get(roomId);
         const socketToRemove = 'socketToRemove';
         roomService.addUser(roomId, 'userToRemove', socketToRemove);
-        let result = roomService.removeUserBySocketID(socketToRemove);
+        let result = roomService.removeUserBySocketId(socketToRemove);
         expect(roomData.players.get('userToRemove')).to.equal(undefined);
         expect(result).to.deep.equal({ roomId, username: 'userToRemove' });
 
-        result = roomService.removeUserBySocketID('non existant socket');
+        result = roomService.removeUserBySocketId('non existant socket');
         expect(result).to.equal(undefined);
     });
 
@@ -156,9 +157,9 @@ describe('Room Managing Service', () => {
         const lowerBound = 1000;
         const upperBound = 9999;
         for (let i = 0; i < maxLoop; i++) {
-            expect(roomService['generateUniqueRoomID']()).to.not.equal(roomId);
-            expect(roomService['generateUniqueRoomID']()).gte(lowerBound);
-            expect(roomService['generateUniqueRoomID']()).lte(upperBound);
+            expect(roomService['generateUniqueRoomId']()).to.not.equal(roomId);
+            expect(roomService['generateUniqueRoomId']()).gte(lowerBound);
+            expect(roomService['generateUniqueRoomId']()).lte(upperBound);
         }
     });
 
@@ -179,7 +180,7 @@ describe('Room Managing Service', () => {
     it('should return the username for a valid socket ID', () => {
         const mockRoom: RoomData = {
             room: 1,
-            quizID: '',
+            quizId: '',
             players: new Map<string, string>(),
             locked: false,
             bannedNames: [],
@@ -197,7 +198,7 @@ describe('Room Managing Service', () => {
         const nonExistantSocketId = 'none';
         const mockRoom: RoomData = {
             room: 1,
-            quizID: '',
+            quizId: '',
             players: new Map<string, string>(),
             locked: false,
             bannedNames: [],

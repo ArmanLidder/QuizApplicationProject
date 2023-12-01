@@ -106,9 +106,9 @@ export class GamesListComponent implements OnInit {
         try {
             this.importedQuiz = JSON.parse(event.target?.result as string);
             this.importedQuiz.lastModification = getCurrentDateService();
-            this.resolveasyncFileRead();
+            this.resolveAsyncFileRead();
         } catch (error) {
-            this.rejectasyncFileRead(error);
+            this.rejectAsyncFileRead(error);
         }
     }
 
@@ -119,11 +119,11 @@ export class GamesListComponent implements OnInit {
         });
     }
 
-    resolveasyncFileRead(): void {
+    resolveAsyncFileRead(): void {
         this.asyncFileResolver();
     }
 
-    rejectasyncFileRead(error: unknown): void {
+    rejectAsyncFileRead(error: unknown): void {
         this.asyncFileRejecter(error);
     }
 
