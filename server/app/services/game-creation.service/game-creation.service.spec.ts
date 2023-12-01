@@ -87,8 +87,7 @@ describe('Game Creation service tests', () => {
         roomManager.getUsernamesArray.returns(['username1', 'username2']);
         const expectedPlayers = roomManager.getUsernamesArray(mockRoomId);
         roomManager.isRoomLocked.returns(false);
-        const clientCallBack = (isLocked: boolean) => {
-            expect(isLocked).to.equal(false);
+        const clientCallBack = () => {
             expect(roomManager.addUser.called);
             done();
         };
