@@ -1,13 +1,13 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { ResponsesValues, ResponsesNumber } from '@app/components/organizer-histogram/organizer-histogram.component.const';
+import { ResponsesValues, ResponsesNumber } from '@app/components/statistic-histogram/statistic-histogram.component.const';
 
 @Component({
-    selector: 'app-organizer-histogram',
-    templateUrl: './organizer-histogram.component.html',
-    styleUrls: ['./organizer-histogram.component.scss'],
+    selector: 'app-statistic-histogram',
+    templateUrl: './statistic-histogram.component.html',
+    styleUrls: ['./statistic-histogram.component.scss'],
 })
-export class OrganizerHistogramComponent implements OnChanges {
+export class StatisticHistogramComponent implements OnChanges {
     @Input() changingResponses: ResponsesNumber;
     @Input() valueOfResponses: ResponsesValues;
     barChartOptions: ChartConfiguration['options'] = {

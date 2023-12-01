@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OrganizerHistogramComponent } from './organizer-histogram.component';
+import { StatisticHistogramComponent } from './statistic-histogram.component';
 import { NgChartsModule } from 'ng2-charts';
 
 const HISTOGRAM_VALUE_PLAYER_ONE = 15;
@@ -7,15 +7,15 @@ const HISTOGRAM_VALUE_PLAYER_TWO = 5;
 const HISTOGRAM_VALUE_PLAYER_THREE = 8;
 
 describe('OrganizerHistogramComponent', () => {
-    let component: OrganizerHistogramComponent;
-    let fixture: ComponentFixture<OrganizerHistogramComponent>;
+    let component: StatisticHistogramComponent;
+    let fixture: ComponentFixture<StatisticHistogramComponent>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [OrganizerHistogramComponent],
+            declarations: [StatisticHistogramComponent],
             imports: [NgChartsModule],
         }).compileComponents();
-        fixture = TestBed.createComponent(OrganizerHistogramComponent);
+        fixture = TestBed.createComponent(StatisticHistogramComponent);
         component = fixture.componentInstance;
 
         component.changingResponses = new Map<string, number>([

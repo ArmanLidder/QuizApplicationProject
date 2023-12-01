@@ -1,15 +1,16 @@
 import { Component, Injector, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType } from '@common/enums/question-type.enum';
+import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
-import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 type Player = [string, number];
 
@@ -57,7 +58,7 @@ export class GameInterfaceComponent {
         return this.isBonus;
     }
     private configureBaseSocketFeatures() {
-        this.socketService.on(socketEvent.endQuestion, () => {
+        this.socketService.on(socketEvent.END_QUESTION, () => {
             this.gameService.audio.pause();
             this.gameService.audio.currentTime = 0;
             this.gameService.gameRealService.audioPaused = false;
@@ -70,11 +71,11 @@ export class GameInterfaceComponent {
             }
         });
 
-        this.socketService.on(socketEvent.evaluationOver, () => {
+        this.socketService.on(socketEvent.EVALUATION_OVER, () => {
             this.getScore();
         });
 
-        this.socketService.on(socketEvent.timeTransition, (timeValue: number) => {
+        this.socketService.on(socketEvent.TIME_TRANSITION, (timeValue: number) => {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.gameService.audio.pause();
@@ -88,7 +89,7 @@ export class GameInterfaceComponent {
             }
         });
 
-        this.socketService.on(socketEvent.finalTimeTransition, (timeValue: number) => {
+        this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, (timeValue: number) => {
             this.timerText = timerMessage.finalResult;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
@@ -97,18 +98,18 @@ export class GameInterfaceComponent {
             }
         });
 
-        this.socketService.on(socketEvent.removedFromGame, () => {
+        this.socketService.on(socketEvent.REMOVED_FROM_GAME, () => {
             this.router.navigate(['/']);
         });
 
-        this.socketService.on(socketEvent.panicMode, () => {
+        this.socketService.on(socketEvent.PANIC_MODE, () => {
             if (this.gameService.timer > 0 && !this.gameService.gameRealService.audioPaused) {
                 this.gameService.audio.play();
             }
             this.inPanicMode = true;
         });
 
-        this.socketService.on(socketEvent.pauseTimer, () => {
+        this.socketService.on(socketEvent.PAUSE_TIMER, () => {
             if (this.gameService.gameRealService.audioPaused && this.inPanicMode) {
                 this.gameService.audio.play();
             } else if (!this.gameService.gameRealService.audioPaused && this.inPanicMode) {
@@ -117,7 +118,7 @@ export class GameInterfaceComponent {
             this.gameService.gameRealService.audioPaused = !this.gameService.gameRealService.audioPaused;
         });
 
-        this.socketService.on(socketEvent.gameStatsDistribution, (gameStats: string) => {
+        this.socketService.on(socketEvent.GAME_STATUS_DISTRIBUTION, (gameStats: string) => {
             this.unpackStats(this.parseGameStats(gameStats));
         });
     }
@@ -135,9 +136,9 @@ export class GameInterfaceComponent {
     }
 
     private getScore() {
-        if (this.gameService.gameRealService.username !== 'Organisateur') {
+        if (this.gameService.gameRealService.username !== HOST_USERNAME) {
             this.socketService.send(
-                socketEvent.getScore,
+                socketEvent.GET_SCORE,
                 {
                     roomId: this.gameService.gameRealService.roomId,
                     username: this.gameService.gameRealService.username,

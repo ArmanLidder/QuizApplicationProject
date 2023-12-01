@@ -9,6 +9,7 @@ import { DatabaseServiceMock } from '@app/services/database.service/database.ser
 import { MongoClient } from 'mongodb';
 import { DatabaseService } from '@app/services/database.service/database.service';
 import { HistoryService } from '@app/services/history.service/history.service';
+import { HOST_USERNAME } from '@common/names/host-username';
 const FIVE_SECOND = 5000;
 describe('Room Managing Service', () => {
     let roomService: RoomManagingService;
@@ -30,14 +31,14 @@ describe('Room Managing Service', () => {
             room: roomId,
             quizID: 'quiz123',
             players: new Map([
-                ['Organisateur', 'socket organisateur'],
+                [HOST_USERNAME, 'socket organisateur'],
                 [mockUsername, mockSocket],
             ]),
             locked: false,
             bannedNames: mockBannedNames.slice(), // Deep copy of mockBannedNames
             messages: mockMessages,
             timer: null,
-            game: new Game(['Organisateur', 'socket organisateur'], quizService, historyService),
+            game: new Game([HOST_USERNAME, 'socket organisateur'], quizService, historyService),
         });
     });
 

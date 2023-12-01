@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { GameTestService } from '@app/services/game-test.service/game-test.service';
+import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
+import { GameTestService } from '@app/services/game-test.service/game-test.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
+import { HOST_USERNAME } from '@common/names/host-username';
 
 @Injectable({
     providedIn: 'root',
@@ -123,7 +124,7 @@ export class GameService {
     }
 
     private configureBaseSockets() {
-        this.socketService.on(socketEvent.time, (timeValue: number) => {
+        this.socketService.on(socketEvent.TIME, (timeValue: number) => {
             this.handleTimeEvent(timeValue);
         });
     }
@@ -132,7 +133,7 @@ export class GameService {
         this.gameRealService.timer = timeValue;
         if (this.timer === 0 && !this.gameRealService.locked) {
             this.gameRealService.locked = true;
-            if (this.username !== 'Organisateur') this.sendAnswer();
+            if (this.username !== HOST_USERNAME) this.sendAnswer();
         }
     }
 }

@@ -1,15 +1,17 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { GameInterfaceComponent } from '@app/components/game-interface/game-interface.component';
+import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { GamePageComponent } from './game-page.component';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { GamePageComponent } from './game-page.component';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 
 const DIGIT_CONSTANT = 1;
 describe('GamePageComponent', () => {
@@ -32,7 +34,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent],
+            declarations: [GamePageComponent, SidebarComponent, GameInterfaceComponent, PlayerListComponent, StatisticHistogramComponent],
             providers: [
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
@@ -57,11 +59,11 @@ describe('GamePageComponent', () => {
 
     it('should send host abandonment event on component destruction if game is starting', () => {
         sendSpy = spyOn(socketService, 'send');
-        component['gameService'].gameRealService.username = 'Organisateur';
+        component['gameService'].gameRealService.username = HOST_USERNAME;
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.hostLeft, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.HOST_LEFT, DIGIT_CONSTANT);
     });
 
     it('should send player abandonment event on component destruction if game is starting', () => {
@@ -70,7 +72,7 @@ describe('GamePageComponent', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.playerLeft, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(socketEvent.PLAYER_LEFT, DIGIT_CONSTANT);
     });
     it('should send room creation event if it is the host of the game', () => {
         component.ngOnInit();

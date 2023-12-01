@@ -4,9 +4,9 @@ import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface
 import { QuestionType } from '@common/enums/question-type.enum';
 import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
-import { createFormQuestionFormGroup } from 'src/utils/create-form-question';
 import { ItemMovingDirection } from 'src/enums/item-moving-direction';
 import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
+import { createFormQuestionFormGroup } from 'src/utils/create-form-question/create-form-question';
 
 describe('ChoiceService', () => {
     let service: ChoiceService;
