@@ -18,16 +18,16 @@
 
 .confirm {
     margin-left: 10px;
-    background-color: #38b000;
+    background-color: #007bff;
     color: white;
-    border: 4px solid #38b000;
+    border: 4px solid #007bff;
     &:hover {
         background-color: white;
-        color: #38b000;
+        color: #007bff;
         transition: 0.3s;
     }
     &:active {
-        background-color: #38b000;
+        background-color: #007bff;
         color: black;
         border: 4px solid black;
     }
