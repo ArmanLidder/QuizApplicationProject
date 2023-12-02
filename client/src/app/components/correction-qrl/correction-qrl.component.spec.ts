@@ -116,7 +116,7 @@ describe('CorrectionQRLComponent', () => {
     it('should change when there is a change', () => {
         spyOn(component, 'initialize');
         const changes: SimpleChanges = {
-            reponsesQRL: new SimpleChange(null, 'nouvelleValeurDeReponsesQRL', true),
+            qrlAnswers: new SimpleChange(null, 'nouvelleValeurDeReponsesQRL', true),
         };
         component.ngOnChanges(changes);
         expect(component.initialize).toHaveBeenCalled();
