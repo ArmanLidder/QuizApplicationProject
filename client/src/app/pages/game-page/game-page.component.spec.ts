@@ -12,14 +12,14 @@
 // import { GamePageComponent } from './game-page.component';
 // import { HOST_USERNAME } from '@common/names/host-username';
 // import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
-//
+
 // const DIGIT_CONSTANT = 1;
 // describe('GamePageComponent', () => {
 //     let component: GamePageComponent;
 //     let fixture: ComponentFixture<GamePageComponent>;
 //     let socketService: SocketClientServiceTestHelper;
 //     let sendSpy: jasmine.Spy;
-//
+
 //     const mockActivatedRoute = {
 //         snapshot: {
 //             url: [
@@ -30,7 +30,7 @@
 //             paramMap: convertToParamMap({ key: 'value' }),
 //         },
 //     };
-//
+
 //     beforeEach(async () => {
 //         TestBed.configureTestingModule({
 //             imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
@@ -52,11 +52,11 @@
 //         component = fixture.componentInstance;
 //         fixture.detectChanges();
 //     });
-//
+
 //     it('should create', () => {
 //         expect(component).toBeTruthy();
 //     });
-//
+
 //     it('should send host abandonment event on component destruction if game is starting', () => {
 //         sendSpy = spyOn(socketService, 'send');
 //         component['gameService'].gameRealService.username = HOST_USERNAME;
@@ -65,7 +65,7 @@
 //         component.ngOnDestroy();
 //         expect(sendSpy).toHaveBeenCalledWith(socketEvent.HOST_LEFT, DIGIT_CONSTANT);
 //     });
-//
+
 //     it('should send player abandonment event on component destruction if game is starting', () => {
 //         sendSpy = spyOn(socketService, 'send');
 //         component['gameService'].gameRealService.username = 'Player';
@@ -86,7 +86,7 @@
 //                 expect(spyOnNgOnDestroy).toHaveBeenCalled();
 //             }
 //             if (window.onload) {
-//                 const spyRoute = spyOn(component.route, 'navigate');
+//                 const spyRoute = spyOn(component['route'], 'navigate');
 //                 // @ts-ignore
 //                 window.onload();
 //                 expect(spyRoute).toHaveBeenCalledWith(['/']);

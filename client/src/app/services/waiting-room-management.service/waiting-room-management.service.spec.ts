@@ -25,7 +25,7 @@ describe('WaitingRoomManagementService', () => {
         onSpy = spyOn(socketService, 'on').and.callThrough();
         routerSpy = spyOn(router, 'navigate');
     });
-    // send .calls.mostRecent().args
+
     it('should be created', () => {
         expect(service).toBeTruthy();
     });

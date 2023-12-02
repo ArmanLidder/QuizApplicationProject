@@ -4,7 +4,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
-//import { HOST_USERNAME } from '@common/names/host-username';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 @Component({
     selector: 'app-game-page',
@@ -17,12 +17,15 @@ export class GamePageComponent implements OnDestroy, OnInit {
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
-        public route: Router,
-    ) {
+        private interactiveListService: InteractiveListSocketService,
+        private route: Router) {
         this.isHost = this.gameService.gameRealService.username === HOST_USERNAME;
     }
 
+   
+
     ngOnInit() {
+        if (this.socketService.isSocketAlive()) this.interactiveListService.configureBaseSocketFeatures();
         window.onbeforeunload = () => this.ngOnDestroy();
         window.onload = async () => this.route.navigate(['/']);
     }

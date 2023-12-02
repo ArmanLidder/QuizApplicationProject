@@ -6,6 +6,8 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
 
 describe('GameItemComponent', () => {
     let quizServiceSpy: SpyObj<QuizService>;
@@ -19,8 +21,8 @@ describe('GameItemComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [GameItemComponent],
-            imports: [HttpClientModule, RouterTestingModule],
-            providers: [{ provide: QuizService, useValue: quizServiceSpy }],
+            imports: [HttpClientModule, RouterTestingModule, AppMaterialModule],
+            providers: [MatDialog, { provide: QuizService, useValue: quizServiceSpy }],
         }).compileComponents();
     }));
 

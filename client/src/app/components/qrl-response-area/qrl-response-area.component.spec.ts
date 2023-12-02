@@ -8,6 +8,8 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { MatDialog } from '@angular/material/dialog';
+import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
 
 describe('QrlResponseAreaComponent', () => {
     let component: QrlResponseAreaComponent;
@@ -16,8 +18,8 @@ describe('QrlResponseAreaComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [QrlResponseAreaComponent],
-            providers: [SocketClientService, GameService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+            declarations: [QrlResponseAreaComponent, QuitterButtonComponent],
+            providers: [MatDialog, SocketClientService, GameService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
             imports: [HttpClientModule, AppMaterialModule, FormsModule],
         }).compileComponents();
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;

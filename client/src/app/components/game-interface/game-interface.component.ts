@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { QuestionType } from '@common/enums/question-type.enum';
 import {
     GameInterfaceManagementService
 } from '@app/services/game-interface-management.service/game-interface-management.service';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 
 @Component({
@@ -14,7 +14,7 @@ import { HOST_USERNAME } from '@common/names/host-username';
     styleUrls: ['./game-interface.component.scss'],
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
-    @ViewChild('playerListChild') playerListComponent: PlayerListComponent;
+    private interactiveListService: InteractiveListSocketService;
 
     constructor(public gameInterfaceManagementService: GameInterfaceManagementService,
                 private route: ActivatedRoute) {
@@ -25,7 +25,6 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
         if (this.gameInterfaceManagementService.gameService.username !== HOST_USERNAME) {
             console.log('game interface component ngOnInit');
             this.gameInterfaceManagementService.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
-            this.gameInterfaceManagementService.playerListComponent = this.playerListComponent;
             const pathId = this.route.snapshot.paramMap.get('id') as string;
             this.gameInterfaceManagementService.setup(pathId);
         }
