@@ -11,14 +11,16 @@ import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zon
 export class StatisticZoneComponent implements OnInit {
     @Input() gameStats: QuestionStatistics[];
     currentStat: QuestionStatistics;
-    responseValue: ResponsesValues;
-    responseNumber: ResponsesNumber;
-    question: QuizQuestion;
+    responseValue: ResponsesValues = new Map<string, boolean>();
+    responseNumber: ResponsesNumber = new Map<string, number>();
+    question: QuizQuestion | undefined;
     index: number = 0;
 
     ngOnInit() {
-        this.currentStat = this.gameStats[this.index];
-        this.setUpData();
+        if (this.gameStats.length !== 0) {
+            this.currentStat = this.gameStats[this.index];
+            this.setUpData();
+        }
     }
 
     next() {
@@ -32,7 +34,7 @@ export class StatisticZoneComponent implements OnInit {
     }
 
     isEnd() {
-        return this.index === this.gameStats.length - 1;
+        return this.gameStats.length !== 0 ? this.index === this.gameStats.length - 1 : true;
     }
 
     isFirst() {
