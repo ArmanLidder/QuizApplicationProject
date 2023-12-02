@@ -34,7 +34,6 @@ export namespace socketEvent {
     export const STOP_TIMER = 'stopTimer';
     export const CONNECTION = 'connection';
     export const NEW_MESSAGE = 'newMessage'
-    export const DISCONNECT = 'disconnect';
     export const TOGGLE_CHAT_PERMISSION = 'toggleChatPermission';
     export const SEND_ACTIVITY_STATUS = 'sendActivityStatus';
     export const NEW_RESPONSE_INTERACTION = 'newResponseInteraction';

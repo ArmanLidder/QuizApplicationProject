@@ -9,4 +9,5 @@ export const ACTIVE_STATUS = 0;
 export const INACTIVE_STATUS = 1;
 export const VALUE = 0;
 export const RESPONSE = 1;
+
 export type TransportStatsFormat = [[string, boolean][], [string, number][], QuizQuestion][];

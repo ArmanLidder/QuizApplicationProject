@@ -66,7 +66,7 @@ describe('CorrectionQRLComponent', () => {
         component.isHostEvaluating = true;
         component.initialize();
         component.endCorrection();
-        expect(component.reponsesQRLCorrected).toBeTruthy();
+        expect(component.correctedQrlAnswers).toBeTruthy();
     });
 
     it('should clear all', () => {
@@ -74,7 +74,7 @@ describe('CorrectionQRLComponent', () => {
         expect(component.usernames.length).toEqual(0);
         expect(component.answers.length).toEqual(0);
         expect(component.points.length).toEqual(0);
-        expect(component.reponsesQRLCorrected.size).toEqual(0);
+        expect(component.correctedQrlAnswers.size).toEqual(0);
         expect(component.indexPlayer).toEqual(initialIndex);
     });
 

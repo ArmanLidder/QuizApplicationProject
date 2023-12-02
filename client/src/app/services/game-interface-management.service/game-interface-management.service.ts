@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Router } from '@angular/router';
@@ -25,11 +25,11 @@ export class GameInterfaceManagementService {
     players: Player[] = [];
     inPanicMode: boolean = false;
     gameStats: QuestionStatistics[] = [];
+    private router: Router = inject(Router);
 
     constructor(
         public gameService: GameService,
         private socketService: SocketClientService,
-        private router: Router,
         private interactiveListService: InteractiveListSocketService,
     ) {}
 

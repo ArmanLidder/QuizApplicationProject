@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
@@ -13,12 +13,12 @@ import { InteractiveListSocketService } from '@app/services/interactive-list-soc
 })
 export class GamePageComponent implements OnDestroy, OnInit {
     isHost: boolean;
+    private route: Router = inject(Router);
 
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
         private interactiveListService: InteractiveListSocketService,
-        private route: Router,
     ) {
         this.isHost = this.gameService.gameRealService.username === HOST_USERNAME;
     }

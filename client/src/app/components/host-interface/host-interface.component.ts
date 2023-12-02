@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
@@ -11,12 +11,12 @@ import { HostInterfaceManagementService } from '@app/services/host-interface-man
 })
 export class HostInterfaceComponent {
     private isLastButton: boolean = false;
+    private route: ActivatedRoute = inject(ActivatedRoute);
 
     constructor(
         public gameService: GameService,
         public hostInterfaceManagerService: HostInterfaceManagementService,
         private readonly socketService: SocketClientService,
-        private route: ActivatedRoute,
     ) {
         if (this.socketService.isSocketAlive()) this.hostInterfaceManagerService.configureBaseSocketFeatures();
         this.gameService.init(this.route.snapshot.paramMap.get('id') as string);
