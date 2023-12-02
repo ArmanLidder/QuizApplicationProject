@@ -1,8 +1,7 @@
-import { Component, Injector, ViewChild } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
-import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
@@ -11,6 +10,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import {InteractiveListSocketService} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
 
 type Player = [string, number];
 
@@ -20,8 +20,6 @@ type Player = [string, number];
     styleUrls: ['./game-interface.component.scss'],
 })
 export class GameInterfaceComponent {
-    @ViewChild('playerListChild') playerListComponent: PlayerListComponent;
-
     isBonus: boolean = false;
     isGameOver: boolean = false;
     playerScore: number = 0;
@@ -33,12 +31,14 @@ export class GameInterfaceComponent {
     private readonly socketService: SocketClientService;
     private route: ActivatedRoute;
     private router: Router;
+    private interactiveListService: InteractiveListSocketService;
 
     constructor(injector: Injector) {
         this.gameService = injector.get<GameService>(GameService);
         this.socketService = injector.get<SocketClientService>(SocketClientService);
         this.route = injector.get<ActivatedRoute>(ActivatedRoute);
         this.router = injector.get<Router>(Router);
+        this.interactiveListService = injector.get<InteractiveListSocketService>(InteractiveListSocketService);
         this.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
         if (this.gameService.isTestMode) {
             if (this.socketService.isSocketAlive()) this.socketService.disconnect();
@@ -92,9 +92,10 @@ export class GameInterfaceComponent {
         this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, (timeValue: number) => {
             this.timerText = timerMessage.finalResult;
             this.gameService.gameRealService.timer = timeValue;
-            if (this.gameService.timer === 0) {
+            if (this.gameService.timer === 0 && this.gameService.username !== HOST_USERNAME) {
                 this.isGameOver = true;
-                this.playerListComponent.getPlayersList();
+                this.interactiveListService.isFinal = true;
+                this.interactiveListService.getPlayersList(this.gameService.gameRealService.roomId);
             }
         });
 
