@@ -35,6 +35,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         if (!this.waitingRoomManagementService.isGameStarting) {
             const messageType = this.isHost ? socketEvent.HOST_LEFT : socketEvent.PLAYER_LEFT;
             this.socketService.send(messageType, this.roomId);
+            this.gameService.destroy();
         }
         this.socketService.socket.removeAllListeners();
     }
