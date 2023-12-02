@@ -10,7 +10,7 @@ import { HOST_USERNAME } from '@common/names/host-username';
 import { Score } from '@common/interfaces/score.interface';
 import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
-import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 type Player = [string, number];
 
@@ -25,12 +25,12 @@ export class GameInterfaceManagementService {
     players: Player[] = [];
     inPanicMode: boolean = false;
     gameStats: QuestionStatistics[] = [];
-    playerListComponent: PlayerListComponent;
 
     constructor(
         public gameService: GameService,
         private socketService: SocketClientService,
         private router: Router,
+        private interactiveListService: InteractiveListSocketService,
     ) {}
 
     setup(pathId: string) {
@@ -110,7 +110,7 @@ export class GameInterfaceManagementService {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
-                this.playerListComponent.getPlayersList();
+                this.interactiveListService.getPlayersList(this.gameService.gameRealService.roomId, [], false);
             }
         });
     }
