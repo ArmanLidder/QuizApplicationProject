@@ -93,7 +93,6 @@ export class WaitingRoomManagementService {
             this.time = timeValue;
 
             if (this.time === 0) {
-                console.log("naviguating!");
                 this.router.navigate(['game', this.roomId]);
                 this.isGameStarting = true;
             }

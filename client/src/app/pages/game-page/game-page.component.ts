@@ -12,17 +12,16 @@ import { InteractiveListSocketService } from '@app/services/interactive-list-soc
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnDestroy, OnInit {
-    public isHost : boolean;
+    isHost: boolean;
 
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
         private interactiveListService: InteractiveListSocketService,
-        private route: Router) {
+        private route: Router,
+    ) {
         this.isHost = this.gameService.gameRealService.username === HOST_USERNAME;
     }
-
-   
 
     ngOnInit() {
         if (this.socketService.isSocketAlive()) this.interactiveListService.configureBaseSocketFeatures();

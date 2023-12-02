@@ -69,7 +69,6 @@ export class GameRealService implements GameServiceInterface {
 
     configureBaseSockets() {
         this.socketService.on(socketEvent.GET_INITIAL_QUESTION, (data: InitialQuestionData) => {
-            console.log("getting username" + data.username)
             this.question = data.question;
             this.username = data.username;
             if (data.numberOfQuestions === 1) {

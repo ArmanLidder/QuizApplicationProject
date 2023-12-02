@@ -18,7 +18,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     constructor(
         public waitingRoomManagementService: WaitingRoomManagementService,
-        public gameService : GameService,
+        public gameService: GameService,
         private socketService: SocketClientService,
     ) {
         this.connect();
