@@ -13,7 +13,7 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 })
 export class CorrectionQRLComponent implements OnChanges {
     @Input() gameStats: QuestionStatistics[] = [];
-    @Input() reponsesQRL = new Map<string, { answers: string; time: number }>();
+    @Input() qrlAnswers = new Map<string, { answers: string; time: number }>();
     @Input() isHostEvaluating: boolean = false;
     questionStats = new Map<string, number>([
         ['0', 0],
@@ -40,7 +40,7 @@ export class CorrectionQRLComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.reponsesQRL) {
+        if (changes.qrlAnswers) {
             this.initialize();
             if (this.usernames.length > 0) {
                 this.isHostEvaluating = true;
@@ -50,7 +50,7 @@ export class CorrectionQRLComponent implements OnChanges {
 
     initialize() {
         this.indexPlayer = -1;
-        const sortedMap = new Map([...this.reponsesQRL.entries()].sort((a, b) => a[0].localeCompare(b[0])));
+        const sortedMap = new Map([...this.qrlAnswers.entries()].sort((a, b) => a[0].localeCompare(b[0])));
         sortedMap.forEach((value: { answers: string; time: number }, key: string) => {
             this.usernames.push(key);
             this.answers.push(value.answers);

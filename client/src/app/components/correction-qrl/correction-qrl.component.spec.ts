@@ -61,8 +61,8 @@ describe('CorrectionQRLComponent', () => {
         expect(component.indexPlayer).toEqual(expectedIndex);
     });
 
-    it('should end Correction preperly', () => {
-        component.reponsesQRL = mockResponsesQrl;
+    it('should end Correction properly', () => {
+        component.qrlAnswers = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         component.endCorrection();
@@ -80,7 +80,7 @@ describe('CorrectionQRLComponent', () => {
 
     it('should initialize correctly', () => {
         spyOn(component, 'nextAnswer');
-        component.reponsesQRL = mockResponsesQrl;
+        component.qrlAnswers = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         expect(component.indexPlayer).toEqual(initialIndex);
@@ -94,7 +94,7 @@ describe('CorrectionQRLComponent', () => {
         spyOn(component, 'nextAnswer').and.callThrough();
         spyOn(component, 'endCorrection');
         spyOn(component, 'clearAll');
-        component.reponsesQRL = mockResponsesQrl;
+        component.qrlAnswers = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         component.indexPlayer = component.usernames.length - 1;
