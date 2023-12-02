@@ -49,7 +49,6 @@ export class GameInterfaceManagementService {
         this.isBonus = false;
         this.inPanicMode = false;
         this.timerText = timerMessage.timeLeft;
-        this.gameService.destroy();
     }
 
     configureBaseSocketFeatures() {
@@ -110,7 +109,7 @@ export class GameInterfaceManagementService {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
-                this.interactiveListService.getPlayersList(this.gameService.gameRealService.roomId, [], false);
+                this.interactiveListService.getPlayersList(this.gameService.gameRealService.roomId, [], true);
             }
         });
     }
