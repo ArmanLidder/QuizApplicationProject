@@ -86,7 +86,7 @@ describe('GamePageComponent', () => {
                 expect(spyOnNgOnDestroy).toHaveBeenCalled();
             }
             if (window.onload) {
-                const spyRoute = spyOn(component.route, 'navigate');
+                const spyRoute = spyOn(component['route'], 'navigate');
                 // @ts-ignore
                 window.onload();
                 expect(spyRoute).toHaveBeenCalledWith(['/']);
