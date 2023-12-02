@@ -11,16 +11,14 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
-import {
-    GameInterfaceManagementService
-} from '@app/services/game-interface-management.service/game-interface-management.service';
+import { GameInterfaceManagementService } from '@app/services/game-interface-management.service/game-interface-management.service';
 import { GameService } from '@app/services/game.service/game.service';
 import SpyObj = jasmine.SpyObj;
 
 describe('GameInterfaceManagementService', () => {
     let component: GameInterfaceManagementService;
     let socketService: SocketClientServiceTestHelper;
-    let playersList : SpyObj<PlayerListComponent>;
+    let playersList: SpyObj<PlayerListComponent>;
     let onSpy: jasmine.Spy;
     let sendSpy: jasmine.Spy;
     // let getPlayerListSpy: jasmine.Spy;
@@ -44,20 +42,21 @@ describe('GameInterfaceManagementService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            declarations: [ PlayerListComponent, QrlResponseAreaComponent, StatisticHistogramComponent],
+            declarations: [PlayerListComponent, QrlResponseAreaComponent, StatisticHistogramComponent],
             providers: [
-                SocketClientService, GameService,
+                SocketClientService,
+                GameService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' }, url: [{ path: 'url-path' }] } } },
             ],
         });
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         component = TestBed.inject(GameInterfaceManagementService);
-        component.playerListComponent = playersList;
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
-
+        playersList = jasmine.createSpyObj('PlayerListComponent', ['getPlayersList']);
+        component.playerListComponent = playersList;
         // const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
         onSpy = spyOn(socketService, 'on').and.callThrough();
         sendSpy = spyOn(socketService, 'send').and.callThrough();

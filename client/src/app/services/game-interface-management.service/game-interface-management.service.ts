@@ -15,7 +15,7 @@ import { PlayerListComponent } from '@app/components/player-list/player-list.com
 type Player = [string, number];
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class GameInterfaceManagementService {
     isBonus: boolean = false;
@@ -30,9 +30,8 @@ export class GameInterfaceManagementService {
     constructor(
         public gameService: GameService,
         private socketService: SocketClientService,
-        private router: Router
+        private router: Router,
     ) {}
-
 
     setup(pathId: string) {
         if (this.gameService.isTestMode) {
@@ -52,7 +51,6 @@ export class GameInterfaceManagementService {
         this.timerText = timerMessage.timeLeft;
         this.gameService.destroy();
     }
-
 
     configureBaseSocketFeatures() {
         this.handleEndQuestion();
@@ -160,8 +158,6 @@ export class GameInterfaceManagementService {
             this.gameStats.push([values, responses, stat[2]]);
         });
     }
-
-
 
     private getScore() {
         if (this.gameService.gameRealService.username !== HOST_USERNAME) {
