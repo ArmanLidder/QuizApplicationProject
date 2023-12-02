@@ -47,6 +47,12 @@ describe('StatisticZoneComponent', () => {
         expect(setUpDataSpy).toHaveBeenCalled();
     });
 
+    it('should return true if there are no gameStats', () => {
+        component.gameStats = [];
+        component.index = 0;
+        expect(component.isEnd()).toBeTruthy();
+    });
+
     it('should return true if End', () => {
         component.index = component.gameStats.length - 1;
         expect(component.isEnd()).toBeTruthy();
