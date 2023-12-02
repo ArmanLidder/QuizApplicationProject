@@ -47,17 +47,17 @@ export class QrlResponseAreaComponent implements OnDestroy {
         this.ngOnDestroy();
     }
 
-    onInputStopped(): void {
+    obtainedPoints() {
+        if (this.gameService.lastQrlScore) return (this.gameService.lastQrlScore / MAX_PERCENTAGE) * (this.gameService.question?.points as number);
+        return 0;
+    }
+
+    private onInputStopped(): void {
         this.inactiveTimeout = window.setTimeout(() => {
             this.gameService.isActive = false;
             if (this.socketClientService.isSocketAlive())
                 this.socketClientService.send(socketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);
-    }
-
-    obtainedPoints() {
-        if (this.gameService.lastQrlScore) return (this.gameService.lastQrlScore / MAX_PERCENTAGE) * (this.gameService.question?.points as number);
-        return 0;
     }
 
     private sendActiveNotice() {

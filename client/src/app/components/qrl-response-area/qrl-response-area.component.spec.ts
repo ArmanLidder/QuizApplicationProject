@@ -10,6 +10,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { MatDialog } from '@angular/material/dialog';
 import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 describe('QrlResponseAreaComponent', () => {
     let component: QrlResponseAreaComponent;
@@ -72,7 +73,7 @@ describe('QrlResponseAreaComponent', () => {
 
     it('should start waiting for the inactivity time when input stopped', fakeAsync(() => {
         spyOn(socketService, 'send');
-        component.onInputStopped();
+        component['onInputStopped']();
         tick(INACTIVITY_TIME);
         expect(socketService.isSocketAlive).toHaveBeenCalled();
         expect(socketService.send).toHaveBeenCalledWith(socketEvent.SEND_ACTIVITY_STATUS, {
@@ -92,16 +93,15 @@ describe('QrlResponseAreaComponent', () => {
 
     it('should setup input debounce correctly', fakeAsync(() => {
         spyOn(socketService, 'send');
-        spyOn(component, 'onInputStopped');
+        spyOn(component, 'onInputStopped' as any);
         component['setupInputDebounce']();
         tick(DEBOUNCE_INACTIVE_TIME);
-        expect(component.onInputStopped).toHaveBeenCalledWith();
+        expect(component['onInputStopped']).toHaveBeenCalledWith();
     }));
 
     it('should reset input timer correctly', fakeAsync(() => {
         const numberOfExpectedCalls = 2;
         spyOn(window, 'clearTimeout');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn(component, 'setupInputDebounce' as any);
         component['resetInputTimer']();
         expect(window.clearTimeout).toHaveBeenCalledTimes(numberOfExpectedCalls);
