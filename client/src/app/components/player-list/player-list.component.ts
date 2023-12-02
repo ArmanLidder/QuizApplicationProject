@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { CAN_TALK, Player, SORT_BY_NAME, SORT_BY_SCORE, SORT_BY_STATUS, STATUS_INDEX } from '@app/components/player-list/player-list.component.const';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { Player, ORDER_ICON_UP, SortType, ORDER_INITIAL_MULTIPLIER, ORDER_MULTIPLIER, ORDER_ICON_DOWN } from '@app/components/player-list/player-list.component.const';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { Score } from '@common/interfaces/score.interface';
-import { playerStatus } from '@common/player-status/player-status';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { InteractiveListSocketService } from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
 
 @Component({
     selector: 'app-player-list',
@@ -12,140 +9,63 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
     styleUrls: ['./player-list.component.scss'],
 })
 export class PlayerListComponent {
-    @Input() leftPlayers: Player[] = [];
+    @Input() leftPlayers: Player[];
     @Input() roomId: number;
-    @Input() isFinal: boolean;
     @Input() isHost: boolean;
-    players: Player[] = [];
-    orderIcon = 'fa-solid fa-up-long';
-    optionSelections = new Map([
-        [SORT_BY_NAME, true],
-        [SORT_BY_SCORE, false],
-        [SORT_BY_STATUS, false],
+    orderIcon = ORDER_ICON_UP;
+    optionSelections: Map<SortType, boolean> = new Map([
+        [SortType.SortByName, true],
+        [SortType.SortByScore, false],
+        [SortType.SortByStatus, false],
     ]);
-    private actualStatus: Player[] = []; // meilleur nom?
-    private order = 1;
+    protected readonly sortType = SortType;
+    private order = ORDER_INITIAL_MULTIPLIER;
 
     constructor(
-        public socketService: SocketClientService,
-        public sortListService: SortListService,
-    ) {
-        if (socketService.isSocketAlive()) this.configureBaseSocketFeatures();
-    }
+        public interactiveListService: InteractiveListSocketService,
+        private sortListService: SortListService,
+    ) {}
+
 
     changeOrder() {
-        this.order *= -1;
-        this.orderIcon = this.order > 0 ? 'fa-solid fa-up-long' : 'fa-solid fa-down-long';
-        this.getPlayersList(false);
+        this.order *= ORDER_MULTIPLIER;
+        this.orderIcon = this.order !== ORDER_MULTIPLIER ? ORDER_ICON_UP : ORDER_ICON_DOWN;
+        this.interactiveListService.getPlayersList(this.roomId, this.leftPlayers, false);
     }
 
-    sortByStatus() {
-        this.updateOptionSelections(SORT_BY_STATUS);
-        this.sortListService.sortByStatus();
-        this.getPlayersList(false);
-    }
-
-    sortByScore() {
-        this.updateOptionSelections(SORT_BY_SCORE);
-        this.sortListService.sortByScore();
-        this.getPlayersList(false);
-    }
-
-    sortByName() {
-        this.updateOptionSelections(SORT_BY_NAME);
-        this.sortListService.sortByName();
-        this.getPlayersList(false);
+    sort(sortOption: SortType) {
+        this.updateOptionSelections(sortOption);
+        this.selectOptionMethod(sortOption);
+        this.interactiveListService.getPlayersList(this.roomId, this.leftPlayers,false);
     }
 
     sortAllPlayers(): Player[] {
-        this.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
-        return this.players;
-    }
-
-    async getPlayersList(resetPlayerStatus: boolean = true) {
-        return new Promise<number>((resolve) => {
-            this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, this.roomId, (players: string[]) => {
-                resolve(players.length);
-                this.setupPlayerList();
-                players.forEach((username) => {
-                    this.getPlayerScoreFromServer(username, resetPlayerStatus);
-                });
-            });
-        });
+        this.interactiveListService.players.sort((first: Player, second: Player) => this.order * this.sortListService.sortFunction(first, second));
+        return this.interactiveListService.players;
     }
 
     toggleChatPermission(username: string) {
-        const playerIndex = this.findPlayer(username, this.players);
-        this.players[playerIndex][4] = !this.players[playerIndex][4];
-        this.socketService.send(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId: this.roomId, username });
+        this.interactiveListService.toggleChatPermission(username, this.roomId);
     }
 
-    isPlayerGone(username: string) {
-        const foundPlayer = this.leftPlayers.find((player) => player[0] === username);
-        return foundPlayer !== undefined;
+    private selectOptionMethod(sortOption: SortType) {
+        switch (sortOption) {
+            case SortType.SortByName:
+                this.sortListService.sortByName();
+                break;
+            case SortType.SortByScore:
+                this.sortListService.sortByScore();
+                break;
+            case SortType.SortByStatus:
+                this.sortListService.sortByStatus();
+                break;
+        }
     }
 
-    private updateOptionSelections(selectedMethod: string) {
+    private updateOptionSelections(selectedMethod: SortType) {
         this.optionSelections.forEach((isSelected, methodName) => {
             if (isSelected && methodName !== selectedMethod) this.optionSelections.set(methodName, false);
             else if (selectedMethod === methodName) this.optionSelections.set(methodName, true);
         });
-    }
-
-    private getPlayerScoreFromServer(username: string, resetPlayerStatus: boolean) {
-        this.socketService.send(socketEvent.GET_SCORE, { roomId: this.roomId, username }, (score: Score) => {
-            this.addPlayer(username, score, resetPlayerStatus);
-        });
-    }
-
-    private addPlayer(username: string, score: Score, resetPlayerStatus: boolean) {
-        const status = this.initPlayerStatus(username, resetPlayerStatus);
-        const canChat = this.canPlayerChat(username);
-        this.players.push([username, score.points, score.bonusCount, status, canChat]);
-    }
-
-    private canPlayerChat(username: string) {
-        const playerIndex = this.findPlayer(username, this.actualStatus);
-        return this.actualStatus.length === 0 ? true : this.actualStatus[playerIndex][CAN_TALK];
-    }
-
-    private appendLeftPlayersToActivePlayers() {
-        this.leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.left, false]));
-    }
-
-    private setupPlayerList() {
-        this.actualStatus = this.players;
-        this.players = [];
-        this.appendLeftPlayersToActivePlayers();
-    }
-
-    private findPlayer(username: string, players: Player[]) {
-        return players.findIndex((player) => player[0] === username);
-    }
-
-    private configureBaseSocketFeatures() {
-        this.socketService.on(socketEvent.UPDATE_INTERACTION, (username: string) => {
-            this.changePlayerStatus(username, playerStatus.interaction);
-        });
-        this.socketService.on(socketEvent.SUBMIT_ANSWER, (username: string) => {
-            this.changePlayerStatus(username, playerStatus.validation);
-        });
-    }
-
-    private changePlayerStatus(username: string, status: string) {
-        const playerIndex = this.findPlayer(username, this.players);
-        const notFound = -1;
-        if (playerIndex !== notFound) this.players[playerIndex][STATUS_INDEX] = status;
-    }
-
-    private initPlayerStatus(username: string, resetPlayerStatus: boolean) {
-        if (this.isPlayerGone(username)) return playerStatus.left;
-        else if (!resetPlayerStatus) return this.getActualStatus(username);
-        else return this.isFinal ? playerStatus.endGame : playerStatus.noInteraction;
-    }
-
-    private getActualStatus(username: string) {
-        const playerIndex = this.findPlayer(username, this.actualStatus);
-        return this.actualStatus[playerIndex][STATUS_INDEX];
     }
 }
