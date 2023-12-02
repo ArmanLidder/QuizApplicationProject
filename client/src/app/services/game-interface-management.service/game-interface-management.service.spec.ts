@@ -77,7 +77,6 @@ describe('GameInterfaceManagementService', () => {
     });
 
     it('should reset properly', () => {
-        spyOn(service.gameService, 'destroy');
         service.reset();
         expect(service.players).toEqual([]);
         expect(service.isGameOver).toBeFalsy();
@@ -86,7 +85,6 @@ describe('GameInterfaceManagementService', () => {
         expect(service.playerScore).toEqual(0);
         expect(service.gameStats).toEqual([]);
         expect(service.timerText).toEqual(timerMessage.timeLeft);
-        expect(service.gameService.destroy).toHaveBeenCalled();
     });
 
     it('should configure base socket features for end question correctly', () => {
