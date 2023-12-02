@@ -13,15 +13,14 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { GameInterfaceManagementService } from '@app/services/game-interface-management.service/game-interface-management.service';
 import { GameService } from '@app/services/game.service/game.service';
-import SpyObj = jasmine.SpyObj;
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 
 describe('GameInterfaceManagementService', () => {
-    let component: GameInterfaceManagementService;
+    let service: GameInterfaceManagementService;
     let socketService: SocketClientServiceTestHelper;
-    let playersList: SpyObj<PlayerListComponent>;
     let onSpy: jasmine.Spy;
     let sendSpy: jasmine.Spy;
-    // let getPlayerListSpy: jasmine.Spy;
     const mockQuestion = {
         type: QuestionType.QCM,
         text: 'What is the capital of France?',
@@ -46,33 +45,57 @@ describe('GameInterfaceManagementService', () => {
             providers: [
                 SocketClientService,
                 GameService,
+                InteractiveListSocketService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' }, url: [{ path: 'url-path' }] } } },
             ],
         });
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
-        component = TestBed.inject(GameInterfaceManagementService);
+        service = TestBed.inject(GameInterfaceManagementService);
         spyOn(socketService, 'isSocketAlive').and.callFake(() => {
             return true;
         });
-        playersList = jasmine.createSpyObj('PlayerListComponent', ['getPlayersList']);
-        component.playerListComponent = playersList;
-        // const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
         onSpy = spyOn(socketService, 'on').and.callThrough();
         sendSpy = spyOn(socketService, 'send').and.callThrough();
-        // spyOn(childComponent, 'getPlayersList').and.resolveTo(Promise.resolve(1));
+        spyOn(service['interactiveListService'], 'getPlayersList');
     });
 
     it('should create', () => {
-        expect(component).toBeTruthy();
+        expect(service).toBeTruthy();
+    });
+
+    it('should setup service correctly', () => {
+        service.gameService.isTestMode = true;
+        spyOn(service.gameService, 'init');
+        spyOn(service, 'configureBaseSocketFeatures');
+        spyOn(service['socketService'], 'disconnect');
+        service.setup('');
+        expect(service['socketService'].isSocketAlive).toHaveBeenCalledTimes(2);
+        expect(service['socketService'].disconnect).toHaveBeenCalled();
+        expect(service.gameService.init).toHaveBeenCalledWith('');
+        expect(service.configureBaseSocketFeatures).toHaveBeenCalled();
+    });
+
+    it('should reset properly', () => {
+        spyOn(service.gameService, 'destroy');
+        service.reset();
+        expect(service.players).toEqual([]);
+        expect(service.isGameOver).toBeFalsy();
+        expect(service.isBonus).toBeFalsy();
+        expect(service.inPanicMode).toBeFalsy();
+        expect(service.playerScore).toEqual(0);
+        expect(service.gameStats).toEqual([]);
+        expect(service.timerText).toEqual(timerMessage.timeLeft);
+        expect(service.gameService.destroy).toHaveBeenCalled();
     });
 
     it('should configure base socket features for end question correctly', () => {
         mockQuestion.type = QuestionType.QCM;
-        component.gameService.gameRealService.question = mockQuestion;
-        component.gameService.gameRealService.username = 'test';
-        spyOnProperty(component.gameService, 'username', 'get').and.returnValue('test');
-        component['configureBaseSocketFeatures']();
+        service.gameService.gameRealService.roomId = 1;
+        service.gameService.gameRealService.question = mockQuestion;
+        service.gameService.gameRealService.username = 'test';
+        spyOnProperty(service.gameService, 'username', 'get').and.returnValue('test');
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[0];
         expect(socketOnText).toEqual(socketEvent.END_QUESTION);
         socketOnFunc();
@@ -80,31 +103,31 @@ describe('GameInterfaceManagementService', () => {
         expect(sendText).toEqual(socketEvent.GET_SCORE);
         expect(sendObject).toEqual({ roomId: 1, username: 'test' });
         sendCallback(mockScore);
-        expect(component.playerScore).toEqual(mockScore.points);
-        expect(component.isBonus).toEqual(mockScore.isBonus);
-        component.gameService.gameRealService.question = mockQuestion;
-        component.gameService.gameRealService.question.type = QuestionType.QLR;
+        expect(service.playerScore).toEqual(mockScore.points);
+        expect(service.isBonus).toEqual(mockScore.isBonus);
+        service.gameService.gameRealService.question = mockQuestion;
+        service.gameService.gameRealService.question.type = QuestionType.QLR;
         socketOnFunc();
-        expect(component.gameService.qrlAnswer).toEqual('');
-        expect(component.gameService.gameRealService.validated).toBeTruthy();
+        expect(service.gameService.qrlAnswer).toEqual('');
+        expect(service.gameService.gameRealService.validated).toBeTruthy();
     });
 
     it('should configure base socket features for time transition correctly', () => {
-        component['configureBaseSocketFeatures']();
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[2];
         expect(socketOnText).toEqual(socketEvent.TIME_TRANSITION);
         socketOnFunc(mockTimeValue);
-        expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(service.gameService.timer).toEqual(mockTimeValue);
         socketOnFunc(0);
-        expect(component.gameService.lockedStatus).toEqual(false);
-        expect(component.gameService.validatedStatus).toEqual(false);
-        expect(component.isBonus).toEqual(false);
+        expect(service.gameService.lockedStatus).toEqual(false);
+        expect(service.gameService.validatedStatus).toEqual(false);
+        expect(service.isBonus).toEqual(false);
     });
 
     it('should configure base socket features for end of evaluation QRL', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const getScoreSpy = spyOn(component, 'getScore' as any);
-        component['configureBaseSocketFeatures']();
+        const getScoreSpy = spyOn(service, 'getScore' as any);
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[1];
         expect(socketOnText).toEqual(socketEvent.EVALUATION_OVER);
         socketOnFunc();
@@ -112,18 +135,18 @@ describe('GameInterfaceManagementService', () => {
     });
 
     it('should configure base socket features for final time transition correctly', () => {
-        component['configureBaseSocketFeatures']();
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[3];
         expect(socketOnText).toEqual(socketEvent.FINAL_TIME_TRANSITION);
         socketOnFunc(mockTimeValue);
-        expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(service.gameService.timer).toEqual(mockTimeValue);
         socketOnFunc(0);
-        expect(component.isGameOver).toEqual(true);
+        expect(service.isGameOver).toEqual(true);
     });
 
     it('should configure base socket features for removed from game correctly', () => {
-        const routerSpy = spyOn(component['router'], 'navigate');
-        component['configureBaseSocketFeatures']();
+        const routerSpy = spyOn(service['router'], 'navigate');
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[4];
         expect(socketOnText).toEqual(socketEvent.REMOVED_FROM_GAME);
         socketOnFunc();
@@ -131,111 +154,66 @@ describe('GameInterfaceManagementService', () => {
     });
 
     it('should configure base socket features for play audio correctly', () => {
-        const audioSpy = spyOn(component.gameService.audio, 'play');
-        component.gameService.gameRealService.timer = mockTimeValue;
-        component['configureBaseSocketFeatures']();
+        const audioSpy = spyOn(service.gameService.audio, 'play');
+        service.gameService.gameRealService.timer = mockTimeValue;
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[5];
         expect(socketOnText).toEqual(socketEvent.PANIC_MODE);
         socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
-        expect(component.gameService.timer).toEqual(mockTimeValue);
+        expect(service.gameService.timer).toEqual(mockTimeValue);
         expect(audioSpy).toHaveBeenCalled();
     });
 
     it('should configure base socket features for pausing the audio', () => {
-        const audioSpy = spyOn(component.gameService.audio, 'play');
-        component.gameService.gameRealService.audioPaused = true;
-        component.inPanicMode = true;
-        component['configureBaseSocketFeatures']();
+        const audioSpy = spyOn(service.gameService.audio, 'play');
+        service.gameService.gameRealService.audioPaused = true;
+        service.inPanicMode = true;
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
         expect(socketOnText).toEqual(socketEvent.PAUSE_TIMER);
         socketOnFunc(mockRoomIdValue);
-        expect(component.gameService.gameRealService.audioPaused).toBeFalsy();
+        expect(service.gameService.gameRealService.audioPaused).toBeFalsy();
         expect(audioSpy).toHaveBeenCalled();
     });
 
     it('should configure base socket features for Unpausing the audio', () => {
-        const audioSpy = spyOn(component.gameService.audio, 'pause');
-        component.gameService.gameRealService.audioPaused = false;
-        component.inPanicMode = true;
-        component['configureBaseSocketFeatures']();
+        const audioSpy = spyOn(service.gameService.audio, 'pause');
+        service.gameService.gameRealService.audioPaused = false;
+        service.inPanicMode = true;
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[6];
         expect(socketOnText).toEqual(socketEvent.PAUSE_TIMER);
         socketOnFunc(mockRoomIdValue);
-        expect(component.gameService.gameRealService.audioPaused).toBeTruthy();
+        expect(service.gameService.gameRealService.audioPaused).toBeTruthy();
         expect(audioSpy).toHaveBeenCalled();
     });
 
     it('should configure base socket features for removed from game correctly', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
-        const unpackSpy = spyOn(component, 'unpackStats' as any);
-        const parseSpy = spyOn(component, 'parseGameStats' as any);
+        const unpackSpy = spyOn(service, 'unpackStats' as any);
+        const parseSpy = spyOn(service, 'parseGameStats' as any);
         /* eslint-enable  @typescript-eslint/no-explicit-any */
-        component['configureBaseSocketFeatures']();
+        service['configureBaseSocketFeatures']();
         const [socketOnText, socketOnFunc] = onSpy.calls.allArgs()[7];
         expect(socketOnText).toEqual(socketEvent.GAME_STATUS_DISTRIBUTION);
         socketOnFunc();
         expect(parseSpy).toHaveBeenCalled();
         expect(unpackSpy).toHaveBeenCalled();
     });
-    //
-    // it('should create in test mode if active route is quiz-testing-page', () => {
-    //     component['route'].snapshot.url[0].path = 'quiz-testing-page';
-    //     fixture = TestBed.createComponent(GameInterfaceComponent);
-    //     component = fixture.componentInstance;
-    //     fixture.detectChanges();
-    //     expect(component).toBeTruthy();
-    // });
-
-    // it('should get correct player score', () => {
-    //     component.gameService.isTestMode = false;
-    //     expect(component.score).toEqual(0);
-    // });
-
-    // it('should get correct player score', () => {
-    //     component.gameService.isTestMode = true;
-    //     spyOnProperty(component.gameService, 'playerScore', 'get').and.returnValue(1);
-    //     expect(component.score).toEqual(component.playerScore);
-    // });
-    //
-    // it('should get correct player bonus', () => {
-    //     component.gameService.isTestMode = false;
-    //     expect(component.bonusStatus).toBeFalsy();
-    // });
-    //
-    // it('should get correct bonus player score', () => {
-    //     component.gameService.isTestMode = true;
-    //     spyOnProperty(component.gameService, 'isBonus', 'get').and.returnValue(true);
-    //     expect(component.bonusStatus).toBeTruthy();
-    // });
 
     it('should correctly update player points', () => {
         const expectedPercentage = 50;
-        component.gameService.isTestMode = false;
-        component.gameService.gameRealService.question = mockQuestion;
+        service.gameService.isTestMode = false;
+        service.gameService.gameRealService.question = mockQuestion;
         mockQuestion.type = QuestionType.QLR;
-        const score = component.playerScore + mockQuestion.points / 2;
-        component['updateScore'](score);
-        expect(component.gameService.lastQrlScore).toEqual(expectedPercentage);
-    });
-
-    it('should get and define properly the players data', () => {
-        const mockPlayers = ['un'];
-        component.playerListComponent.getPlayersList();
-        const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
-        expect(sendGatherObject).toEqual(component.gameService.gameRealService.roomId);
-        expect(sendGatherCallback).toBeDefined();
-        expect(sendGatherPlayers).toEqual(socketEvent.GATHER_PLAYERS_USERNAME);
-        sendGatherCallback(mockPlayers);
-        const [sendGetScore, sendGetScoreObject, sendGetScoreCallback] = sendSpy.calls.allArgs()[1];
-        expect(sendGetScore).toEqual(socketEvent.GET_SCORE);
-        expect(sendGetScoreObject).toBeDefined();
-        expect(sendGetScoreCallback).toBeDefined();
-        sendGetScoreCallback(mockScore);
+        const score = service.playerScore + mockQuestion.points / 2;
+        service['updateScore'](score);
+        expect(service.gameService.lastQrlScore).toEqual(expectedPercentage);
     });
 
     it('should parse game stats correctly', () => {
         const statsString = '{"stats": "some stats"}';
-        const parsedStats = component['parseGameStats'](statsString);
+        const parsedStats = service['parseGameStats'](statsString);
         expect(parsedStats).toEqual({ stats: 'some stats' });
     });
 
@@ -253,7 +231,7 @@ describe('GameInterfaceManagementService', () => {
                 question,
             ],
         ];
-        component['unpackStats'](stats);
-        expect(component.gameStats.length).toBe(1);
+        service['unpackStats'](stats);
+        expect(service.gameStats.length).toBe(1);
     });
 });
