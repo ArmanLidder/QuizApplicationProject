@@ -5,6 +5,9 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { WaitingRoomComponent } from './waiting-room.component';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
+import {AppMaterialModule} from "@app/modules/material.module";
+import {MatDialog} from "@angular/material/dialog";
+import {QuitterButtonComponent} from "@app/components/quitter-bouton/quitter-bouton.component";
 
 const DIGIT_CONSTANT = 1;
 // Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix
@@ -18,8 +21,10 @@ describe('WaitingRoomComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [WaitingRoomComponent],
+            imports: [AppMaterialModule],
+            declarations: [WaitingRoomComponent, QuitterButtonComponent],
             providers: [
+                MatDialog,
                 SocketClientService,
                 WaitingRoomManagementService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
