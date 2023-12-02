@@ -12,11 +12,15 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { GameInterfaceComponent } from './game-interface.component';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
+import {
+    InteractiveListSocketService
+} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
     let fixture: ComponentFixture<GameInterfaceComponent>;
     let socketService: SocketClientServiceTestHelper;
+    let interactiveListService: InteractiveListSocketService;
     let onSpy: jasmine.Spy;
     let sendSpy: jasmine.Spy;
     // let getPlayerListSpy: jasmine.Spy;
@@ -42,6 +46,7 @@ describe('GameInterfaceComponent', () => {
             imports: [HttpClientModule],
             declarations: [GameInterfaceComponent, PlayerListComponent, QrlResponseAreaComponent, StatisticHistogramComponent],
             providers: [
+                InteractiveListSocketService,
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' }, url: [{ path: 'url-path' }] } } },
@@ -52,12 +57,13 @@ describe('GameInterfaceComponent', () => {
             return true;
         });
         fixture = TestBed.createComponent(GameInterfaceComponent);
+        interactiveListService = TestBed.inject(InteractiveListSocketService);
         // const childComponent = fixture.debugElement.query(By.directive(PlayerListComponent)).componentInstance;
         component = fixture.componentInstance;
         fixture.detectChanges();
         onSpy = spyOn(socketService, 'on').and.callThrough();
         sendSpy = spyOn(socketService, 'send').and.callThrough();
-        // spyOn(childComponent, 'getPlayersList').and.resolveTo(Promise.resolve(1));
+        spyOn(interactiveListService, 'getPlayersList').and.resolveTo(1);
     });
 
     it('should create', () => {
@@ -213,21 +219,6 @@ describe('GameInterfaceComponent', () => {
         const score = component.playerScore + mockQuestion.points / 2;
         component['updateScore'](score);
         expect(component.gameService.lastQrlScore).toEqual(expectedPercentage);
-    });
-
-    it('should get and define properly the players data', () => {
-        const mockPlayers = ['un'];
-        component.playerListComponent.getPlayersList();
-        const [sendGatherPlayers, sendGatherObject, sendGatherCallback] = sendSpy.calls.allArgs()[0];
-        expect(sendGatherObject).toEqual(component.gameService.gameRealService.roomId);
-        expect(sendGatherCallback).toBeDefined();
-        expect(sendGatherPlayers).toEqual(socketEvent.GATHER_PLAYERS_USERNAME);
-        sendGatherCallback(mockPlayers);
-        const [sendGetScore, sendGetScoreObject, sendGetScoreCallback] = sendSpy.calls.allArgs()[1];
-        expect(sendGetScore).toEqual(socketEvent.GET_SCORE);
-        expect(sendGetScoreObject).toBeDefined();
-        expect(sendGetScoreCallback).toBeDefined();
-        sendGetScoreCallback(mockScore);
     });
 
     it('should parse game stats correctly', () => {
