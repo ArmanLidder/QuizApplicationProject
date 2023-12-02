@@ -1,7 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { Player, ORDER_ICON_UP, SortType, ORDER_INITIAL_MULTIPLIER, ORDER_MULTIPLIER, ORDER_ICON_DOWN } from '@app/components/player-list/player-list.component.const';
+import {
+    Player,
+    ORDER_ICON_UP,
+    SortType,
+    ORDER_INITIAL_MULTIPLIER,
+    ORDER_MULTIPLIER,
+    ORDER_ICON_DOWN,
+} from '@app/components/player-list/player-list.component.const';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { InteractiveListSocketService } from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 @Component({
     selector: 'app-player-list',
@@ -26,7 +33,6 @@ export class PlayerListComponent {
         private sortListService: SortListService,
     ) {}
 
-
     changeOrder() {
         this.order *= ORDER_MULTIPLIER;
         this.orderIcon = this.order !== ORDER_MULTIPLIER ? ORDER_ICON_UP : ORDER_ICON_DOWN;
@@ -36,7 +42,7 @@ export class PlayerListComponent {
     sort(sortOption: SortType) {
         this.updateOptionSelections(sortOption);
         this.selectOptionMethod(sortOption);
-        this.interactiveListService.getPlayersList(this.roomId, this.leftPlayers,false);
+        this.interactiveListService.getPlayersList(this.roomId, this.leftPlayers, false);
     }
 
     sortAllPlayers(): Player[] {

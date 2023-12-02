@@ -8,8 +8,8 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import {MatDialog} from "@angular/material/dialog";
-import {QuitterButtonComponent} from "@app/components/quitter-bouton/quitter-bouton.component";
+import { MatDialog } from '@angular/material/dialog';
+import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
 
 describe('QrlResponseAreaComponent', () => {
     let component: QrlResponseAreaComponent;

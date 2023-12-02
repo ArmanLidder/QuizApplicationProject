@@ -12,9 +12,7 @@ import { Score } from '@common/interfaces/score.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { GameInterfaceComponent } from './game-interface.component';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
-import {
-    InteractiveListSocketService
-} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;

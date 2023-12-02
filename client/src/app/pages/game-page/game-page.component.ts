@@ -4,7 +4,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
-import { InteractiveListSocketService } from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 @Component({
     selector: 'app-game-page',

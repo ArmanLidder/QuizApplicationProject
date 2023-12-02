@@ -1,36 +1,39 @@
+/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { HostInterfaceManagementService } from './host-interface-management.service';
-import { SocketClientServiceTestHelper } from "@app/classes/socket-client-service-test-helper/socket-client-service-test-helper";
-import {SocketClientService} from "@app/services/socket-client.service/socket-client.service";
-import {
-  InteractiveListSocketService
-} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
-import {GameService} from "@app/services/game.service/game.service";
-import {socketEvent} from "@common/socket-event-name/socket-event-name";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
-import {AppMaterialModule} from "@app/modules/material.module";
-import {QuestionType} from "@common/enums/question-type.enum";
-import {HOST_USERNAME} from "@common/names/host-username";
-import {
-    ACTIVE,
-    INACTIVE,
-
-} from "@app/components/host-interface/host-interface.component.const";
-import {timerMessage} from "@common/browser-message/displayable-message/timer-message";
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { GameService } from '@app/services/game.service/game.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { ACTIVE, INACTIVE } from '@app/components/host-interface/host-interface.component.const';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('HostInterfaceManagementServiceService', () => {
-  let service: HostInterfaceManagementService;
-  let socketService: SocketClientServiceTestHelper;
-  let gameService: GameService;
-  let interactiveListService: InteractiveListSocketService;
-  let sendSpy: jasmine.Spy;
-  let onSpy: jasmine.Spy;
-  let getPlayerListSpy: jasmine.Spy;
-    const mockValuesMap = new Map([['Paris', true], ['Berlin', false], ['Madrid', false],]);
-    const mockResponseMap = new Map([['Paris', 0], ['Berlin', 0], ['Madrid', 0],]);
-    const mockQuestion =  {
+    let service: HostInterfaceManagementService;
+    let socketService: SocketClientServiceTestHelper;
+    let gameService: GameService;
+    let interactiveListService: InteractiveListSocketService;
+    let sendSpy: jasmine.Spy;
+    let onSpy: jasmine.Spy;
+    let getPlayerListSpy: jasmine.Spy;
+    const mockValuesMap = new Map([
+        ['Paris', true],
+        ['Berlin', false],
+        ['Madrid', false],
+    ]);
+    const mockResponseMap = new Map([
+        ['Paris', 0],
+        ['Berlin', 0],
+        ['Madrid', 0],
+    ]);
+    const mockQuestion = {
         type: QuestionType.QCM,
         text: 'What is the capital of France?',
         points: 10,
@@ -42,46 +45,46 @@ describe('HostInterfaceManagementServiceService', () => {
     };
 
     beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule, HttpClientModule, AppMaterialModule],
-        providers: [InteractiveListSocketService, SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+        TestBed.configureTestingModule({
+            imports: [ReactiveFormsModule, FormsModule, HttpClientModule, AppMaterialModule],
+            providers: [InteractiveListSocketService, SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+        });
+        service = TestBed.inject(HostInterfaceManagementService);
+        socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
+        gameService = TestBed.inject(GameService);
+        interactiveListService = TestBed.inject(InteractiveListSocketService);
+        sendSpy = spyOn(socketService, 'send').and.callThrough();
+        onSpy = spyOn(socketService, 'on').and.callThrough();
+        getPlayerListSpy = spyOn(interactiveListService, 'getPlayersList');
+        gameService.gameRealService.question = mockQuestion;
     });
-    service = TestBed.inject(HostInterfaceManagementService)
-    socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
-    gameService = TestBed.inject(GameService);
-    interactiveListService = TestBed.inject(InteractiveListSocketService);
-    sendSpy = spyOn(socketService, 'send').and.callThrough();
-    onSpy = spyOn(socketService, 'on').and.callThrough();
-    getPlayerListSpy =  spyOn(interactiveListService, 'getPlayersList');
-    gameService.gameRealService.question = mockQuestion;
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 
-  it('should send pause signal to server', ()=>{
-      service.isPaused = false;
-      gameService.gameRealService.roomId = 0;
-      service.sendPauseTimer();
-      const [eventName, data] = sendSpy.calls.mostRecent().args;
-      expect(service.isPaused).toBeTruthy()
-      expect(eventName).toEqual(socketEvent.PAUSE_TIMER);
-      expect(data).toEqual(0);
-  });
+    it('should send pause signal to server', () => {
+        service.isPaused = false;
+        gameService.gameRealService.roomId = 0;
+        service.sendPauseTimer();
+        const [eventName, data] = sendSpy.calls.mostRecent().args;
+        expect(service.isPaused).toBeTruthy();
+        expect(eventName).toEqual(socketEvent.PAUSE_TIMER);
+        expect(data).toEqual(0);
+    });
 
-    it('should start panic mode', ()=>{
+    it('should start panic mode', () => {
         service.isPanicMode = false;
         gameService.gameRealService.roomId = 0;
         gameService.gameRealService.timer = 1;
         service.startPanicMode();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
-        expect(service.isPanicMode).toBeTruthy()
+        expect(service.isPanicMode).toBeTruthy();
         expect(eventName).toEqual(socketEvent.PANIC_MODE);
-        expect(data).toEqual({roomId: 0, timer: 1});
+        expect(data).toEqual({ roomId: 0, timer: 1 });
     });
 
-    it('should save stats correctly', ()=>{
+    it('should save stats correctly', () => {
         service.gameStats = [];
         service.histogramDataValue = mockValuesMap;
         service.histogramDataChangingResponses = mockResponseMap;
@@ -90,7 +93,7 @@ describe('HostInterfaceManagementServiceService', () => {
     });
 
     it('should request next question correctly', () => {
-       service.isPanicMode = true;
+        service.isPanicMode = true;
         gameService.gameRealService.roomId = 0;
         service.requestNextQuestion();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
@@ -100,7 +103,7 @@ describe('HostInterfaceManagementServiceService', () => {
     });
 
     it('should handle last question correctly', () => {
-        const sendGameStatsSpy = spyOn(service, 'sendGameStats' as any)
+        const sendGameStatsSpy = spyOn(service, 'sendGameStats' as any);
         service.isPanicMode = true;
         gameService.gameRealService.roomId = 0;
         service.handleLastQuestion();
@@ -110,109 +113,109 @@ describe('HostInterfaceManagementServiceService', () => {
         expect(data).toEqual(0);
     });
 
-    it('should configure sockets correctly', ()=> {
-       const resetSpy = spyOn(service, 'reset' as any);
-       const handleTimeTransitionSpy = spyOn(service, 'handleTimeTransition' as any)
-       const handleEndQuestionSpy = spyOn(service, 'handleEndQuestion' as any)
-       const handleFinalTimeTransitionSpy = spyOn(service, 'handleFinalTimeTransition' as any)
-       const handleRefreshChoicesStatsSpy = spyOn(service, 'handleRefreshChoicesStats' as any)
-       const handleGetInitialQuestionSpy = spyOn(service, 'handleGetInitialQuestion' as any)
-       const handleGetNextQuestionSpy = spyOn(service, 'handleGetNextQuestion' as any)
-       const handleRemovedPlayerSpy = spyOn(service, 'handleRemovedPlayer' as any)
-       const handleEndQuestionAfterRemovalSpy = spyOn(service, 'handleEndQuestionAfterRemoval' as any)
-       const handleEvaluationOverSpy = spyOn(service, 'handleEvaluationOver' as any)
-       const handleRefreshActivityStatsSpy = spyOn(service, 'handleRefreshActivityStats' as any)
+    it('should configure sockets correctly', () => {
+        const resetSpy = spyOn(service, 'reset' as any);
+        const handleTimeTransitionSpy = spyOn(service, 'handleTimeTransition' as any);
+        const handleEndQuestionSpy = spyOn(service, 'handleEndQuestion' as any);
+        const handleFinalTimeTransitionSpy = spyOn(service, 'handleFinalTimeTransition' as any);
+        const handleRefreshChoicesStatsSpy = spyOn(service, 'handleRefreshChoicesStats' as any);
+        const handleGetInitialQuestionSpy = spyOn(service, 'handleGetInitialQuestion' as any);
+        const handleGetNextQuestionSpy = spyOn(service, 'handleGetNextQuestion' as any);
+        const handleRemovedPlayerSpy = spyOn(service, 'handleRemovedPlayer' as any);
+        const handleEndQuestionAfterRemovalSpy = spyOn(service, 'handleEndQuestionAfterRemoval' as any);
+        const handleEvaluationOverSpy = spyOn(service, 'handleEvaluationOver' as any);
+        const handleRefreshActivityStatsSpy = spyOn(service, 'handleRefreshActivityStats' as any);
         service.configureBaseSocketFeatures();
-       expect(resetSpy).toHaveBeenCalled();
-       expect(handleTimeTransitionSpy).toHaveBeenCalled();
-       expect(handleEndQuestionSpy).toHaveBeenCalled();
-       expect(handleFinalTimeTransitionSpy).toHaveBeenCalled();
-       expect(handleRefreshChoicesStatsSpy).toHaveBeenCalled();
-       expect(handleGetInitialQuestionSpy).toHaveBeenCalled();
-       expect(handleGetNextQuestionSpy).toHaveBeenCalled();
-       expect(handleRemovedPlayerSpy).toHaveBeenCalled();
-       expect(handleEndQuestionAfterRemovalSpy).toHaveBeenCalled();
-       expect(handleEvaluationOverSpy).toHaveBeenCalled();
-       expect(handleRefreshActivityStatsSpy).toHaveBeenCalled();
+        expect(resetSpy).toHaveBeenCalled();
+        expect(handleTimeTransitionSpy).toHaveBeenCalled();
+        expect(handleEndQuestionSpy).toHaveBeenCalled();
+        expect(handleFinalTimeTransitionSpy).toHaveBeenCalled();
+        expect(handleRefreshChoicesStatsSpy).toHaveBeenCalled();
+        expect(handleGetInitialQuestionSpy).toHaveBeenCalled();
+        expect(handleGetNextQuestionSpy).toHaveBeenCalled();
+        expect(handleRemovedPlayerSpy).toHaveBeenCalled();
+        expect(handleEndQuestionAfterRemovalSpy).toHaveBeenCalled();
+        expect(handleEvaluationOverSpy).toHaveBeenCalled();
+        expect(handleRefreshActivityStatsSpy).toHaveBeenCalled();
     });
 
-    it('should handle time transition correctly', ()=> {
-       service.gameService.gameRealService.roomId = 0;
+    it('should handle time transition correctly', () => {
+        service.gameService.gameRealService.roomId = 0;
         service['handleTimeTransition']();
-       const [eventName, action] = onSpy.calls.mostRecent().args;
-       expect(eventName).toEqual(socketEvent.TIME_TRANSITION)
+        const [eventName, action] = onSpy.calls.mostRecent().args;
+        expect(eventName).toEqual(socketEvent.TIME_TRANSITION);
         if (typeof action === 'function') {
             action(0);
-            const [eventName, data] = sendSpy.calls.mostRecent().args;
-            expect(eventName).toEqual(socketEvent.NEXT_QUESTION);
-            expect(data).toEqual(0)
+            const [secondEventName, data] = sendSpy.calls.mostRecent().args;
+            expect(secondEventName).toEqual(socketEvent.NEXT_QUESTION);
+            expect(data).toEqual(0);
         }
     });
 
-    it('should handle end question correctly', ()=> {
+    it('should handle end question correctly', () => {
         const sendQrlAnswerSpy = spyOn(service, 'sendQrlAnswer' as any);
         service['handleEndQuestion']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.END_QUESTION)
+        expect(eventName).toEqual(socketEvent.END_QUESTION);
         if (typeof action === 'function') {
             action();
             expect(getPlayerListSpy).toHaveBeenCalled();
-            expect(sendQrlAnswerSpy).not.toHaveBeenCalled()
+            expect(sendQrlAnswerSpy).not.toHaveBeenCalled();
             gameService.gameRealService.question = null;
             getPlayerListSpy.calls.reset();
             sendQrlAnswerSpy.calls.reset();
-            action()
+            action();
             expect(getPlayerListSpy).not.toHaveBeenCalled();
-            expect(sendQrlAnswerSpy).toHaveBeenCalled()
+            expect(sendQrlAnswerSpy).toHaveBeenCalled();
         }
     });
 
-    it('should handle final time transition correctly', ()=> {
+    it('should handle final time transition correctly', () => {
         gameService.gameRealService.username = HOST_USERNAME;
         service['handleFinalTimeTransition']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.FINAL_TIME_TRANSITION)
+        expect(eventName).toEqual(socketEvent.FINAL_TIME_TRANSITION);
         if (typeof action === 'function') {
             action(0);
             expect(getPlayerListSpy).toHaveBeenCalled();
         }
     });
 
-    it('should handle refresh choices stats correctly', ()=> {
+    it('should handle refresh choices stats correctly', () => {
         const createChoicesStatsMapSpy = spyOn(service, 'createChoicesStatsMap' as any);
         service['handleRefreshChoicesStats']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.REFRESH_CHOICES_STATS)
+        expect(eventName).toEqual(socketEvent.REFRESH_CHOICES_STATS);
         if (typeof action === 'function') {
-            action([1,1]);
+            action([1, 1]);
             expect(createChoicesStatsMapSpy).toHaveBeenCalled();
         }
     });
 
-    it('should handle get initial question correctly', async ()=> {
+    it('should handle get initial question correctly', async () => {
         const initGraphSpy = spyOn(service, 'initGraph' as any);
         service['handleGetInitialQuestion']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GET_INITIAL_QUESTION)
+        expect(eventName).toEqual(socketEvent.GET_INITIAL_QUESTION);
         if (typeof action === 'function') {
             await action({
                 question: mockQuestion,
                 index: 0,
                 isLast: true,
-                numberOfQuestions: 0
+                numberOfQuestions: 0,
             });
             expect(getPlayerListSpy).toHaveBeenCalled();
             expect(initGraphSpy).toHaveBeenCalled();
         }
     });
 
-    it('should handle get next question correctly',  async ()=> {
+    it('should handle get next question correctly', async () => {
         const initGraphSpy = spyOn(service, 'initGraph' as any);
         service['handleGetNextQuestion']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
         expect(eventName).toEqual(socketEvent.GET_NEXT_QUESTION);
         if (typeof action === 'function') {
-             await action({
+            await action({
                 question: mockQuestion,
                 index: 0,
                 isLast: true,
@@ -222,19 +225,19 @@ describe('HostInterfaceManagementServiceService', () => {
         }
     });
 
-    it('should handle removed player correctly',  ()=> {
+    it('should handle removed player correctly', () => {
         service['handleRemovedPlayer']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
         expect(eventName).toEqual(socketEvent.REMOVED_PLAYER);
         if (typeof action === 'function') {
-            interactiveListService.players =  [['test', 0, 0, 'test', false]];
+            interactiveListService.players = [['test', 0, 0, 'test', false]];
             action('test');
             expect(getPlayerListSpy).toHaveBeenCalled();
         }
     });
 
-    it('should handle end question after removal correctly',  ()=> {
-        const resetSpy = spyOn( service, 'resetInterface' as any);
+    it('should handle end question after removal correctly', () => {
+        const resetSpy = spyOn(service, 'resetInterface' as any);
         service['handleEndQuestionAfterRemoval']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
         expect(eventName).toEqual(socketEvent.END_QUESTION_AFTER_REMOVAL);
@@ -244,7 +247,7 @@ describe('HostInterfaceManagementServiceService', () => {
         }
     });
 
-    it('should handle evaluation over correctly',  ()=> {
+    it('should handle evaluation over correctly', () => {
         service['handleEvaluationOver']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
         expect(eventName).toEqual(socketEvent.EVALUATION_OVER);
@@ -254,7 +257,7 @@ describe('HostInterfaceManagementServiceService', () => {
         }
     });
 
-    it('should handle evaluation over correctly',  ()=> {
+    it('should handle evaluation over correctly', () => {
         service.histogramDataChangingResponses = mockResponseMap;
         service['handleRefreshActivityStats']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
@@ -262,8 +265,8 @@ describe('HostInterfaceManagementServiceService', () => {
         if (typeof action === 'function') {
             action([0, 0]);
             const map = new Map([
-                [ ACTIVE, 0],
-                [ INACTIVE, 0],
+                [ACTIVE, 0],
+                [INACTIVE, 0],
             ]);
             expect(service.histogramDataChangingResponses).toEqual(map);
         }
@@ -279,12 +282,12 @@ describe('HostInterfaceManagementServiceService', () => {
 
     it('should initialize correctly histogram data when QRL', () => {
         const expectedMapChanginResponses = new Map([
-            [ ACTIVE, 0],
-            [ INACTIVE, undefined],
+            [ACTIVE, 0],
+            [INACTIVE, undefined],
         ]);
-        const expectedDataValueMap =  new Map([
-            [ ACTIVE, true],
-            [ INACTIVE, false],
+        const expectedDataValueMap = new Map([
+            [ACTIVE, true],
+            [INACTIVE, false],
         ]);
         gameService.gameRealService.question = null;
         service['initGraph'](mockQuestion);
@@ -294,12 +297,15 @@ describe('HostInterfaceManagementServiceService', () => {
 
     it('should create choices stats map correctly', () => {
         const posRes = service['createChoicesStatsMap']([0, 0, 0]);
-        const expectedMap = new Map([['Paris', 0], ['Berlin', 0], ['Madrid', 0]])
+        const expectedMap = new Map([
+            ['Paris', 0],
+            ['Berlin', 0],
+            ['Madrid', 0],
+        ]);
         expect(posRes).toEqual(expectedMap);
     });
 
-
-    it('should send Qrl Answer', ()=>{
+    it('should send Qrl Answer', () => {
         service.isHostEvaluating = false;
         gameService.gameRealService.roomId = 0;
         service['sendQrlAnswer']();
@@ -307,22 +313,22 @@ describe('HostInterfaceManagementServiceService', () => {
         expect(eventName).toEqual(socketEvent.GET_PLAYER_ANSWERS);
         expect(data).toEqual(0);
         if (typeof callback === 'function') {
-            spyOn(JSON, 'parse').and.returnValue([['0', {answer: 'test', time: 0}]]);
+            spyOn(JSON, 'parse').and.returnValue([['0', { answer: 'test', time: 0 }]]);
             callback();
-            expect(service.isHostEvaluating).toBeTruthy()
+            expect(service.isHostEvaluating).toBeTruthy();
         }
     });
 
-    it('should send game stats', ()=>{
+    it('should send game stats', () => {
         gameService.gameRealService.roomId = 1;
         spyOn(service, 'stringifyStats' as any).and.returnValue('test');
         service['sendGameStats']();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
         expect(eventName).toEqual(socketEvent.GAME_STATUS_DISTRIBUTION);
-        expect(data).toEqual({roomId: 1, stats: 'test'});
+        expect(data).toEqual({ roomId: 1, stats: 'test' });
     });
 
-    it('should stringify correctly', ()=> {
+    it('should stringify correctly', () => {
         service.gameStats = [
             [
                 new Map<string, boolean>([
@@ -337,7 +343,11 @@ describe('HostInterfaceManagementServiceService', () => {
             ],
         ];
         const test = service['stringifyStats']();
-        expect(test).toEqual('[[[["value1",true],["value2",false]],[["response1",0],["response2",0]],{"type":0,"text":"What is the capital of France?","points":10,"choices":[{"text":"Paris","isCorrect":true},{"text":"Berlin","isCorrect":false},{"text":"Madrid","isCorrect":false}]}]]')
+        expect(test).toEqual(
+            '[[[["value1",true],["value2",false]],[["response1",0],["response2",0]],{"type":0,"text":"What is ' +
+                'the capital of France?","points":10,"choices":[{"text":"Paris","isCorrect":true},{"text":"Berlin","isCorrect"' +
+                ':false},{"text":"Madrid","isCorrect":false}]}]]',
+        );
     });
 
     it('should prepare stats transport correctly', () => {
@@ -374,18 +384,13 @@ describe('HostInterfaceManagementServiceService', () => {
         service['reset']();
         expect(service.timerText).toEqual(timerMessage.timeLeft);
         expect(service.isGameOver).toBeFalsy();
-        expect(service.histogramDataChangingResponses).toEqual(new Map<string, number>())
+        expect(service.histogramDataChangingResponses).toEqual(new Map<string, number>());
         expect(service.histogramDataValue).toEqual(new Map<string, boolean>());
         expect(service.leftPlayers).toEqual([]);
-        expect(service.responsesQRL).toEqual(new Map<string, { answers: string; time: number }>())
+        expect(service.responsesQRL).toEqual(new Map<string, { answers: string; time: number }>());
         expect(service.isHostEvaluating).toBeFalsy();
         expect(service.gameStats).toEqual([]);
         expect(service.isPaused).toBeFalsy();
-        expect(service.isPanicMode).toBeFalsy()
+        expect(service.isPanicMode).toBeFalsy();
     });
-
-
-
-
-
 });

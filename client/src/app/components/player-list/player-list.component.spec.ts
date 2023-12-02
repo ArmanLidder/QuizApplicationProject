@@ -1,13 +1,11 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {SocketClientServiceTestHelper} from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import {SocketClientService} from '@app/services/socket-client.service/socket-client.service';
-import {SortListService} from '@app/services/sort-list.service/sort-list.service';
-import {playerStatus} from '@common/player-status/player-status';
-import {PlayerListComponent} from './player-list.component';
-import {
-    InteractiveListSocketService
-} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
-import {SortType} from "@app/components/player-list/player-list.component.const";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { SortListService } from '@app/services/sort-list.service/sort-list.service';
+import { playerStatus } from '@common/player-status/player-status';
+import { PlayerListComponent } from './player-list.component';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { SortType } from '@app/components/player-list/player-list.component.const';
 
 describe('PlayerListComponent', () => {
     let component: PlayerListComponent;
@@ -18,7 +16,12 @@ describe('PlayerListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [PlayerListComponent],
-            providers: [InteractiveListSocketService, SortListService, SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+            providers: [
+                InteractiveListSocketService,
+                SortListService,
+                SocketClientService,
+                { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
+            ],
         });
         TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         TestBed.inject(SortListService);
@@ -73,7 +76,7 @@ describe('PlayerListComponent', () => {
         const updateOptionSelections = spyOn(component, 'updateOptionSelections' as any);
         component.sort(SortType.SortByName);
         expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SortByName);
-        expect(getPlayersListSpy).toHaveBeenCalledWith(undefined, undefined,false);
+        expect(getPlayersListSpy).toHaveBeenCalledWith(undefined, undefined, false);
     });
 
     it('should toggle Chat Permission', () => {
@@ -83,8 +86,6 @@ describe('PlayerListComponent', () => {
         component.toggleChatPermission('karim');
         expect(toggleSpy).toHaveBeenCalledWith('karim', 1);
     });
-
-
 
     it('should correctly modify optionSelections', () => {
         const expectedResult = new Map([

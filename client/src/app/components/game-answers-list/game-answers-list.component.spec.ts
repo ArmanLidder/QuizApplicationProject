@@ -3,11 +3,11 @@ import { SocketClientServiceTestHelper } from '@app/classes/socket-client-servic
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameAnswersListComponent } from './game-answers-list.component';
 import { HttpClientModule } from '@angular/common/http';
-import {MatDialog} from "@angular/material/dialog";
-import {AppMaterialModule} from "@app/modules/material.module";
-import {FormsModule} from "@angular/forms";
-import {RouterTestingModule} from "@angular/router/testing";
-import {QuitterButtonComponent} from "@app/components/quitter-bouton/quitter-bouton.component";
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 describe('GameAnswersListComponent', () => {

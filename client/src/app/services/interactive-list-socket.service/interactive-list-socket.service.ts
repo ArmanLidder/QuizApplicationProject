@@ -1,20 +1,19 @@
-import {Injectable} from '@angular/core';
-import {SocketClientService} from "@app/services/socket-client.service/socket-client.service";
-import {socketEvent} from "@common/socket-event-name/socket-event-name";
-import {Score} from "@common/interfaces/score.interface";
-import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from "@app/components/player-list/player-list.component.const";
-import {playerStatus} from "@common/player-status/player-status";
+import { Injectable } from '@angular/core';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { Score } from '@common/interfaces/score.interface';
+import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@app/components/player-list/player-list.component.const';
+import { playerStatus } from '@common/player-status/player-status';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class InteractiveListSocketService {
     players: Player[] = [];
     isFinal: boolean = false;
     private actualStatus: Player[] = [];
 
-
-  constructor(private socketService: SocketClientService) {}
+    constructor(private socketService: SocketClientService) {}
 
     async getPlayersList(roomId: number, leftPlayers: Player[] = [], resetPlayerStatus: boolean = true) {
         return new Promise<number>((resolve) => {
@@ -25,7 +24,7 @@ export class InteractiveListSocketService {
     toggleChatPermission(username: string, roomId: number) {
         const playerIndex = this.findPlayer(username, this.players);
         this.players[playerIndex][CAN_TALK] = !this.players[playerIndex][CAN_TALK];
-        this.socketService.send(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId , username });
+        this.socketService.send(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId, username });
     }
 
     configureBaseSocketFeatures() {
@@ -39,15 +38,20 @@ export class InteractiveListSocketService {
         return foundPlayer !== undefined;
     }
 
-   private gatherPlayersUsername(resetPlayerStatus: boolean, resolve:  (value: (number | PromiseLike<number>)) => void, roomId: number,  leftPlayers: Player[]) {
-       this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, roomId, (players: string[]) => {
-           resolve(players.length);
-           this.setUpPlayerList(leftPlayers);
-           players.forEach((username) => {
-               this.getPlayerScoreFromServer(username, resetPlayerStatus, roomId,  leftPlayers);
-           });
-       });
-   }
+    private gatherPlayersUsername(
+        resetPlayerStatus: boolean,
+        resolve: (value: number | PromiseLike<number>) => void,
+        roomId: number,
+        leftPlayers: Player[],
+    ) {
+        this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, roomId, (players: string[]) => {
+            resolve(players.length);
+            this.setUpPlayerList(leftPlayers);
+            players.forEach((username) => {
+                this.getPlayerScoreFromServer(username, resetPlayerStatus, roomId, leftPlayers);
+            });
+        });
+    }
 
     private setUpPlayerList(leftPlayers: Player[]) {
         this.actualStatus = this.players;
@@ -56,7 +60,7 @@ export class InteractiveListSocketService {
     }
 
     private getPlayerScoreFromServer(username: string, resetPlayerStatus: boolean, roomId: number, leftPlayers: Player[]) {
-        this.socketService.send(socketEvent.GET_SCORE, { roomId , username }, (score: Score) => {
+        this.socketService.send(socketEvent.GET_SCORE, { roomId, username }, (score: Score) => {
             this.addPlayer(username, score, resetPlayerStatus, leftPlayers);
         });
     }
@@ -80,7 +84,7 @@ export class InteractiveListSocketService {
         return players.findIndex((player) => player[0] === username);
     }
 
-    private handleUpdateInteraction(){
+    private handleUpdateInteraction() {
         this.socketService.on(socketEvent.UPDATE_INTERACTION, (username: string) => {
             this.changePlayerStatus(username, playerStatus.interaction);
         });

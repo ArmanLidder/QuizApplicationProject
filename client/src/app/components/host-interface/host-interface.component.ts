@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { HostInterfaceManagementService } from "@app/services/host-interface-management.service/host-interface-management.service";
+import { HostInterfaceManagementService } from '@app/services/host-interface-management.service/host-interface-management.service';
 
 @Component({
     selector: 'app-host-interface',
@@ -23,7 +23,7 @@ export class HostInterfaceComponent {
     }
 
     isDisabled() {
-        return !this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated || this.isLastButton ;
+        return (!this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated) || this.isLastButton;
     }
 
     updateHostCommand() {

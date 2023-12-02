@@ -270,7 +270,7 @@ describe('GameService', () => {
         service.gameRealService.question = secondQuestionMock;
         service.gameRealService.timer = 0;
         service.gameRealService.inTimeTransition = false;
-        const negRes = service.isPanicDisabled()
+        const negRes = service.isPanicDisabled();
         expect(negRes).toBeFalsy();
     });
 });

@@ -10,7 +10,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import {InteractiveListSocketService} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 type Player = [string, number];
 

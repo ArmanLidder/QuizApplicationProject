@@ -6,8 +6,8 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import SpyObj = jasmine.SpyObj;
-import {MatDialog} from "@angular/material/dialog";
-import {AppMaterialModule} from "@app/modules/material.module";
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
 
 describe('GameItemComponent', () => {
     let quizServiceSpy: SpyObj<QuizService>;

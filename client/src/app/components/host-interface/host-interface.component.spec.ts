@@ -12,16 +12,11 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { NgChartsModule } from 'ng2-charts';
 import { HostInterfaceComponent } from './host-interface.component';
-import {
-    InteractiveListSocketService
-} from "@app/services/interactive-list-socket.service/interactive-list-socket.service";
-import {QuitterButtonComponent} from "@app/components/quitter-bouton/quitter-bouton.component";
-import {MatDialog} from "@angular/material/dialog";
-import {AppMaterialModule} from "@app/modules/material.module";
-import {
-    HostInterfaceManagementService
-} from "@app/services/host-interface-management.service/host-interface-management.service";
-
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { HostInterfaceManagementService } from '@app/services/host-interface-management.service/host-interface-management.service';
 
 describe('HostInterfaceComponent', () => {
     let component: HostInterfaceComponent;
@@ -35,7 +30,14 @@ describe('HostInterfaceComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [HostInterfaceComponent, StatisticHistogramComponent, PlayerListComponent, CorrectionQRLComponent, StatisticZoneComponent, QuitterButtonComponent],
+            declarations: [
+                HostInterfaceComponent,
+                StatisticHistogramComponent,
+                PlayerListComponent,
+                CorrectionQRLComponent,
+                StatisticZoneComponent,
+                QuitterButtonComponent,
+            ],
             providers: [
                 MatDialog,
                 HostInterfaceManagementService,
@@ -82,21 +84,21 @@ describe('HostInterfaceComponent', () => {
 
     it('should check if disable if false properly', () => {
         component['isLastButton'] = false;
-        component.gameService.gameRealService.locked = true
+        component.gameService.gameRealService.locked = true;
         const posRes = component.isDisabled();
         expect(posRes).toBeFalsy();
     });
 
     it('should update commend correctly', () => {
-       component.gameService.gameRealService.isLast = true;
-       const last = component.updateHostCommand();
-       component.gameService.gameRealService.isLast = false;
-       const before = component.updateHostCommand();
-       expect(last).toEqual('Montrer résultat');
-       expect(before).toEqual('Prochaine question');
+        component.gameService.gameRealService.isLast = true;
+        const last = component.updateHostCommand();
+        component.gameService.gameRealService.isLast = false;
+        const before = component.updateHostCommand();
+        expect(last).toEqual('Montrer résultat');
+        expect(before).toEqual('Prochaine question');
     });
 
-    it('should handle host command correctly', ()=>{
+    it('should handle host command correctly', () => {
         const saveSpy = spyOn(hostservice, 'saveStats');
         const lastQuestionSpy = spyOn(hostservice, 'handleLastQuestion');
         const nextQuestionSpy = spyOn(hostservice, 'requestNextQuestion');
@@ -105,9 +107,9 @@ describe('HostInterfaceComponent', () => {
         expect(saveSpy).toHaveBeenCalled();
         expect(lastQuestionSpy).toHaveBeenCalled();
         expect(nextQuestionSpy).not.toHaveBeenCalled();
-        saveSpy.calls.reset()
-        lastQuestionSpy.calls.reset()
-        nextQuestionSpy.calls.reset()
+        saveSpy.calls.reset();
+        lastQuestionSpy.calls.reset();
+        nextQuestionSpy.calls.reset();
         component.gameService.gameRealService.isLast = false;
         component.handleHostCommand();
         expect(saveSpy).toHaveBeenCalled();
