@@ -75,11 +75,10 @@ describe('InteractiveListSocketService', () => {
         const setUpPlayerSpy = spyOn(service, 'setUpPlayerList' as any).and.callThrough();
         const getPlayerScoreFromServerSpy = spyOn(service, 'getPlayerScoreFromServer' as any).and.callThrough();
         service['gatherPlayersUsername'](
-            true,
+            { roomId: 1, resetPlayerStatus: true },
             () => {
                 return;
             },
-            1,
             leftPlayer,
         );
         const [eventName, data, callback] = sendSpy.calls.mostRecent().args;
@@ -95,7 +94,7 @@ describe('InteractiveListSocketService', () => {
     it('should get player from server correctly', () => {
         const leftPlayer = [['test', 0, 0, 'test', true]] as Player[];
         const addPlayerSpy = spyOn(service, 'addPlayer' as any).and.callThrough();
-        service['getPlayerScoreFromServer']('test', false, 1, leftPlayer);
+        service['getPlayerScoreFromServer']({ username: 'test', resetPlayerStatus: false }, 1, leftPlayer);
         const [eventName, data, callback] = sendSpy.calls.mostRecent().args;
         expect(eventName).toEqual(socketEvent.GET_SCORE);
         expect(data).toEqual({ roomId: 1, username: 'test' });
@@ -174,5 +173,3 @@ describe('InteractiveListSocketService', () => {
         expect(service.players.length).toEqual(0);
     });
 });
-
-// // send .calls.mostRecent().args
