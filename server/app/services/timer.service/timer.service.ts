@@ -4,6 +4,7 @@ import { ONE_SECOND_DELAY } from '@app/services/socket-manager.service/socket-ma
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { Service } from 'typedi';
 
+type RoomData = { roomId: number; time: number };
 @Service()
 export class TimerService {
     constructor(
@@ -11,31 +12,24 @@ export class TimerService {
         private sio: io.Server,
     ) {}
 
-    // Comme le startTimer possède 2 paramètres optionnels pour des évènements de temps
-    // particuliers et que la majorité du temps, la méthode sera implémentée avec 2 paramètres.
-    // on préfère conserver une méthode adaptable à plusieurs situations. D'où la désactivation
-    // du max-param pour les deux méthodes comme les paramètres se propagent dans la méthode
-    // emitTime.
-    // eslint-disable-next-line max-params
-    startTimer(roomId: number, timeValue: number, eventName?: string, delay = ONE_SECOND_DELAY) {
-        const game = this.roomManager.getGameByRoomId(roomId);
-        this.emitTime(this.sio, roomId, timeValue, eventName);
-        timeValue--;
-        this.roomManager.getRoomById(roomId).timer = setInterval(() => {
+    startTimer(roomData: RoomData, eventName?: string, delay = ONE_SECOND_DELAY) {
+        const game = this.roomManager.getGameByRoomId(roomData.roomId);
+        this.emitTime(this.sio, roomData, eventName);
+        roomData.time--;
+        this.roomManager.getRoomById(roomData.roomId).timer = setInterval(() => {
             if (game && game.paused) {
                 return;
-            } else if (timeValue >= 0) {
-                this.emitTime(this.sio, roomId, timeValue, eventName);
-                timeValue--;
+            } else if (roomData.time >= 0) {
+                this.emitTime(this.sio, roomData, eventName);
+                roomData.time--;
             } else {
-                this.roomManager.clearRoomTimer(roomId);
+                this.roomManager.clearRoomTimer(roomData.roomId);
             }
         }, delay);
     }
 
-    // eslint-disable-next-line max-params
-    private emitTime(sio: io.Server, roomId: number, time: number, eventName?: string) {
+    private emitTime(sio: io.Server, roomData: RoomData, eventName?: string) {
         const event = eventName ?? socketEvent.TIME;
-        sio.to(String(roomId)).emit(event, time);
+        sio.to(String(roomData.roomId)).emit(event, roomData.time);
     }
 }
