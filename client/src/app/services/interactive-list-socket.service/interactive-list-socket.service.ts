@@ -5,6 +5,9 @@ import { Score } from '@common/interfaces/score.interface';
 import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@app/components/player-list/player-list.component.const';
 import { playerStatus } from '@common/player-status/player-status';
 
+type UserData = { username: string; resetPlayerStatus: boolean };
+type RoomSettings = { roomId: number; resetPlayerStatus: boolean };
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,7 +20,7 @@ export class InteractiveListSocketService {
 
     async getPlayersList(roomId: number, leftPlayers: Player[] = [], resetPlayerStatus: boolean = true) {
         return new Promise<number>((resolve) => {
-            this.gatherPlayersUsername(resetPlayerStatus, resolve, roomId, leftPlayers);
+            this.gatherPlayersUsername({ resetPlayerStatus, roomId }, resolve, leftPlayers);
         });
     }
 
@@ -38,17 +41,12 @@ export class InteractiveListSocketService {
         return foundPlayer !== undefined;
     }
 
-    private gatherPlayersUsername(
-        resetPlayerStatus: boolean,
-        resolve: (value: number | PromiseLike<number>) => void,
-        roomId: number,
-        leftPlayers: Player[],
-    ) {
-        this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, roomId, (players: string[]) => {
+    private gatherPlayersUsername(roomSettings: RoomSettings, resolve: (value: number | PromiseLike<number>) => void, leftPlayers: Player[]) {
+        this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, roomSettings.roomId, (players: string[]) => {
             resolve(players.length);
             this.setUpPlayerList(leftPlayers);
             players.forEach((username) => {
-                this.getPlayerScoreFromServer(username, resetPlayerStatus, roomId, leftPlayers);
+                this.getPlayerScoreFromServer({ username, resetPlayerStatus: roomSettings.resetPlayerStatus }, roomSettings.roomId, leftPlayers);
             });
         });
     }
@@ -59,16 +57,16 @@ export class InteractiveListSocketService {
         this.appendLeftPlayersToActivePlayers(leftPlayers);
     }
 
-    private getPlayerScoreFromServer(username: string, resetPlayerStatus: boolean, roomId: number, leftPlayers: Player[]) {
-        this.socketService.send(socketEvent.GET_SCORE, { roomId, username }, (score: Score) => {
-            this.addPlayer(username, score, resetPlayerStatus, leftPlayers);
+    private getPlayerScoreFromServer(userInfo: UserData, roomId: number, leftPlayers: Player[]) {
+        this.socketService.send(socketEvent.GET_SCORE, { roomId, username: userInfo.username }, (score: Score) => {
+            this.addPlayer(userInfo, score, leftPlayers);
         });
     }
 
-    private addPlayer(username: string, score: Score, resetPlayerStatus: boolean, leftPlayers: Player[]) {
-        const status = this.initPlayerStatus(username, resetPlayerStatus, leftPlayers);
-        const canChat = this.canPlayerChat(username);
-        this.players.push([username, score.points, score.bonusCount, status, canChat]);
+    private addPlayer(userInfo: UserData, score: Score, leftPlayers: Player[]) {
+        const status = this.initPlayerStatus(userInfo.username, userInfo.resetPlayerStatus, leftPlayers);
+        const canChat = this.canPlayerChat(userInfo.username);
+        this.players.push([userInfo.username, score.points, score.bonusCount, status, canChat]);
     }
 
     private canPlayerChat(username: string) {
