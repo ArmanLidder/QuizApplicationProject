@@ -5,9 +5,8 @@
 
     <div class="sidebar-content">
         <div class="message-container" *ngFor="let message of messages" #messageContainer>
-            <div *ngIf='(message.sender === myName)' [class]="message.sender === myName ? 'me-said' : 'username-said'">
-                {{message.sender === myName ? 'Moi' : message.sender}}</div>
-            <div *ngIf='!(message.sender === myName)' class="username-said">{{message.sender}} :</div>
+            <div [class]="message.sender === myName ? 'me-said' : 'username-said'">
+                {{(message.sender === myName) ? 'Moi :' : message.sender + ' :' }}</div>
             <p>{{ message.content }}</p>
             <p>{{ message.time.split(' ')[1] }}</p>
         </div>
