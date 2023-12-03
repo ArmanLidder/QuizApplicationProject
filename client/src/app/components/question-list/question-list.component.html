@@ -9,7 +9,7 @@
                     </button>
                     <button class="buttonOptionAddDelete" type="button" (click)="removeQuestion(i)">
                         <mat-icon class="delete-icon" matTooltip="Supprimer la question">delete</mat-icon>
-                    </button> 
+                    </button>
                 </div>
 
                 <button *ngIf='i !== 0' type="button" (click)="moveQuestionUp(i)">
@@ -56,10 +56,10 @@
                                 <div class="addDeleteChoices">
                                     <label for="choix{{i}}{{j}}">le choix{{j + 1}}:</label>
                                     <div  class ="arrow-down">
-                                        <button class="buttonOptionChoices" *ngIf='j !== getChoicesArray(i).controls.length - 1' type="button" (click)='moveChoice(ItemMovingDirection.DOWN, i, j)'>
+                                        <button class="buttonOptionChoices" *ngIf='j !== getChoicesArray(i).controls.length - 1' type="button" (click)='moveChoice(itemMovingDirection.DOWN, i, j)'>
                                             <mat-icon>keyboard_arrow_down</mat-icon>
                                         </button>
-                                        <button class="buttonOptionChoices" *ngIf='j !== 0' type="button" (click)='moveChoice(ItemMovingDirection.UP, i, j)'>
+                                        <button class="buttonOptionChoices" *ngIf='j !== 0' type="button" (click)='moveChoice(itemMovingDirection.UP, i, j)'>
                                             <mat-icon>keyboard_arrow_up</mat-icon>
                                         </button>
                                     </div>
