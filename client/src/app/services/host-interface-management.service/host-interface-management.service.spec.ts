@@ -43,7 +43,8 @@ describe('HostInterfaceManagementServiceService', () => {
             { text: 'Madrid', isCorrect: false },
         ],
     };
-
+    const mockTimeValue = 123;
+    const mockRoomIdValue = 100;
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ReactiveFormsModule, FormsModule, HttpClientModule, AppMaterialModule],
@@ -348,6 +349,41 @@ describe('HostInterfaceManagementServiceService', () => {
                 'the capital of France?","points":10,"choices":[{"text":"Paris","isCorrect":true},{"text":"Berlin","isCorrect"' +
                 ':false},{"text":"Madrid","isCorrect":false}]}]]',
         );
+    });
+
+    it('should configure base socket features for play audio correctly', () => {
+        const audioSpy = spyOn(service.gameService.audio, 'play');
+        service.gameService.gameRealService.timer = mockTimeValue;
+        service['handleHostPanicMode']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.mostRecent().args;
+        expect(socketOnText).toEqual(socketEvent.PANIC_MODE);
+        socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
+        expect(service.gameService.timer).toEqual(mockTimeValue);
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for pausing the audio', () => {
+        const audioSpy = spyOn(service.gameService.audio, 'play');
+        service.gameService.gameRealService.audioPaused = true;
+        service.isPanicMode = true;
+        service['handleHostTimerPause']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.mostRecent().args;
+        expect(socketOnText).toEqual(socketEvent.PAUSE_TIMER);
+        socketOnFunc(mockRoomIdValue);
+        expect(service.gameService.gameRealService.audioPaused).toBeFalsy();
+        expect(audioSpy).toHaveBeenCalled();
+    });
+
+    it('should configure base socket features for Unpausing the audio', () => {
+        const audioSpy = spyOn(service.gameService.audio, 'pause');
+        service.gameService.gameRealService.audioPaused = false;
+        service.isPanicMode = true;
+        service['handleHostTimerPause']();
+        const [socketOnText, socketOnFunc] = onSpy.calls.mostRecent().args;
+        expect(socketOnText).toEqual(socketEvent.PAUSE_TIMER);
+        socketOnFunc(mockRoomIdValue);
+        expect(service.gameService.gameRealService.audioPaused).toBeTruthy();
+        expect(audioSpy).toHaveBeenCalled();
     });
 
     it('should prepare stats transport correctly', () => {

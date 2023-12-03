@@ -91,6 +91,8 @@ export class HostInterfaceManagementService {
         this.handleEndQuestionAfterRemoval();
         this.handleEvaluationOver();
         this.handleRefreshActivityStats();
+        this.handleHostPanicMode();
+        this.handleHostTimerPause();
     }
 
     private handleTimeTransition() {
@@ -167,6 +169,26 @@ export class HostInterfaceManagementService {
     private handleEndQuestionAfterRemoval() {
         this.socketService.on(socketEvent.END_QUESTION_AFTER_REMOVAL, () => {
             this.resetInterface();
+        });
+    }
+
+    private handleHostPanicMode() {
+        this.socketService.on(socketEvent.PANIC_MODE, () => {
+            if (this.gameService.timer > 0 && !this.gameService.gameRealService.audioPaused) {
+                this.gameService.audio.play();
+            }
+            this.isPanicMode = true;
+        });
+    }
+
+    private handleHostTimerPause() {
+        this.socketService.on(socketEvent.PAUSE_TIMER, () => {
+            if (this.gameService.gameRealService.audioPaused && this.isPanicMode) {
+                this.gameService.audio.play();
+            } else if (!this.gameService.gameRealService.audioPaused && this.isPanicMode) {
+                this.gameService.audio.pause();
+            }
+            this.gameService.gameRealService.audioPaused = !this.gameService.gameRealService.audioPaused;
         });
     }
 
