@@ -34,7 +34,7 @@ describe('WaitingRoomComponent', () => {
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
             ],
         });
-        fixture = TestBed.createComponent(WaitingRoomComponent);
+        fixture = TestBed.createComponent(WaitingRoomComponent); 
         component = fixture.componentInstance;
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         waitingRoomService = TestBed.inject(WaitingRoomManagementService);

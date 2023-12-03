@@ -4,8 +4,8 @@
         <h2 *ngIf='isHost'>Code : {{waitingRoomManagementService.roomId}}</h2>
         <div *ngIf='isHost'>
             <h3> La salle est {{this.setLockActionMessage()}}</h3>
-            <label class="switch-btn">
-                <input type="checkbox" (click)='toggleRoomLocked()'/>
+            <label class="switch-btn" matTooltip="Verrouiller la salle">
+                <input  type="checkbox" (click)='toggleRoomLocked()'/>
                 <span class="slider round"></span>
             </label>
         </div>
