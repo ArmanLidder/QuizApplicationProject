@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angula
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { CREATED } from '@app/components/games-list/games-list.component.const';
+import { CREATED } from '@common/constants/games-list.component.const';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';

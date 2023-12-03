@@ -1,6 +1,6 @@
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as io from 'socket.io';
-import { ONE_SECOND_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
+import { ONE_SECOND_DELAY } from '@common/constants/socket-manager.service.const';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { Service } from 'typedi';
 

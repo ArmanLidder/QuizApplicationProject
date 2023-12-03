@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@app/components/player-list/player-list.component.const';
+import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@common/constants/player-list.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
 import { playerStatus } from '@common/player-status/player-status';

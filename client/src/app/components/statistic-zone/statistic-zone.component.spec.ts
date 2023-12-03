@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StatisticZoneComponent } from './statistic-zone.component';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
-import { mockStats as mockSta } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { mockStats as mockSta } from '@common/constants/statistic-zone.component.const';
 import { NgChartsModule } from 'ng2-charts';
 import { HttpClientModule } from '@angular/common/http';
 

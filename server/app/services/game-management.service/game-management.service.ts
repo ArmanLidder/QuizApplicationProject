@@ -9,7 +9,7 @@ import {
 } from '@common/interfaces/socket-manager.interface';
 import { Game } from '@app/classes/game/game';
 import { QuestionType } from '@common/enums/question-type.enum';
-import { QRL_DURATION, QUARTER_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
+import { QRL_DURATION, QUARTER_SECOND_DELAY, TRANSITION_QUESTIONS_DELAY } from '@common/constants/socket-manager.service.const';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 import * as io from 'socket.io';

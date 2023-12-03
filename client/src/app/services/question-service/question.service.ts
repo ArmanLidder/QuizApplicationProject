@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
-import { NON_EXISTANT_INDEX } from '@app/services/question-service/question.service.const';
+import { NON_EXISTANT_INDEX } from '@common/constants/question.service.const';
 
 @Injectable({
     providedIn: 'root',

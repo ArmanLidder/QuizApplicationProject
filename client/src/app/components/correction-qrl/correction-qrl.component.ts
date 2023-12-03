@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@common/constants/correction-qrl.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';

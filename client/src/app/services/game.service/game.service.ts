@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@app/components/host-interface/host-interface.component.const';
+import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@common/constants/host-interface.component.const';
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
 import { GameTestService } from '@app/services/game-test.service/game-test.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';

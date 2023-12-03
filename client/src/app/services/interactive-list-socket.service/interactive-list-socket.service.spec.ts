@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { Player } from '@app/components/player-list/player-list.component.const';
+import { Player } from '@common/constants/player-list.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { playerStatus } from '@common/player-status/player-status';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';

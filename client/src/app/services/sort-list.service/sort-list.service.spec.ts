@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PlayerStatus } from '@app/services/sort-list.service/sort-list.service.const';
+import { PlayerStatus } from '@common/constants/sort-list.service.const';
 import { playerStatus } from '@common/player-status/player-status';
 import { SortListService } from './sort-list.service';
 const SCORE_HIGH = 20;

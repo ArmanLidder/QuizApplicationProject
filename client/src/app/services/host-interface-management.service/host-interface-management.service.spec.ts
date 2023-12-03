@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { ACTIVE, INACTIVE } from '@app/components/host-interface/host-interface.component.const';
+import { ACTIVE, INACTIVE } from '@common/constants/host-interface.component.const';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
@@ -346,8 +346,8 @@ describe('HostInterfaceManagementServiceService', () => {
         const test = service['stringifyStats']();
         expect(test).toEqual(
             '[[[["value1",true],["value2",false]],[["response1",0],["response2",0]],{"type":0,"text":"What is ' +
-            'the capital of France?","points":10,"choices":[{"text":"Paris","isCorrect":true},{"text":"Berlin","isCorrect"' +
-            ':false},{"text":"Madrid","isCorrect":false}]}]]',
+                'the capital of France?","points":10,"choices":[{"text":"Paris","isCorrect":true},{"text":"Berlin","isCorrect"' +
+                ':false},{"text":"Madrid","isCorrect":false}]}]]',
         );
     });
 

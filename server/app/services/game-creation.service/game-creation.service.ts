@@ -1,5 +1,5 @@
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
-import { TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
+import { TRANSITION_QUESTIONS_DELAY } from '@common/constants/socket-manager.service.const';
 import { TimerService } from '@app/services/timer.service/timer.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { PlayerUsername } from '@common/interfaces/socket-manager.interface';

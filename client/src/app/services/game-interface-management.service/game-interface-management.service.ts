@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
-import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { MAX_PERCENTAGE } from '@common/constants/game-interface.component.const';
+import { TransportStatsFormat } from '@common/constants/host-interface.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';

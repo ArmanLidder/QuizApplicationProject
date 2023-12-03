@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ORDER_FIRST, ORDER_LAST, ORDER_SECOND, ORDER_THIRD, PlayerStatus, STATUS } from '@app/services/sort-list.service/sort-list.service.const';
+import { ORDER_FIRST, ORDER_LAST, ORDER_SECOND, ORDER_THIRD, PlayerStatus, STATUS } from '@common/constants/sort-list.service.const';
 import { playerStatus } from '@common/player-status/player-status';
 
 @Injectable({

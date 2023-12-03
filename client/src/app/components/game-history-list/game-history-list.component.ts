@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameHistoryService } from '@app/services/game-history.service/game-history.service';
 import { GameInfo } from '@common/interfaces/game-info.interface';
-import { DEFAULT_RADIX_VALUE } from '@app/components/game-history-list/game-history-list.component.const';
+import { DEFAULT_RADIX_VALUE } from '@common/constants/game-history-list.component.const';
 @Component({
     selector: 'app-history-list',
     templateUrl: './game-history-list.component.html',
