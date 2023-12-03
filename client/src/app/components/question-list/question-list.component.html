@@ -103,7 +103,7 @@
 
 
                 <div class='button-container'>
-                    <button class="buttonOption" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)"><mat-icon class="green-icon" matTooltip="Sauvegarder la question">check_circle</mat-icon></button><br><br>
+                    <button class="buttonConfirm" *ngIf="question.get('beingModified')?.value" type="button" (click)="saveQuestion(i)" matTooltip="Sauvegarder la question">Confirmer</button><br><br>
                     <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)"><mat-icon class="edit-icon" matTooltip="Changer la question">edit</mat-icon></button><br><br>
                 </div>
                 <button *ngIf='i + 1 !== questionsArray?.length' type="button" (click)="moveQuestionDown(i)">
