@@ -304,15 +304,15 @@ describe('QuizValidationService', () => {
             { text: 'Choice 1', isCorrect: false },
         ];
         const errors = service.validateQuestionChoices(0, stubChoices as unknown[] as QuizChoice[]);
-        expect(errors).toContain('Question 1, Choice 1 : le texte est requis');
+        expect(errors).toContain('Question 1, Choix 1 : le texte est requis');
     });
 
-    it('validateQuestionChoices should return Question 1, Choice 1 : un choix doit être soit vrai soit faux if invalid choice answer', () => {
+    it('validateQuestionChoices should return Question 1, Choix 1 : un choix doit être soit vrai soit faux if invalid choice answer', () => {
         const stubChoices = [
             { text: '', isCorrect: null },
             { text: 'Choice 1', isCorrect: null },
         ];
         const errors = service.validateQuestionChoices(0, stubChoices as unknown[] as QuizChoice[]);
-        expect(errors).toContain('Question 1, Choice 1 : un choix doit être soit vrai soit faux');
+        expect(errors).toContain('Question 1, Choix 1 : un choix doit être soit vrai soit faux');
     });
 });

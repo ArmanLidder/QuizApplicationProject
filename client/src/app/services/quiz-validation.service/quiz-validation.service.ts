@@ -67,7 +67,7 @@ export class QuizValidationService {
             errors.push(DESCRIPTION_REQUIRED);
         }
 
-        if (isNaN(quiz.duration) || quiz.duration <= MIN_DURATION || quiz.duration >= MAX_DURATION) {
+        if (isNaN(quiz.duration) || quiz.duration < MIN_DURATION || quiz.duration > MAX_DURATION) {
             errors.push(INVALID_DURATION);
         }
 
@@ -118,11 +118,11 @@ export class QuizValidationService {
         } else {
             choices.forEach((choice, choiceIndex) => {
                 if (!choice.text || !choice.text.trim()) {
-                    errors.push(`Question ${questionIndex + 1}, Choice ${choiceIndex + 1} : ${TEXT_REQUIRED}`);
+                    errors.push(`Question ${questionIndex + 1}, Choix ${choiceIndex + 1} : ${TEXT_REQUIRED}`);
                 }
 
                 if (choice.isCorrect === null || choice.isCorrect === undefined) {
-                    errors.push(`Question ${questionIndex + 1}, Choice ${choiceIndex + 1} : ${INVALID_CHOICE}`);
+                    errors.push(`Question ${questionIndex + 1}, Choix ${choiceIndex + 1} : ${INVALID_CHOICE}`);
                 }
             });
 
