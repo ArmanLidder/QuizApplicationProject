@@ -3,7 +3,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { POPUP_TIMEOUT } from '@app/components/question-list/question-list.component.const';
 import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { QuestionService } from '@app/services/question-service/question.service';
-import { QuestionType } from '@common/enums/question-type.enum';
+// import { QuestionType } from '@common/enums/question-type.enum';
 import { ItemMovingDirection } from 'src/enums/item-moving-direction';
 import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
 
@@ -18,6 +18,8 @@ export class QuestionListComponent {
 
     isPopupVisible: boolean = false;
     questionErrors: string[] = [];
+    // protected readonly questionType = QuestionType;
+    protected readonly itemMovingDirection = ItemMovingDirection;
 
     constructor(
         private questionService: QuestionService,
@@ -74,9 +76,4 @@ export class QuestionListComponent {
     getChoicesArray(index: number) {
         return this.choiceService.getChoicesArray(index, this.questionsArray);
     }
-
-    // eslint-disable-next-line @typescript-eslint/member-ordering
-    protected readonly questionType = QuestionType;
-    // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/member-ordering
-    protected readonly ItemMovingDirection = ItemMovingDirection;
 }

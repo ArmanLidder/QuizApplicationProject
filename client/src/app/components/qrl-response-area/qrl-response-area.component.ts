@@ -15,6 +15,7 @@ import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.co
     styleUrls: ['./qrl-response-area.component.scss'],
 })
 export class QrlResponseAreaComponent implements OnDestroy {
+    protected readonly maxResponseCharacters = MAX_RESPONSE_CHARACTERS;
     private inactiveTimeout: number = 0;
     private inputTimer: number = 0;
     private validateTimer: number = 0;
@@ -83,7 +84,4 @@ export class QrlResponseAreaComponent implements OnDestroy {
         clearTimeout(this.inactiveTimeout);
         this.setupInputDebounce();
     }
-
-    // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/member-ordering
-    protected readonly MAX_RESPONSE_CHARACTERS = MAX_RESPONSE_CHARACTERS;
 }
