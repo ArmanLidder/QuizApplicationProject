@@ -5,16 +5,16 @@ import { SocketClientServiceTestHelper } from '@app/classes/socket-client-servic
 import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
-import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { QuestionType } from '@common/enums/question-type.enum';
-import { Score } from '@common/interfaces/score.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
+import { question } from '@app/components/statistic-zone/statistic-zone.component.const';
 import { GameInterfaceManagementService } from '@app/services/game-interface-management.service/game-interface-management.service';
 import { GameService } from '@app/services/game.service/game.service';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { Score } from '@common/interfaces/score.interface';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 describe('GameInterfaceManagementService', () => {
     let service: GameInterfaceManagementService;
@@ -84,7 +84,7 @@ describe('GameInterfaceManagementService', () => {
         expect(service.inPanicMode).toBeFalsy();
         expect(service.playerScore).toEqual(0);
         expect(service.gameStats).toEqual([]);
-        expect(service.timerText).toEqual(timerMessage.timeLeft);
+        expect(service.timerText).toEqual(timerMessage.TIME_LEFT);
     });
 
     it('should configure base socket features for end question correctly', () => {

@@ -105,7 +105,7 @@ export class QuizCreationComponent {
         this.dialog.open(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
-                content: errorDictionary.quizAlreadyExist,
+                content: errorDictionary.QUIZ_ALREADY_EXIST,
             },
         });
     }

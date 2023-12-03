@@ -1,23 +1,23 @@
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { QuizCreationComponent } from './quiz-creation.component';
-import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
-import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { QuestionListComponent } from '@app/components/question-list/question-list.component';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { of } from 'rxjs';
-import { Quiz } from '@common/interfaces/quiz.interface';
-import { QuestionType } from '@common/enums/question-type.enum';
-import SpyObj = jasmine.SpyObj;
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
-import { MatDialog } from '@angular/material/dialog';
-import { createFormQuestionFormGroup } from 'src/utils/create-form-question/create-form-question';
-import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { PageMode } from 'src/enums/page-mode.enum';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
+import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
+import { Quiz } from '@common/interfaces/quiz.interface';
+import { of } from 'rxjs';
+import { PageMode } from 'src/enums/page-mode.enum';
+import { createFormQuestionFormGroup } from 'src/utils/create-form-question/create-form-question';
+import { QuizCreationComponent } from './quiz-creation.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('QuizCreationComponent', () => {
     let component: QuizCreationComponent;
@@ -257,7 +257,7 @@ describe('QuizCreationComponent', () => {
         expect(dialogOpenSpy).toHaveBeenCalledWith(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
-                content: errorDictionary.quizAlreadyExist,
+                content: errorDictionary.QUIZ_ALREADY_EXIST,
             },
         });
     });

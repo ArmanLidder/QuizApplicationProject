@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 import { RoomValidationResult, UsernameValidation } from '@common/interfaces/socket-manager.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Injectable({
     providedIn: 'root',
@@ -28,15 +28,15 @@ export class RoomValidationService {
     }
 
     async verifyRoomId() {
-        return this.isOnlyDigit() ? await this.sendRoomId() : errorDictionary.validationCodeError;
+        return this.isOnlyDigit() ? await this.sendRoomId() : errorDictionary.VALIDATION_CODE_ERROR;
     }
 
     async verifyUsername() {
         const whitespacePattern = /^\s*$/;
         const isFormatValid = this.username === undefined || whitespacePattern.test(this.username);
         const isHost = this.username?.toLowerCase() === HOST_USERNAME.toLowerCase();
-        if (isFormatValid) return errorDictionary.charNumError;
-        else if (isHost) return errorDictionary.organiserNameError;
+        if (isFormatValid) return errorDictionary.CHAR_NUM_ERROR;
+        else if (isHost) return errorDictionary.ORGANISER_NAME_ERROR;
         else return await this.sendUsername();
     }
 
@@ -72,7 +72,7 @@ export class RoomValidationService {
 
     private handleJoiningRoomValidation(isLocked: boolean) {
         this.isLocked = isLocked;
-        return isLocked ? this.handleErrors(errorDictionary.roomLocked) : '';
+        return isLocked ? this.handleErrors(errorDictionary.ROOM_LOCKED) : '';
     }
 
     private handleUsernameValidation(data: UsernameValidation) {
@@ -82,8 +82,8 @@ export class RoomValidationService {
 
     private handleRoomIdValidation(data: RoomValidationResult) {
         let error = '';
-        if (!data.isRoom) error = this.handleErrors(errorDictionary.roomCodeExpired);
-        else if (data.isLocked) error = this.handleErrors(errorDictionary.roomLocked);
+        if (!data.isRoom) error = this.handleErrors(errorDictionary.ROOM_CODE_EXPIRED);
+        else if (data.isLocked) error = this.handleErrors(errorDictionary.ROOM_LOCKED);
         else this.isRoomIdValid = true;
         return error;
     }
