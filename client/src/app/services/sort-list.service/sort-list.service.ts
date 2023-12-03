@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { playerStatus } from '@common/player-status/player-status';
 import { ORDER_FIRST, ORDER_LAST, ORDER_SECOND, ORDER_THIRD, PlayerStatus, STATUS } from '@app/services/sort-list.service/sort-list.service.const';
+import { playerStatus } from '@common/player-status/player-status';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SortListService {
     readonly mapStatus = new Map([
-        [playerStatus.noInteraction, ORDER_FIRST],
-        [playerStatus.interaction, ORDER_SECOND],
-        [playerStatus.validation, ORDER_THIRD],
-        [playerStatus.left, ORDER_LAST],
+        [playerStatus.NO_INTERACTION, ORDER_FIRST],
+        [playerStatus.INTERACTION, ORDER_SECOND],
+        [playerStatus.VALIDATION, ORDER_THIRD],
+        [playerStatus.LEFT, ORDER_LAST],
     ]);
     sortFunction: (arg1: PlayerStatus, arg2: PlayerStatus) => number = this.sortComparaisonByName;
 

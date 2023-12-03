@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { SortType } from '@app/components/player-list/player-list.component.const';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 import { playerStatus } from '@common/player-status/player-status';
 import { PlayerListComponent } from './player-list.component';
-import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
-import { SortType } from '@app/components/player-list/player-list.component.const';
 
 describe('PlayerListComponent', () => {
     let component: PlayerListComponent;
@@ -30,8 +30,8 @@ describe('PlayerListComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         interactiveListService.players = [
-            ['karim', 0, 0, playerStatus.left, true],
-            ['player1', 0, 0, playerStatus.interaction, true],
+            ['karim', 0, 0, playerStatus.LEFT, true],
+            ['player1', 0, 0, playerStatus.INTERACTION, true],
         ];
         component['order'] = 1;
         component.orderIcon = 'fa-solid fa-up-long';
@@ -82,7 +82,7 @@ describe('PlayerListComponent', () => {
     it('should toggle Chat Permission', () => {
         const toggleSpy = spyOn(interactiveListService, 'toggleChatPermission');
         component.roomId = 1;
-        interactiveListService.players = [['karim', 0, 0, playerStatus.left, true]];
+        interactiveListService.players = [['karim', 0, 0, playerStatus.LEFT, true]];
         component.toggleChatPermission('karim');
         expect(toggleSpy).toHaveBeenCalledWith('karim', 1);
     });
