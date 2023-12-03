@@ -1,6 +1,6 @@
 <div class="grid-container" *ngIf='hostInterfaceManagerService.isGameOver'>
     <h2>Partie terminée</h2>
-    <app-quitter-button></app-quitter-button>
+    <app-leave-boutton></app-leave-boutton>
 </div>
 <div class="grid-container" *ngIf='!hostInterfaceManagerService.isGameOver'>
     <div id="flex-container">
@@ -24,7 +24,7 @@
                 (click)='handleHostCommand()'>
                 {{updateHostCommand()}}
         </button>
-        <app-quitter-button></app-quitter-button>
+        <app-leave-boutton></app-leave-boutton>
     </div>
 </div>
 <app-correction-qrl [gameStats] ='hostInterfaceManagerService.gameStats' [qrlAnswers]='hostInterfaceManagerService.responsesQRL' [isHostEvaluating]='hostInterfaceManagerService.isHostEvaluating'></app-correction-qrl>

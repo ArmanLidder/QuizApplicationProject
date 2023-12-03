@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-    selector: 'app-quitter-button',
-    templateUrl: './quitter-bouton.component.html',
-    styleUrls: ['./quitter-bouton.component.scss'],
+    selector: 'app-leave-boutton',
+    templateUrl: './leave-boutton.component.html',
+    styleUrls: ['./leave-boutton.component.scss'],
 })
-export class QuitterButtonComponent {
+export class LeaveButtonComponent {
     constructor(
         private dialog: MatDialog,
         private router: Router,

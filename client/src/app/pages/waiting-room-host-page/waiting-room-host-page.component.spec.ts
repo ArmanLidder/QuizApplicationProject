@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WaitingRoomHostPageComponent } from './waiting-room-host-page.component';
-import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { AppMaterialModule } from '@app/modules/material.module';
-import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
-import { WaitingRoomComponent } from '@app/components/waiting-room/waiting-room.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LeaveButtonComponent } from '@app/components/leave-boutton/leave-boutton.component';
+import { WaitingRoomComponent } from '@app/components/waiting-room/waiting-room.component';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { WaitingRoomHostPageComponent } from './waiting-room-host-page.component';
 
 describe('WaitingRoomHostPageComponent', () => {
     let component: WaitingRoomHostPageComponent;
@@ -16,7 +16,7 @@ describe('WaitingRoomHostPageComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, FormsModule, RouterTestingModule, AppMaterialModule],
-            declarations: [WaitingRoomHostPageComponent, QuitterButtonComponent, WaitingRoomComponent],
+            declarations: [WaitingRoomHostPageComponent, LeaveButtonComponent, WaitingRoomComponent],
             providers: [MatDialog, { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } }],
         });
         fixture = TestBed.createComponent(WaitingRoomHostPageComponent);

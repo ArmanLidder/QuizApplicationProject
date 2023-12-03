@@ -24,7 +24,7 @@
 
     <div class="actions">
         <button *ngIf='isHost' class="action-btn" (click)='startGame()' [disabled]="this.waitingRoomManagementService.players.length===0||!this.waitingRoomManagementService.isRoomLocked">Commencer</button>
-        <app-quitter-button></app-quitter-button>
+        <app-leave-boutton></app-leave-boutton>
     </div>
 </div>
 <div *ngIf='waitingRoomManagementService.isTransition' class='transition'>
@@ -32,6 +32,6 @@
         <h2>Quiz commence dans :</h2>
         <div>{{waitingRoomManagementService.time}}</div>
     </div>
-    <app-quitter-button></app-quitter-button>
+    <app-leave-boutton></app-leave-boutton>
 </div>
 

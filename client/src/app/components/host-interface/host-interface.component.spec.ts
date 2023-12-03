@@ -1,22 +1,22 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { CorrectionQRLComponent } from '@app/components/correction-qrl/correction-qrl.component';
-import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
+import { LeaveButtonComponent } from '@app/components/leave-boutton/leave-boutton.component';
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
+import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { StatisticZoneComponent } from '@app/components/statistic-zone/statistic-zone.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
+import { HostInterfaceManagementService } from '@app/services/host-interface-management.service/host-interface-management.service';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { NgChartsModule } from 'ng2-charts';
 import { HostInterfaceComponent } from './host-interface.component';
-import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
-import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
-import { MatDialog } from '@angular/material/dialog';
-import { AppMaterialModule } from '@app/modules/material.module';
-import { HostInterfaceManagementService } from '@app/services/host-interface-management.service/host-interface-management.service';
 
 describe('HostInterfaceComponent', () => {
     let component: HostInterfaceComponent;
@@ -36,7 +36,7 @@ describe('HostInterfaceComponent', () => {
                 PlayerListComponent,
                 CorrectionQRLComponent,
                 StatisticZoneComponent,
-                QuitterButtonComponent,
+                LeaveButtonComponent,
             ],
             providers: [
                 MatDialog,

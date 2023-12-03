@@ -3,12 +3,12 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { LeaveButtonComponent } from '@app/components/leave-boutton/leave-boutton.component';
 import { QrlResponseAreaComponent } from '@app/components/qrl-response-area/qrl-response-area.component';
-import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME } from '@common/constants/qrl-response-area.component.const';
-import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME } from '@common/constants/qrl-response-area.component.const';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -19,7 +19,7 @@ describe('QrlResponseAreaComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [QrlResponseAreaComponent, QuitterButtonComponent],
+            declarations: [QrlResponseAreaComponent, LeaveButtonComponent],
             providers: [MatDialog, SocketClientService, GameService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
             imports: [HttpClientModule, AppMaterialModule, FormsModule],
         }).compileComponents();
