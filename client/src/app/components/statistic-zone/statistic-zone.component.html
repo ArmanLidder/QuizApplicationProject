@@ -1,6 +1,6 @@
 <div class="stats-container">
     <h2>Question {{index + 1}}</h2>
-    <p>{{question.text}}</p>
+    <p>{{question?.text}}</p>
     <div class="graph-title">
         <button *ngIf="!isFirst()" class="arrow" (click)="previous()">Précédent</button>
         <button *ngIf="!isEnd()" class="arrow" (click)="next()">Suivant</button>

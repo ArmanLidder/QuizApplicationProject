@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
 @Component({
     selector: 'app-game-page',
@@ -11,17 +12,19 @@ import { HOST_USERNAME } from '@common/names/host-username';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnDestroy, OnInit {
+    isHost: boolean;
+    private route: Router = inject(Router);
+
     constructor(
         private gameService: GameService,
         private readonly socketService: SocketClientService,
-        public route: Router,
-    ) {}
-
-    get isHost(): boolean {
-        return this.gameService.username === HOST_USERNAME;
+        private interactiveListService: InteractiveListSocketService,
+    ) {
+        this.isHost = this.gameService.gameRealService.username === HOST_USERNAME;
     }
 
     ngOnInit() {
+        if (this.socketService.isSocketAlive()) this.interactiveListService.configureBaseSocketFeatures();
         window.onbeforeunload = () => this.ngOnDestroy();
         window.onload = async () => this.route.navigate(['/']);
     }

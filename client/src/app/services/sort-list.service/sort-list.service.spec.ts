@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SortListService, Player } from './sort-list.service';
+import { SortListService } from './sort-list.service';
 import { playerStatus } from '@common/player-status/player-status';
+import { PlayerStatus } from '@app/services/sort-list.service/sort-list.service.const';
 const SCORE_HIGH = 20;
 const SCORE_LOW = 10;
 const SCORE_MIDDLE = 15;
@@ -12,13 +13,13 @@ const LEN = 4;
 
 describe('SortListService', () => {
     let service: SortListService;
-    let mockPlayers: Player[];
+    let mockPlayers: PlayerStatus[];
     let name: string;
     let score: number;
     let status: string;
-    const findByName = (player: Player) => player[0] === name;
-    const findByScore = (player: Player) => player[1] === score;
-    const findByStatus = (player: Player) => player[3] === status;
+    const findByName = (player: PlayerStatus) => player[0] === name;
+    const findByScore = (player: PlayerStatus) => player[1] === score;
+    const findByStatus = (player: PlayerStatus) => player[3] === status;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});

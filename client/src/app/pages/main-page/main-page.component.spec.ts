@@ -3,6 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
@@ -10,9 +12,9 @@ describe('MainPageComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, AppMaterialModule],
             declarations: [MainPageComponent],
-            providers: [SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
+            providers: [MatDialog, SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         }).compileComponents();
     });
 

@@ -1,14 +1,14 @@
-<div class="grid-container" *ngIf='isGameOver'>
+<div class="grid-container" *ngIf='hostInterfaceManagerService.isGameOver'>
     <h2>Partie terminée</h2>
     <app-quitter-button></app-quitter-button>
 </div>
-<div class="grid-container" *ngIf='!isGameOver'>
+<div class="grid-container" *ngIf='!hostInterfaceManagerService.isGameOver'>
     <div id="flex-container">
         <div class="circle">
-            <span>{{timerText}}</span>
+            <span>{{hostInterfaceManagerService.timerText}}</span>
             <span>{{gameService.timer}}</span>
-            <mat-icon [matTooltip]="isPaused ? 'Play' : 'Pause'" (click)='pauseTimer()'>{{ isPaused ? 'play_circle_outline' : 'pause_circle_outline' }}</mat-icon>
-            <mat-icon [matTooltip]="gameService.isPanicDisabled() || isPanicMode ? 'Vous ne pouvez  pas encore activer le mode panique' : 'Activez mode panique !'" (click)='panicMode()' [ngClass]="{'disable':gameService.isPanicDisabled() || isPanicMode}"> whatshot </mat-icon>
+            <mat-icon [matTooltip]="hostInterfaceManagerService.isPaused ? 'Play' : 'Pause'" (click)='hostInterfaceManagerService.sendPauseTimer()'>{{ hostInterfaceManagerService.isPaused ? 'play_circle_outline' : 'pause_circle_outline' }}</mat-icon>
+            <mat-icon [matTooltip]="gameService.isPanicDisabled() || hostInterfaceManagerService.isPanicMode ? 'Vous ne pouvez  pas encore activer le mode panique' : 'Activez mode panique !'" (click)='hostInterfaceManagerService.startPanicMode()' [ngClass]="{'disable': gameService.isPanicDisabled() || hostInterfaceManagerService.isPanicMode}"> whatshot </mat-icon>
         </div>
         <section id="question-field">
             <div>
@@ -19,7 +19,7 @@
         </section>
     </div>
     <div class='btn-container'>
-        <button *ngIf='!isHostEvaluating' class='enter'
+        <button *ngIf='!hostInterfaceManagerService.isHostEvaluating' class='enter'
                 [disabled]='isDisabled()'
                 (click)='handleHostCommand()'>
                 {{updateHostCommand()}}
@@ -27,17 +27,16 @@
         <app-quitter-button></app-quitter-button>
     </div>
 </div>
-<app-correction-qrl [gameStats] ='gameStats' [reponsesQRL]='reponsesQRL' [isHostEvaluating]='isHostEvaluating'></app-correction-qrl>
+<app-correction-qrl [gameStats] ='hostInterfaceManagerService.gameStats' [qrlAnswers]='hostInterfaceManagerService.responsesQRL' [isHostEvaluating]='hostInterfaceManagerService.isHostEvaluating'></app-correction-qrl>
 <div class="result-container">
-    <div class="histogram" *ngIf='!this.isGameOver'>
-        <app-statistic-histogram [changingResponses]="this.histogramDataChangingResponses" [valueOfResponses]="this.histogramDataValue"></app-statistic-histogram>
+    <div class="histogram" *ngIf='!hostInterfaceManagerService.isGameOver'>
+        <app-statistic-histogram [changingResponses]="hostInterfaceManagerService.histogramDataChangingResponses" [valueOfResponses]="hostInterfaceManagerService.histogramDataValue"></app-statistic-histogram>
     </div>
-    <app-statistic-zone *ngIf="this.isGameOver" [gameStats]="gameStats"></app-statistic-zone>
+    <app-statistic-zone *ngIf="hostInterfaceManagerService.isGameOver" [gameStats]="hostInterfaceManagerService.gameStats"></app-statistic-zone>
     <app-player-list
         #playerListChild
-        [roomId]='this.gameService.gameRealService.roomId'
-        [leftPlayers]='this.leftPlayers'
-        [isFinal]='this.isGameOver'
+        [roomId]='gameService.gameRealService.roomId'
+        [leftPlayers]='hostInterfaceManagerService.leftPlayers'
         [isHost] = 'true'>
     </app-player-list>
 </div>

@@ -24,7 +24,7 @@ export class SidebarComponent implements AfterViewInit {
     formBuilder: FormBuilder;
     route: ActivatedRoute;
     gameService: GameService;
-    canChat: boolean = true;
+    canChat: boolean;
 
     constructor(injector: Injector) {
         this.socketService = injector.get<SocketClientService>(SocketClientService);
@@ -34,6 +34,7 @@ export class SidebarComponent implements AfterViewInit {
         this.myName = '';
         this.roomId = '';
         this.messages = [];
+        this.canChat = true;
         const roomId = this.route.snapshot.paramMap.get('id');
         const isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
         if (isTestMode) {

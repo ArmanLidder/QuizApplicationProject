@@ -260,4 +260,17 @@ describe('GameService', () => {
         service.gameRealService.inTimeTransition = false;
         expect(service.isPanicDisabled()).toBe(false);
     });
+
+    it('should get audio HTML elment', () => {
+        expect(service.audio).toBeDefined();
+    });
+
+    it('should return right panic mode if QCM', () => {
+        service.isTestMode = false;
+        service.gameRealService.question = secondQuestionMock;
+        service.gameRealService.timer = 0;
+        service.gameRealService.inTimeTransition = false;
+        const negRes = service.isPanicDisabled();
+        expect(negRes).toBeFalsy();
+    });
 });

@@ -6,8 +6,7 @@ import { DEFAULT_VOLUME } from '@app/services/game-real.service/game-real.servic
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-
-export type Player = [string, number, number];
+import { Player } from '@app/services/game-test.service/game-test.service.const';
 
 @Injectable({
     providedIn: 'root',

@@ -57,10 +57,22 @@ describe('GamePageComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should setup isHost correctly', () => {
+        component['gameService'].gameRealService.username = HOST_USERNAME;
+        fixture = TestBed.createComponent(GamePageComponent);
+        component = fixture.componentInstance;
+        expect(component.isHost).toBeTruthy();
+        component['gameService'].gameRealService.username = 'player';
+        fixture = TestBed.createComponent(GamePageComponent);
+        component = fixture.componentInstance;
+        expect(component.isHost).toBeFalsy();
+    });
+
     it('should send host abandonment event on component destruction if game is starting', () => {
         sendSpy = spyOn(socketService, 'send');
         component['gameService'].gameRealService.username = HOST_USERNAME;
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
+        component.isHost = true;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
         expect(sendSpy).toHaveBeenCalledWith(socketEvent.HOST_LEFT, DIGIT_CONSTANT);
@@ -86,7 +98,7 @@ describe('GamePageComponent', () => {
                 expect(spyOnNgOnDestroy).toHaveBeenCalled();
             }
             if (window.onload) {
-                const spyRoute = spyOn(component.route, 'navigate');
+                const spyRoute = spyOn(component['route'], 'navigate');
                 // @ts-ignore
                 window.onload();
                 expect(spyRoute).toHaveBeenCalledWith(['/']);

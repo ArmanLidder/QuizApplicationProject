@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ResponsesValues, ResponsesNumber } from '@app/components/statistic-histogram/statistic-histogram.component.const';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionStatistics, QuestionStats } from '@app/components/statistic-zone/statistic-zone.component.const';
 
 @Component({
     selector: 'app-statistic-zone',
@@ -10,15 +10,17 @@ import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zon
 })
 export class StatisticZoneComponent implements OnInit {
     @Input() gameStats: QuestionStatistics[];
-    currentStat: QuestionStatistics;
-    responseValue: ResponsesValues;
-    responseNumber: ResponsesNumber;
-    question: QuizQuestion;
+    currentStat: QuestionStatistics = [new Map(), new Map(), undefined];
+    responseValue: ResponsesValues = new Map<string, boolean>();
+    responseNumber: ResponsesNumber = new Map<string, number>();
+    question: QuizQuestion | undefined = undefined;
     index: number = 0;
 
     ngOnInit() {
-        this.currentStat = this.gameStats[this.index];
-        this.setUpData();
+        if (this.gameStats.length !== 0) {
+            this.currentStat = this.gameStats[this.index];
+            this.setUpData();
+        }
     }
 
     next() {
@@ -32,7 +34,7 @@ export class StatisticZoneComponent implements OnInit {
     }
 
     isEnd() {
-        return this.index === this.gameStats.length - 1;
+        return this.gameStats.length !== 0 ? this.index === this.gameStats.length - 1 : true;
     }
 
     isFirst() {
@@ -40,8 +42,8 @@ export class StatisticZoneComponent implements OnInit {
     }
 
     private setUpData() {
-        this.responseValue = this.currentStat[0];
-        this.responseNumber = this.currentStat[1];
-        this.question = this.currentStat[2];
+        this.responseValue = this.currentStat[QuestionStats.ResponsesValuesIndex];
+        this.responseNumber = this.currentStat[QuestionStats.ResponsesNumberIndex];
+        this.question = this.currentStat[QuestionStats.QuizQuestionIndex];
     }
 }

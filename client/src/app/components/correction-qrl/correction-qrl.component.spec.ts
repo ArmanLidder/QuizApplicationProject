@@ -61,12 +61,12 @@ describe('CorrectionQRLComponent', () => {
         expect(component.indexPlayer).toEqual(expectedIndex);
     });
 
-    it('should end Correction preperly', () => {
-        component.reponsesQRL = mockResponsesQrl;
+    it('should end Correction properly', () => {
+        component.qrlAnswers = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         component.endCorrection();
-        expect(component.reponsesQRLCorrected).toBeTruthy();
+        expect(component.correctedQrlAnswers).toBeTruthy();
     });
 
     it('should clear all', () => {
@@ -74,13 +74,13 @@ describe('CorrectionQRLComponent', () => {
         expect(component.usernames.length).toEqual(0);
         expect(component.answers.length).toEqual(0);
         expect(component.points.length).toEqual(0);
-        expect(component.reponsesQRLCorrected.size).toEqual(0);
+        expect(component.correctedQrlAnswers.size).toEqual(0);
         expect(component.indexPlayer).toEqual(initialIndex);
     });
 
     it('should initialize correctly', () => {
         spyOn(component, 'nextAnswer');
-        component.reponsesQRL = mockResponsesQrl;
+        component.qrlAnswers = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         expect(component.indexPlayer).toEqual(initialIndex);
@@ -94,7 +94,7 @@ describe('CorrectionQRLComponent', () => {
         spyOn(component, 'nextAnswer').and.callThrough();
         spyOn(component, 'endCorrection');
         spyOn(component, 'clearAll');
-        component.reponsesQRL = mockResponsesQrl;
+        component.qrlAnswers = mockResponsesQrl;
         component.isHostEvaluating = true;
         component.initialize();
         component.indexPlayer = component.usernames.length - 1;
@@ -116,7 +116,7 @@ describe('CorrectionQRLComponent', () => {
     it('should change when there is a change', () => {
         spyOn(component, 'initialize');
         const changes: SimpleChanges = {
-            reponsesQRL: new SimpleChange(null, 'nouvelleValeurDeReponsesQRL', true),
+            qrlAnswers: new SimpleChange(null, 'nouvelleValeurDeReponsesQRL', true),
         };
         component.ngOnChanges(changes);
         expect(component.initialize).toHaveBeenCalled();

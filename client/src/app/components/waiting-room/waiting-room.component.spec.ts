@@ -5,6 +5,11 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { WaitingRoomComponent } from './waiting-room.component';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
+import { GameService } from '@app/services/game.service/game.service';
+import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { MatDialog } from '@angular/material/dialog';
+import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
 
 const DIGIT_CONSTANT = 1;
 // Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix
@@ -18,9 +23,12 @@ describe('WaitingRoomComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [WaitingRoomComponent],
+            imports: [AppMaterialModule, HttpClientModule],
+            declarations: [WaitingRoomComponent, QuitterButtonComponent],
             providers: [
+                MatDialog,
                 SocketClientService,
+                GameService,
                 WaitingRoomManagementService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
@@ -31,6 +39,7 @@ describe('WaitingRoomComponent', () => {
         socketService = TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         waitingRoomService = TestBed.inject(WaitingRoomManagementService);
         TestBed.inject(ActivatedRoute);
+        TestBed.inject(GameService);
         fixture.detectChanges();
     });
 

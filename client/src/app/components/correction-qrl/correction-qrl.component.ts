@@ -13,14 +13,14 @@ import { socketEvent } from '@common/socket-event-name/socket-event-name';
 })
 export class CorrectionQRLComponent implements OnChanges {
     @Input() gameStats: QuestionStatistics[] = [];
-    @Input() reponsesQRL = new Map<string, { answers: string; time: number }>();
+    @Input() qrlAnswers = new Map<string, { answers: string; time: number }>();
     @Input() isHostEvaluating: boolean = false;
     questionStats = new Map<string, number>([
         ['0', 0],
         ['50', 0],
         ['100', 0],
     ]);
-    reponsesQRLCorrected = new Map<string, number>();
+    correctedQrlAnswers = new Map<string, number>();
     usernames: string[] = [];
     answers: string[] = [];
     scores: number[] = [NULL, HALF, FULL];
@@ -40,7 +40,7 @@ export class CorrectionQRLComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.reponsesQRL) {
+        if (changes.qrlAnswers) {
             this.initialize();
             if (this.usernames.length > 0) {
                 this.isHostEvaluating = true;
@@ -50,7 +50,7 @@ export class CorrectionQRLComponent implements OnChanges {
 
     initialize() {
         this.indexPlayer = -1;
-        const sortedMap = new Map([...this.reponsesQRL.entries()].sort((a, b) => a[0].localeCompare(b[0])));
+        const sortedMap = new Map([...this.qrlAnswers.entries()].sort((a, b) => a[0].localeCompare(b[0])));
         sortedMap.forEach((value: { answers: string; time: number }, key: string) => {
             this.usernames.push(key);
             this.answers.push(value.answers);
@@ -72,7 +72,7 @@ export class CorrectionQRLComponent implements OnChanges {
 
     endCorrection() {
         for (let i = 0; i < this.usernames.length; i++) {
-            this.reponsesQRLCorrected.set(this.usernames[i], this.points[i]);
+            this.correctedQrlAnswers.set(this.usernames[i], this.points[i]);
             this.questionStats.set(String(this.points[i]), (this.questionStats.get(String(this.points[i])) as number) + 1);
         }
         const emptyMap = new Map<string, boolean>([
@@ -88,7 +88,7 @@ export class CorrectionQRLComponent implements OnChanges {
         this.usernames.splice(0, this.usernames.length);
         this.answers.splice(0, this.answers.length);
         this.points.splice(0, this.points.length);
-        this.reponsesQRLCorrected.clear();
+        this.correctedQrlAnswers.clear();
         this.questionStats = new Map<string, number>([
             ['0', 0],
             ['50', 0],
@@ -108,7 +108,7 @@ export class CorrectionQRLComponent implements OnChanges {
             if (this.indexPlayer >= this.usernames.length) {
                 this.isCorrectionFinished = true;
                 this.endCorrection();
-                const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.reponsesQRLCorrected));
+                const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.correctedQrlAnswers));
                 this.socketClientService.send(socketEvent.PLAYER_QRL_CORRECTION, {
                     roomId: this.gameService.gameRealService.roomId,
                     playerCorrection: playerQrlCorrectionFormatted,
