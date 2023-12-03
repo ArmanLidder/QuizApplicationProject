@@ -95,7 +95,7 @@ export class GameCreationService {
                     game.removePlayer(userInfo.username);
                     if (game.players.size === 0) {
                         roomManager.clearRoomTimer(roomId);
-                        this.timerService.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.FINAL_TIME_TRANSITION);
+                        this.timerService.startTimer({ roomId, time: TRANSITION_QUESTIONS_DELAY }, socketEvent.FINAL_TIME_TRANSITION);
                     } else if (game.playersAnswers.size === game.players.size) {
                         roomManager.getGameByRoomId(roomId).updateScores();
                         roomManager.clearRoomTimer(roomId);

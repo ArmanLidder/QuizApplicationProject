@@ -2,7 +2,13 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { ResponsesNumber, ResponsesValues } from '@app/components/statistic-histogram/statistic-histogram.component.const';
 
-export type QuestionStatistics = [ResponsesValues, ResponsesNumber, QuizQuestion];
+export type QuestionStatistics = [ResponsesValues, ResponsesNumber, QuizQuestion | undefined];
+
+export enum QuestionStats {
+    ResponsesValuesIndex,
+    ResponsesNumberIndex,
+    QuizQuestionIndex,
+}
 
 const responses1: Map<string, boolean> = new Map<string, boolean>([
     ['Option A', true],

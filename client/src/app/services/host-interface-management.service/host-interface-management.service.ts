@@ -239,7 +239,7 @@ export class HostInterfaceManagementService {
         this.gameStats.forEach((stats) => {
             const values = Array.from(stats[VALUE]);
             const responses = Array.from(stats[RESPONSE]);
-            data.push([values, responses, stats[2]]);
+            data.push([values, responses, stats[2] as QuizQuestion]);
         });
         return data;
     }

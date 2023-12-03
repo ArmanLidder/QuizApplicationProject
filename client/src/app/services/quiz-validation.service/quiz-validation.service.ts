@@ -9,20 +9,19 @@ import {
     MIN_DURATION,
     MIN_NUMBER_OF_CHOICES,
     MAX_NUMBER_OF_CHOICES,
+    TITLE_REQUIRED,
+    DESCRIPTION_REQUIRED,
+    INVALID_DURATION,
+    MINIMUM_NUMBER_OF_QUESTIONS_REQUIRED,
+    TEXT_REQUIRED,
+    QUESTION_POINTS_REQUIRED,
+    INVALID_POINTS,
+    NON_DIVISIBLE_BY_TEN,
+    INVALID_NUMBER_OF_CHOICES,
+    INVALID_CHOICE,
+    INVALID_QUESTION_CHOICES,
 } from '@app/services/quiz-validation.service/quiz-validation.service.const';
 import { QuestionType } from '@common/enums/question-type.enum';
-
-const TITLE_REQUIRED = 'Le titre est requis';
-const DESCRIPTION_REQUIRED = 'La description est requise';
-const INVALID_DURATION = 'La durée doit être comprise entre 10 et 60 secondes';
-const MINIMUM_NUMBER_OF_QUESTIONS_REQUIRED = 'Le quiz devrait contenir au moins une question';
-const TEXT_REQUIRED = 'le texte est requis';
-const QUESTION_POINTS_REQUIRED = "les points d'une question sont requis";
-const INVALID_POINTS = 'les points doivent être entre 10 et 100';
-const NON_DIVISIBLE_BY_TEN = 'les points de la question doivent être divisible par 10';
-const INVALID_NUMBER_OF_CHOICES = 'doit avoir au moins deux choix et au plus quatre choix';
-const INVALID_CHOICE = 'un choix doit être soit vrai soit faux';
-const INVALID_QUESTION_CHOICES = 'on doit au moins avoir une bonne réponse et une mauvaise réponse';
 
 @Injectable({
     providedIn: 'root',

@@ -10,6 +10,7 @@ import { HOST_USERNAME } from '@common/names/host-username';
     styleUrls: ['./game-interface.component.scss'],
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
+    protected readonly questionType = QuestionType;
     constructor(
         public gameInterfaceManagementService: GameInterfaceManagementService,
         private route: ActivatedRoute,
@@ -40,7 +41,4 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.gameInterfaceManagementService.reset();
     }
-
-    // eslint-disable-next-line @typescript-eslint/member-ordering
-    protected readonly questionType = QuestionType;
 }

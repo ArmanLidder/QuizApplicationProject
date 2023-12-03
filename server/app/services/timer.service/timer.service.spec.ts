@@ -87,7 +87,7 @@ describe('Timer service tests', () => {
         const mockEventName = 'customEvent';
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const emitSpy = sinon.spy(timerService, 'emitTime' as any);
-        timerService.startTimer(mockRoomId, mockTimeValue, mockEventName);
+        timerService.startTimer({ roomId: mockRoomId, time: mockTimeValue }, mockEventName);
         setTimeout(() => {
             expect(emitSpy.notCalled);
             done();
@@ -100,7 +100,7 @@ describe('Timer service tests', () => {
         gameMock.paused = false;
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const emitSpy = sinon.spy(timerService, 'emitTime' as any);
-        timerService.startTimer(mockRoomId, mockTimeValue, mockEventName);
+        timerService.startTimer({ roomId: mockRoomId, time: mockTimeValue }, mockEventName);
         setTimeout(() => {
             expect(emitSpy.called);
             done();

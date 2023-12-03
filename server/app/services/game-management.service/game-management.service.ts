@@ -52,7 +52,7 @@ export class GameManagementService {
             const usernames = roomManager.getUsernamesArray(data.roomId);
             room.game = new Game(usernames, this.quizService, this.historyService);
             await room.game.setup(quizId);
-            this.timerService.startTimer(data.roomId, data.time);
+            this.timerService.startTimer({ roomId: data.roomId, time: data.time });
         });
     }
 
@@ -67,7 +67,7 @@ export class GameManagementService {
             const duration = isChoiceQuestion ? roomManager.getGameByRoomId(roomId).duration : QRL_DURATION;
             if (roomManager.getUsernameBySocketId(roomId, socket.id) === HOST_USERNAME) {
                 roomManager.clearRoomTimer(roomId);
-                this.timerService.startTimer(roomId, duration);
+                this.timerService.startTimer({ roomId, time: duration });
             }
         });
     }
@@ -137,7 +137,7 @@ export class GameManagementService {
     private handleStartTransition(roomManager: RoomManagingService, socket: io.Socket) {
         socket.on(socketEvent.START_TRANSITION, (roomId: number) => {
             roomManager.clearRoomTimer(roomId);
-            this.timerService.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.TIME_TRANSITION);
+            this.timerService.startTimer({ roomId, time: TRANSITION_QUESTIONS_DELAY }, socketEvent.TIME_TRANSITION);
         });
     }
 
@@ -159,14 +159,14 @@ export class GameManagementService {
             const nextQuestionNumber = ++index;
             const nextQuestion = game.currentQuizQuestion;
             sio.to(String(roomId)).emit(socketEvent.GET_NEXT_QUESTION, { question: nextQuestion, index: nextQuestionNumber, isLast });
-            this.timerService.startTimer(roomId, game.currentQuizQuestion.type === QuestionType.QCM ? game.duration : QRL_DURATION);
+            this.timerService.startTimer({ roomId, time: game.currentQuizQuestion.type === QuestionType.QCM ? game.duration : QRL_DURATION });
         });
     }
 
     private handleShowResult(roomManager: RoomManagingService, socket: io.Socket) {
         socket.on(socketEvent.SHOW_RESULT, (roomId: number) => {
             roomManager.clearRoomTimer(roomId);
-            this.timerService.startTimer(roomId, TRANSITION_QUESTIONS_DELAY, socketEvent.FINAL_TIME_TRANSITION);
+            this.timerService.startTimer({ roomId, time: TRANSITION_QUESTIONS_DELAY }, socketEvent.FINAL_TIME_TRANSITION);
             roomManager.getGameByRoomId(roomId).updateGameHistory();
         });
     }
@@ -182,7 +182,7 @@ export class GameManagementService {
     private handlePanicMode(roomManager: RoomManagingService, socket: io.Socket, sio: io.Server) {
         socket.on(socketEvent.PANIC_MODE, (data: PanicModeData) => {
             roomManager.clearRoomTimer(data.roomId);
-            this.timerService.startTimer(data.roomId, data.timer, undefined, QUARTER_SECOND_DELAY);
+            this.timerService.startTimer({ roomId: data.roomId, time: data.timer }, undefined, QUARTER_SECOND_DELAY);
             sio.to(String(data.roomId)).emit(socketEvent.PANIC_MODE, data);
         });
     }
