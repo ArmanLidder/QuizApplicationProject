@@ -33,12 +33,36 @@
         <app-statistic-histogram [changingResponses]="hostInterfaceManagerService.histogramDataChangingResponses" [valueOfResponses]="hostInterfaceManagerService.histogramDataValue"></app-statistic-histogram>
     </div>
     <app-statistic-zone *ngIf="hostInterfaceManagerService.isGameOver" [gameStats]="hostInterfaceManagerService.gameStats"></app-statistic-zone>
-    <app-player-list
-        #playerListChild
-        [roomId]='gameService.gameRealService.roomId'
-        [leftPlayers]='hostInterfaceManagerService.leftPlayers'
-        [isHost] = 'true'>
-    </app-player-list>
+    <div class="host-players-list">
+        <div class="custom-legend">
+            <h1> Légende de la liste des joueurs: </h1>
+            <span class="legend-item">
+                
+                <span class="color-box" style="background-color: #f64343;"></span>
+                Inactif
+                
+                <span class="color-box" style="background-color: #cea43b;"></span>
+                Interaction
+                
+                <span class="color-box" style="background-color: #53b953;"></span>
+                Selection
+                
+                <span class="color-box" style="background-color: #2d2d2d; "></span>
+                Quitter
+                
+                <span class="color-box" style="background-color: white;"></span>
+                Fin de partie
+            </span>
+        </div>
+        <app-player-list
+            #playerListChild
+            [roomId]='gameService.gameRealService.roomId'
+            [leftPlayers]='hostInterfaceManagerService.leftPlayers'
+            [isHost] = 'true'>
+        </app-player-list>
+        
+    </div>
+   
 </div>
 
 
