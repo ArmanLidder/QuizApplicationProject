@@ -316,7 +316,7 @@ describe('HostInterfaceManagementServiceService', () => {
         if (typeof callback === 'function') {
             spyOn(JSON, 'parse').and.returnValue([['0', { answer: 'test', time: 0 }]]);
             callback();
-            expect(service.isHostEvaluating).toBeTruthy();
+            expect(service.responsesQRL).toEqual(new Map<string, { answer: string; time: number }>([['0', { answer: 'test', time: 0 }]]));
         }
     });
 

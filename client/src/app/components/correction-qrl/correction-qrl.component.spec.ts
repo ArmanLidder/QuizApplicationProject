@@ -28,6 +28,7 @@ describe('CorrectionQRLComponent', () => {
 
     it('should change when there is a change', () => {
         spyOn(qrlEvaluationServiceMock, 'initialize');
+        spyOn(qrlEvaluationServiceMock, 'clearAll');
         const changes: SimpleChanges = {
             qrlAnswers: new SimpleChange(null, 'newValueOfQrlAnswers', true),
         };
@@ -35,7 +36,7 @@ describe('CorrectionQRLComponent', () => {
         expect(qrlEvaluationServiceMock.initialize).toHaveBeenCalled();
         qrlEvaluationServiceMock.usernames = ['user1', 'user2'];
         component.ngOnChanges(changes);
-        expect(component.isHostEvaluating).toBe(true);
+        expect(qrlEvaluationServiceMock.clearAll).toHaveBeenCalled();
     });
 
     it('should initialize qrlEvaluationService on ngOnInit', () => {
@@ -61,6 +62,6 @@ describe('CorrectionQRLComponent', () => {
 
         qrlEvaluationServiceMock.isCorrectionFinished = true;
         component.submitPoint();
-        expect(component.isHostEvaluating).toBe(false);
+        expect(component.isHostEvaluating).toBe(true);
     });
 });

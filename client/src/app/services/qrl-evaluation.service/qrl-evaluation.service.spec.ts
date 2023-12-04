@@ -88,7 +88,6 @@ describe('QrlEvaluationService', () => {
         spyOn(service, 'getCorrection');
         spyOn(service, 'nextAnswer').and.callThrough();
         spyOn(service, 'endCorrection' as any);
-        spyOn(service, 'clearAll');
         service.initialize(mockResponsesQrl);
         service['indexPlayer'] = service.usernames.length - 1;
         service.isValid = true;
@@ -100,7 +99,6 @@ describe('QrlEvaluationService', () => {
         expect(service.inputPoint).toEqual(0);
         expect(service.isCorrectionFinished).toBeTruthy();
         expect(service['endCorrection']).toHaveBeenCalled();
-        expect(service.clearAll).toHaveBeenCalled();
         expect(sendPlayerQrlCorrectionObject).toBeDefined();
         expect(sendPlayerQrlCorrection).toBeDefined();
     });
