@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameService } from '@app/services/game.service/game.service';
-import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@app/components/correction-qrl/correction-qrl.component.const';
+import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@common/constants/qrl-evaluation.service.const';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 
 @Injectable({
     providedIn: 'root',

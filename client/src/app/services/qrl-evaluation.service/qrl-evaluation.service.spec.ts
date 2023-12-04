@@ -4,7 +4,7 @@ import { SocketClientServiceTestHelper } from '@app/classes/socket-client-servic
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QrlEvaluationService } from '@app/services/qrl-evaluation.service/qrl-evaluation.service';
 import { GameService } from '@app/services/game.service/game.service';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 describe('QrlEvaluationService', () => {

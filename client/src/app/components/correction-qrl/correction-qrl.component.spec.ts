@@ -3,7 +3,7 @@ import { SimpleChange, SimpleChanges } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CorrectionQRLComponent } from './correction-qrl.component';
 import { QrlEvaluationService } from '@app/services/qrl-evaluation.service/qrl-evaluation.service';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 
 describe('CorrectionQRLComponent', () => {
     let component: CorrectionQRLComponent;
