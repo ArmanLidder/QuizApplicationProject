@@ -43,44 +43,44 @@ describe('QrlEvaluationService', () => {
 
     it('should update correctly correction point', () => {
         service.getCorrection(mockPoint);
-        expect(service.points[service.indexPlayer]).toEqual(mockPoint);
+        expect(service['points'][service['indexPlayer']]).toEqual(mockPoint);
     });
 
     it('should go to the next answer', () => {
-        service.indexPlayer = 1;
+        service['indexPlayer'] = 1;
         service.usernames = mockUsernames;
-        service.answers = mockAnswers;
+        service['answers'] = mockAnswers;
         service.nextAnswer();
-        expect(service.indexPlayer).toEqual(2);
-        expect(service.currentUsername).toEqual(mockUsernames[service.indexPlayer]);
-        expect(service.currentAnswer).toEqual(mockAnswers[service.indexPlayer]);
+        expect(service['indexPlayer']).toEqual(2);
+        expect(service.currentUsername).toEqual(mockUsernames[service['indexPlayer']]);
+        expect(service.currentAnswer).toEqual(mockAnswers[service['indexPlayer']]);
         const expectedIndex = 9;
-        service.indexPlayer = 8;
+        service['indexPlayer'] = 8;
         service.nextAnswer();
-        expect(service.indexPlayer).toEqual(expectedIndex);
+        expect(service['indexPlayer']).toEqual(expectedIndex);
     });
 
     it('should end Correction properly', () => {
         service.initialize(mockResponsesQrl);
         service['endCorrection'](gameStats);
-        expect(service.correctedQrlAnswers).toBeTruthy();
+        expect(service['correctedQrlAnswers']).toBeTruthy();
     });
 
     it('should clear all', () => {
         service.clearAll();
         expect(service.usernames.length).toEqual(0);
-        expect(service.answers.length).toEqual(0);
-        expect(service.points.length).toEqual(0);
-        expect(service.correctedQrlAnswers.size).toEqual(0);
-        expect(service.indexPlayer).toEqual(initialIndex);
+        expect(service['answers'].length).toEqual(0);
+        expect(service['points'].length).toEqual(0);
+        expect(service['correctedQrlAnswers'].size).toEqual(0);
+        expect(service['indexPlayer']).toEqual(initialIndex);
     });
 
     it('should initialize correctly', () => {
         spyOn(service, 'nextAnswer');
         service.initialize(mockResponsesQrl);
-        expect(service.indexPlayer).toEqual(initialIndex);
+        expect(service['indexPlayer']).toEqual(initialIndex);
         expect(service.usernames.length).toEqual(mockUsernames.length);
-        expect(service.answers.length).toEqual(mockAnswers.length);
+        expect(service['answers'].length).toEqual(mockAnswers.length);
         expect(service.nextAnswer).toHaveBeenCalled();
     });
 
@@ -90,7 +90,7 @@ describe('QrlEvaluationService', () => {
         spyOn(service, 'endCorrection' as any);
         spyOn(service, 'clearAll');
         service.initialize(mockResponsesQrl);
-        service.indexPlayer = service.usernames.length - 1;
+        service['indexPlayer'] = service.usernames.length - 1;
         service.isValid = true;
         service.inputPoint = 50;
         service.submitPoint(gameStats);
