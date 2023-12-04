@@ -38,7 +38,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { CorrectionQRLComponent } from './components/correction-qrl/correction-qrl.component';
 import { GameHistoryListComponent } from './components/game-history-list/game-history-list.component';
-import { QuitterButtonComponent } from './components/quitter-bouton/quitter-bouton.component';
+import { LeaveButtonComponent } from './components/leave-boutton/leave-boutton.component';
 import { StatisticZoneComponent } from './components/statistic-zone/statistic-zone.component';
 
 /**
@@ -78,7 +78,7 @@ import { StatisticZoneComponent } from './components/statistic-zone/statistic-zo
         PlayerListComponent,
         CorrectionQRLComponent,
         QrlResponseAreaComponent,
-        QuitterButtonComponent,
+        LeaveButtonComponent,
         StatisticZoneComponent,
         ConfirmationDialogComponent,
     ],

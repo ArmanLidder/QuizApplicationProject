@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 import { QrlEvaluationService } from '@app/services/qrl-evaluation.service/qrl-evaluation.service';
 
 @Component({

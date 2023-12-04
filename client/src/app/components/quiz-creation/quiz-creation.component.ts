@@ -3,7 +3,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { POPUP_TIMEOUT } from '@app/components/quiz-creation/quiz-creation.component.const';
+import { POPUP_TIMEOUT } from '@common/constants/quiz-creation.component.const';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
@@ -105,7 +105,7 @@ export class QuizCreationComponent {
         this.dialog.open(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
-                content: errorDictionary.quizAlreadyExist,
+                content: errorDictionary.QUIZ_ALREADY_EXIST,
             },
         });
     }

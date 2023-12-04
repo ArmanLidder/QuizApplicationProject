@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service/admin-authenticator.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
@@ -13,7 +13,7 @@ export class PasswordPromptComponent {
     loginStatus: string | null = null;
     inputBorderColor: string = '';
     textColor: string = '';
-    private errorMessage: string = errorDictionary.wrongPassword;
+    private errorMessage: string = errorDictionary.WRONG_PASSWORD;
 
     constructor(
         public router: Router,

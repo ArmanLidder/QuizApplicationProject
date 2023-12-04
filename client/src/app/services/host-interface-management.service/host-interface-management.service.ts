@@ -1,14 +1,4 @@
 import { Injectable } from '@angular/core';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
-import { Player } from '@app/components/player-list/player-list.component.const';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
-import { GameService } from '@app/services/game.service/game.service';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { QuestionType } from '@common/enums/question-type.enum';
-import { HOST_USERNAME } from '@common/names/host-username';
-import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import {
     ACTIVE,
     ACTIVE_STATUS,
@@ -18,14 +8,24 @@ import {
     RESPONSE,
     TransportStatsFormat,
     VALUE,
-} from '@app/components/host-interface/host-interface.component.const';
+} from '@common/constants/host-interface.component.const';
+import { Player } from '@common/constants/player-list.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
+import { GameService } from '@app/services/game.service/game.service';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Injectable({
     providedIn: 'root',
 })
 export class HostInterfaceManagementService {
-    timerText: string = timerMessage.timeLeft;
+    timerText: string = timerMessage.TIME_LEFT;
     isGameOver: boolean = false;
     histogramDataChangingResponses = new Map<string, number>();
     histogramDataValue = new Map<string, boolean>();
@@ -97,13 +97,13 @@ export class HostInterfaceManagementService {
 
     private handleTimeTransition() {
         this.socketService.on(socketEvent.TIME_TRANSITION, (timeValue: number) => {
-            this.timerText = timerMessage.next;
+            this.timerText = timerMessage.NEXT;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.gameService.gameRealService.inTimeTransition = false;
                 this.resetInterface();
                 this.socketService.send(socketEvent.NEXT_QUESTION, this.gameService.gameRealService.roomId);
-                this.timerText = timerMessage.timeLeft;
+                this.timerText = timerMessage.TIME_LEFT;
             }
         });
     }
@@ -125,7 +125,7 @@ export class HostInterfaceManagementService {
 
     private handleFinalTimeTransition() {
         this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, (timeValue: number) => {
-            this.timerText = timerMessage.resultAvailableIn;
+            this.timerText = timerMessage.RESULT_AVAILABLE_IN;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0 && this.gameService.username === HOST_USERNAME) {
                 this.isGameOver = true;
@@ -267,7 +267,7 @@ export class HostInterfaceManagementService {
     }
 
     private reset() {
-        this.timerText = timerMessage.timeLeft;
+        this.timerText = timerMessage.TIME_LEFT;
         this.isGameOver = false;
         this.histogramDataChangingResponses = new Map<string, number>();
         this.histogramDataValue = new Map<string, boolean>();

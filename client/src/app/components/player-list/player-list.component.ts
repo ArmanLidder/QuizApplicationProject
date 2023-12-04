@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
 import {
-    Player,
+    ORDER_ICON_DOWN,
     ORDER_ICON_UP,
-    SortType,
     ORDER_INITIAL_MULTIPLIER,
     ORDER_MULTIPLIER,
-    ORDER_ICON_DOWN,
-} from '@app/components/player-list/player-list.component.const';
-import { SortListService } from '@app/services/sort-list.service/sort-list.service';
+    Player,
+    SortType,
+} from '@common/constants/player-list.component.const';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 
 @Component({
     selector: 'app-player-list',

@@ -16,7 +16,7 @@ import { fillerQuizzes } from '@app/mock-data/data';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { Message } from '@common/interfaces/message.interface';
 import { RoomData } from '@app/interface/room-data-interface';
-import { ONE_SECOND_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
+import { ONE_SECOND_DELAY } from '@common/constants/socket-manager.service.const';
 
 describe('Timer service tests', () => {
     let timerService: TimerService;

@@ -1,16 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { GameService } from '@app/services/game.service/game.service';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Router } from '@angular/router';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { QuestionType } from '@common/enums/question-type.enum';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
-import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zone.component.const';
-import { HOST_USERNAME } from '@common/names/host-username';
-import { Score } from '@common/interfaces/score.interface';
-import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
-import { TransportStatsFormat } from '@app/components/host-interface/host-interface.component.const';
+import { MAX_PERCENTAGE } from '@common/constants/game-interface.component.const';
+import { TransportStatsFormat } from '@common/constants/host-interface.component.const';
+import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
+import { GameService } from '@app/services/game.service/game.service';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { QuestionType } from '@common/enums/question-type.enum';
+import { Score } from '@common/interfaces/score.interface';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 type Player = [string, number];
 
@@ -21,7 +21,7 @@ export class GameInterfaceManagementService {
     isBonus: boolean = false;
     isGameOver: boolean = false;
     playerScore: number = 0;
-    timerText: string = timerMessage.timeLeft;
+    timerText: string = timerMessage.TIME_LEFT;
     players: Player[] = [];
     inPanicMode: boolean = false;
     gameStats: QuestionStatistics[] = [];
@@ -48,7 +48,7 @@ export class GameInterfaceManagementService {
         this.gameStats = [];
         this.isBonus = false;
         this.inPanicMode = false;
-        this.timerText = timerMessage.timeLeft;
+        this.timerText = timerMessage.TIME_LEFT;
     }
 
     configureBaseSocketFeatures() {
@@ -70,7 +70,7 @@ export class GameInterfaceManagementService {
         this.gameService.gameRealService.locked = false;
         this.gameService.gameRealService.validated = false;
         this.isBonus = false;
-        this.timerText = timerMessage.timeLeft;
+        this.timerText = timerMessage.TIME_LEFT;
     }
 
     private handleEndQuestion() {
@@ -105,7 +105,7 @@ export class GameInterfaceManagementService {
 
     private handleFinalTimeTransition() {
         this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, (timeValue: number) => {
-            this.timerText = timerMessage.finalResult;
+            this.timerText = timerMessage.FINAL_RESULT;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;

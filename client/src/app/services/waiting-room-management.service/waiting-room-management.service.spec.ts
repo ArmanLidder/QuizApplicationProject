@@ -4,7 +4,7 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { Router } from '@angular/router';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { START_TRANSITION_DELAY } from '@app/components/waiting-room/waiting-room.component.const';
+import { START_TRANSITION_DELAY } from '@common/constants/waiting-room.component.const';
 
 describe('WaitingRoomManagementService', () => {
     let service: WaitingRoomManagementService;

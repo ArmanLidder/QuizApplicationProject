@@ -8,7 +8,7 @@ import {
     MIN_NUMBER_OF_QUESTIONS,
     MIN_POINTS_PER_QUESTION,
     MIN_QCM_DURATION,
-} from '@app/services/quiz-form-service/qui-form.service.const';
+} from '@common/constants/qui-form.service.const';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { FormQuestion } from '@common/interfaces/quiz-form.interface';

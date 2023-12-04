@@ -3,7 +3,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { ItemMovingDirection } from 'src/enums/item-moving-direction';
 import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
-import { MIN_NUMBER_OF_CHOICES, MAX_NUMBER_OF_CHOICES } from '@app/services/choice-service/choice.service.const';
+import { MIN_NUMBER_OF_CHOICES, MAX_NUMBER_OF_CHOICES } from '@common/constants/choice.service.const';
 
 @Injectable({
     providedIn: 'root',

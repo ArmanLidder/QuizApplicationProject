@@ -243,3 +243,29 @@ app-player-list {
 mat-icon.disable {
     filter:opacity(0.35);
 }
+
+.custom-legend {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: start;
+  }
+
+.color-box {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    border: 2px solid black;
+  }
+
+.host-players-list{
+    display: flex;
+    flex-direction: column;
+}
+
+.legend-item > span{
+   margin-left: 15px;
+}

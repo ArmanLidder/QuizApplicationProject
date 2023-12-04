@@ -1,13 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
-import {
-    DEBOUNCE_INACTIVE_TIME,
-    INACTIVITY_TIME,
-    MAX_RESPONSE_CHARACTERS,
-} from '@app/components/qrl-response-area/qrl-response-area.component.const';
+import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME, MAX_RESPONSE_CHARACTERS } from '@common/constants/qrl-response-area.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { MAX_PERCENTAGE } from '@common/constants/game-interface.component.const';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { MAX_PERCENTAGE } from '@app/components/game-interface/game-interface.component.const';
 
 @Component({
     selector: 'app-qrl-response-area',

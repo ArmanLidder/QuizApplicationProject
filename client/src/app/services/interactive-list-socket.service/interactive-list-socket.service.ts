@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@common/constants/player-list.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { Score } from '@common/interfaces/score.interface';
-import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@app/components/player-list/player-list.component.const';
 import { playerStatus } from '@common/player-status/player-status';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
 
 type UserData = { username: string; resetPlayerStatus: boolean };
 type RoomSettings = { roomId: number; resetPlayerStatus: boolean };
@@ -75,7 +75,7 @@ export class InteractiveListSocketService {
     }
 
     private appendLeftPlayersToActivePlayers(leftPlayers: Player[]) {
-        leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.left, false]));
+        leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.LEFT, false]));
     }
 
     private findPlayer(username: string, players: Player[]) {
@@ -84,13 +84,13 @@ export class InteractiveListSocketService {
 
     private handleUpdateInteraction() {
         this.socketService.on(socketEvent.UPDATE_INTERACTION, (username: string) => {
-            this.changePlayerStatus(username, playerStatus.interaction);
+            this.changePlayerStatus(username, playerStatus.INTERACTION);
         });
     }
 
     private handleSubmitAnswer() {
         this.socketService.on(socketEvent.SUBMIT_ANSWER, (username: string) => {
-            this.changePlayerStatus(username, playerStatus.validation);
+            this.changePlayerStatus(username, playerStatus.VALIDATION);
         });
     }
 
@@ -100,9 +100,9 @@ export class InteractiveListSocketService {
     }
 
     private initPlayerStatus(username: string, resetPlayerStatus: boolean, leftPlayers: Player[]) {
-        if (this.isPlayerGone(username, leftPlayers)) return playerStatus.left;
+        if (this.isPlayerGone(username, leftPlayers)) return playerStatus.LEFT;
         else if (!resetPlayerStatus) return this.getActualStatus(username);
-        else return this.isFinal ? playerStatus.endGame : playerStatus.noInteraction;
+        else return this.isFinal ? playerStatus.END_GAME : playerStatus.NO_INTERACTION;
     }
 
     private getActualStatus(username: string) {

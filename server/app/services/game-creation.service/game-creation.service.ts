@@ -1,11 +1,11 @@
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { HOST_USERNAME } from '@common/names/host-username';
-import { PlayerUsername } from '@common/interfaces/socket-manager.interface';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
-import { TRANSITION_QUESTIONS_DELAY } from '@app/services/socket-manager.service/socket-manager.service.const';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
-import * as io from 'socket.io';
+import { TRANSITION_QUESTIONS_DELAY } from '@common/constants/socket-manager.service.const';
 import { TimerService } from '@app/services/timer.service/timer.service';
+import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { PlayerUsername } from '@common/interfaces/socket-manager.interface';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import * as io from 'socket.io';
 import { Service } from 'typedi';
 
 @Service()
@@ -64,8 +64,8 @@ export class GameCreationService {
     private handleValidateUsername(roomManager: RoomManagingService, socket: io.Socket) {
         socket.on(socketEvent.VALIDATE_USERNAME, (data: PlayerUsername, callback) => {
             let error = '';
-            if (roomManager.isNameUsed(data.roomId, data.username)) error = errorDictionary.nameAlreadyUsed;
-            else if (roomManager.isNameBanned(data.roomId, data.username)) error = errorDictionary.banMessage;
+            if (roomManager.isNameUsed(data.roomId, data.username)) error = errorDictionary.NAME_ALREADY_USED;
+            else if (roomManager.isNameBanned(data.roomId, data.username)) error = errorDictionary.BAN_MESSAGE;
             callback({ isValid: error.length === 0, error });
         });
     }

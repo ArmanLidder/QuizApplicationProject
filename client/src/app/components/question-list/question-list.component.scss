@@ -100,9 +100,25 @@
     padding-bottom: -5px;
 }
 
+.buttonOptionAddDelete:hover{
+    cursor: pointer;
+}
+
 .AddDelete {
     display: flex;
     justify-content: flex-end;
+}
+
+.buttonConfirm{
+    margin: 10px;
+}
+
+.buttonConfirm:hover{
+    cursor: pointer;
+}
+
+.buttonOption:hover{
+    cursor: pointer;
 }
 
 .buttonOption:first-of-type {

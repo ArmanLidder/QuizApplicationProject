@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angula
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { CREATED } from '@app/components/games-list/games-list.component.const';
+import { CREATED } from '@common/constants/games-list.component.const';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
@@ -140,12 +140,12 @@ export class GamesListComponent implements OnInit {
     setValidatorError(errors: string[]) {
         let index = 0;
         const isPlural = errors.length > 1;
-        const endSentence = isPlural ? errorDictionary.issues : errorDictionary.issue;
-        let errorMessage = errorDictionary.fileContains + `${endSentence} :\n\n `;
+        const endSentence = isPlural ? errorDictionary.ISSUES : errorDictionary.ISSUE;
+        let errorMessage = errorDictionary.FILE_CONTAINS + `${endSentence} :\n\n `;
         errors.forEach((error) => {
             errorMessage += `\n${(index += 1)}- ${error}\n`;
         });
-        errorMessage += errorDictionary.solution;
+        errorMessage += errorDictionary.SOLUTION;
         return errorMessage;
     }
 
@@ -179,11 +179,11 @@ export class GamesListComponent implements OnInit {
             this.selectedQuiz = null;
 
             if (res === null) {
-                this.showError(errorDictionary.quizDeleted);
+                this.showError(errorDictionary.QUIZ_DELETED);
             } else if (res.visible) {
                 this.router.navigate([route, res.id]);
             } else {
-                this.showError(errorDictionary.quizInvisible);
+                this.showError(errorDictionary.QUIZ_INVISIBLE);
             }
         });
     }

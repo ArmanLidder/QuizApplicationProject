@@ -1,13 +1,13 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { LeaveButtonComponent } from '@app/components/leave-boutton/leave-boutton.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameAnswersListComponent } from './game-answers-list.component';
-import { HttpClientModule } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { AppMaterialModule } from '@app/modules/material.module';
-import { FormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 describe('GameAnswersListComponent', () => {
@@ -18,7 +18,7 @@ describe('GameAnswersListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule, FormsModule, RouterTestingModule, AppMaterialModule],
-            declarations: [GameAnswersListComponent, QuitterButtonComponent],
+            declarations: [GameAnswersListComponent, LeaveButtonComponent],
             providers: [MatDialog, SocketClientService, { provide: SocketClientService, useClass: SocketClientServiceTestHelper }],
         });
         fixture = TestBed.createComponent(GameAnswersListComponent);

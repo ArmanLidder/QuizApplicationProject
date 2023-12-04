@@ -1,10 +1,10 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { InteractiveListSocketService } from './interactive-list-socket.service';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { Player } from '@app/components/player-list/player-list.component.const';
+import { Player } from '@common/constants/player-list.component.const';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { playerStatus } from '@common/player-status/player-status';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { InteractiveListSocketService } from './interactive-list-socket.service';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('InteractiveListSocketService', () => {
@@ -151,10 +151,10 @@ describe('InteractiveListSocketService', () => {
         service.isFinal = false;
         const noInteraction = service['initPlayerStatus']('test', true, leftPlayer);
         expect(getActualStatusSpy).toHaveBeenCalled();
-        expect(leftStatus).toEqual(playerStatus.left);
+        expect(leftStatus).toEqual(playerStatus.LEFT);
         expect(actualStatus).toEqual('test');
-        expect(endGame).toEqual(playerStatus.endGame);
-        expect(noInteraction).toEqual(playerStatus.noInteraction);
+        expect(endGame).toEqual(playerStatus.END_GAME);
+        expect(noInteraction).toEqual(playerStatus.NO_INTERACTION);
     });
 
     it('should get actual status correctly', () => {

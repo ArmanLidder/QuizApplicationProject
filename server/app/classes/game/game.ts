@@ -2,7 +2,7 @@ import { Answers } from '@app/interface/game-interface';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { Score } from '@common/interfaces/score.interface';
-import { BONUS_MULTIPLIER, MAX_PERCENTAGE } from '@app/classes/game/game.const';
+import { BONUS_MULTIPLIER, MAX_PERCENTAGE } from '@common/constants/game.const';
 import { format } from 'date-fns-tz';
 import { GameInfo } from '@common/interfaces/game-info.interface';
 import { HistoryService } from '@app/services/history.service/history.service';

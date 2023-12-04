@@ -1,15 +1,15 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { WaitingRoomComponent } from './waiting-room.component';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
-import { GameService } from '@app/services/game.service/game.service';
-import { HttpClientModule } from '@angular/common/http';
+import { LeaveButtonComponent } from '@app/components/leave-boutton/leave-boutton.component';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { MatDialog } from '@angular/material/dialog';
-import { QuitterButtonComponent } from '@app/components/quitter-bouton/quitter-bouton.component';
+import { GameService } from '@app/services/game.service/game.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { WaitingRoomComponent } from './waiting-room.component';
 
 const DIGIT_CONSTANT = 1;
 // Disable the eslint rule that changes any occurrence to unknown when running npm run lint:fix
@@ -24,7 +24,7 @@ describe('WaitingRoomComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [AppMaterialModule, HttpClientModule],
-            declarations: [WaitingRoomComponent, QuitterButtonComponent],
+            declarations: [WaitingRoomComponent, LeaveButtonComponent],
             providers: [
                 MatDialog,
                 SocketClientService,

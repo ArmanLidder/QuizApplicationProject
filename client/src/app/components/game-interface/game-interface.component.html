@@ -1,7 +1,7 @@
 <div class="grid-container" *ngIf='gameInterfaceManagementService.isGameOver'>
     <h2>Le jeu est terminé!</h2>
     <p>Votre score final : {{ score }}</p>
-    <app-quitter-button></app-quitter-button>
+    <app-leave-boutton></app-leave-boutton>
 </div>
 <div class="result-container">
 <app-statistic-zone *ngIf="gameInterfaceManagementService.isGameOver" [gameStats]="gameInterfaceManagementService.gameStats"></app-statistic-zone>

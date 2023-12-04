@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Injector, Input, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MESSAGE_MAX_CHARACTERS } from '@app/components/sidebar/sidebar.component.const';
+import { MESSAGE_MAX_CHARACTERS } from '@common/constants/sidebar.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Message } from '@common/interfaces/message.interface';
