@@ -24,13 +24,14 @@
                 <h2>Question {{ gameInterfaceManagementService.gameService.questionNumber }}</h2>
                 <h3>Valeur : {{ gameInterfaceManagementService.gameService.question?.points }} points</h3>
             </div>
-            <h4>{{ gameInterfaceManagementService.gameService.question?.text }}</h4>
         </section>
         <div class='points'>
             <p>Pointage: {{ score }}</p>
             <p *ngIf = 'bonusStatus'> Vous avez recu des points Bonus! </p>
         </div>
     </div>
+    <h1>{{ gameInterfaceManagementService.gameService.question?.text }}</h1>
+    <br>
     <app-game-answers-list *ngIf='gameInterfaceManagementService.gameService.question?.type === questionType.QCM' id='answer-field'>
     </app-game-answers-list>
     <app-qrl-response-area *ngIf='gameInterfaceManagementService.gameService.question?.type === questionType.QLR' id='answer-qrl-field'>
