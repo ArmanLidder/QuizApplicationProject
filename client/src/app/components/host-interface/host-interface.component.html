@@ -27,7 +27,7 @@
         <app-quitter-button></app-quitter-button>
     </div>
 </div>
-<app-correction-qrl [gameStats] ='hostInterfaceManagerService.gameStats' [qrlAnswers]='hostInterfaceManagerService.responsesQRL' [isHostEvaluating]='hostInterfaceManagerService.isHostEvaluating'></app-correction-qrl>
+<app-correction-qrl *ngIf='!hostInterfaceManagerService.isGameOver' [gameStats] ='hostInterfaceManagerService.gameStats' [qrlAnswers]='hostInterfaceManagerService.responsesQRL' [isHostEvaluating]='hostInterfaceManagerService.isHostEvaluating'></app-correction-qrl>
 <div class="result-container">
     <div class="histogram" *ngIf='!hostInterfaceManagerService.isGameOver'>
         <app-statistic-histogram [changingResponses]="hostInterfaceManagerService.histogramDataChangingResponses" [valueOfResponses]="hostInterfaceManagerService.histogramDataValue"></app-statistic-histogram>
