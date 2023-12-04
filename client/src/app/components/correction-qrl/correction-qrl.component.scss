@@ -6,56 +6,62 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .correction-qrl-container h3 {
     font-size: 1.5rem;
     margin-bottom: 10px;
   }
-  
+
   .correction-qrl-container p {
     font-size: 1.2rem;
     margin-bottom: 15px;
   }
-  
+
   .correction-qrl-container select {
     padding: 8px;
     font-size: 1rem;
     margin-bottom: 10px;
   }
-  
-  
+
+
   .correction-qrl-container p.error-message {
     color: red;
     font-size: 1rem;
     margin-top: 10px;
   }
 
+button {
+    margin: 5px;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
 
-  .valider {
+.enter {
     margin-left: 10px;
-    background-color: green;
+    background-color: #007bff;
     color: white;
-    border: 4px solid green;
-    font-size: 1.4rem;
+    border: 4px solid #007bff;
 }
 
-.valider:hover {
+.enter:hover {
     background-color: white;
-    color: green;
-    transition: 0.5s;
+    color: #007bff;
+    transition: 0.3s;
 }
 
-.valider:active {
-    background-color: green;
+.enter:active {
+    background-color: #007bff;
     color: black;
-    border: 1px solid black;
+    border: 4px solid black;
 }
 
-.valider:disabled {
+.enter:disabled {
     background-color: gray;
     color: white;
     border: 4px solid gray;
     cursor: not-allowed;
     opacity: 0.35;
 }
-  
+
