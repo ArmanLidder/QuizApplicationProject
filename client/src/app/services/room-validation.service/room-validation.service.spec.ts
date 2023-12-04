@@ -2,9 +2,9 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { HOST_USERNAME } from '@common/names/host-username';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
 import { RoomValidationService } from './room-validation.service';
-import { HOST_USERNAME } from '@common/names/host-username';
 
 describe('RoomValidationService', () => {
     let service: RoomValidationService;
@@ -44,7 +44,7 @@ describe('RoomValidationService', () => {
         const sendRoomIdSpy = spyOn(service, 'sendRoomId' as any).and.resolveTo();
         const error = await service.verifyRoomId();
         expect(sendRoomIdSpy).not.toHaveBeenCalled();
-        expect(error).toEqual(errorDictionary.validationCodeError);
+        expect(error).toEqual(errorDictionary.VALIDATION_CODE_ERROR);
     });
 
     it('should return the right error if room id is not only digit', async () => {
@@ -62,7 +62,7 @@ describe('RoomValidationService', () => {
         const sendUsernameSpy = spyOn(service, 'sendUsername' as any).and.resolveTo();
         const error = await service.verifyUsername();
         expect(sendUsernameSpy).not.toHaveBeenCalled();
-        expect(error).toEqual(errorDictionary.charNumError);
+        expect(error).toEqual(errorDictionary.CHAR_NUM_ERROR);
     });
 
     it(`should return the right error if username is ${HOST_USERNAME}`, async () => {
@@ -71,7 +71,7 @@ describe('RoomValidationService', () => {
         const sendUsernameSpy = spyOn(service, 'sendUsername' as any).and.resolveTo();
         const error = await service.verifyUsername();
         expect(sendUsernameSpy).not.toHaveBeenCalled();
-        expect(error).toEqual(errorDictionary.organiserNameError);
+        expect(error).toEqual(errorDictionary.ORGANISER_NAME_ERROR);
     });
 
     it('should return the right error if username is not valid on server side', async () => {
@@ -166,7 +166,7 @@ describe('RoomValidationService', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const handleSpy = spyOn(service, 'handleErrors' as any).and.returnValue('test');
         const error = service['handleJoiningRoomValidation'](true);
-        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.roomLocked);
+        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.ROOM_LOCKED);
         expect(error).toEqual('test');
     });
 
@@ -193,7 +193,7 @@ describe('RoomValidationService', () => {
         const handleSpy = spyOn(service, 'handleErrors' as any);
         const data = { isRoom: false, isLocked: false };
         service['handleRoomIdValidation'](data);
-        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.roomCodeExpired);
+        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.ROOM_CODE_EXPIRED);
         expect(service.isRoomIdValid).toBeFalsy();
     });
 
@@ -202,7 +202,7 @@ describe('RoomValidationService', () => {
         const handleSpy = spyOn(service, 'handleErrors' as any);
         const data = { isRoom: true, isLocked: true };
         service['handleRoomIdValidation'](data);
-        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.roomLocked);
+        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.ROOM_LOCKED);
         expect(service.isRoomIdValid).toBeFalsy();
     });
 

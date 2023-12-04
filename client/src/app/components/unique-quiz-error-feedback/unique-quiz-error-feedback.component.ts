@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { errorDictionary } from '@common/browser-message/error-message/error-message';
 
 @Component({
@@ -18,7 +18,7 @@ export class UniqueQuizErrorFeedbackComponent {
 
     emitQuizName() {
         if (this.newQuizName === undefined) {
-            this.error = errorDictionary.nameEmpty;
+            this.error = errorDictionary.NAME_EMPTY;
             this.showErrorFeedback();
         } else {
             this.sendNewQuizName.emit(this.newQuizName);

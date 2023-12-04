@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { DELETE_NUMBER, START_TRANSITION_DELAY } from '@app/components/waiting-room/waiting-room.component.const';
+import { DELETE_NUMBER, START_TRANSITION_DELAY } from '@common/constants/waiting-room.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Router } from '@angular/router';
 

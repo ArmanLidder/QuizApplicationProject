@@ -1,18 +1,18 @@
 /* eslint-disable max-lines */
-import { TestBed } from '@angular/core/testing';
-import { HostInterfaceManagementService } from './host-interface-management.service';
-import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
-import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
-import { GameService } from '@app/services/game.service/game.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
+import { ACTIVE, INACTIVE } from '@common/constants/host-interface.component.const';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { GameService } from '@app/services/game.service/game.service';
+import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
+import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { HOST_USERNAME } from '@common/names/host-username';
-import { ACTIVE, INACTIVE } from '@app/components/host-interface/host-interface.component.const';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { HostInterfaceManagementService } from './host-interface-management.service';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('HostInterfaceManagementServiceService', () => {
@@ -418,7 +418,7 @@ describe('HostInterfaceManagementServiceService', () => {
 
     it('should reset service properley', () => {
         service['reset']();
-        expect(service.timerText).toEqual(timerMessage.timeLeft);
+        expect(service.timerText).toEqual(timerMessage.TIME_LEFT);
         expect(service.isGameOver).toBeFalsy();
         expect(service.histogramDataChangingResponses).toEqual(new Map<string, number>());
         expect(service.histogramDataValue).toEqual(new Map<string, boolean>());

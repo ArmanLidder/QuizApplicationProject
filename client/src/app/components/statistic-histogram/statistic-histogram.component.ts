@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { ResponsesValues, ResponsesNumber } from '@app/components/statistic-histogram/statistic-histogram.component.const';
+import { ResponsesValues, ResponsesNumber } from '@common/constants/statistic-histogram.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { QuestionType } from '@common/enums/question-type.enum';
 

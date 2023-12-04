@@ -5,13 +5,16 @@
             <tr>
                 <th>
                     Nom du Jeu
-                    <mat-icon
-                            [ngClass]="{'clicked': isNameIconClicked}"
-                            (click)="sortGameName()">{{ getSortIcon('name') }}
+                    <mat-icon 
+                       matTooltip="Trier par nom"
+                       [ngClass]="{'clicked': isNameIconClicked}"
+                       (click)="sortGameName()">{{ getSortIcon('name') }}
+                            
                     </mat-icon>
                 </th>
                 <th >Date
                     <mat-icon
+                        matTooltip="Trier par date"
                         [ngClass]="{'clicked': isDateIconClicked}"
                         (click)="sortDate()">{{ getSortIcon('date') }}
                     </mat-icon>
@@ -39,7 +42,7 @@
         </tbody>
         <tfoot>
             <tr class='center-content'>
-                <button (click) = "deleteAllGames()" class="cancel">Supprimer</button>
+                <app-leave-boutton [isGame]= "false" [action]="deleteAllGames.bind(this)"></app-leave-boutton>
             </tr>
         </tfoot>
     </table>

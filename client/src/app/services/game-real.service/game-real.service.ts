@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GameServiceInterface } from '@app/interfaces/game-service.interface/game-service.interface';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/enums/question-type.enum';
-import { DEFAULT_VOLUME } from '@app/services/game-real.service/game-real.service.const';
+import { DEFAULT_VOLUME } from '@common/constants/game-real.service.const';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
 import { socketEvent } from '@common/socket-event-name/socket-event-name';

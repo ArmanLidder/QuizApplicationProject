@@ -384,11 +384,11 @@ describe('GamesListComponent Admin view', () => {
     }));
     it('should call dialog open function when calling openQuizExistsDialog', () => {
         const dialogOpenSpy = spyOn(component['dialog'], 'open');
-        component['showError'](errorDictionary.issue);
+        component['showError'](errorDictionary.ISSUE);
         expect(dialogOpenSpy).toHaveBeenCalledWith(AlertDialogComponent, {
             data: {
                 title: "Erreur lors de l'importation",
-                content: errorDictionary.issue,
+                content: errorDictionary.ISSUE,
             },
         });
     });

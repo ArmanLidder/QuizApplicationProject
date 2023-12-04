@@ -20,7 +20,7 @@ import {
     INVALID_NUMBER_OF_CHOICES,
     INVALID_CHOICE,
     INVALID_QUESTION_CHOICES,
-} from '@app/services/quiz-validation.service/quiz-validation.service.const';
+} from '@common/constants/quiz-validation.service.const';
 import { QuestionType } from '@common/enums/question-type.enum';
 
 @Injectable({

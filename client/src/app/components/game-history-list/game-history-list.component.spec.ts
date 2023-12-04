@@ -3,6 +3,7 @@ import { GameHistoryListComponent } from './game-history-list.component';
 import { GameHistoryService } from '@app/services/game-history.service/game-history.service';
 import { of } from 'rxjs';
 import { GameInfo } from '@common/interfaces/game-info.interface';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('GameHistoryListComponent', () => {
     let component: GameHistoryListComponent;
@@ -16,7 +17,7 @@ describe('GameHistoryListComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [GameHistoryListComponent],
-            providers: [{ provide: GameHistoryService, useValue: gameHistoryServiceSpy }],
+            providers: [{ provide: GameHistoryService, useValue: gameHistoryServiceSpy }, MatDialog],
         }).compileComponents();
 
         gameHistoryService = TestBed.inject(GameHistoryService) as jasmine.SpyObj<GameHistoryService>;
