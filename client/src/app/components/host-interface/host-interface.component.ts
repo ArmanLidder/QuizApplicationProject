@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { HostInterfaceManagementService } from '@app/services/host-interface-management.service/host-interface-management.service';
+import { QrlEvaluationService } from '@app/services/qrl-evaluation.service/qrl-evaluation.service';
+import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
 
 @Component({
     selector: 'app-host-interface',
@@ -10,6 +12,8 @@ import { HostInterfaceManagementService } from '@app/services/host-interface-man
     styleUrls: ['./host-interface.component.scss'],
 })
 export class HostInterfaceComponent {
+    qrlEvaluationService: QrlEvaluationService = inject(QrlEvaluationService);
+    protected readonly timerMessage = timerMessage;
     private isLastButton: boolean = false;
     private route: ActivatedRoute = inject(ActivatedRoute);
 
@@ -23,7 +27,8 @@ export class HostInterfaceComponent {
     }
 
     isDisabled() {
-        return (!this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated) || this.isLastButton;
+        const duringEvaluation = !this.qrlEvaluationService.isCorrectionFinished && this.hostInterfaceManagerService.isHostEvaluating;
+        return (!this.gameService.gameRealService.locked && !this.gameService.gameRealService.validated) || this.isLastButton || duringEvaluation;
     }
 
     updateHostCommand() {

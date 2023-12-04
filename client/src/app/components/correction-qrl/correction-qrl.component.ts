@@ -16,10 +16,8 @@ export class CorrectionQRLComponent implements OnChanges, OnInit, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.qrlAnswers) {
+            this.qrlEvaluationService.clearAll();
             this.qrlEvaluationService.initialize(this.qrlAnswers);
-            if (this.qrlEvaluationService.usernames.length > 0) {
-                this.isHostEvaluating = true;
-            }
         }
     }
 
@@ -33,6 +31,5 @@ export class CorrectionQRLComponent implements OnChanges, OnInit, OnDestroy {
 
     submitPoint() {
         this.qrlEvaluationService.submitPoint(this.gameStats);
-        this.isHostEvaluating = !this.qrlEvaluationService.isCorrectionFinished;
     }
 }

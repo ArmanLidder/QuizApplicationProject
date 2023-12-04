@@ -17,9 +17,9 @@ export class QrlEvaluationService {
     inputPoint: number = 0;
     isCorrectionFinished: boolean = false;
     isValid: boolean = true;
+    points: number[] = [];
     private correctedQrlAnswers = new Map<string, number>();
     private answers: string[] = [];
-    private points: number[] = [];
     private indexPlayer: number = INITIAL_ARRAY_VALUE;
     private questionStats = new Map<string, number>([
         ['0', 0],
@@ -84,7 +84,6 @@ export class QrlEvaluationService {
                 this.isCorrectionFinished = true;
                 this.endCorrection(gameStats);
                 this.sendPlayerEvaluations();
-                this.clearAll();
             }
         }
     }

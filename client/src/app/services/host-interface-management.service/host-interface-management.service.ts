@@ -119,6 +119,7 @@ export class HostInterfaceManagementService {
                 this.interactiveListService.getPlayersList(this.roomId, this.leftPlayers, false);
             } else {
                 this.sendQrlAnswer();
+                this.isHostEvaluating = true;
             }
         });
     }
@@ -195,7 +196,6 @@ export class HostInterfaceManagementService {
     private handleEvaluationOver() {
         this.socketService.on(socketEvent.EVALUATION_OVER, () => {
             this.interactiveListService.getPlayersList(this.roomId, this.leftPlayers, false);
-            this.isHostEvaluating = false;
         });
     }
 
@@ -214,6 +214,7 @@ export class HostInterfaceManagementService {
     }
 
     private initGraph(question: QuizQuestion, numberOfPlayers?: number) {
+        this.isHostEvaluating = false;
         this.histogramDataValue = new Map();
         this.histogramDataChangingResponses = new Map();
         if (this.gameService.question?.type === QuestionType.QCM) {
@@ -242,7 +243,6 @@ export class HostInterfaceManagementService {
     private sendQrlAnswer() {
         this.socketService.send(socketEvent.GET_PLAYER_ANSWERS, this.gameService.gameRealService.roomId, (playerAnswers: string) => {
             this.responsesQRL = new Map(JSON.parse(playerAnswers));
-            this.isHostEvaluating = true;
         });
     }
 
