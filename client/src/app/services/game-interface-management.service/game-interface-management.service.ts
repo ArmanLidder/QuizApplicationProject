@@ -109,7 +109,8 @@ export class GameInterfaceManagementService {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
-                this.interactiveListService.getPlayersList(this.gameService.gameRealService.roomId, [], true);
+                this.interactiveListService.isFinal = true;
+                this.interactiveListService.getPlayersList(this.gameService.gameRealService.roomId, []);
             }
         });
     }

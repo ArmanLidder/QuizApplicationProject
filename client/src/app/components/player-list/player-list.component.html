@@ -1,4 +1,4 @@
-<div class='sort-buttons'>
+<div *ngIf='isHost' class='sort-buttons'>
     <button (click)="this.sort(sortType.SortByName)" [class]='(optionSelections.get(sortType.SortByName)) ? "selected": "add"' matTooltip="Trier par nom">Nom</button>
     <button (click)="this.sort(sortType.SortByScore)" [class]='(optionSelections.get(sortType.SortByScore)) ? "selected": "add"' matTooltip="Trier par point">Point</button>
     <button (click)="this.sort(sortType.SortByStatus)" [class]='(optionSelections.get(sortType.SortByStatus)) ? "selected": "add"' matTooltip="Trier par statut">Statut</button>
