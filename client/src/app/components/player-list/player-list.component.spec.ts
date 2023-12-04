@@ -6,6 +6,8 @@ import { SocketClientService } from '@app/services/socket-client.service/socket-
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
 import { playerStatus } from '@common/player-status/player-status';
 import { PlayerListComponent } from './player-list.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
 
 describe('PlayerListComponent', () => {
     let component: PlayerListComponent;
@@ -17,11 +19,13 @@ describe('PlayerListComponent', () => {
         TestBed.configureTestingModule({
             declarations: [PlayerListComponent],
             providers: [
+                MatDialog,
                 InteractiveListSocketService,
                 SortListService,
                 SocketClientService,
                 { provide: SocketClientService, useClass: SocketClientServiceTestHelper },
             ],
+            imports: [AppMaterialModule],
         });
         TestBed.inject(SocketClientService) as unknown as SocketClientServiceTestHelper;
         TestBed.inject(SortListService);

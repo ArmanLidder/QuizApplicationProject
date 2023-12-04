@@ -13,7 +13,7 @@
                 </div>
 
                 <button *ngIf='i !== 0' type="button" (click)="moveQuestionUp(i)">
-                    <mat-icon>keyboard_arrow_up</mat-icon></button><br><br>
+                    <mat-icon matTooltip="Deplacer la question vers le haut" >keyboard_arrow_up</mat-icon></button><br><br>
                 <div *ngIf="question.get('beingModified')?.value">
                     <div class="question" [attr.id]="'question' + i">
                         <div class="popup" [ngClass]="{ 'show': isPopupVisible }">
@@ -57,10 +57,10 @@
                                     <label for="choix{{i}}{{j}}">le choix{{j + 1}}:</label>
                                     <div  class ="arrow-down">
                                         <button class="buttonOptionChoices" *ngIf='j !== getChoicesArray(i).controls.length - 1' type="button" (click)='moveChoice(itemMovingDirection.DOWN, i, j)'>
-                                            <mat-icon>keyboard_arrow_down</mat-icon>
+                                            <mat-icon matTooltip="Deplacer le choix vers le bas">keyboard_arrow_down</mat-icon>
                                         </button>
                                         <button class="buttonOptionChoices" *ngIf='j !== 0' type="button" (click)='moveChoice(itemMovingDirection.UP, i, j)'>
-                                            <mat-icon>keyboard_arrow_up</mat-icon>
+                                            <mat-icon matTooltip="Deplacer le choix vers le haut">keyboard_arrow_up</mat-icon>
                                         </button>
                                     </div>
                                     <div class="buttonChoice-container">
@@ -107,7 +107,7 @@
                     <button class="buttonOption" *ngIf="!question.get('beingModified')?.value" type="button" (click)="modifyQuestion(i)"><mat-icon class="edit-icon" matTooltip="Changer la question">edit</mat-icon></button><br><br>
                 </div>
                 <button *ngIf='i + 1 !== questionsArray?.length' type="button" (click)="moveQuestionDown(i)">
-                    <mat-icon>keyboard_arrow_down</mat-icon>
+                    <mat-icon matTooltip="Deplacer la question vers le bas">keyboard_arrow_down</mat-icon>
                 </button><br><br>
             </div>
         </ng-container>

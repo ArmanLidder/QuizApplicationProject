@@ -42,7 +42,7 @@
         </tbody>
         <tfoot>
             <tr class='center-content'>
-                <button (click) = "deleteAllGames()" class="cancel">Supprimer</button>
+                <app-leave-boutton [isGame]= "false" [action]="deleteAllGames.bind(this)"></app-leave-boutton>
             </tr>
         </tfoot>
     </table>

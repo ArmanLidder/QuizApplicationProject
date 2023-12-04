@@ -1,9 +1,8 @@
 <div class='sort-buttons'>
-    <p>Trier la liste par : </p>
-    <button (click)="this.sort(sortType.SortByName)" [class]='(optionSelections.get(sortType.SortByName)) ? "selected": "add"'>Nom</button>
-    <button (click)="this.sort(sortType.SortByScore)" [class]='(optionSelections.get(sortType.SortByScore)) ? "selected": "add"'>Point</button>
-    <button (click)="this.sort(sortType.SortByStatus)" [class]='(optionSelections.get(sortType.SortByStatus)) ? "selected": "add"'>Statut</button>
-    <button (click)="this.changeOrder()"  class='add'><i [class]='orderIcon'></i></button>
+    <button (click)="this.sort(sortType.SortByName)" [class]='(optionSelections.get(sortType.SortByName)) ? "selected": "add"' matTooltip="Trier par nom">Nom</button>
+    <button (click)="this.sort(sortType.SortByScore)" [class]='(optionSelections.get(sortType.SortByScore)) ? "selected": "add"' matTooltip="Trier par point">Point</button>
+    <button (click)="this.sort(sortType.SortByStatus)" [class]='(optionSelections.get(sortType.SortByStatus)) ? "selected": "add"' matTooltip="Trier par statut">Statut</button>
+    <button (click)="this.changeOrder()"  class='add' matTooltip="Changer l'ordre"><i [class]='orderIcon'></i></button>
 </div>
 <div class="players-container">
     <table>
@@ -22,8 +21,8 @@
             <td> {{player[2]}} </td>
             <td *ngIf='isHost'>
                 <label *ngIf='!interactiveListService.isPlayerGone(player[0], leftPlayers)' class="switch-btn">
-                    <input type="checkbox" [checked]='player[4]' (click)='toggleChatPermission(player[0])'>
-                    <span class="slider round"></span>
+                    <input type="checkbox" [checked]='player[4]' (click)='toggleChatPermission(player[0])'  >
+                    <span class="slider round" [matTooltip]= "player[4] ? 'Desactiver le chat' : 'Activer le chat'"></span>
                 </label>
             </td>
         </tr>

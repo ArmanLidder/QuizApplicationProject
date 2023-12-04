@@ -10,6 +10,8 @@ import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { ItemMovingDirection } from 'src/enums/item-moving-direction';
 import SpyObj = jasmine.SpyObj;
 import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
+import { MatDialog } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
 
 const fb = new FormBuilder();
 const POPUP_DELAY = 3200;
@@ -85,8 +87,9 @@ describe('QuestionListComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [QuestionListComponent],
-            imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
+            imports: [HttpClientModule, RouterTestingModule, FormsModule, ReactiveFormsModule, AppMaterialModule],
             providers: [
+                MatDialog,
                 { provide: QuestionService, useValue: questionServiceMock },
                 { provide: ChoiceService, useValue: choiceServiceMock },
             ],

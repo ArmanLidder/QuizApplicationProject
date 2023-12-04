@@ -42,4 +42,16 @@ describe('QuitterButtonComponent', () => {
         });
         expect(mockRouter.navigate).toHaveBeenCalledWith(['./home']);
     });
+
+    it('should set isGame correctly', () => {
+        component.isGame = false;
+        const mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
+        mockMatDialog.open.and.returnValue(mockDialogRef);
+        mockDialogRef.afterClosed.and.returnValue(of(true));
+        component.openConfirmationDialog();
+        expect(mockMatDialog.open).toHaveBeenCalledWith(ConfirmationDialogComponent, {
+            width: '300px',
+            data: { message: 'Etes-vous sur de vouloir supprimer?' },
+        });
+    });
 });
