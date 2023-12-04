@@ -5,6 +5,6 @@
     <select [(ngModel)]="qrlEvaluationService.inputPoint">
         <option *ngFor="let score of qrlEvaluationService.scores" [value]="score">{{ score }}</option>
     </select>
-    <button class="valider" (click)="submitPoint()">Valider</button>
+    <button class="enter" (click)="submitPoint()">Valider</button>
     <p *ngIf="!qrlEvaluationService.isValid">Veuillez sélectionner une note</p>
 </div>
