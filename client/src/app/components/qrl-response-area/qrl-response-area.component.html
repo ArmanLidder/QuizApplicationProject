@@ -1,11 +1,11 @@
-<div *ngIf='!gameService.gameRealService.validated || gameService.isTestMode' (keyup.enter)='validate()'>
+<div *ngIf='!gameService.gameRealService.validated || gameService.isTestMode'>
     <textarea id="responseInput" maxlength='200' [disabled]='gameService.lockedStatus' [(ngModel)]="gameService.qrlAnswer" (input)="handleActiveUser()" rows="4" cols="50"></textarea>
     <div class='characters-left'>
         <small>Caractères restants: {{ maxResponseCharacters - this.gameService.qrlAnswer.length }}/200</small>
     </div>
 </div>
 <div class='btn-container'>
-    <button class='enter' [disabled]='gameService.lockedStatus || !gameService.qrlAnswer.trim()' (click)='validate()'>Valider</button>
+    <button class='enter' [disabled]='gameService.lockedStatus' (click)='validate()'>Valider</button>
     <app-leave-boutton></app-leave-boutton>
 </div>
 <div *ngIf='gameService.gameRealService.validated && !gameService.isTestMode'>

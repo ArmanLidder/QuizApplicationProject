@@ -45,22 +45,14 @@ export class GameRealService implements GameServiceInterface {
     }
 
     sendAnswer() {
-        if (this.question?.type === QuestionType.QCM) {
-            const answers = Array.from(this.answers.values());
-            this.socketService.send(socketEvent.SUBMIT_ANSWER, {
-                roomId: this.roomId,
-                answers,
-                timer: this.timer,
-                username: this.username,
-            });
-        } else {
-            this.socketService.send(socketEvent.SUBMIT_ANSWER, {
-                roomId: this.roomId,
-                answers: this.qrlAnswer,
-                timer: this.timer,
-                username: this.username,
-            });
-        }
+        const isMultipleChoiceQuestion: boolean = this.question?.type === QuestionType.QCM;
+        const answers = Array.from(this.answers.values());
+        this.socketService.send(socketEvent.SUBMIT_ANSWER, {
+            roomId: this.roomId,
+            answers: isMultipleChoiceQuestion ? answers : this.qrlAnswer.trim(),
+            timer: this.timer,
+            username: this.username,
+        });
         this.locked = true;
         this.answers.clear();
         this.qrlAnswer = '';
