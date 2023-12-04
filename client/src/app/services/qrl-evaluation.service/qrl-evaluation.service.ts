@@ -10,22 +10,22 @@ import { QuestionStatistics } from '@app/components/statistic-zone/statistic-zon
     providedIn: 'root',
 })
 export class QrlEvaluationService {
-    questionStats = new Map<string, number>([
+    usernames: string[] = [];
+    scores: number[] = [NULL, HALF, FULL];
+    currentAnswer: string = 'nothing';
+    currentUsername: string = 'nothing';
+    inputPoint: number = 0;
+    isCorrectionFinished: boolean = false;
+    isValid: boolean = true;
+    private correctedQrlAnswers = new Map<string, number>();
+    private answers: string[] = [];
+    private points: number[] = [];
+    private indexPlayer: number = INITIAL_ARRAY_VALUE;
+    private questionStats = new Map<string, number>([
         ['0', 0],
         ['50', 0],
         ['100', 0],
     ]);
-    correctedQrlAnswers = new Map<string, number>();
-    usernames: string[] = [];
-    answers: string[] = [];
-    scores: number[] = [NULL, HALF, FULL];
-    isValid: boolean = true;
-    currentAnswer: string = 'nothing';
-    currentUsername: string = 'nothing';
-    points: number[] = [];
-    inputPoint: number = 0;
-    indexPlayer: number = INITIAL_ARRAY_VALUE;
-    isCorrectionFinished: boolean = false;
 
     constructor(
         private socketClientService: SocketClientService,
@@ -35,11 +35,7 @@ export class QrlEvaluationService {
     initialize(qrlAnswers: Map<string, { answers: string; time: number }>) {
         this.indexPlayer = -1;
         this.isCorrectionFinished = false;
-        const sortedMap = new Map([...qrlAnswers.entries()].sort((a, b) => a[0].localeCompare(b[0])));
-        sortedMap.forEach((value: { answers: string; time: number }, key: string) => {
-            this.usernames.push(key);
-            this.answers.push(value.answers);
-        });
+        this.initializePlayerAnswers(qrlAnswers);
         this.nextAnswer();
     }
 
@@ -87,11 +83,7 @@ export class QrlEvaluationService {
             if (this.indexPlayer >= this.usernames.length) {
                 this.isCorrectionFinished = true;
                 this.endCorrection(gameStats);
-                const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.correctedQrlAnswers));
-                this.socketClientService.send(socketEvent.PLAYER_QRL_CORRECTION, {
-                    roomId: this.gameService.gameRealService.roomId,
-                    playerCorrection: playerQrlCorrectionFormatted,
-                });
+                this.sendPlayerEvaluations();
                 this.clearAll();
             }
         }
@@ -109,5 +101,21 @@ export class QrlEvaluationService {
         ]);
         const newQuestionMap = new Map(this.questionStats);
         gameStats.push([emptyMap, newQuestionMap, this.gameService.gameRealService.question as QuizQuestion]);
+    }
+
+    private sendPlayerEvaluations() {
+        const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.correctedQrlAnswers));
+        this.socketClientService.send(socketEvent.PLAYER_QRL_CORRECTION, {
+            roomId: this.gameService.gameRealService.roomId,
+            playerCorrection: playerQrlCorrectionFormatted,
+        });
+    }
+
+    private initializePlayerAnswers(qrlAnswers: Map<string, { answers: string; time: number }>) {
+        const sortedMap = new Map([...qrlAnswers.entries()].sort((a, b) => a[0].localeCompare(b[0])));
+        sortedMap.forEach((value: { answers: string; time: number }, key: string) => {
+            this.usernames.push(key);
+            this.answers.push(value.answers);
+        });
     }
 }
