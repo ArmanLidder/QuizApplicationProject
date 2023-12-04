@@ -37,6 +37,14 @@ describe('QrlResponseAreaComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should validate answer when we press enter outside chat box focus', () => {
+        const validateSpy = spyOn(component, 'validate');
+        component.gameService.isInputFocused = false;
+        const keyboardEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+        component.handleKeyboardEvent(keyboardEvent);
+        expect(validateSpy).toHaveBeenCalled();
+    });
+
     it('should correctly destroy the component', () => {
         const numberOfExpectedCalls = 3;
         spyOn(window, 'clearTimeout');
