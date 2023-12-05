@@ -14,7 +14,7 @@ import { QuestionChoicePosition } from '@app/interfaces/question-choice-position
 export class QuestionListComponent {
     @Input() questionsArray: FormArray | undefined;
     @Input() parentGroup: FormGroup;
-    isPopupVisible: boolean = false;
+    isPopUpVisible: boolean = false;
     questionErrors: string[] = [];
     protected readonly itemMovingDirection = ItemMovingDirection;
 
@@ -24,9 +24,9 @@ export class QuestionListComponent {
     ) {}
     showPopupIfConditionMet(condition: boolean) {
         if (condition) {
-            this.isPopupVisible = true;
+            this.isPopUpVisible = true;
             setTimeout(() => {
-                this.isPopupVisible = false;
+                this.isPopUpVisible = false;
             }, POPUP_TIMEOUT);
         }
         return condition;

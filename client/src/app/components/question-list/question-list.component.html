@@ -16,7 +16,7 @@
                     <mat-icon matTooltip="Deplacer la question vers le haut" >keyboard_arrow_up</mat-icon></button><br><br>
                 <div *ngIf="question.get('beingModified')?.value">
                     <div class="question" [attr.id]="'question' + i">
-                        <div class="popup" [ngClass]="{ 'show': isPopupVisible }">
+                        <div class="popup" [ngClass]="{ 'show': isPopUpVisible }">
                             <span class="popuptext" [innerHTML]="questionErrors.join('<br>')"></span>
                         </div>
                         <p>Question {{ i + 1 }}:</p>
