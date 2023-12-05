@@ -9,7 +9,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { FormChoice, FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { Quiz } from '@common/interfaces/quiz.interface';
@@ -55,7 +55,7 @@ describe('QuizCreationComponent', () => {
                     ],
                 },
                 {
-                    type: QuestionType.QLR,
+                    type: QuestionType.QRL,
                     text: 'What is 2 + 2?',
                     points: 5,
                 },
@@ -82,7 +82,7 @@ describe('QuizCreationComponent', () => {
         };
 
         question3 = {
-            type: QuestionType.QLR,
+            type: QuestionType.QRL,
             text: 'Question 3',
             points: 15,
             choices: [choice1, choice2],
@@ -257,7 +257,7 @@ describe('QuizCreationComponent', () => {
         expect(dialogOpenSpy).toHaveBeenCalledWith(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
-                content: errorDictionary.QUIZ_ALREADY_EXIST,
+                content: ErrorDictionary.QUIZ_ALREADY_EXIST,
             },
         });
     });

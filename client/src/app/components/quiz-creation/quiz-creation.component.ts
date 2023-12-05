@@ -7,10 +7,11 @@ import { POPUP_TIMEOUT } from '@common/constants/quiz-creation.component.const';
 import { QuizFormService } from '@app/services/quiz-form-service/quiz-form.service';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { PageMode } from 'src/enums/page-mode.enum';
 import { generateRandomId } from 'src/utils/random-id-generator/random-id-generator';
+import { GAME_ADMIN_PAGE } from '@common/page-url/page-url';
 
 @Component({
     selector: 'app-quiz-creation',
@@ -90,7 +91,7 @@ export class QuizCreationComponent {
 
     private addOrUpdateQuiz(quiz: Quiz) {
         const navigateToAdminCallBack = () => {
-            this.navigateRoute.navigate(['/game-admin-page']);
+            this.navigateRoute.navigate([`/${GAME_ADMIN_PAGE}`]);
         };
         if (this.mode === PageMode.MODIFICATION) {
             quiz.id = this.quiz.id;
@@ -105,7 +106,7 @@ export class QuizCreationComponent {
         this.dialog.open(AlertDialogComponent, {
             data: {
                 title: 'Le titre existe déjà',
-                content: errorDictionary.QUIZ_ALREADY_EXIST,
+                content: ErrorDictionary.QUIZ_ALREADY_EXIST,
             },
         });
     }
