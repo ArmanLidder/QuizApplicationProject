@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { of } from 'rxjs';
@@ -176,9 +176,9 @@ describe('GamesListComponent Admin view', () => {
         expect(waitForFileReadSpy).toHaveBeenCalled();
     }));
     it('should read a file as Text', () => {
-        component.fileReader = new FileReader();
+        component['fileReader'] = new FileReader();
         const selectedFile = new File(['{}'], 'mock.json', { type: 'application/json' });
-        const fileReaderSpy = spyOn(component.fileReader, 'readAsText');
+        const fileReaderSpy = spyOn(component['fileReader'], 'readAsText');
         component.readFile(selectedFile);
         expect(fileReaderSpy).toHaveBeenCalledWith(selectedFile);
     });
@@ -322,21 +322,21 @@ describe('GamesListComponent Admin view', () => {
         expect(parseSpy).toHaveBeenCalledWith(event.target?.result as string);
     });
     it('should seize resolve callback promise', () => {
-        component.asyncFileResolver = () => {
+        component['asyncFileResolver'] = () => {
             component.isQuizUnique = false;
         };
         component.resolveAsyncFileRead();
         expect(component.isQuizUnique).toBeFalsy();
     });
     it('should seize reject callback promise', () => {
-        component.asyncFileRejecter = (error) => {
+        component['asyncFileRejecter'] = (error) => {
             component.isQuizUnique = !!error;
         };
         component.rejectAsyncFileRead(false);
         expect(component.isQuizUnique).toBeFalsy();
     });
     it('should test the game and navigate to quiz-testing-page', fakeAsync(() => {
-        const navigateSpy = spyOn(component.router, 'navigate');
+        const navigateSpy = spyOn(component['router'], 'navigate');
         component.selectedQuiz = { id: '1', visible: true } as Quiz;
         const basicGetByIdResponse = { id: '1', visible: true } as Quiz;
         quizServiceSpy.basicGetById.and.returnValue(of(basicGetByIdResponse));
@@ -346,7 +346,7 @@ describe('GamesListComponent Admin view', () => {
         expect(component.selectedQuiz).toBeNull();
     }));
     it('should play the game and navigate to waiting-room-host-page', fakeAsync(() => {
-        const navigateSpy = spyOn(component.router, 'navigate');
+        const navigateSpy = spyOn(component['router'], 'navigate');
         component.selectedQuiz = { id: '1', visible: true } as Quiz;
         const basicGetByIdResponse = { id: '1', visible: true } as Quiz;
         quizServiceSpy.basicGetById.and.returnValue(of(basicGetByIdResponse));
@@ -384,11 +384,11 @@ describe('GamesListComponent Admin view', () => {
     }));
     it('should call dialog open function when calling openQuizExistsDialog', () => {
         const dialogOpenSpy = spyOn(component['dialog'], 'open');
-        component['showError'](errorDictionary.ISSUE);
+        component['showError'](ErrorDictionary.ISSUE);
         expect(dialogOpenSpy).toHaveBeenCalledWith(AlertDialogComponent, {
             data: {
                 title: "Erreur lors de l'importation",
-                content: errorDictionary.ISSUE,
+                content: ErrorDictionary.ISSUE,
             },
         });
     });
