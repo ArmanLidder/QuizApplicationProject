@@ -37,7 +37,7 @@ describe('GameTestService', () => {
                 ],
             },
             {
-                type: QuestionType.QLR,
+                type: QuestionType.QRL,
                 text: 'What is 2 + 2?',
                 points: 20,
             },
@@ -69,7 +69,7 @@ describe('GameTestService', () => {
         expect(gameTestService.timeService.getTimer(0)).toBe(TIMER1);
 
         gameTestService.currQuestionIndex = 2;
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
         expect(gameTestService.next()).toBe(false);
     });
 
@@ -77,14 +77,14 @@ describe('GameTestService', () => {
         const TIMER_VALUE = 10;
         gameTestService.timeService.createTimer(TIMER_VALUE);
         gameTestService.timeService.getTimer(0);
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
         gameTestService.currQuestionIndex = 0;
         gameTestService.next();
         expect(gameTestService.currQuestionIndex).toBe(1);
     });
 
     it('should set isBonus to false and return when the correct answer length is false', () => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [0, 'Choice 1'],
@@ -99,7 +99,7 @@ describe('GameTestService', () => {
     });
 
     it('should set isBonus to false and return when at least 1 answer is incorrect', () => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [0, 'Choice 1'],
@@ -115,7 +115,7 @@ describe('GameTestService', () => {
 
     it('should set isBonus to true and add the bonus to the player score', () => {
         const BONUS_MULTIPLIER = 1.2;
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [1, '2'],
@@ -136,7 +136,7 @@ describe('GameTestService', () => {
     });
 
     it('should set isBonus to false if the number of answers submitted is not equal to the number of correct choices', () => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
 
         const answers = new Map<number, string | null>([[1, '2']]);
 
@@ -147,7 +147,7 @@ describe('GameTestService', () => {
     });
 
     it('should set isBonus to false if one of the choices submitted is incorrect', () => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
 
         const answers = new Map<number, string | null>([
             [1, '2'],
@@ -180,7 +180,7 @@ describe('GameTestService', () => {
     });
 
     it('should return the correct answers of a question choices', () => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         extractCorrectChoicesSpy = spyOn<any>(gameTestService, 'extractCorrectChoices').and.callThrough();
         expect(extractCorrectChoicesSpy(mockQuiz.questions[1].choices)).toEqual([
@@ -212,7 +212,7 @@ describe('GameTestService', () => {
         gameTestService.sendAnswer();
         expect(gameTestService.validated).toBeTruthy();
         expect(gameTestService.locked).toBeTruthy();
-        expect(clearTimeoutSpy).toHaveBeenCalledWith(gameTestService.timeouts[0]);
+        expect(clearTimeoutSpy).toHaveBeenCalledWith(gameTestService['timeouts'][0]);
         expect(updateScoreSpy).toHaveBeenCalledWith(gameTestService.answers);
         expect(startTimersSpy).toHaveBeenCalledWith(3);
         expect(handleTransitionTimerSpy).toHaveBeenCalled();
@@ -220,7 +220,7 @@ describe('GameTestService', () => {
 
     it('should handle question timer end correctly', (done) => {
         // Spy on the sendAnswer method
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
         spyOn(gameTestService, 'sendAnswer');
         gameTestService['handleQuestionTimerEnd']();
         setTimeout(() => {
@@ -230,7 +230,7 @@ describe('GameTestService', () => {
     });
 
     it('should handle transition timer end correctly if next question is not available', (done) => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
         gameTestService.answers = new Map();
         spyOn<any>(gameTestService, 'showFinalFeedBack');
         spyOn(gameTestService, 'next').and.returnValue(false);
@@ -242,7 +242,7 @@ describe('GameTestService', () => {
     });
 
     it('should handle transition timer end correctly if next question is not available', (done) => {
-        gameTestService.quiz = mockQuiz;
+        gameTestService['quiz'] = mockQuiz;
         spyOn<any>(gameTestService, 'hideFeedback');
         spyOn(gameTestService, 'next').and.returnValue(true);
         const startTimersSpy = spyOn(gameTestService, 'startTimer');

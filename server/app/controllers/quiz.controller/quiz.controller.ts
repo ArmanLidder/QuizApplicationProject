@@ -2,6 +2,7 @@ import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
+import { SERVER_ERROR } from '@common/browser-message/http-exchange-message/http-exchange-message';
 
 @Service()
 export class QuizController {
@@ -191,7 +192,7 @@ export class QuizController {
                 const isUnique = await this.quizService.isTitleUnique(title);
                 res.json({ isUnique });
             } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: SERVER_ERROR });
             }
         });
 

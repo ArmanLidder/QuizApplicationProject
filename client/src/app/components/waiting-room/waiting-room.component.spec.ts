@@ -8,7 +8,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { WaitingRoomComponent } from './waiting-room.component';
 
 const DIGIT_CONSTANT = 1;
@@ -77,7 +77,7 @@ describe('WaitingRoomComponent', () => {
         component.isHost = true;
         component.roomId = DIGIT_CONSTANT;
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.HOST_LEFT, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.HOST_LEFT, DIGIT_CONSTANT);
     });
 
     it('should send a player abandonment event on component destruction if not host', () => {
@@ -86,7 +86,7 @@ describe('WaitingRoomComponent', () => {
         component.isHost = false;
         component.roomId = DIGIT_CONSTANT;
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.PLAYER_LEFT, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.PLAYER_LEFT, DIGIT_CONSTANT);
     });
 
     it('should not send abandonment event on component destruction if game is starting', () => {

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { GameService } from '@app/services/game.service/game.service';
-import { FULL, HALF, INITIAL_ARRAY_VALUE, NULL } from '@common/constants/qrl-evaluation.service.const';
+import { FULL, HALF, HALF_SCORE, PERFECT_SCORE, INITIAL_ARRAY_VALUE, NULL, NULL_SCORE } from '@common/constants/qrl-evaluation.service.const';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { QuestionStatistics } from '@common/constants/statistic-zone.component.const';
 
 @Injectable({
@@ -12,8 +12,8 @@ import { QuestionStatistics } from '@common/constants/statistic-zone.component.c
 export class QrlEvaluationService {
     usernames: string[] = [];
     scores: number[] = [NULL, HALF, FULL];
-    currentAnswer: string = 'nothing';
-    currentUsername: string = 'nothing';
+    currentAnswer: string = '';
+    currentUsername: string = '';
     inputPoint: number = 0;
     isCorrectionFinished: boolean = false;
     isValid: boolean = true;
@@ -22,9 +22,9 @@ export class QrlEvaluationService {
     private answers: string[] = [];
     private indexPlayer: number = INITIAL_ARRAY_VALUE;
     private questionStats = new Map<string, number>([
-        ['0', 0],
-        ['50', 0],
-        ['100', 0],
+        [NULL_SCORE, 0],
+        [HALF_SCORE, 0],
+        [PERFECT_SCORE, 0],
     ]);
 
     constructor(
@@ -55,8 +55,8 @@ export class QrlEvaluationService {
         this.clearAll();
         this.isCorrectionFinished = false;
         this.isValid = true;
-        this.currentAnswer = 'nothing';
-        this.currentUsername = 'nothing';
+        this.currentAnswer = '';
+        this.currentUsername = '';
     }
 
     clearAll() {
@@ -65,9 +65,9 @@ export class QrlEvaluationService {
         this.points.splice(0, this.points.length);
         this.correctedQrlAnswers.clear();
         this.questionStats = new Map<string, number>([
-            ['0', 0],
-            ['50', 0],
-            ['100', 0],
+            [NULL_SCORE, 0],
+            [HALF_SCORE, 0],
+            [PERFECT_SCORE, 0],
         ]);
         this.indexPlayer = -1;
     }
@@ -94,9 +94,9 @@ export class QrlEvaluationService {
             this.questionStats.set(String(this.points[i]), (this.questionStats.get(String(this.points[i])) as number) + 1);
         }
         const emptyMap = new Map<string, boolean>([
-            ['0', false],
-            ['50', false],
-            ['100', true],
+            [NULL_SCORE, false],
+            [HALF_SCORE, false],
+            [PERFECT_SCORE, true],
         ]);
         const newQuestionMap = new Map(this.questionStats);
         gameStats.push([emptyMap, newQuestionMap, this.gameService.gameRealService.question as QuizQuestion]);
@@ -104,7 +104,7 @@ export class QrlEvaluationService {
 
     private sendPlayerEvaluations() {
         const playerQrlCorrectionFormatted = JSON.stringify(Array.from(this.correctedQrlAnswers));
-        this.socketClientService.send(socketEvent.PLAYER_QRL_CORRECTION, {
+        this.socketClientService.send(SocketEvent.PLAYER_QRL_CORRECTION, {
             roomId: this.gameService.gameRealService.roomId,
             playerCorrection: playerQrlCorrectionFormatted,
         });

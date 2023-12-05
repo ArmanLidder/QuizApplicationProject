@@ -3,7 +3,7 @@ import { SocketClientServiceTestHelper } from '@app/classes/socket-client-servic
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { QuestionType } from '@common/enums/question-type.enum';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameRealService', () => {
@@ -40,8 +40,8 @@ describe('GameRealService', () => {
         const onSpy = spyOn(socketService, 'on').and.callThrough();
         service['configureBaseSockets']();
         const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.GET_INITIAL_QUESTION);
-        expect(secondEvent).toEqual(socketEvent.GET_NEXT_QUESTION);
+        expect(firstEvent).toEqual(SocketEvent.GET_INITIAL_QUESTION);
+        expect(secondEvent).toEqual(SocketEvent.GET_NEXT_QUESTION);
 
         if (typeof firstAction === 'function') {
             firstAction({ question: questionMock, username: 'Arman', index: 1, numberOfQuestions: 1 });
@@ -86,7 +86,7 @@ describe('GameRealService', () => {
         service.roomId = 1;
         service.init();
         expect(configureBaseSocketsSpy).toHaveBeenCalled();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.GET_QUESTION, 1);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.GET_QUESTION, 1);
     });
 
     it('should send answer', () => {
@@ -105,9 +105,9 @@ describe('GameRealService', () => {
             username: 'test',
         };
         service.sendAnswer();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.SUBMIT_ANSWER, expectedObjectForQcm);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.SUBMIT_ANSWER, expectedObjectForQcm);
         expect(service.answers.size).toEqual(0);
-        service.question.type = QuestionType.QLR;
+        service.question.type = QuestionType.QRL;
         service.qrlAnswer = 'test';
         const expectedObjectForQrl = {
             roomId: 1,
@@ -116,7 +116,7 @@ describe('GameRealService', () => {
             username: 'test',
         };
         service.sendAnswer();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.SUBMIT_ANSWER, expectedObjectForQrl);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.SUBMIT_ANSWER, expectedObjectForQrl);
         expect(service.qrlAnswer).toEqual('');
     });
 
@@ -125,6 +125,6 @@ describe('GameRealService', () => {
         const isSelected = true;
         const sendSpy = spyOn(service.socketService, 'send');
         service['sendSelection'](0, isSelected);
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.UPDATE_SELECTION, { roomId: service.roomId, isSelected, index });
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.UPDATE_SELECTION, { roomId: service.roomId, isSelected, index });
     });
 });

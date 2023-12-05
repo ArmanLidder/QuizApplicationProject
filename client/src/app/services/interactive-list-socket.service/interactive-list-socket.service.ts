@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { CAN_TALK, Player, PLAYER_NOT_FOUND_INDEX, STATUS_INDEX } from '@common/constants/player-list.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Score } from '@common/interfaces/score.interface';
-import { playerStatus } from '@common/player-status/player-status';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
-
-type UserData = { username: string; resetPlayerStatus: boolean };
-type RoomSettings = { roomId: number; resetPlayerStatus: boolean };
+import { PlayerStatus } from '@common/player-status/player-status';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
+import { UserData, RoomSettings } from '@common/constants/interactive-list-socket.service.const';
 
 @Injectable({
     providedIn: 'root',
@@ -18,6 +16,9 @@ export class InteractiveListSocketService {
 
     constructor(private socketService: SocketClientService) {}
 
+    // getPlayerList Method as a parameter resetPlayerStatus which when set to true will reset the player status
+    // color to red for all remaining players and if set to false the method will keep the real in game live status.
+    // This allows the programmer to refresh the list according to the situation (next question or in question);
     async getPlayersList(roomId: number, leftPlayers: Player[] = [], resetPlayerStatus: boolean = true) {
         return new Promise<number>((resolve) => {
             this.gatherPlayersUsername({ resetPlayerStatus, roomId }, resolve, leftPlayers);
@@ -27,7 +28,7 @@ export class InteractiveListSocketService {
     toggleChatPermission(username: string, roomId: number) {
         const playerIndex = this.findPlayer(username, this.players);
         this.players[playerIndex][CAN_TALK] = !this.players[playerIndex][CAN_TALK];
-        this.socketService.send(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId, username });
+        this.socketService.send(SocketEvent.TOGGLE_CHAT_PERMISSION, { roomId, username });
     }
 
     configureBaseSocketFeatures() {
@@ -42,7 +43,7 @@ export class InteractiveListSocketService {
     }
 
     private gatherPlayersUsername(roomSettings: RoomSettings, resolve: (value: number | PromiseLike<number>) => void, leftPlayers: Player[]) {
-        this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, roomSettings.roomId, (players: string[]) => {
+        this.socketService.send(SocketEvent.GATHER_PLAYERS_USERNAME, roomSettings.roomId, (players: string[]) => {
             resolve(players.length);
             this.setUpPlayerList(leftPlayers);
             players.forEach((username) => {
@@ -58,7 +59,7 @@ export class InteractiveListSocketService {
     }
 
     private getPlayerScoreFromServer(userInfo: UserData, roomId: number, leftPlayers: Player[]) {
-        this.socketService.send(socketEvent.GET_SCORE, { roomId, username: userInfo.username }, (score: Score) => {
+        this.socketService.send(SocketEvent.GET_SCORE, { roomId, username: userInfo.username }, (score: Score) => {
             this.addPlayer(userInfo, score, leftPlayers);
         });
     }
@@ -75,7 +76,7 @@ export class InteractiveListSocketService {
     }
 
     private appendLeftPlayersToActivePlayers(leftPlayers: Player[]) {
-        leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, playerStatus.LEFT, false]));
+        leftPlayers.forEach(([username, points, bonusCount]) => this.players.push([username, points, bonusCount, PlayerStatus.LEFT, false]));
     }
 
     private findPlayer(username: string, players: Player[]) {
@@ -83,14 +84,14 @@ export class InteractiveListSocketService {
     }
 
     private handleUpdateInteraction() {
-        this.socketService.on(socketEvent.UPDATE_INTERACTION, (username: string) => {
-            this.changePlayerStatus(username, playerStatus.INTERACTION);
+        this.socketService.on(SocketEvent.UPDATE_INTERACTION, (username: string) => {
+            this.changePlayerStatus(username, PlayerStatus.INTERACTION);
         });
     }
 
     private handleSubmitAnswer() {
-        this.socketService.on(socketEvent.SUBMIT_ANSWER, (username: string) => {
-            this.changePlayerStatus(username, playerStatus.VALIDATION);
+        this.socketService.on(SocketEvent.SUBMIT_ANSWER, (username: string) => {
+            this.changePlayerStatus(username, PlayerStatus.VALIDATION);
         });
     }
 
@@ -100,9 +101,9 @@ export class InteractiveListSocketService {
     }
 
     private initPlayerStatus(username: string, resetPlayerStatus: boolean, leftPlayers: Player[]) {
-        if (this.isPlayerGone(username, leftPlayers)) return playerStatus.LEFT;
+        if (this.isPlayerGone(username, leftPlayers)) return PlayerStatus.LEFT;
         else if (!resetPlayerStatus) return this.getActualStatus(username);
-        else return this.isFinal ? playerStatus.END_GAME : playerStatus.NO_INTERACTION;
+        else return this.isFinal ? PlayerStatus.END_GAME : PlayerStatus.NO_INTERACTION;
     }
 
     private getActualStatus(username: string) {

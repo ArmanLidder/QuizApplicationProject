@@ -11,7 +11,7 @@ import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { Game } from '@app/classes/game/game';
 import { Answers } from '@app/interface/game-interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { RoomData } from '@app/interface/room-data-interface';
 
@@ -73,7 +73,7 @@ describe('Game Creation service tests', () => {
             expect(roomCode).to.equal(mockRoomId);
             done();
         };
-        clientSocket.emit(socketEvent.CREATE_ROOM, 'test', clientCallBack);
+        clientSocket.emit(SocketEvent.CREATE_ROOM, 'test', clientCallBack);
     });
     it('should handle a "player join" event when room is locked', (done) => {
         roomManager.isRoomLocked.returns(true);
@@ -81,7 +81,7 @@ describe('Game Creation service tests', () => {
             expect(isLocked).to.equal(true);
             done();
         };
-        clientSocket.emit(socketEvent.JOIN_GAME, { roomId: mockRoomId, username: mockUsername }, clientCallBack);
+        clientSocket.emit(SocketEvent.JOIN_GAME, { roomId: mockRoomId, username: mockUsername }, clientCallBack);
     });
     it('should handle a "player join" event when room is unlocked', (done) => {
         roomManager.getUsernamesArray.returns(['username1', 'username2']);
@@ -91,8 +91,8 @@ describe('Game Creation service tests', () => {
             expect(roomManager.addUser.called);
             done();
         };
-        clientSocket.emit(socketEvent.JOIN_GAME, { roomId: mockRoomId, username: mockUsername }, clientCallBack);
-        clientSocket.on(socketEvent.NEW_PLAYER, (players: string[]) => {
+        clientSocket.emit(SocketEvent.JOIN_GAME, { roomId: mockRoomId, username: mockUsername }, clientCallBack);
+        clientSocket.on(SocketEvent.NEW_PLAYER, (players: string[]) => {
             expect(players).to.deep.equal(expectedPlayers);
             done();
         });
@@ -100,7 +100,7 @@ describe('Game Creation service tests', () => {
     it('should handle a player ban', (done) => {
         const spy = sinon.spy(service['sio'], 'to');
         roomManager.getSocketIdByUsername.returns('Test');
-        clientSocket.emit(socketEvent.BAN_PLAYER, { roomId: mockRoomId, username: mockUsername });
+        clientSocket.emit(SocketEvent.BAN_PLAYER, { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
             assert(spy.calledWith(String(mockRoomId)));
             assert(spy.calledWith('Test'));
@@ -108,7 +108,7 @@ describe('Game Creation service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should handle a room lock toggle', (done) => {
-        clientSocket.emit(socketEvent.TOGGLE_ROOM_LOCK, mockRoomId);
+        clientSocket.emit(SocketEvent.TOGGLE_ROOM_LOCK, mockRoomId);
         setTimeout(() => {
             expect(roomManager.clearRoomTimer.called);
             done();
@@ -119,7 +119,7 @@ describe('Game Creation service tests', () => {
         roomManager.changeLockState.callsFake(() => {
             mockRoom.locked = !mockRoom.locked;
         });
-        clientSocket.emit(socketEvent.TOGGLE_ROOM_LOCK, mockRoomId);
+        clientSocket.emit(SocketEvent.TOGGLE_ROOM_LOCK, mockRoomId);
         setTimeout(() => {
             const finalLockState = mockRoom.locked;
             expect(initialLockState).to.not.equal(finalLockState);
@@ -133,7 +133,7 @@ describe('Game Creation service tests', () => {
             expect(data.error).to.equal('Le nom choisi est déjà utiliser. Veuillez choisir un autre.');
             done();
         };
-        clientSocket.emit(socketEvent.VALIDATE_USERNAME, { mockRoomId, mockUsername }, clientCallBack);
+        clientSocket.emit(SocketEvent.VALIDATE_USERNAME, { mockRoomId, mockUsername }, clientCallBack);
     });
     it('should handle a "validate username" event when name is banned', (done) => {
         roomManager.isNameUsed.returns(false);
@@ -143,7 +143,7 @@ describe('Game Creation service tests', () => {
             expect(data.error).to.equal('Vous avez été banni du lobby et vous ne pouvez plus rentrez.');
             done();
         };
-        clientSocket.emit(socketEvent.VALIDATE_USERNAME, { mockRoomId, mockUsername }, clientCallBack);
+        clientSocket.emit(SocketEvent.VALIDATE_USERNAME, { mockRoomId, mockUsername }, clientCallBack);
     });
     it('should handle a "validate username" event when name is unused and not banned', (done) => {
         roomManager.isNameUsed.returns(false);
@@ -152,14 +152,14 @@ describe('Game Creation service tests', () => {
             expect(data.isValid).to.equal(true);
             done();
         };
-        clientSocket.emit(socketEvent.VALIDATE_USERNAME, { mockRoomId, mockUsername }, clientCallBack);
+        clientSocket.emit(SocketEvent.VALIDATE_USERNAME, { mockRoomId, mockUsername }, clientCallBack);
     });
     it('should validate good roomID properly', (done) => {
         const clientCallBack = (isValid: boolean) => {
             expect(isValid).to.deep.equal({ isRoom: true, isLocked: false });
             done();
         };
-        clientSocket.emit(socketEvent.VALIDATE_ROOM_ID, mockRoomId, clientCallBack);
+        clientSocket.emit(SocketEvent.VALIDATE_ROOM_ID, mockRoomId, clientCallBack);
     });
     it('should validate bad roomID properly', (done) => {
         const badRoomID = 123;
@@ -167,7 +167,7 @@ describe('Game Creation service tests', () => {
             expect(isValid).to.deep.equal({ isRoom: false, isLocked: false });
             done();
         };
-        clientSocket.emit(socketEvent.VALIDATE_ROOM_ID, badRoomID, clientCallBack);
+        clientSocket.emit(SocketEvent.VALIDATE_ROOM_ID, badRoomID, clientCallBack);
     });
     it('should handle "gather players username" event', (done) => {
         const players = Array.from(mockRoom?.players.keys());
@@ -176,13 +176,13 @@ describe('Game Creation service tests', () => {
             expect(playerNames).to.deep.equal(players);
             done();
         };
-        clientSocket.emit(socketEvent.GATHER_PLAYERS_USERNAME, mockRoomId, clientCallback);
+        clientSocket.emit(SocketEvent.GATHER_PLAYERS_USERNAME, mockRoomId, clientCallback);
     });
 
     it('should handle "player abandonment" event when undefined', (done) => {
         roomManager.removeUserBySocketId.returns(undefined);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit(socketEvent.PLAYER_LEFT, mockRoomId);
+        clientSocket.emit(SocketEvent.PLAYER_LEFT, mockRoomId);
         setTimeout(() => {
             expect(emitSpy.notCalled);
             done();
@@ -194,7 +194,7 @@ describe('Game Creation service tests', () => {
         gameMock.playersAnswers.set('test', answer);
         const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit(socketEvent.PLAYER_LEFT, mockRoomId);
+        clientSocket.emit(SocketEvent.PLAYER_LEFT, mockRoomId);
         setTimeout(() => {
             expect(disconnectSpy.called);
             expect(emitSpy.called);
@@ -208,7 +208,7 @@ describe('Game Creation service tests', () => {
         const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         roomManager.getGameByRoomId.returns(undefined);
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit(socketEvent.PLAYER_LEFT, mockRoomId);
+        clientSocket.emit(SocketEvent.PLAYER_LEFT, mockRoomId);
         setTimeout(() => {
             expect(disconnectSpy.called);
             expect(emitSpy.called);
@@ -219,7 +219,7 @@ describe('Game Creation service tests', () => {
         const disconnectSpy = sinon.stub(clientSocket, 'disconnect').returns(null);
         roomManager.removeUserBySocketId.returns({ roomId: mockRoomId, username: 'username1' });
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit(socketEvent.PLAYER_LEFT, mockRoomId);
+        clientSocket.emit(SocketEvent.PLAYER_LEFT, mockRoomId);
         setTimeout(() => {
             expect(disconnectSpy.called);
             expect(emitSpy.called);
@@ -230,7 +230,7 @@ describe('Game Creation service tests', () => {
         gameMock.players.clear();
         roomManager.removeUserBySocketId.returns({ roomId: mockRoomId, username: 'username1' });
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit(socketEvent.PLAYER_LEFT, mockRoomId);
+        clientSocket.emit(SocketEvent.PLAYER_LEFT, mockRoomId);
         setTimeout(() => {
             expect(emitSpy.called);
             done();
@@ -242,7 +242,7 @@ describe('Game Creation service tests', () => {
             roomManager['rooms'].delete(roomId);
         });
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit(socketEvent.HOST_LEFT, mockRoomId);
+        clientSocket.emit(SocketEvent.HOST_LEFT, mockRoomId);
         setTimeout(() => {
             expect(emitSpy.called);
             expect(roomManager['rooms'].has(mockRoomId)).to.equal(false);

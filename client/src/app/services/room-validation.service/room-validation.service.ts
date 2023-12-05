@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
 import { RoomValidationResult, UsernameValidation } from '@common/interfaces/socket-manager.interface';
 import { HOST_USERNAME } from '@common/names/host-username';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 
 @Injectable({
     providedIn: 'root',
@@ -28,15 +28,15 @@ export class RoomValidationService {
     }
 
     async verifyRoomId() {
-        return this.isOnlyDigit() ? await this.sendRoomId() : errorDictionary.VALIDATION_CODE_ERROR;
+        return this.isOnlyDigit() ? await this.sendRoomId() : ErrorDictionary.VALIDATION_CODE_ERROR;
     }
 
     async verifyUsername() {
         const whitespacePattern = /^\s*$/;
         const isFormatValid = this.username === undefined || whitespacePattern.test(this.username);
         const isHost = this.username?.toLowerCase() === HOST_USERNAME.toLowerCase();
-        if (isFormatValid) return errorDictionary.CHAR_NUM_ERROR;
-        else if (isHost) return errorDictionary.ORGANISER_NAME_ERROR;
+        if (isFormatValid) return ErrorDictionary.CHAR_NUM_ERROR;
+        else if (isHost) return ErrorDictionary.ORGANISER_NAME_ERROR;
         else return await this.sendUsername();
     }
 
@@ -45,7 +45,7 @@ export class RoomValidationService {
         if (error !== '') return error;
         return new Promise<string>((resolve) => {
             const usernameData = { roomId: Number(this.roomId), username: this.username };
-            this.socketService.send(socketEvent.JOIN_GAME, usernameData, (isLocked: boolean) => {
+            this.socketService.send(SocketEvent.JOIN_GAME, usernameData, (isLocked: boolean) => {
                 resolve(this.handleJoiningRoomValidation(isLocked));
             });
         });
@@ -56,7 +56,7 @@ export class RoomValidationService {
         if (error !== '') return error;
         return new Promise<string>((resolve) => {
             const usernameData = { roomId: Number(this.roomId), username: this.username };
-            this.socketService.send(socketEvent.VALIDATE_USERNAME, usernameData, (data: UsernameValidation) => {
+            this.socketService.send(SocketEvent.VALIDATE_USERNAME, usernameData, (data: UsernameValidation) => {
                 resolve(this.handleUsernameValidation(data));
             });
         });
@@ -64,7 +64,7 @@ export class RoomValidationService {
 
     private async sendRoomId() {
         return new Promise<string>((resolve) => {
-            this.socketService.send(socketEvent.VALIDATE_ROOM_ID, Number(this.roomId), (data: RoomValidationResult) => {
+            this.socketService.send(SocketEvent.VALIDATE_ROOM_ID, Number(this.roomId), (data: RoomValidationResult) => {
                 resolve(this.handleRoomIdValidation(data));
             });
         });
@@ -72,7 +72,7 @@ export class RoomValidationService {
 
     private handleJoiningRoomValidation(isLocked: boolean) {
         this.isLocked = isLocked;
-        return isLocked ? this.handleErrors(errorDictionary.ROOM_LOCKED) : '';
+        return isLocked ? this.handleErrors(ErrorDictionary.ROOM_LOCKED) : '';
     }
 
     private handleUsernameValidation(data: UsernameValidation) {
@@ -82,8 +82,8 @@ export class RoomValidationService {
 
     private handleRoomIdValidation(data: RoomValidationResult) {
         let error = '';
-        if (!data.isRoom) error = this.handleErrors(errorDictionary.ROOM_CODE_EXPIRED);
-        else if (data.isLocked) error = this.handleErrors(errorDictionary.ROOM_LOCKED);
+        if (!data.isRoom) error = this.handleErrors(ErrorDictionary.ROOM_CODE_EXPIRED);
+        else if (data.isLocked) error = this.handleErrors(ErrorDictionary.ROOM_LOCKED);
         else this.isRoomIdValid = true;
         return error;
     }

@@ -6,11 +6,11 @@ import { QuestionStatistics } from '@common/constants/statistic-zone.component.c
 import { GameService } from '@app/services/game.service/game.service';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { TimerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { Score } from '@common/interfaces/score.interface';
 import { HOST_USERNAME } from '@common/names/host-username';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 
 type Player = [string, number];
 
@@ -21,7 +21,7 @@ export class GameInterfaceManagementService {
     isBonus: boolean = false;
     isGameOver: boolean = false;
     playerScore: number = 0;
-    timerText: string = timerMessage.TIME_LEFT;
+    timerText: string = TimerMessage.TIME_LEFT;
     players: Player[] = [];
     inPanicMode: boolean = false;
     gameStats: QuestionStatistics[] = [];
@@ -48,7 +48,7 @@ export class GameInterfaceManagementService {
         this.gameStats = [];
         this.isBonus = false;
         this.inPanicMode = false;
-        this.timerText = timerMessage.TIME_LEFT;
+        this.timerText = TimerMessage.TIME_LEFT;
     }
 
     configureBaseSocketFeatures() {
@@ -70,11 +70,11 @@ export class GameInterfaceManagementService {
         this.gameService.gameRealService.locked = false;
         this.gameService.gameRealService.validated = false;
         this.isBonus = false;
-        this.timerText = timerMessage.TIME_LEFT;
+        this.timerText = TimerMessage.TIME_LEFT;
     }
 
     private handleEndQuestion() {
-        this.socketService.on(socketEvent.END_QUESTION, () => {
+        this.socketService.on(SocketEvent.END_QUESTION, () => {
             this.gameService.audio.pause();
             this.gameService.audio.currentTime = 0;
             this.gameService.gameRealService.audioPaused = false;
@@ -89,13 +89,13 @@ export class GameInterfaceManagementService {
     }
 
     private handleEvaluationOver() {
-        this.socketService.on(socketEvent.EVALUATION_OVER, () => {
+        this.socketService.on(SocketEvent.EVALUATION_OVER, () => {
             this.getScore();
         });
     }
 
     private handleTimeTransition() {
-        this.socketService.on(socketEvent.TIME_TRANSITION, (timeValue: number) => {
+        this.socketService.on(SocketEvent.TIME_TRANSITION, (timeValue: number) => {
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.resetData();
@@ -104,8 +104,8 @@ export class GameInterfaceManagementService {
     }
 
     private handleFinalTimeTransition() {
-        this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, (timeValue: number) => {
-            this.timerText = timerMessage.FINAL_RESULT;
+        this.socketService.on(SocketEvent.FINAL_TIME_TRANSITION, (timeValue: number) => {
+            this.timerText = TimerMessage.FINAL_RESULT;
             this.gameService.gameRealService.timer = timeValue;
             if (this.gameService.timer === 0) {
                 this.isGameOver = true;
@@ -116,13 +116,13 @@ export class GameInterfaceManagementService {
     }
 
     private handleRemovedFromGame() {
-        this.socketService.on(socketEvent.REMOVED_FROM_GAME, () => {
+        this.socketService.on(SocketEvent.REMOVED_FROM_GAME, () => {
             this.router.navigate(['/']);
         });
     }
 
     private handlePanicMode() {
-        this.socketService.on(socketEvent.PANIC_MODE, () => {
+        this.socketService.on(SocketEvent.PANIC_MODE, () => {
             if (this.gameService.timer > 0 && !this.gameService.gameRealService.audioPaused) {
                 this.gameService.audio.play();
             }
@@ -131,7 +131,7 @@ export class GameInterfaceManagementService {
     }
 
     private handlePauseTimer() {
-        this.socketService.on(socketEvent.PAUSE_TIMER, () => {
+        this.socketService.on(SocketEvent.PAUSE_TIMER, () => {
             if (this.gameService.gameRealService.audioPaused && this.inPanicMode) {
                 this.gameService.audio.play();
             } else if (!this.gameService.gameRealService.audioPaused && this.inPanicMode) {
@@ -142,7 +142,7 @@ export class GameInterfaceManagementService {
     }
 
     private handleGameStatusDistribution() {
-        this.socketService.on(socketEvent.GAME_STATUS_DISTRIBUTION, (gameStats: string) => {
+        this.socketService.on(SocketEvent.GAME_STATUS_DISTRIBUTION, (gameStats: string) => {
             this.unpackStats(this.parseGameStats(gameStats));
         });
     }
@@ -162,7 +162,7 @@ export class GameInterfaceManagementService {
     private getScore() {
         if (this.gameService.gameRealService.username !== HOST_USERNAME) {
             this.socketService.send(
-                socketEvent.GET_SCORE,
+                SocketEvent.GET_SCORE,
                 {
                     roomId: this.gameService.gameRealService.roomId,
                     username: this.gameService.gameRealService.username,
@@ -179,7 +179,7 @@ export class GameInterfaceManagementService {
     private updateScore(score: number) {
         const oldScore = this.playerScore;
         this.playerScore = score;
-        if (this.gameService.question?.type === QuestionType.QLR) {
+        if (this.gameService.question?.type === QuestionType.QRL) {
             this.gameService.lastQrlScore =
                 ((this.playerScore - oldScore) / (this.gameService.gameRealService.question?.points as number)) * MAX_PERCENTAGE;
         }

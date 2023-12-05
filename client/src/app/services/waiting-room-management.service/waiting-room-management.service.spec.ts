@@ -3,7 +3,7 @@ import { WaitingRoomManagementService } from './waiting-room-management.service'
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { Router } from '@angular/router';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { START_TRANSITION_DELAY } from '@common/constants/waiting-room.component.const';
 
 describe('WaitingRoomManagementService', () => {
@@ -50,7 +50,7 @@ describe('WaitingRoomManagementService', () => {
         service.sendRoomCreation('123');
         tick();
         const [eventName, sentData, callback] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.CREATE_ROOM);
+        expect(eventName).toEqual(SocketEvent.CREATE_ROOM);
         expect(sentData).toEqual('123');
         if (typeof callback === 'function') {
             callback(0);
@@ -69,7 +69,7 @@ describe('WaitingRoomManagementService', () => {
         service.sendBanPlayer('test');
         tick();
         const [eventName, sentData] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.BAN_PLAYER);
+        expect(eventName).toEqual(SocketEvent.BAN_PLAYER);
         expect(sentData).toEqual({ roomId: 1, username: 'test' });
     }));
 
@@ -78,7 +78,7 @@ describe('WaitingRoomManagementService', () => {
         service.sendToggleRoomLock();
         tick();
         const [eventName, sentData] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.TOGGLE_ROOM_LOCK);
+        expect(eventName).toEqual(SocketEvent.TOGGLE_ROOM_LOCK);
         expect(sentData).toEqual(1);
     }));
 
@@ -87,7 +87,7 @@ describe('WaitingRoomManagementService', () => {
         service.sendStartSignal();
         tick();
         const [eventName, sentData] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.START);
+        expect(eventName).toEqual(SocketEvent.START);
         expect(sentData).toEqual({ roomId: 1, time: START_TRANSITION_DELAY });
     }));
 
@@ -102,7 +102,7 @@ describe('WaitingRoomManagementService', () => {
         service.gatherPlayers();
         tick();
         const [eventName, sentData, callback] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GATHER_PLAYERS_USERNAME);
+        expect(eventName).toEqual(SocketEvent.GATHER_PLAYERS_USERNAME);
         expect(sentData).toEqual(1);
         if (typeof callback === 'function') {
             callback(['test']);
@@ -129,7 +129,7 @@ describe('WaitingRoomManagementService', () => {
         service['handleNewPlayer']();
         tick();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.NEW_PLAYER);
+        expect(eventName).toEqual(SocketEvent.NEW_PLAYER);
         if (typeof action === 'function') {
             action(['test']);
             expect(service.players).toEqual(['test']);
@@ -140,7 +140,7 @@ describe('WaitingRoomManagementService', () => {
         service['handleRemovedFromGame']();
         tick();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.REMOVED_FROM_GAME);
+        expect(eventName).toEqual(SocketEvent.REMOVED_FROM_GAME);
         if (typeof action === 'function') {
             action();
             expect(routerSpy).toHaveBeenCalledWith(['/home']);
@@ -153,7 +153,7 @@ describe('WaitingRoomManagementService', () => {
         service['handleRemovedPlayer']();
         tick();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.REMOVED_PLAYER);
+        expect(eventName).toEqual(SocketEvent.REMOVED_PLAYER);
         if (typeof action === 'function') {
             action('test');
             expect(removedPlayerSpy).toHaveBeenCalledWith('test');
@@ -167,7 +167,7 @@ describe('WaitingRoomManagementService', () => {
         service['handleTime']();
         tick();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.TIME);
+        expect(eventName).toEqual(SocketEvent.TIME);
         if (typeof action === 'function') {
             action(0);
             expect(service.isTransition).toBeTruthy();
@@ -182,7 +182,7 @@ describe('WaitingRoomManagementService', () => {
         service['handleFinalTransition']();
         tick();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.FINAL_TIME_TRANSITION);
+        expect(eventName).toEqual(SocketEvent.FINAL_TIME_TRANSITION);
         if (typeof action === 'function') {
             action();
             expect(routerSpy).toHaveBeenCalledWith(['/']);

@@ -11,12 +11,10 @@ import { BONUS_MULTIPLIER, QRL_DURATION, TESTING_TRANSITION_TIMER } from '@app/s
     providedIn: 'root',
 })
 export class GameTestService implements GameServiceInterface {
-    timeouts: number[] = [0, 0];
     validated: boolean = false;
     gameOver: boolean = false;
     answers: Map<number, string | null> = new Map();
     locked: boolean = false;
-    quiz: Quiz;
     quizId: string = '';
     isBonus: boolean = false;
     timer: Timer;
@@ -24,6 +22,8 @@ export class GameTestService implements GameServiceInterface {
     question: QuizQuestion | null = null;
     currQuestionIndex: number = 0;
     qrlAnswer: string = '';
+    private timeouts: number[] = [0, 0];
+    private quiz: Quiz;
 
     constructor(
         public timeService: TimeService,

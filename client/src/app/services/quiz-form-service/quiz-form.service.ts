@@ -11,7 +11,6 @@ import {
 } from '@common/constants/qui-form.service.const';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuestionType } from '@common/enums/question-type.enum';
-import { FormQuestion } from '@common/interfaces/quiz-form.interface';
 import { Quiz, QuizChoice, QuizQuestion } from '@common/interfaces/quiz.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format/current-date-format';
 
@@ -19,7 +18,6 @@ import { getCurrentDateService } from 'src/utils/current-date-format/current-dat
     providedIn: 'root',
 })
 export class QuizFormService {
-    questions: FormQuestion[] = [];
     quiz: Quiz;
 
     constructor(
@@ -47,7 +45,7 @@ export class QuizFormService {
 
     initQuestion(question?: QuizQuestion): FormGroup {
         const questionForm = this.formBuilder.group({
-            type: [question?.type === QuestionType.QCM ? 'QCM' : 'QLR', Validators.required],
+            type: [question?.type === QuestionType.QCM ? 'QCM' : 'QRL', Validators.required],
             text: [question?.text ?? '', Validators.required],
             points: [
                 question?.points ?? 0,
@@ -77,7 +75,7 @@ export class QuizFormService {
 
     extractQuestion(questionForm?: AbstractControl) {
         const question: QuizQuestion = {
-            type: questionForm?.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
+            type: questionForm?.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QRL,
             text: questionForm?.get('text')?.value,
             points: questionForm?.get('points')?.value,
             choices: questionForm?.get('type')?.value === 'QCM' ? [] : undefined,
@@ -127,7 +125,7 @@ export class QuizFormService {
 
     private extractQuestionFromForm(questionForm: FormArray): QuizQuestion {
         const question: QuizQuestion = {
-            type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR,
+            type: questionForm.get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QRL,
             text: questionForm.get('text')?.value,
             points: questionForm.get('points')?.value,
             choices: questionForm.get('type')?.value === 'QCM' ? [] : undefined,

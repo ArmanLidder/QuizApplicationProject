@@ -8,7 +8,7 @@ import { GameInterfaceComponent } from '@app/components/game-interface/game-inte
 import { PlayerListComponent } from '@app/components/player-list/player-list.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { GamePageComponent } from './game-page.component';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
@@ -75,7 +75,7 @@ describe('GamePageComponent', () => {
         component.isHost = true;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.HOST_LEFT, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.HOST_LEFT, DIGIT_CONSTANT);
     });
 
     it('should send player abandonment event on component destruction if game is starting', () => {
@@ -84,7 +84,7 @@ describe('GamePageComponent', () => {
         component['gameService'].gameRealService.roomId = DIGIT_CONSTANT;
         spyOn(component['gameService'], 'destroy');
         component.ngOnDestroy();
-        expect(sendSpy).toHaveBeenCalledWith(socketEvent.PLAYER_LEFT, DIGIT_CONSTANT);
+        expect(sendSpy).toHaveBeenCalledWith(SocketEvent.PLAYER_LEFT, DIGIT_CONSTANT);
     });
     it('should send room creation event if it is the host of the game', () => {
         component.ngOnInit();

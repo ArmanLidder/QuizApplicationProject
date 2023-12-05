@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { DELETE_NUMBER, START_TRANSITION_DELAY } from '@common/constants/waiting-room.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Router } from '@angular/router';
+import { GAME_PAGE, HOME_PAGE } from '@common/page-url/page-url';
 
 @Injectable({
     providedIn: 'root',
@@ -29,7 +30,7 @@ export class WaitingRoomManagementService {
 
     async sendRoomCreation(quizId: string | null) {
         return new Promise<number>((resolve) => {
-            this.socketService.send(socketEvent.CREATE_ROOM, quizId, (roomCode: number) => {
+            this.socketService.send(SocketEvent.CREATE_ROOM, quizId, (roomCode: number) => {
                 this.roomId = roomCode;
                 resolve(roomCode);
             });
@@ -37,15 +38,15 @@ export class WaitingRoomManagementService {
     }
 
     sendBanPlayer(username: string) {
-        this.socketService.send(socketEvent.BAN_PLAYER, { roomId: this.roomId, username });
+        this.socketService.send(SocketEvent.BAN_PLAYER, { roomId: this.roomId, username });
     }
 
     sendToggleRoomLock() {
-        this.socketService.send(socketEvent.TOGGLE_ROOM_LOCK, this.roomId);
+        this.socketService.send(SocketEvent.TOGGLE_ROOM_LOCK, this.roomId);
     }
 
     sendStartSignal() {
-        this.socketService.send(socketEvent.START, { roomId: this.roomId, time: START_TRANSITION_DELAY });
+        this.socketService.send(SocketEvent.START, { roomId: this.roomId, time: START_TRANSITION_DELAY });
     }
 
     removePlayer(username: string) {
@@ -54,7 +55,7 @@ export class WaitingRoomManagementService {
     }
 
     gatherPlayers() {
-        this.socketService.send(socketEvent.GATHER_PLAYERS_USERNAME, this.roomId, (players: string[]) => {
+        this.socketService.send(SocketEvent.GATHER_PLAYERS_USERNAME, this.roomId, (players: string[]) => {
             this.players = players;
         });
     }
@@ -68,19 +69,19 @@ export class WaitingRoomManagementService {
     }
 
     private handleNewPlayer() {
-        this.socketService.on(socketEvent.NEW_PLAYER, (players: string[]) => {
+        this.socketService.on(SocketEvent.NEW_PLAYER, (players: string[]) => {
             this.players = players;
         });
     }
 
     private handleRemovedFromGame() {
-        this.socketService.on(socketEvent.REMOVED_FROM_GAME, () => {
-            this.router.navigate(['/home']);
+        this.socketService.on(SocketEvent.REMOVED_FROM_GAME, () => {
+            this.router.navigate([`/${HOME_PAGE}`]);
         });
     }
 
     private handleRemovedPlayer() {
-        this.socketService.on(socketEvent.REMOVED_PLAYER, (username: string) => {
+        this.socketService.on(SocketEvent.REMOVED_PLAYER, (username: string) => {
             if (this.players.includes(username)) {
                 this.removePlayer(username);
             }
@@ -88,19 +89,19 @@ export class WaitingRoomManagementService {
     }
 
     private handleTime() {
-        this.socketService.on(socketEvent.TIME, (timeValue: number) => {
+        this.socketService.on(SocketEvent.TIME, (timeValue: number) => {
             this.isTransition = true;
             this.time = timeValue;
 
             if (this.time === 0) {
-                this.router.navigate(['game', this.roomId]);
+                this.router.navigate([`${GAME_PAGE}`, this.roomId]);
                 this.isGameStarting = true;
             }
         });
     }
 
     private handleFinalTransition() {
-        this.socketService.on(socketEvent.FINAL_TIME_TRANSITION, () => {
+        this.socketService.on(SocketEvent.FINAL_TIME_TRANSITION, () => {
             if (this.isTransition) {
                 this.router.navigate(['/']);
             }

@@ -10,7 +10,7 @@ import { RoomManagingService } from '@app/services/room-managing.service/room-ma
 import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { Game } from '@app/classes/game/game';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { RoomData } from '@app/interface/room-data-interface';
 
@@ -73,7 +73,7 @@ describe('Chat service tests', () => {
             expect(messages).to.deep.equal(mockMessages);
             done();
         };
-        clientSocket.emit(socketEvent.GET_MESSAGES, mockRoomId, clientCallback);
+        clientSocket.emit(SocketEvent.GET_MESSAGES, mockRoomId, clientCallback);
     });
     it('should handle "get messages" event if messages is undefined', (done) => {
         roomManager.getRoomById.returns(undefined);
@@ -81,7 +81,7 @@ describe('Chat service tests', () => {
             expect(messages).to.equal(null);
             done();
         };
-        clientSocket.emit(socketEvent.GET_MESSAGES, mockRoomId, clientCallback);
+        clientSocket.emit(SocketEvent.GET_MESSAGES, mockRoomId, clientCallback);
     });
     it('should handle "get username" event', (done) => {
         roomManager.getUsernameBySocketId.returns(mockUsername);
@@ -90,7 +90,7 @@ describe('Chat service tests', () => {
             expect(username).to.deep.equal(mockUsername);
             done();
         };
-        clientSocket.emit(socketEvent.GET_USERNAME, mockRoomId, clientCallback);
+        clientSocket.emit(SocketEvent.GET_USERNAME, mockRoomId, clientCallback);
     });
     it('should handle "new message" event', (done) => {
         const newMessage: Message = { sender: 'user1', content: 'New message', time: 'time 1' };
@@ -101,11 +101,11 @@ describe('Chat service tests', () => {
             expect(roomManager.addMessage.calledWith(mockRoomId, newMessage)).to.equal(true);
             done();
         }, RESPONSE_DELAY);
-        clientSocket.emit(socketEvent.NEW_MESSAGE, { roomId: mockRoomId, message: newMessage });
+        clientSocket.emit(SocketEvent.NEW_MESSAGE, { roomId: mockRoomId, message: newMessage });
     });
 
     it('should toggle chat permission', (done) => {
-        clientSocket.emit(socketEvent.TOGGLE_CHAT_PERMISSION, { roomId: mockRoomId, username: mockUsername });
+        clientSocket.emit(SocketEvent.TOGGLE_CHAT_PERMISSION, { roomId: mockRoomId, username: mockUsername });
         setTimeout(() => {
             expect(roomManager.getUsernameBySocketId.called);
             done();

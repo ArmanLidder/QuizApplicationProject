@@ -5,7 +5,7 @@ import { QuestionType } from '@common/enums/question-type.enum';
 import { DEFAULT_VOLUME } from '@common/constants/game-real.service.const';
 import { InitialQuestionData, NextQuestionData } from '@common/interfaces/host.interface';
 import { QuizQuestion } from '@common/interfaces/quiz.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { Player } from '@app/services/game-test.service/game-test.service.const';
 
 @Injectable({
@@ -36,7 +36,7 @@ export class GameRealService implements GameServiceInterface {
 
     init() {
         this.configureBaseSockets();
-        this.socketService.send(socketEvent.GET_QUESTION, this.roomId);
+        this.socketService.send(SocketEvent.GET_QUESTION, this.roomId);
     }
 
     destroy() {
@@ -47,7 +47,7 @@ export class GameRealService implements GameServiceInterface {
     sendAnswer() {
         const isMultipleChoiceQuestion: boolean = this.question?.type === QuestionType.QCM;
         const answers = Array.from(this.answers.values());
-        this.socketService.send(socketEvent.SUBMIT_ANSWER, {
+        this.socketService.send(SocketEvent.SUBMIT_ANSWER, {
             roomId: this.roomId,
             answers: isMultipleChoiceQuestion ? answers : this.qrlAnswer.trim(),
             timer: this.timer,
@@ -59,7 +59,7 @@ export class GameRealService implements GameServiceInterface {
     }
 
     configureBaseSockets() {
-        this.socketService.on(socketEvent.GET_INITIAL_QUESTION, (data: InitialQuestionData) => {
+        this.socketService.on(SocketEvent.GET_INITIAL_QUESTION, (data: InitialQuestionData) => {
             this.question = data.question;
             this.username = data.username;
             if (data.numberOfQuestions === 1) {
@@ -67,7 +67,7 @@ export class GameRealService implements GameServiceInterface {
             }
         });
 
-        this.socketService.on(socketEvent.GET_NEXT_QUESTION, (data: NextQuestionData) => {
+        this.socketService.on(SocketEvent.GET_NEXT_QUESTION, (data: NextQuestionData) => {
             this.question = data.question;
             this.questionNumber = data.index;
             this.isLast = data.isLast;
@@ -77,7 +77,7 @@ export class GameRealService implements GameServiceInterface {
     }
 
     sendSelection(index: number, isSelected: boolean) {
-        if (this.socketService.isSocketAlive()) this.socketService.send(socketEvent.UPDATE_SELECTION, { roomId: this.roomId, isSelected, index });
+        if (this.socketService.isSocketAlive()) this.socketService.send(SocketEvent.UPDATE_SELECTION, { roomId: this.roomId, isSelected, index });
     }
 
     private reset() {

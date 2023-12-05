@@ -10,7 +10,7 @@ import { Message } from '@common/interfaces/message.interface';
 import { fillerQuizzes } from '@app/mock-data/data';
 import { Game } from '@app/classes/game/game';
 import { Answers } from '@app/interface/game-interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { RoomData } from '@app/interface/room-data-interface';
@@ -70,7 +70,7 @@ describe('GameManagement service tests', () => {
 
     it('should handle "show result" event', (done) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        clientSocket.emit(socketEvent.SHOW_RESULT, mockRoomId);
+        clientSocket.emit(SocketEvent.SHOW_RESULT, mockRoomId);
         setTimeout(() => {
             expect(roomManager.clearRoomTimer.called);
             done();
@@ -84,7 +84,7 @@ describe('GameManagement service tests', () => {
         roomManager.getUsernamesArray.returns(players);
         roomManager.getRoomById.returns(mockRoom);
         sinon.stub(Game.prototype, 'setup').resolves();
-        clientSocket.emit(socketEvent.START, { roomId: mockRoomId, time: mockTime });
+        clientSocket.emit(SocketEvent.START, { roomId: mockRoomId, time: mockTime });
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernamesArray.called);
@@ -96,7 +96,7 @@ describe('GameManagement service tests', () => {
         gameMock.currentQuizQuestion = gameMock.quiz.questions[0];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         roomManager.getUsernameBySocketId.returns(HOST_USERNAME);
-        clientSocket.emit(socketEvent.GET_QUESTION, mockRoomId);
+        clientSocket.emit(SocketEvent.GET_QUESTION, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernameBySocketId.called);
@@ -108,7 +108,7 @@ describe('GameManagement service tests', () => {
     it('should emit get initial question and set timer for a qrl', (done) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         gameMock.currentQuizQuestion = gameMock.quiz.questions[1];
-        clientSocket.emit(socketEvent.GET_QUESTION, mockRoomId);
+        clientSocket.emit(SocketEvent.GET_QUESTION, mockRoomId);
         setTimeout(() => {
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             expect(mockRoomId).to.equal(1000);
@@ -118,7 +118,7 @@ describe('GameManagement service tests', () => {
 
     it('should handle when Organizer not found', (done) => {
         roomManager.getUsernameBySocketId.returns(undefined);
-        clientSocket.emit(socketEvent.GET_QUESTION, mockRoomId);
+        clientSocket.emit(SocketEvent.GET_QUESTION, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.getUsernameBySocketId.called);
@@ -130,7 +130,7 @@ describe('GameManagement service tests', () => {
         gameMock.players = new Map();
         const mockAnswers = ['one', 'two'];
         const mockTimer = 0;
-        clientSocket.emit(socketEvent.SUBMIT_ANSWER, { roomId: mockRoomId, answers: mockAnswers, timer: mockTimer, username: mockUsername });
+        clientSocket.emit(SocketEvent.SUBMIT_ANSWER, { roomId: mockRoomId, answers: mockAnswers, timer: mockTimer, username: mockUsername });
         setTimeout(() => {
             expect(roomManager.getSocketIdByUsername.called);
             expect(roomManager.getGameByRoomId.called);
@@ -144,7 +144,7 @@ describe('GameManagement service tests', () => {
         const mockAnswers = ['one', 'two'];
         const mockTimer = 0;
         gameMock.currentQuizQuestion = gameMock.quiz.questions[1];
-        clientSocket.emit(socketEvent.SUBMIT_ANSWER, { roomId: mockRoomId, answers: mockAnswers, timer: mockTimer, username: mockUsername });
+        clientSocket.emit(SocketEvent.SUBMIT_ANSWER, { roomId: mockRoomId, answers: mockAnswers, timer: mockTimer, username: mockUsername });
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.notCalled);
             done();
@@ -155,7 +155,7 @@ describe('GameManagement service tests', () => {
         gameMock.players = new Map();
         const mockAnswers = ['one', 'two'];
         const mockTimer = 123; // Set to a value other than 0
-        clientSocket.emit(socketEvent.SUBMIT_ANSWER, { mockRoomId, mockAnswers, mockTimer, mockUsername });
+        clientSocket.emit(SocketEvent.SUBMIT_ANSWER, { mockRoomId, mockAnswers, mockTimer, mockUsername });
         setTimeout(() => {
             expect(roomManager.getSocketIdByUsername.called);
             expect(roomManager.getGameByRoomId.called);
@@ -166,7 +166,7 @@ describe('GameManagement service tests', () => {
     it('should handle submit answer when length not equal', (done) => {
         const mockAnswers = ['one', 'two'];
         const mockTimer = 123;
-        clientSocket.emit(socketEvent.SUBMIT_ANSWER, { mockRoomId, mockAnswers, mockTimer, mockUsername });
+        clientSocket.emit(SocketEvent.SUBMIT_ANSWER, { mockRoomId, mockAnswers, mockTimer, mockUsername });
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             expect(roomManager.clearRoomTimer.called);
@@ -174,7 +174,7 @@ describe('GameManagement service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should start transition by clearing room  and setting timer', (done) => {
-        clientSocket.emit(socketEvent.START_TRANSITION, mockRoomId);
+        clientSocket.emit(SocketEvent.START_TRANSITION, mockRoomId);
         setTimeout(() => {
             expect(roomManager.clearRoomTimer.called);
             done();
@@ -184,7 +184,7 @@ describe('GameManagement service tests', () => {
         const callback = () => {
             return;
         };
-        clientSocket.emit(socketEvent.GET_SCORE, { roomId: mockRoomId, username: 'test' }, callback);
+        clientSocket.emit(SocketEvent.GET_SCORE, { roomId: mockRoomId, username: 'test' }, callback);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             done();
@@ -194,7 +194,7 @@ describe('GameManagement service tests', () => {
     it('should handle next question properly for a qcm', (done) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         gameMock.currentQuizQuestion.type = QuestionType.QCM;
-        clientSocket.emit(socketEvent.NEXT_QUESTION, mockRoomId);
+        clientSocket.emit(SocketEvent.NEXT_QUESTION, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.called);
             done();
@@ -203,8 +203,8 @@ describe('GameManagement service tests', () => {
 
     it('should handle next question properly for a qrl', (done) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        gameMock.currentQuizQuestion.type = QuestionType.QLR;
-        clientSocket.emit(socketEvent.NEXT_QUESTION, mockRoomId);
+        gameMock.currentQuizQuestion.type = QuestionType.QRL;
+        clientSocket.emit(SocketEvent.NEXT_QUESTION, mockRoomId);
         setTimeout(() => {
             done();
         }, RESPONSE_DELAY);
@@ -215,7 +215,7 @@ describe('GameManagement service tests', () => {
         gameMock.choicesStats = new Map();
         const mockIsSelected = true;
         const mockIndex = 1;
-        clientSocket.emit(socketEvent.UPDATE_SELECTION, { mockRoomId, mockIsSelected, mockIndex });
+        clientSocket.emit(SocketEvent.UPDATE_SELECTION, { mockRoomId, mockIsSelected, mockIndex });
         setTimeout(() => {
             expect(roomManager.getSocketIdByUsername.calledWith(mockRoomId, HOST_USERNAME));
             done();
@@ -261,7 +261,7 @@ describe('GameManagement service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should toggle chat permission', (done) => {
-        clientSocket.emit(socketEvent.GAME_STATUS_DISTRIBUTION, { roomId: mockRoomId, stats: 'test' });
+        clientSocket.emit(SocketEvent.GAME_STATUS_DISTRIBUTION, { roomId: mockRoomId, stats: 'test' });
         setTimeout(() => {
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             expect(mockRoomId).to.equal(1000);
@@ -279,14 +279,14 @@ describe('GameManagement service tests', () => {
         }, RESPONSE_DELAY);
     });
     it('should pause timer', (done) => {
-        clientSocket.emit(socketEvent.PAUSE_TIMER, mockRoomId);
+        clientSocket.emit(SocketEvent.PAUSE_TIMER, mockRoomId);
         setTimeout(() => {
             expect(roomManager.getGameByRoomId.calledWith(mockRoomId));
             done();
         }, RESPONSE_DELAY);
     });
     it('should handle panic mode', (done) => {
-        clientSocket.emit(socketEvent.PANIC_MODE, mockRoomId);
+        clientSocket.emit(SocketEvent.PANIC_MODE, mockRoomId);
         setTimeout(() => {
             expect(roomManager.clearRoomTimer.called);
             done();

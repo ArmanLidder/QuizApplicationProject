@@ -42,8 +42,8 @@ export class StatisticZoneComponent implements OnInit {
     }
 
     private setUpData() {
-        this.responseValue = this.currentStat[QuestionStats.ResponsesValuesIndex];
-        this.responseNumber = this.currentStat[QuestionStats.ResponsesNumberIndex];
-        this.question = this.currentStat[QuestionStats.QuizQuestionIndex];
+        this.responseValue = this.currentStat[QuestionStats.RESPONSES_VALUES_INDEX];
+        this.responseNumber = this.currentStat[QuestionStats.RESPONSES_NUMBER_INDEX];
+        this.question = this.currentStat[QuestionStats.QUIZ_QUESTION_INDEX];
     }
 }

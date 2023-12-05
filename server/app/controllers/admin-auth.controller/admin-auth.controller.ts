@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
 import { StatusCodes } from 'http-status-codes';
 import { AdminAuthService } from '@app/services/admin-auth.service/admin-auth.service';
+import { AUTH_FAILED, AUTH_SUCCES, SERVER_ERROR } from '@common/browser-message/http-exchange-message/http-exchange-message';
 
 @Service()
 export class AdminAuthController {
@@ -18,12 +19,12 @@ export class AdminAuthController {
             try {
                 const result: boolean = this.adminAuthService.authentificatePassword(req.body.password);
                 if (result) {
-                    res.status(StatusCodes.OK).json({ message: 'Authentication successful' });
+                    res.status(StatusCodes.OK).json({ message: AUTH_SUCCES });
                 } else {
-                    res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid password. Please try again!' });
+                    res.status(StatusCodes.UNAUTHORIZED).json({ message: AUTH_FAILED });
                 }
             } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: SERVER_ERROR });
             }
         });
     }

@@ -6,7 +6,7 @@ const formBuilder = new FormBuilder();
 
 export const createFormQuestionFormGroup = (question: FormQuestion): FormGroup => {
     return formBuilder.group({
-        type: [question.type === QuestionType.QCM ? 'QCM' : 'QLR'],
+        type: [question.type === QuestionType.QCM ? 'QCM' : 'QRL'],
         text: [question.text, Validators.required],
         points: [question.points],
         choices: formBuilder.array(

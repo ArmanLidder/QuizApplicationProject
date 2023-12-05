@@ -2,8 +2,8 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { Player } from '@common/constants/player-list.component.const';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { playerStatus } from '@common/player-status/player-status';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { PlayerStatus } from '@common/player-status/player-status';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { InteractiveListSocketService } from './interactive-list-socket.service';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -47,7 +47,7 @@ describe('InteractiveListSocketService', () => {
         service.toggleChatPermission('test', 1);
         const [eventName, data] = sendSpy.calls.mostRecent().args;
         expect(service.players[0][4]).toBeFalsy();
-        expect(eventName).toEqual(socketEvent.TOGGLE_CHAT_PERMISSION);
+        expect(eventName).toEqual(SocketEvent.TOGGLE_CHAT_PERMISSION);
         expect(data).toEqual({ roomId: 1, username: 'test' });
         expect(findIndexSpy).toHaveBeenCalled();
     });
@@ -82,7 +82,7 @@ describe('InteractiveListSocketService', () => {
             leftPlayer,
         );
         const [eventName, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GATHER_PLAYERS_USERNAME);
+        expect(eventName).toEqual(SocketEvent.GATHER_PLAYERS_USERNAME);
         expect(data).toEqual(1);
         if (typeof callback === 'function') {
             callback(service.players);
@@ -96,7 +96,7 @@ describe('InteractiveListSocketService', () => {
         const addPlayerSpy = spyOn(service, 'addPlayer' as any).and.callThrough();
         service['getPlayerScoreFromServer']({ username: 'test', resetPlayerStatus: false }, 1, leftPlayer);
         const [eventName, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GET_SCORE);
+        expect(eventName).toEqual(SocketEvent.GET_SCORE);
         expect(data).toEqual({ roomId: 1, username: 'test' });
         if (typeof callback === 'function') {
             callback(0);
@@ -120,7 +120,7 @@ describe('InteractiveListSocketService', () => {
         const changePlayerStatusSpy = spyOn(service, 'changePlayerStatus' as any).and.callThrough();
         service['handleUpdateInteraction']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.UPDATE_INTERACTION);
+        expect(eventName).toEqual(SocketEvent.UPDATE_INTERACTION);
         if (typeof action === 'function') {
             action('test');
             expect(changePlayerStatusSpy).toHaveBeenCalled();
@@ -131,7 +131,7 @@ describe('InteractiveListSocketService', () => {
         const changePlayerStatusSpy = spyOn(service, 'changePlayerStatus' as any).and.callThrough();
         service['handleSubmitAnswer']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.SUBMIT_ANSWER);
+        expect(eventName).toEqual(SocketEvent.SUBMIT_ANSWER);
         if (typeof action === 'function') {
             action('test');
             expect(changePlayerStatusSpy).toHaveBeenCalled();
@@ -151,10 +151,10 @@ describe('InteractiveListSocketService', () => {
         service.isFinal = false;
         const noInteraction = service['initPlayerStatus']('test', true, leftPlayer);
         expect(getActualStatusSpy).toHaveBeenCalled();
-        expect(leftStatus).toEqual(playerStatus.LEFT);
+        expect(leftStatus).toEqual(PlayerStatus.LEFT);
         expect(actualStatus).toEqual('test');
-        expect(endGame).toEqual(playerStatus.END_GAME);
-        expect(noInteraction).toEqual(playerStatus.NO_INTERACTION);
+        expect(endGame).toEqual(PlayerStatus.END_GAME);
+        expect(noInteraction).toEqual(PlayerStatus.NO_INTERACTION);
     });
 
     it('should get actual status correctly', () => {

@@ -3,7 +3,7 @@ import { QCM_PANIC_MODE_ENABLED, QLR_PANIC_MODE_ENABLED } from '@common/constant
 import { GameRealService } from '@app/services/game-real.service/game-real.service';
 import { GameTestService } from '@app/services/game-test.service/game-test.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
 
 @Injectable({
@@ -127,7 +127,7 @@ export class GameService {
     }
 
     private configureBaseSockets() {
-        this.socketService.on(socketEvent.TIME, (timeValue: number) => {
+        this.socketService.on(SocketEvent.TIME, (timeValue: number) => {
             this.handleTimeEvent(timeValue);
         });
     }

@@ -26,7 +26,6 @@ export class TimeService {
         for (let i = 0; i < this.timers.length; i++) {
             this.stopTimer(i);
         }
-
         this.timers = [];
     }
 
