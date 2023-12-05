@@ -1,6 +1,6 @@
 import { HOST_USERNAME } from '../../names/host-username';
 
-export namespace errorDictionary {
+export namespace ErrorDictionary {
     export const ISSUES = 'les problèmes suivants';
     export const ISSUE = 'le problème suivant';
     export const FILE_CONTAINS = 'Le fichier que vous tenter d\'importer contient '
@@ -17,4 +17,5 @@ export namespace errorDictionary {
     export const NAME_EMPTY = 'Le nom ne doit pas être vide!';
     export const BAN_MESSAGE = 'Vous avez été banni du lobby et vous ne pouvez plus rentrez.';
     export const NAME_ALREADY_USED = 'Le nom choisi est déjà utiliser. Veuillez choisir un autre.';
+    export const ERROR_TITLE_IMPORT = "Erreur lors de l'importation";
 }

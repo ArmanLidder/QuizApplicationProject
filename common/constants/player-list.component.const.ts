@@ -2,9 +2,9 @@ export const STATUS_INDEX = 3;
 export const CAN_TALK = 4;
 
 export enum SortType {
-    SortByName = 0,
-    SortByScore = 1,
-    SortByStatus = 2,
+    SORT_BY_NAME = 0,
+    SORT_BY_SCORE = 1,
+    SORT_BY_STATUS = 2,
 }
 
 export const ORDER_INITIAL_MULTIPLIER = 1;

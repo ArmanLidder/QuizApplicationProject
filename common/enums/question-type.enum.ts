@@ -1,4 +1,4 @@
 export enum QuestionType {
     QCM,
-    QLR,
+    QRL,
 }

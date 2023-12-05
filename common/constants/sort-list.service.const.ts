@@ -1,4 +1,4 @@
-export type PlayerStatus = [string, number, number, string, boolean];
+export type PlayerData = [string, number, number, string, boolean];
 export const STATUS = 3;
 export const ORDER_FIRST = 3;
 export const ORDER_SECOND = 2;

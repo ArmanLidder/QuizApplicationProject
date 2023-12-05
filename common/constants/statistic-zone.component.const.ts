@@ -5,9 +5,9 @@ import { ResponsesNumber, ResponsesValues } from '../constants/statistic-histogr
 export type QuestionStatistics = [ResponsesValues, ResponsesNumber, QuizQuestion | undefined];
 
 export enum QuestionStats {
-    ResponsesValuesIndex,
-    ResponsesNumberIndex,
-    QuizQuestionIndex,
+    RESPONSES_VALUES_INDEX,
+    RESPONSES_NUMBER_INDEX,
+    QUIZ_QUESTION_INDEX,
 }
 
 const responses1: Map<string, boolean> = new Map<string, boolean>([
