@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { POPUP_TIMEOUT } from '@common/constants/question-list.component.const';
+import { POPUP_TIMEOUT } from '@common/constants/quiz-creation.component.const';
 import { ChoiceService } from '@app/services/choice-service/choice.service';
 import { QuestionService } from '@app/services/question-service/question.service';
-// import { QuestionType } from '@common/enums/question-type.enum';
 import { ItemMovingDirection } from 'src/enums/item-moving-direction';
 import { QuestionChoicePosition } from '@app/interfaces/question-choice-position/question-choice-position';
 
@@ -15,10 +14,8 @@ import { QuestionChoicePosition } from '@app/interfaces/question-choice-position
 export class QuestionListComponent {
     @Input() questionsArray: FormArray | undefined;
     @Input() parentGroup: FormGroup;
-
     isPopupVisible: boolean = false;
     questionErrors: string[] = [];
-    // protected readonly questionType = QuestionType;
     protected readonly itemMovingDirection = ItemMovingDirection;
 
     constructor(
