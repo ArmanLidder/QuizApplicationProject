@@ -31,7 +31,9 @@ export class PlayerListComponent {
     constructor(
         public interactiveListService: InteractiveListSocketService,
         private sortListService: SortListService,
-    ) {}
+    ) {
+        if (!this.isHost) this.sortListService.sortByScore();
+    }
 
     changeOrder() {
         this.order *= ORDER_MULTIPLIER;
