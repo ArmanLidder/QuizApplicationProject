@@ -3,7 +3,8 @@ import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME, MAX_RESPONSE_CHARACTERS } from
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { MAX_PERCENTAGE } from '@common/constants/game-interface.component.const';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
+import { ENTER_KEY } from '@common/shortcuts/shortcuts';
 
 @Component({
     selector: 'app-qrl-response-area',
@@ -22,7 +23,7 @@ export class QrlResponseAreaComponent implements OnDestroy {
 
     @HostListener('document:keydown', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
-        if (event.key === 'Enter' && !this.gameService.isInputFocused) this.validate();
+        if (event.key === ENTER_KEY && !this.gameService.isInputFocused) this.validate();
     }
 
     ngOnDestroy() {
@@ -58,20 +59,20 @@ export class QrlResponseAreaComponent implements OnDestroy {
         this.inactiveTimeout = window.setTimeout(() => {
             this.gameService.isActive = false;
             if (this.socketClientService.isSocketAlive())
-                this.socketClientService.send(socketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: false });
+                this.socketClientService.send(SocketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: false });
         }, INACTIVITY_TIME);
     }
 
     private sendActiveNotice() {
         this.gameService.isActive = true;
         if (this.socketClientService.isSocketAlive())
-            this.socketClientService.send(socketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: true });
+            this.socketClientService.send(SocketEvent.SEND_ACTIVITY_STATUS, { roomId: this.gameService.gameRealService.roomId, isActive: true });
     }
 
     private sendInteractionNotice() {
         this.gameService.hasInteracted = true;
         if (this.socketClientService.isSocketAlive())
-            this.socketClientService.send(socketEvent.NEW_RESPONSE_INTERACTION, this.gameService.gameRealService.roomId);
+            this.socketClientService.send(SocketEvent.NEW_RESPONSE_INTERACTION, this.gameService.gameRealService.roomId);
     }
 
     private setupInputDebounce(): void {

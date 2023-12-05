@@ -9,7 +9,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { DEBOUNCE_INACTIVE_TIME, INACTIVITY_TIME } from '@common/constants/qrl-response-area.component.const';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 describe('QrlResponseAreaComponent', () => {
@@ -63,11 +63,11 @@ describe('QrlResponseAreaComponent', () => {
         component.handleActiveUser();
         expect(component.gameService.isActive).toBeTruthy();
         expect(component.gameService.hasInteracted).toBeTruthy();
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.SEND_ACTIVITY_STATUS, {
+        expect(socketService.send).toHaveBeenCalledWith(SocketEvent.SEND_ACTIVITY_STATUS, {
             roomId: component.gameService.gameRealService.roomId,
             isActive: true,
         });
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.NEW_RESPONSE_INTERACTION, component.gameService.gameRealService.roomId);
+        expect(socketService.send).toHaveBeenCalledWith(SocketEvent.NEW_RESPONSE_INTERACTION, component.gameService.gameRealService.roomId);
     });
 
     it('should validate and send answer', () => {
@@ -84,7 +84,7 @@ describe('QrlResponseAreaComponent', () => {
         component['onInputStopped']();
         tick(INACTIVITY_TIME);
         expect(socketService.isSocketAlive).toHaveBeenCalled();
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.SEND_ACTIVITY_STATUS, {
+        expect(socketService.send).toHaveBeenCalledWith(SocketEvent.SEND_ACTIVITY_STATUS, {
             roomId: component.gameService.gameRealService.roomId,
             isActive: false,
         });
