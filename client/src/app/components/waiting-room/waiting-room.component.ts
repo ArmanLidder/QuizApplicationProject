@@ -1,9 +1,11 @@
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { WaitingRoomManagementService } from '@app/services/waiting-room-management.service/waiting-room-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
+import { HOST_USERNAME } from '@common/names/host-username';
+import { LOCKED, UNLOCKED } from '@common/constants/waiting-room.component.const';
 
 @Component({
     selector: 'app-waiting-room',
@@ -33,7 +35,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (!this.waitingRoomManagementService.isGameStarting) {
-            const messageType = this.isHost ? socketEvent.HOST_LEFT : socketEvent.PLAYER_LEFT;
+            const messageType = this.isHost ? SocketEvent.HOST_LEFT : SocketEvent.PLAYER_LEFT;
             this.socketService.send(messageType, this.roomId);
             this.gameService.destroy();
         }
@@ -57,7 +59,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     setLockActionMessage() {
-        return this.waitingRoomManagementService.isRoomLocked ? 'verrouillée' : 'ouverte';
+        return this.waitingRoomManagementService.isRoomLocked ? LOCKED : UNLOCKED;
     }
 
     startGame() {
@@ -67,7 +69,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     private async setUpHost() {
         const quizId = this.route.snapshot.paramMap.get('id');
         this.roomId = await this.waitingRoomManagementService.sendRoomCreation(quizId);
-        this.gameService.gameRealService.username = 'Organisateur';
+        this.gameService.gameRealService.username = HOST_USERNAME;
     }
 
     private setUpPlayer() {

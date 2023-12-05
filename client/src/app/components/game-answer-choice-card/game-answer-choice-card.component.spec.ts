@@ -61,7 +61,7 @@ describe('GameAnswerChoiceCardComponent', () => {
         const showSelectionFeedbackSpy = spyOn<any>(component, 'showSelectionFeedback');
         const resetSpy = spyOn<any>(component, 'reset');
         const emitSpy = spyOn(component.selectEvent, 'emit');
-        component.isSelected = false;
+        component['isSelected'] = false;
         component.index = 1;
         component.toggleSelect();
         tick(DEBOUNCE_TIMER);
@@ -74,7 +74,7 @@ describe('GameAnswerChoiceCardComponent', () => {
         const showSelectionFeedbackSpy = spyOn<any>(component, 'showSelectionFeedback');
         const resetSpy = spyOn<any>(component, 'reset');
         const emitSpy = spyOn(component.selectEvent, 'emit');
-        component.isSelected = true;
+        component['isSelected'] = true;
         component.index = 1;
         component.toggleSelect();
         tick(DEBOUNCE_TIMER);
@@ -85,10 +85,10 @@ describe('GameAnswerChoiceCardComponent', () => {
 
     it('should change isSelected value to false and show the appropriate feedback and emit the right number', fakeAsync(() => {
         const toggleSpy = spyOn<any>(component, 'toggleSelect');
-        component.isSelected = false;
+        component['isSelected'] = false;
         component.index = 1;
         component.toggleSelect();
-        component.isSelected = true;
+        component['isSelected'] = true;
         tick(DEBOUNCE_TIMER);
         expect(toggleSpy).toHaveBeenCalled();
     }));

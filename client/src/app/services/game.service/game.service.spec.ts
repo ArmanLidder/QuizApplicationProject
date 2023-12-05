@@ -7,7 +7,7 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { TimeService } from '@app/services/time.service/time.service';
 import { QuestionType } from '@common/enums/question-type.enum';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 describe('GameService', () => {
@@ -224,7 +224,7 @@ describe('GameService', () => {
         const handleTimeSpy = spyOn<any>(service, 'handleTimeEvent');
         service['configureBaseSockets']();
         const [[firstEvent, firstAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.TIME);
+        expect(firstEvent).toEqual(SocketEvent.TIME);
 
         if (typeof firstAction === 'function') {
             firstAction(1);

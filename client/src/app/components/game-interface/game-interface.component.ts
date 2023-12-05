@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { GameInterfaceManagementService } from '@app/services/game-interface-management.service/game-interface-management.service';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { QUIZ_TESTING_PAGE } from '@common/page-url/page-url';
 
 @Component({
     selector: 'app-game-interface',
@@ -32,7 +33,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.gameInterfaceManagementService.gameService.username !== HOST_USERNAME) {
-            this.gameInterfaceManagementService.gameService.isTestMode = this.route.snapshot.url[0].path === 'quiz-testing-page';
+            this.gameInterfaceManagementService.gameService.isTestMode = this.route.snapshot.url[0].path === QUIZ_TESTING_PAGE;
             const pathId = this.route.snapshot.paramMap.get('id') as string;
             this.gameInterfaceManagementService.setup(pathId);
         }

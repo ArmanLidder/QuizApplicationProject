@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PlayerStatus } from '@common/constants/sort-list.service.const';
-import { playerStatus } from '@common/player-status/player-status';
+import { PlayerData } from '@common/constants/sort-list.service.const';
+import { PlayerStatus } from '@common/player-status/player-status';
 import { SortListService } from './sort-list.service';
 const SCORE_HIGH = 20;
 const SCORE_LOW = 10;
@@ -13,22 +13,22 @@ const LEN = 4;
 
 describe('SortListService', () => {
     let service: SortListService;
-    let mockPlayers: PlayerStatus[];
+    let mockPlayers: PlayerData[];
     let name: string;
     let score: number;
     let status: string;
-    const findByName = (player: PlayerStatus) => player[0] === name;
-    const findByScore = (player: PlayerStatus) => player[1] === score;
-    const findByStatus = (player: PlayerStatus) => player[3] === status;
+    const findByName = (player: PlayerData) => player[0] === name;
+    const findByScore = (player: PlayerData) => player[1] === score;
+    const findByStatus = (player: PlayerData) => player[3] === status;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SortListService);
         mockPlayers = [
-            ['Bob', SCORE_HIGH, 2, playerStatus.INTERACTION, true],
-            ['Karim', SCORE_MIDDLE, 1, playerStatus.VALIDATION, true],
-            ['Alice', SCORE_LOW, 1, playerStatus.NO_INTERACTION, true],
-            ['Mahmoud', SCORE_MIDDLE, 0, playerStatus.VALIDATION, true],
+            ['Bob', SCORE_HIGH, 2, PlayerStatus.INTERACTION, true],
+            ['Karim', SCORE_MIDDLE, 1, PlayerStatus.VALIDATION, true],
+            ['Alice', SCORE_LOW, 1, PlayerStatus.NO_INTERACTION, true],
+            ['Mahmoud', SCORE_MIDDLE, 0, PlayerStatus.VALIDATION, true],
         ];
     });
     const verifySortByName = () => {
@@ -75,11 +75,11 @@ describe('SortListService', () => {
     it('should sort players by status', () => {
         service.sortByStatus();
         mockPlayers.sort(service.sortFunction);
-        status = playerStatus.NO_INTERACTION;
+        status = PlayerStatus.NO_INTERACTION;
         expect(mockPlayers.findIndex(findByStatus)).toEqual(0);
-        status = playerStatus.INTERACTION;
+        status = PlayerStatus.INTERACTION;
         expect(mockPlayers.findIndex(findByStatus)).toEqual(1);
-        status = playerStatus.VALIDATION;
+        status = PlayerStatus.VALIDATION;
         expect(mockPlayers.findIndex(findByStatus)).toEqual(2);
         name = 'Mahmoud';
         expect(mockPlayers.findIndex(findByName)).toEqual(3);

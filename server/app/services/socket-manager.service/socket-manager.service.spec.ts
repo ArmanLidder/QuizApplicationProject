@@ -7,7 +7,7 @@ import { Container } from 'typedi';
 import { SocketManager } from '@app/services/socket-manager.service/socket-manager.service';
 import { RoomManagingService } from '@app/services/room-managing.service/room-managing.service';
 
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { GameCreationService } from '@app/services/game-creation.service/game-creation.service';
 import { GameManagementService } from '@app/services/game-management.service/game-management.service';
 import { ChatService } from '@app/services/chat.service/chat.service';
@@ -47,7 +47,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle socket connection event', (done) => {
-        clientSocket.emit(socketEvent.CONNECTION);
+        clientSocket.emit(SocketEvent.CONNECTION);
         setTimeout(() => {
             expect(gameCreationService.configureGameCreationSockets.called);
             expect(gameManagingService.configureGameManagingSockets.called);

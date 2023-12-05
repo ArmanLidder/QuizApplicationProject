@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
 import { Router } from '@angular/router';
+import { QUIZ_CREATION } from '@common/page-url/page-url';
 
 @Component({
     selector: 'app-game-item',
@@ -24,7 +25,7 @@ export class GameItemComponent {
     }
 
     updateGame(): void {
-        this.router.navigate(['quiz-creation', `${this.quiz.id}`]);
+        this.router.navigate([QUIZ_CREATION, `${this.quiz.id}`]);
     }
 
     formatQuiz(): object {

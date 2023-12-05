@@ -1,2 +1,5 @@
-// La fonction utilisant ce nombre est censé l'avoir comme paramètre par défaut, mais le linter demande de l'ajouter.
 export const DEFAULT_RADIX_VALUE = 10;
+export const COLUMN_NAME = 'name';
+export const COLUMN_DATE = 'date';
+export const ARROW_UP = '▲';
+export const ARROW_DOWN = '▼';

@@ -209,18 +209,18 @@ describe('QuestionListComponent', () => {
 
     it('should show a popup if condition is met', () => {
         component.showPopupIfConditionMet(true);
-        expect(component.isPopupVisible).toBeTrue();
+        expect(component.isPopUpVisible).toBeTrue();
     });
 
     it('should hide a popup after timeout if condition is met', fakeAsync(() => {
         component.showPopupIfConditionMet(true);
         tick(POPUP_DELAY);
-        expect(component.isPopupVisible).toBeFalse();
+        expect(component.isPopUpVisible).toBeFalse();
     }));
 
     it('should not show a popup if condition is not met', () => {
         component.showPopupIfConditionMet(false);
-        expect(component.isPopupVisible).toBeFalse();
+        expect(component.isPopUpVisible).toBeFalse();
     });
 
     it('shouldn t add a question-list when the validator is not valid', () => {
@@ -229,6 +229,6 @@ describe('QuestionListComponent', () => {
         expect(questionServiceMock.addQuestion).toHaveBeenCalledOnceWith(1, component.questionsArray);
         component.questionErrors?.push('Question 1 : les points doivent être entre 10 et 60 et être divisible par 10');
         component.showPopupIfConditionMet(component.questionErrors.length !== 0);
-        expect(component.isPopupVisible).toBeTrue();
+        expect(component.isPopUpVisible).toBeTrue();
     });
 });

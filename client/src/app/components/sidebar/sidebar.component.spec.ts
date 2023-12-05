@@ -6,7 +6,7 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { Message } from '@common/interfaces/message.interface';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { getCurrentDateService } from 'src/utils/current-date-format/current-date-format';
 import SpyObj = jasmine.SpyObj;
 
@@ -118,7 +118,7 @@ describe('SidebarComponent', () => {
             content: newValidMessageContent,
             time: getCurrentDateService(),
         };
-        expect(socketService.send).toHaveBeenCalledWith(socketEvent.NEW_MESSAGE, {
+        expect(socketService.send).toHaveBeenCalledWith(SocketEvent.NEW_MESSAGE, {
             roomId: Number(component.roomId),
             message: expectedMessage,
         });
@@ -153,7 +153,7 @@ describe('SidebarComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component['getUsername']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.GET_USERNAME);
+        expect(event).toEqual(SocketEvent.GET_USERNAME);
         expect(roomId).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback(username);
@@ -169,7 +169,7 @@ describe('SidebarComponent', () => {
         const sendSpy = spyOn(socketService, 'send').and.callThrough();
         component['getRoomMessages']();
         const [event, roomId, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.GET_MESSAGES);
+        expect(event).toEqual(SocketEvent.GET_MESSAGES);
         expect(roomId).toEqual(Number(component.roomId));
         if (typeof callback === 'function') {
             callback(roomMessages);
@@ -188,8 +188,8 @@ describe('SidebarComponent', () => {
         component['messages'] = [{ sender: 'user 1', content: 'message content 1', time: 'time 1' }];
         component['configureBaseSocketFeatures']();
         const [[firstEvent, firstAction], [secondEvent, secondAction]] = onSpy.calls.allArgs();
-        expect(firstEvent).toEqual(socketEvent.RECEIVED_MESSAGE);
-        expect(secondEvent).toEqual(socketEvent.TOGGLE_CHAT_PERMISSION);
+        expect(firstEvent).toEqual(SocketEvent.RECEIVED_MESSAGE);
+        expect(secondEvent).toEqual(SocketEvent.TOGGLE_CHAT_PERMISSION);
 
         if (typeof firstAction === 'function') {
             firstAction(newMessage);

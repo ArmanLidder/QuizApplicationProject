@@ -1,4 +1,4 @@
-export namespace socketEvent {
+export namespace SocketEvent {
     export const END_QUESTION = 'endQuestion';
     export const GET_SCORE = 'getScore';
     export const TIME_TRANSITION = 'timeTransition';
@@ -31,7 +31,6 @@ export namespace socketEvent {
     export const TOGGLE_ROOM_LOCK = 'toggleRoomRock';
     export const START = 'start';
     export const CREATE_ROOM = 'createRoom';
-    export const STOP_TIMER = 'stopTimer';
     export const CONNECTION = 'connection';
     export const NEW_MESSAGE = 'newMessage'
     export const TOGGLE_CHAT_PERMISSION = 'toggleChatPermission';

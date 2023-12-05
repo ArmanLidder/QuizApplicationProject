@@ -74,7 +74,7 @@ describe('QuizFormService', () => {
         };
 
         const question3: FormQuestion = {
-            type: QuestionType.QLR,
+            type: QuestionType.QRL,
             text: 'Question 3',
             points: 15,
             choices: [],
@@ -201,9 +201,9 @@ describe('QuizFormService', () => {
     it('should create a FormGroup with default values if no question is provided', () => {
         const questionForm = service.initQuestion();
         expect(questionForm.value).toEqual({
-            type: 'QLR', // Default type
+            type: 'QRL',
             text: '',
-            points: 0, // Default points
+            points: 0,
             choices: [],
             beingModified: true,
         });
@@ -249,7 +249,7 @@ describe('QuizFormService', () => {
         });
         const extractedQuestion = service.extractQuestion(questionForm);
         expect(extractedQuestion).toEqual({
-            type: QuestionType.QLR,
+            type: QuestionType.QRL,
             text: '',
             points: 0,
             choices: undefined,
@@ -268,7 +268,7 @@ describe('QuizFormService', () => {
         expect(extractedQuiz.questions.length).toEqual(questionsArray.length);
 
         const firstExtractedQuestion: QuizQuestion = extractedQuiz.questions[0];
-        expect(firstExtractedQuestion.type).toEqual(questionsArray.at(0).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
+        expect(firstExtractedQuestion.type).toEqual(questionsArray.at(0).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QRL);
         expect(firstExtractedQuestion.text).toEqual(questionsArray.at(0).get('text')?.value);
         expect(firstExtractedQuestion.points).toEqual(questionsArray.at(0).get('points')?.value);
         const firstChoiceFirstChoice: QuizChoice[] = firstExtractedQuestion.choices as QuizChoice[];
@@ -278,7 +278,7 @@ describe('QuizFormService', () => {
         expect(firstChoiceFirstChoice[1].isCorrect).toEqual(questionsArray.at(0).get('choices')?.value[1].isCorrect === 'true');
 
         const secondExtractedQuestion: QuizQuestion = extractedQuiz.questions[1];
-        expect(secondExtractedQuestion.type).toEqual(questionsArray.at(1).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QLR);
+        expect(secondExtractedQuestion.type).toEqual(questionsArray.at(1).get('type')?.value === 'QCM' ? QuestionType.QCM : QuestionType.QRL);
         expect(secondExtractedQuestion.text).toEqual(questionsArray.at(1).get('text')?.value);
         expect(secondExtractedQuestion.points).toEqual(questionsArray.at(1).get('points')?.value);
     });

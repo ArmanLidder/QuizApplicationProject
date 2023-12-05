@@ -64,7 +64,7 @@ describe('Game', () => {
                 ],
             },
             {
-                type: QuestionType.QLR,
+                type: QuestionType.QRL,
                 text: 'What do you find most intriguing about the process of photosynthesis?',
                 points: 30,
             },

@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { HOST_USERNAME } from '@common/names/host-username';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 
@@ -30,7 +30,7 @@ export class GamePageComponent implements OnDestroy, OnInit {
     }
 
     ngOnDestroy() {
-        const messageType = this.isHost ? socketEvent.HOST_LEFT : socketEvent.PLAYER_LEFT;
+        const messageType = this.isHost ? SocketEvent.HOST_LEFT : SocketEvent.PLAYER_LEFT;
         if (this.socketService.isSocketAlive()) {
             this.socketService.send(messageType, this.gameService.gameRealService.roomId);
         }

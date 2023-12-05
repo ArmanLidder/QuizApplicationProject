@@ -1,9 +1,9 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SocketClientServiceTestHelper } from '@app/classes/socket-client-service-test-helper/socket-client-service-test-helper';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
 import { HOST_USERNAME } from '@common/names/host-username';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { RoomValidationService } from './room-validation.service';
 
 describe('RoomValidationService', () => {
@@ -44,7 +44,7 @@ describe('RoomValidationService', () => {
         const sendRoomIdSpy = spyOn(service, 'sendRoomId' as any).and.resolveTo();
         const error = await service.verifyRoomId();
         expect(sendRoomIdSpy).not.toHaveBeenCalled();
-        expect(error).toEqual(errorDictionary.VALIDATION_CODE_ERROR);
+        expect(error).toEqual(ErrorDictionary.VALIDATION_CODE_ERROR);
     });
 
     it('should return the right error if room id is not only digit', async () => {
@@ -62,7 +62,7 @@ describe('RoomValidationService', () => {
         const sendUsernameSpy = spyOn(service, 'sendUsername' as any).and.resolveTo();
         const error = await service.verifyUsername();
         expect(sendUsernameSpy).not.toHaveBeenCalled();
-        expect(error).toEqual(errorDictionary.CHAR_NUM_ERROR);
+        expect(error).toEqual(ErrorDictionary.CHAR_NUM_ERROR);
     });
 
     it(`should return the right error if username is ${HOST_USERNAME}`, async () => {
@@ -71,7 +71,7 @@ describe('RoomValidationService', () => {
         const sendUsernameSpy = spyOn(service, 'sendUsername' as any).and.resolveTo();
         const error = await service.verifyUsername();
         expect(sendUsernameSpy).not.toHaveBeenCalled();
-        expect(error).toEqual(errorDictionary.ORGANISER_NAME_ERROR);
+        expect(error).toEqual(ErrorDictionary.ORGANISER_NAME_ERROR);
     });
 
     it('should return the right error if username is not valid on server side', async () => {
@@ -103,7 +103,7 @@ describe('RoomValidationService', () => {
         service.sendJoinRoomRequest();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.JOIN_GAME);
+        expect(event).toEqual(SocketEvent.JOIN_GAME);
         expect(data).toEqual({ roomId: Number(service.roomId), username: service.username });
         if (typeof callback === 'function') {
             callback(true);
@@ -135,7 +135,7 @@ describe('RoomValidationService', () => {
         service['sendUsername']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.VALIDATE_USERNAME);
+        expect(event).toEqual(SocketEvent.VALIDATE_USERNAME);
         expect(data).toEqual({ roomId: Number(service.roomId), username: service.username });
         if (typeof callback === 'function') {
             callback(true);
@@ -153,7 +153,7 @@ describe('RoomValidationService', () => {
         service['sendRoomId']();
         tick();
         const [event, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(event).toEqual(socketEvent.VALIDATE_ROOM_ID);
+        expect(event).toEqual(SocketEvent.VALIDATE_ROOM_ID);
         expect(data).toEqual(Number(service.roomId));
         if (typeof callback === 'function') {
             callback(true);
@@ -166,7 +166,7 @@ describe('RoomValidationService', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const handleSpy = spyOn(service, 'handleErrors' as any).and.returnValue('test');
         const error = service['handleJoiningRoomValidation'](true);
-        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.ROOM_LOCKED);
+        expect(handleSpy).toHaveBeenCalledWith(ErrorDictionary.ROOM_LOCKED);
         expect(error).toEqual('test');
     });
 
@@ -193,7 +193,7 @@ describe('RoomValidationService', () => {
         const handleSpy = spyOn(service, 'handleErrors' as any);
         const data = { isRoom: false, isLocked: false };
         service['handleRoomIdValidation'](data);
-        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.ROOM_CODE_EXPIRED);
+        expect(handleSpy).toHaveBeenCalledWith(ErrorDictionary.ROOM_CODE_EXPIRED);
         expect(service.isRoomIdValid).toBeFalsy();
     });
 
@@ -202,7 +202,7 @@ describe('RoomValidationService', () => {
         const handleSpy = spyOn(service, 'handleErrors' as any);
         const data = { isRoom: true, isLocked: true };
         service['handleRoomIdValidation'](data);
-        expect(handleSpy).toHaveBeenCalledWith(errorDictionary.ROOM_LOCKED);
+        expect(handleSpy).toHaveBeenCalledWith(ErrorDictionary.ROOM_LOCKED);
         expect(service.isRoomIdValid).toBeFalsy();
     });
 

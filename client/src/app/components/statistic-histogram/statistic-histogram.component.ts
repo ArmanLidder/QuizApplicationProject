@@ -1,8 +1,17 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { ResponsesValues, ResponsesNumber } from '@common/constants/statistic-histogram.component.const';
+import {
+    ResponsesValues,
+    ResponsesNumber,
+    CORRECT_ANSWERS,
+    INCORRECT_ANSWERS,
+    INACTIVE,
+    ACTIVE,
+    BAR,
+} from '@common/constants/statistic-histogram.component.const';
 import { GameService } from '@app/services/game.service/game.service';
 import { QuestionType } from '@common/enums/question-type.enum';
+import { GREEN_INDEX, LIGHTGREEN_COLOR, RED_COLOR, RED_INDEX } from '@common/style/style';
 
 @Component({
     selector: 'app-statistic-histogram',
@@ -22,7 +31,7 @@ export class StatisticHistogramComponent implements OnChanges {
             },
         },
     };
-    barChartType: ChartType = 'bar';
+    barChartType: ChartType = BAR;
     barChartData: ChartData<'bar'>;
 
     constructor(private gameService: GameService) {}
@@ -31,18 +40,18 @@ export class StatisticHistogramComponent implements OnChanges {
         const labels = Array.from(this.valueOfResponses.keys());
         const changingResponsesData = [];
         if (this.isGameOver) {
-            this.legendLabels[0] = 'Mauvaises réponses';
-            this.legendLabels[1] = 'Bonnes réponses';
+            this.legendLabels[RED_INDEX] = INCORRECT_ANSWERS;
+            this.legendLabels[GREEN_INDEX] = CORRECT_ANSWERS;
         } else {
-            this.legendLabels[0] = this.gameService.question?.type === QuestionType.QLR ? 'Inactif' : 'Mauvaises réponses';
-            this.legendLabels[1] = this.gameService.question?.type === QuestionType.QLR ? 'Actif' : 'Bonnes réponses';
+            this.legendLabels[RED_INDEX] = this.gameService.question?.type === QuestionType.QRL ? INACTIVE : INCORRECT_ANSWERS;
+            this.legendLabels[GREEN_INDEX] = this.gameService.question?.type === QuestionType.QRL ? ACTIVE : CORRECT_ANSWERS;
         }
 
         for (const key of labels) {
             changingResponsesData.push(this.changingResponses.get(key) ?? 0);
         }
 
-        const changingResponseColors = labels.map((label) => (this.valueOfResponses.get(label) ? 'lightgreen' : 'red'));
+        const changingResponseColors = labels.map((label) => (this.valueOfResponses.get(label) ? LIGHTGREEN_COLOR : RED_COLOR));
 
         this.barChartData = {
             labels,

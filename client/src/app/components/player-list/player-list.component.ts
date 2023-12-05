@@ -21,9 +21,9 @@ export class PlayerListComponent {
     @Input() isHost: boolean;
     orderIcon = ORDER_ICON_UP;
     optionSelections: Map<SortType, boolean> = new Map([
-        [SortType.SortByName, true],
-        [SortType.SortByScore, false],
-        [SortType.SortByStatus, false],
+        [SortType.SORT_BY_NAME, true],
+        [SortType.SORT_BY_SCORE, false],
+        [SortType.SORT_BY_STATUS, false],
     ]);
     protected readonly sortType = SortType;
     private order = ORDER_INITIAL_MULTIPLIER;
@@ -56,13 +56,13 @@ export class PlayerListComponent {
 
     private selectOptionMethod(sortOption: SortType) {
         switch (sortOption) {
-            case SortType.SortByName:
+            case SortType.SORT_BY_NAME:
                 this.sortListService.sortByName();
                 break;
-            case SortType.SortByScore:
+            case SortType.SORT_BY_SCORE:
                 this.sortListService.sortByScore();
                 break;
-            case SortType.SortByStatus:
+            case SortType.SORT_BY_STATUS:
                 this.sortListService.sortByStatus();
                 break;
         }

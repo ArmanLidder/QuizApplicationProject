@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
+import { NO_COLOR, RED_BORDER, RED_TEXT } from '@common/style/style';
 
 @Component({
     selector: 'app-unique-quiz-error-feedback',
@@ -12,13 +13,13 @@ export class UniqueQuizErrorFeedbackComponent {
     @Output() cancelOperation: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     newQuizName: string | undefined = '';
-    inputBorderColor: string = '';
-    textColor: string = '';
+    inputBorderColor: string = NO_COLOR;
+    textColor: string = NO_COLOR;
     error: string = '';
 
     emitQuizName() {
         if (this.newQuizName === undefined) {
-            this.error = errorDictionary.NAME_EMPTY;
+            this.error = ErrorDictionary.NAME_EMPTY;
             this.showErrorFeedback();
         } else {
             this.sendNewQuizName.emit(this.newQuizName);
@@ -31,13 +32,13 @@ export class UniqueQuizErrorFeedbackComponent {
     }
 
     private reset() {
-        this.textColor = '';
-        this.inputBorderColor = '';
+        this.textColor = NO_COLOR;
+        this.inputBorderColor = NO_COLOR;
         this.newQuizName = '';
     }
 
     private showErrorFeedback() {
-        this.textColor = 'red-text';
-        this.inputBorderColor = 'red-border';
+        this.textColor = RED_TEXT;
+        this.inputBorderColor = RED_BORDER;
     }
 }

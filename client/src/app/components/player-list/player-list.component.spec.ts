@@ -4,7 +4,7 @@ import { SortType } from '@common/constants/player-list.component.const';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { SortListService } from '@app/services/sort-list.service/sort-list.service';
-import { playerStatus } from '@common/player-status/player-status';
+import { PlayerStatus } from '@common/player-status/player-status';
 import { PlayerListComponent } from './player-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -34,8 +34,8 @@ describe('PlayerListComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         interactiveListService.players = [
-            ['karim', 0, 0, playerStatus.LEFT, true],
-            ['player1', 0, 0, playerStatus.INTERACTION, true],
+            ['karim', 0, 0, PlayerStatus.LEFT, true],
+            ['player1', 0, 0, PlayerStatus.INTERACTION, true],
         ];
         component['order'] = 1;
         component.orderIcon = 'fa-solid fa-up-long';
@@ -62,47 +62,47 @@ describe('PlayerListComponent', () => {
     it('should sort by status', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const updateOptionSelections = spyOn(component, 'updateOptionSelections' as any);
-        component.sort(SortType.SortByStatus);
-        expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SortByStatus);
+        component.sort(SortType.SORT_BY_STATUS);
+        expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SORT_BY_STATUS);
         expect(getPlayersListSpy).toHaveBeenCalledWith(undefined, undefined, false);
     });
 
     it('should sort by score', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const updateOptionSelections = spyOn(component, 'updateOptionSelections' as any);
-        component.sort(SortType.SortByScore);
-        expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SortByScore);
+        component.sort(SortType.SORT_BY_SCORE);
+        expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SORT_BY_SCORE);
         expect(getPlayersListSpy).toHaveBeenCalledWith(undefined, undefined, false);
     });
 
     it('should sort by name', () => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const updateOptionSelections = spyOn(component, 'updateOptionSelections' as any);
-        component.sort(SortType.SortByName);
-        expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SortByName);
+        component.sort(SortType.SORT_BY_NAME);
+        expect(updateOptionSelections).toHaveBeenCalledWith(SortType.SORT_BY_NAME);
         expect(getPlayersListSpy).toHaveBeenCalledWith(undefined, undefined, false);
     });
 
     it('should toggle Chat Permission', () => {
         const toggleSpy = spyOn(interactiveListService, 'toggleChatPermission');
         component.roomId = 1;
-        interactiveListService.players = [['karim', 0, 0, playerStatus.LEFT, true]];
+        interactiveListService.players = [['karim', 0, 0, PlayerStatus.LEFT, true]];
         component.toggleChatPermission('karim');
         expect(toggleSpy).toHaveBeenCalledWith('karim', 1);
     });
 
     it('should correctly modify optionSelections', () => {
         const expectedResult = new Map([
-            [SortType.SortByName, false],
-            [SortType.SortByScore, true],
-            [SortType.SortByStatus, false],
+            [SortType.SORT_BY_NAME, false],
+            [SortType.SORT_BY_SCORE, true],
+            [SortType.SORT_BY_STATUS, false],
         ]);
         component.optionSelections = new Map([
-            [SortType.SortByName, true],
-            [SortType.SortByScore, false],
-            [SortType.SortByStatus, false],
+            [SortType.SORT_BY_NAME, true],
+            [SortType.SORT_BY_SCORE, false],
+            [SortType.SORT_BY_STATUS, false],
         ]);
-        component['updateOptionSelections'](SortType.SortByScore);
+        component['updateOptionSelections'](SortType.SORT_BY_SCORE);
         expect(component.optionSelections).toEqual(expectedResult);
     });
 });

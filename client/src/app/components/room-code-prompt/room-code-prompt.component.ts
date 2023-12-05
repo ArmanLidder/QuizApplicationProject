@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { RoomValidationService } from '@app/services/room-validation.service/room-validation.service';
+import { NO_COLOR, RED_BORDER, RED_TEXT } from '@common/style/style';
 
 @Component({
     selector: 'app-room-code-prompt',
@@ -74,13 +75,13 @@ export class RoomCodePromptComponent implements OnInit {
     }
 
     private reset() {
-        this.textColor = '';
-        this.inputBorderColor = '';
+        this.textColor = NO_COLOR;
+        this.inputBorderColor = NO_COLOR;
         this.error = '';
     }
 
     private showErrorFeedback() {
-        this.textColor = 'red-text';
-        this.inputBorderColor = 'red-border';
+        this.textColor = RED_TEXT;
+        this.inputBorderColor = RED_BORDER;
     }
 }

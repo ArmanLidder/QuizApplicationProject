@@ -6,7 +6,7 @@
     <div class="sidebar-content">
         <div class="message-container" *ngFor="let message of messages" #messageContainer>
             <div [class]="message.sender === myName ? 'me-said' : 'username-said'">
-                {{(message.sender === myName) ? 'Moi :' : message.sender + ' :' }}</div>
+                {{(message.sender === myName) ? isHost ? 'Organisateur' : myName + ' (moi)' + ' :' : message.sender + ' :' }}</div>
             <p>{{ message.content }}</p>
             <p>{{ message.time.split(' ')[1] }}</p>
         </div>

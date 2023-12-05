@@ -1,1 +1,1 @@
-export const CREATED = 201;
+export const HTTP_STATUS_CODE_CREATED = 201;

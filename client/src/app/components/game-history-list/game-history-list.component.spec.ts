@@ -66,35 +66,35 @@ describe('GameHistoryListComponent', () => {
 
     it('should sort by date', () => {
         component.games = [...MOCK_GAMES];
-        component.isDateAscendingOrder = true;
-        component.sortDate();
+        component['isDateAscendingOrder'] = true;
+        component.sort('date');
         expect(component.games).toEqual([...MOCK_GAMES].reverse());
-        component.isDateAscendingOrder = false;
-        component.sortDate();
+        component['isDateAscendingOrder'] = false;
+        component.sort('date');
         expect(component.games).toEqual(MOCK_GAMES);
     });
 
     it('should sort by name', () => {
         component.games = [...MOCK_GAMES];
-        component.isNameAscendingOrder = true;
-        component.sortGameName();
+        component['isNameAscendingOrder'] = true;
+        component.sort('name');
         expect(component.games).toEqual([...MOCK_GAMES].reverse());
-        component.isNameAscendingOrder = false;
-        component.sortGameName();
+        component['isNameAscendingOrder'] = false;
+        component.sort('name');
         expect(component.games).toEqual(MOCK_GAMES);
     });
 
     it('should get the appropriate icon', () => {
-        component.isNameAscendingOrder = false;
+        component['isNameAscendingOrder'] = false;
         let res = component.getSortIcon('name');
         expect(res).toEqual('▼');
-        component.isNameAscendingOrder = true;
+        component['isNameAscendingOrder'] = true;
         res = component.getSortIcon('name');
         expect(res).toEqual('▲');
-        component.isDateAscendingOrder = true;
+        component['isDateAscendingOrder'] = true;
         res = component.getSortIcon('date');
         expect(res).toEqual('▲');
-        component.isDateAscendingOrder = false;
+        component['isDateAscendingOrder'] = false;
         res = component.getSortIcon('date');
         expect(res).toEqual('▼');
     });

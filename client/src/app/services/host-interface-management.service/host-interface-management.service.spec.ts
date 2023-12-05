@@ -8,10 +8,10 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameService } from '@app/services/game.service/game.service';
 import { InteractiveListSocketService } from '@app/services/interactive-list-socket.service/interactive-list-socket.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { TimerMessage } from '@common/browser-message/displayable-message/timer-message';
 import { QuestionType } from '@common/enums/question-type.enum';
 import { HOST_USERNAME } from '@common/names/host-username';
-import { socketEvent } from '@common/socket-event-name/socket-event-name';
+import { SocketEvent } from '@common/socket-event-name/socket-event-name';
 import { HostInterfaceManagementService } from './host-interface-management.service';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -70,7 +70,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.sendPauseTimer();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
         expect(service.isPaused).toBeTruthy();
-        expect(eventName).toEqual(socketEvent.PAUSE_TIMER);
+        expect(eventName).toEqual(SocketEvent.PAUSE_TIMER);
         expect(data).toEqual(0);
     });
 
@@ -81,7 +81,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.startPanicMode();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
         expect(service.isPanicMode).toBeTruthy();
-        expect(eventName).toEqual(socketEvent.PANIC_MODE);
+        expect(eventName).toEqual(SocketEvent.PANIC_MODE);
         expect(data).toEqual({ roomId: 0, timer: 1 });
     });
 
@@ -99,7 +99,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.requestNextQuestion();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
         expect(service.isPanicMode).toBeFalsy();
-        expect(eventName).toEqual(socketEvent.START_TRANSITION);
+        expect(eventName).toEqual(SocketEvent.START_TRANSITION);
         expect(data).toEqual(0);
     });
 
@@ -110,7 +110,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.handleLastQuestion();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
         expect(sendGameStatsSpy).toHaveBeenCalled();
-        expect(eventName).toEqual(socketEvent.SHOW_RESULT);
+        expect(eventName).toEqual(SocketEvent.SHOW_RESULT);
         expect(data).toEqual(0);
     });
 
@@ -144,11 +144,11 @@ describe('HostInterfaceManagementServiceService', () => {
         service.gameService.gameRealService.roomId = 0;
         service['handleTimeTransition']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.TIME_TRANSITION);
+        expect(eventName).toEqual(SocketEvent.TIME_TRANSITION);
         if (typeof action === 'function') {
             action(0);
             const [secondEventName, data] = sendSpy.calls.mostRecent().args;
-            expect(secondEventName).toEqual(socketEvent.NEXT_QUESTION);
+            expect(secondEventName).toEqual(SocketEvent.NEXT_QUESTION);
             expect(data).toEqual(0);
         }
     });
@@ -157,7 +157,7 @@ describe('HostInterfaceManagementServiceService', () => {
         const sendQrlAnswerSpy = spyOn(service, 'sendQrlAnswer' as any);
         service['handleEndQuestion']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.END_QUESTION);
+        expect(eventName).toEqual(SocketEvent.END_QUESTION);
         if (typeof action === 'function') {
             action();
             expect(getPlayerListSpy).toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe('HostInterfaceManagementServiceService', () => {
         gameService.gameRealService.username = HOST_USERNAME;
         service['handleFinalTimeTransition']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.FINAL_TIME_TRANSITION);
+        expect(eventName).toEqual(SocketEvent.FINAL_TIME_TRANSITION);
         if (typeof action === 'function') {
             action(0);
             expect(getPlayerListSpy).toHaveBeenCalled();
@@ -186,7 +186,7 @@ describe('HostInterfaceManagementServiceService', () => {
         const createChoicesStatsMapSpy = spyOn(service, 'createChoicesStatsMap' as any);
         service['handleRefreshChoicesStats']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.REFRESH_CHOICES_STATS);
+        expect(eventName).toEqual(SocketEvent.REFRESH_CHOICES_STATS);
         if (typeof action === 'function') {
             action([1, 1]);
             expect(createChoicesStatsMapSpy).toHaveBeenCalled();
@@ -197,7 +197,7 @@ describe('HostInterfaceManagementServiceService', () => {
         const initGraphSpy = spyOn(service, 'initGraph' as any);
         service['handleGetInitialQuestion']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GET_INITIAL_QUESTION);
+        expect(eventName).toEqual(SocketEvent.GET_INITIAL_QUESTION);
         if (typeof action === 'function') {
             await action({
                 question: mockQuestion,
@@ -214,7 +214,7 @@ describe('HostInterfaceManagementServiceService', () => {
         const initGraphSpy = spyOn(service, 'initGraph' as any);
         service['handleGetNextQuestion']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GET_NEXT_QUESTION);
+        expect(eventName).toEqual(SocketEvent.GET_NEXT_QUESTION);
         if (typeof action === 'function') {
             await action({
                 question: mockQuestion,
@@ -229,7 +229,7 @@ describe('HostInterfaceManagementServiceService', () => {
     it('should handle removed player correctly', () => {
         service['handleRemovedPlayer']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.REMOVED_PLAYER);
+        expect(eventName).toEqual(SocketEvent.REMOVED_PLAYER);
         if (typeof action === 'function') {
             interactiveListService.players = [['test', 0, 0, 'test', false]];
             action('test');
@@ -241,7 +241,7 @@ describe('HostInterfaceManagementServiceService', () => {
         const resetSpy = spyOn(service, 'resetInterface' as any);
         service['handleEndQuestionAfterRemoval']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.END_QUESTION_AFTER_REMOVAL);
+        expect(eventName).toEqual(SocketEvent.END_QUESTION_AFTER_REMOVAL);
         if (typeof action === 'function') {
             action();
             expect(resetSpy).toHaveBeenCalled();
@@ -251,7 +251,7 @@ describe('HostInterfaceManagementServiceService', () => {
     it('should handle evaluation over correctly', () => {
         service['handleEvaluationOver']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.EVALUATION_OVER);
+        expect(eventName).toEqual(SocketEvent.EVALUATION_OVER);
         if (typeof action === 'function') {
             action();
             expect(getPlayerListSpy).toHaveBeenCalled();
@@ -262,7 +262,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.histogramDataChangingResponses = mockResponseMap;
         service['handleRefreshActivityStats']();
         const [eventName, action] = onSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.REFRESH_ACTIVITY_STATS);
+        expect(eventName).toEqual(SocketEvent.REFRESH_ACTIVITY_STATS);
         if (typeof action === 'function') {
             action([0, 0]);
             const map = new Map([
@@ -311,12 +311,12 @@ describe('HostInterfaceManagementServiceService', () => {
         gameService.gameRealService.roomId = 0;
         service['sendQrlAnswer']();
         const [eventName, data, callback] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GET_PLAYER_ANSWERS);
+        expect(eventName).toEqual(SocketEvent.GET_PLAYER_ANSWERS);
         expect(data).toEqual(0);
         if (typeof callback === 'function') {
             spyOn(JSON, 'parse').and.returnValue([['0', { answer: 'test', time: 0 }]]);
             callback();
-            expect(service.isHostEvaluating).toBeTruthy();
+            expect(service.responsesQRL).toEqual(new Map<string, { answer: string; time: number }>([['0', { answer: 'test', time: 0 }]]));
         }
     });
 
@@ -325,7 +325,7 @@ describe('HostInterfaceManagementServiceService', () => {
         spyOn(service, 'stringifyStats' as any).and.returnValue('test');
         service['sendGameStats']();
         const [eventName, data] = sendSpy.calls.mostRecent().args;
-        expect(eventName).toEqual(socketEvent.GAME_STATUS_DISTRIBUTION);
+        expect(eventName).toEqual(SocketEvent.GAME_STATUS_DISTRIBUTION);
         expect(data).toEqual({ roomId: 1, stats: 'test' });
     });
 
@@ -356,7 +356,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.gameService.gameRealService.timer = mockTimeValue;
         service['handleHostPanicMode']();
         const [socketOnText, socketOnFunc] = onSpy.calls.mostRecent().args;
-        expect(socketOnText).toEqual(socketEvent.PANIC_MODE);
+        expect(socketOnText).toEqual(SocketEvent.PANIC_MODE);
         socketOnFunc({ roomId: mockRoomIdValue, timer: mockTimeValue });
         expect(service.gameService.timer).toEqual(mockTimeValue);
         expect(audioSpy).toHaveBeenCalled();
@@ -368,7 +368,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.isPanicMode = true;
         service['handleHostTimerPause']();
         const [socketOnText, socketOnFunc] = onSpy.calls.mostRecent().args;
-        expect(socketOnText).toEqual(socketEvent.PAUSE_TIMER);
+        expect(socketOnText).toEqual(SocketEvent.PAUSE_TIMER);
         socketOnFunc(mockRoomIdValue);
         expect(service.gameService.gameRealService.audioPaused).toBeFalsy();
         expect(audioSpy).toHaveBeenCalled();
@@ -380,7 +380,7 @@ describe('HostInterfaceManagementServiceService', () => {
         service.isPanicMode = true;
         service['handleHostTimerPause']();
         const [socketOnText, socketOnFunc] = onSpy.calls.mostRecent().args;
-        expect(socketOnText).toEqual(socketEvent.PAUSE_TIMER);
+        expect(socketOnText).toEqual(SocketEvent.PAUSE_TIMER);
         socketOnFunc(mockRoomIdValue);
         expect(service.gameService.gameRealService.audioPaused).toBeTruthy();
         expect(audioSpy).toHaveBeenCalled();
@@ -418,7 +418,7 @@ describe('HostInterfaceManagementServiceService', () => {
 
     it('should reset service properley', () => {
         service['reset']();
-        expect(service.timerText).toEqual(timerMessage.TIME_LEFT);
+        expect(service.timerText).toEqual(TimerMessage.TIME_LEFT);
         expect(service.isGameOver).toBeFalsy();
         expect(service.histogramDataChangingResponses).toEqual(new Map<string, number>());
         expect(service.histogramDataValue).toEqual(new Map<string, boolean>());

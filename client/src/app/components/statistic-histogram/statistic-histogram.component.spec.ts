@@ -35,7 +35,7 @@ describe('OrganizerHistogramComponent', () => {
             ['Pound', true],
         ]);
         mockQuestion = {
-            type: QuestionType.QLR,
+            type: QuestionType.QRL,
             text: 'test question',
             points: 40,
         };
