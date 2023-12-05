@@ -1,7 +1,7 @@
 <div *ngIf='isHost' class='sort-buttons'>
-    <button (click)="this.sort(sortType.SortByName)" [class]='(optionSelections.get(sortType.SortByName)) ? "selected": "add"' matTooltip="Trier par nom">Nom</button>
-    <button (click)="this.sort(sortType.SortByScore)" [class]='(optionSelections.get(sortType.SortByScore)) ? "selected": "add"' matTooltip="Trier par point">Point</button>
-    <button (click)="this.sort(sortType.SortByStatus)" [class]='(optionSelections.get(sortType.SortByStatus)) ? "selected": "add"' matTooltip="Trier par statut">Statut</button>
+    <button (click)="this.sort(sortType.SORT_BY_NAME)" [class]='(optionSelections.get(sortType.SORT_BY_NAME)) ? "selected": "add"' matTooltip="Trier par nom">Nom</button>
+    <button (click)="this.sort(sortType.SORT_BY_SCORE)" [class]='(optionSelections.get(sortType.SORT_BY_SCORE)) ? "selected": "add"' matTooltip="Trier par point">Point</button>
+    <button (click)="this.sort(sortType.SORT_BY_STATUS)" [class]='(optionSelections.get(sortType.SORT_BY_STATUS)) ? "selected": "add"' matTooltip="Trier par statut">Statut</button>
     <button (click)="this.changeOrder()"  class='add' matTooltip="Changer l'ordre"><i [class]='orderIcon'></i></button>
 </div>
 <div class="players-container">

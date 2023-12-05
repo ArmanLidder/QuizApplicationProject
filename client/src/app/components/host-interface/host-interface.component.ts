@@ -4,7 +4,8 @@ import { GameService } from '@app/services/game.service/game.service';
 import { SocketClientService } from '@app/services/socket-client.service/socket-client.service';
 import { HostInterfaceManagementService } from '@app/services/host-interface-management.service/host-interface-management.service';
 import { QrlEvaluationService } from '@app/services/qrl-evaluation.service/qrl-evaluation.service';
-import { timerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { TimerMessage } from '@common/browser-message/displayable-message/timer-message';
+import { NEXT_QUESTION, SHOW_RESULT } from '@common/constants/host-interface.component.const';
 
 @Component({
     selector: 'app-host-interface',
@@ -13,7 +14,7 @@ import { timerMessage } from '@common/browser-message/displayable-message/timer-
 })
 export class HostInterfaceComponent {
     qrlEvaluationService: QrlEvaluationService = inject(QrlEvaluationService);
-    protected readonly timerMessage = timerMessage;
+    protected readonly timerMessage = TimerMessage;
     private isLastButton: boolean = false;
     private route: ActivatedRoute = inject(ActivatedRoute);
 
@@ -32,7 +33,7 @@ export class HostInterfaceComponent {
     }
 
     updateHostCommand() {
-        return this.gameService.gameRealService.isLast ? 'Montrer résultat' : 'Prochaine question';
+        return this.gameService.gameRealService.isLast ? SHOW_RESULT : NEXT_QUESTION;
     }
 
     handleHostCommand() {

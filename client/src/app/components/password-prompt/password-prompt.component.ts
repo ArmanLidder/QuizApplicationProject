@@ -1,7 +1,9 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminAuthenticatorService } from '@app/services/admin-authenticator.service/admin-authenticator.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
+import { GAME_ADMIN_PAGE } from '@common/page-url/page-url';
+import { NO_COLOR, RED_BORDER, RED_TEXT } from '@common/style/style';
 
 @Component({
     selector: 'app-password-prompt',
@@ -13,7 +15,7 @@ export class PasswordPromptComponent {
     loginStatus: string | null = null;
     inputBorderColor: string = '';
     textColor: string = '';
-    private errorMessage: string = errorDictionary.WRONG_PASSWORD;
+    private errorMessage: string = ErrorDictionary.WRONG_PASSWORD;
 
     constructor(
         public router: Router,
@@ -26,7 +28,7 @@ export class PasswordPromptComponent {
     }
 
     updateStatus() {
-        this.router.navigate(['/game-admin-page']).then((res) => {
+        this.router.navigate([`/${GAME_ADMIN_PAGE}`]).then((res) => {
             this.treatResponse(res);
         });
     }
@@ -42,12 +44,12 @@ export class PasswordPromptComponent {
 
     reset() {
         this.loginStatus = null;
-        this.textColor = '';
-        this.inputBorderColor = '';
+        this.textColor = NO_COLOR;
+        this.inputBorderColor = NO_COLOR;
     }
 
     showErrorFeedback() {
-        this.textColor = 'red-text';
-        this.inputBorderColor = 'red-border';
+        this.textColor = RED_TEXT;
+        this.inputBorderColor = RED_BORDER;
     }
 }

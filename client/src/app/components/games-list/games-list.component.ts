@@ -2,13 +2,14 @@ import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angula
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AlertDialogComponent } from '@app/components/alert-dialog/alert-dialog.component';
-import { CREATED } from '@common/constants/games-list.component.const';
+import { HTTP_STATUS_CODE_CREATED } from '@common/constants/games-list.component.const';
 import { QuizValidationService } from '@app/services/quiz-validation.service/quiz-validation.service';
 import { QuizService } from '@app/services/quiz.service/quiz.service';
-import { errorDictionary } from '@common/browser-message/error-message/error-message';
+import { ErrorDictionary } from '@common/browser-message/error-message/error-message';
 import { Quiz } from '@common/interfaces/quiz.interface';
 import { getCurrentDateService } from 'src/utils/current-date-format/current-date-format';
 import { generateRandomId } from 'src/utils/random-id-generator/random-id-generator';
+import { QUIZ_TESTING_PAGE, WAITING_ROOM_HOST_PAGE } from '@common/page-url/page-url';
 
 @Component({
     selector: 'app-games-list',
@@ -19,17 +20,17 @@ export class GamesListComponent implements OnInit {
     @Input() isAdmin: boolean;
     @Input() isImportError: boolean = false;
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
-    router = inject(Router);
     quizzes: Quiz[] = [];
     importedQuiz: Quiz;
     selectedQuiz: Quiz | null;
     errors: string | null = null;
     isErrors: boolean = false;
     isQuizUnique: boolean = true;
-    fileReader: FileReader = new FileReader();
 
-    asyncFileResolver: () => void;
-    asyncFileRejecter: (error: unknown) => void;
+    private router = inject(Router);
+    private fileReader: FileReader = new FileReader();
+    private asyncFileResolver: () => void;
+    private asyncFileRejecter: (error: unknown) => void;
 
     constructor(
         public quizServices: QuizService,
@@ -112,6 +113,9 @@ export class GamesListComponent implements OnInit {
         }
     }
 
+    // waitForFileRead returns a promise which permits the async/await syntax when importing
+    // JSON file. This is enabling our program to force the code to wait for the user to complete
+    // the import event before completing the execution of the code.
     async waitForFileRead(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.asyncFileResolver = resolve;
@@ -140,12 +144,12 @@ export class GamesListComponent implements OnInit {
     setValidatorError(errors: string[]) {
         let index = 0;
         const isPlural = errors.length > 1;
-        const endSentence = isPlural ? errorDictionary.ISSUES : errorDictionary.ISSUE;
-        let errorMessage = errorDictionary.FILE_CONTAINS + `${endSentence} :\n\n `;
+        const endSentence = isPlural ? ErrorDictionary.ISSUES : ErrorDictionary.ISSUE;
+        let errorMessage = ErrorDictionary.FILE_CONTAINS + `${endSentence} :\n\n `;
         errors.forEach((error) => {
             errorMessage += `\n${(index += 1)}- ${error}\n`;
         });
-        errorMessage += errorDictionary.SOLUTION;
+        errorMessage += ErrorDictionary.SOLUTION;
         return errorMessage;
     }
 
@@ -166,7 +170,7 @@ export class GamesListComponent implements OnInit {
 
     addImportedQuiz() {
         this.quizServices.basicPost(this.importedQuiz as Quiz).subscribe((res) => {
-            if (res.status === CREATED) this.populateGameList();
+            if (res.status === HTTP_STATUS_CODE_CREATED) this.populateGameList();
         });
     }
 
@@ -179,28 +183,28 @@ export class GamesListComponent implements OnInit {
             this.selectedQuiz = null;
 
             if (res === null) {
-                this.showError(errorDictionary.QUIZ_DELETED);
+                this.showError(ErrorDictionary.QUIZ_DELETED);
             } else if (res.visible) {
                 this.router.navigate([route, res.id]);
             } else {
-                this.showError(errorDictionary.QUIZ_INVISIBLE);
+                this.showError(ErrorDictionary.QUIZ_INVISIBLE);
             }
         });
     }
 
     testGame() {
-        this.handleQuizAction('/quiz-testing-page/');
+        this.handleQuizAction(`/${QUIZ_TESTING_PAGE}/`);
     }
 
     playGame() {
-        this.handleQuizAction('/waiting-room-host-page/');
+        this.handleQuizAction(`/${WAITING_ROOM_HOST_PAGE}/`);
     }
 
-    private showError(errorMessage: string) {
+    private showError(error: string) {
         this.dialog.open(AlertDialogComponent, {
             data: {
-                title: "Erreur lors de l'importation",
-                content: errorMessage,
+                title: ErrorDictionary.ERROR_TITLE_IMPORT,
+                content: error,
             },
         });
     }
