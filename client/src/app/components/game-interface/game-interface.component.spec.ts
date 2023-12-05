@@ -9,6 +9,7 @@ import { GameInterfaceComponent } from './game-interface.component';
 import { StatisticHistogramComponent } from '@app/components/statistic-histogram/statistic-histogram.component';
 import { GameInterfaceManagementService } from '@app/services/game-interface-management.service/game-interface-management.service';
 import { HOST_USERNAME } from '@common/names/host-username';
+import { QUIZ_TESTING_PAGE } from '@common/page-url/page-url';
 
 describe('GameInterfaceComponent', () => {
     let component: GameInterfaceComponent;
@@ -50,7 +51,7 @@ describe('GameInterfaceComponent', () => {
     it('should set isTestMode to true when path is "quiz-testing-page"', () => {
         component.ngOnInit();
         expect(gameInterfaceManagementService.gameService.isTestMode).toBeFalsy();
-        component['route'].snapshot.url[0].path = 'quiz-testing-page';
+        component['route'].snapshot.url[0].path = QUIZ_TESTING_PAGE;
         fixture = TestBed.createComponent(GameInterfaceComponent);
         component = fixture.componentInstance;
         component.ngOnInit();
